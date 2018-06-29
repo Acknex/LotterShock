@@ -8,5 +8,7 @@
 #define SK_SUBSYSTEM   skill99
 
 #define SUBSYSTEM_FRAMEWORK 1
+#define SUBSYSTEM_USABLES   2
+#define SUBSYSTEM_
 
 #endif // GLOBAL_H
