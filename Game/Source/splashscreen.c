@@ -14,8 +14,8 @@ var splashscreen_timer;
 
 void splashscreen_init()
 {
-//    splashscreen_image.scale_x = screen_size.x / splashscreen_image.size_x;
-//    splashscreen_image.scale_y = screen_size.y / splashscreen_image.size_y;
+    splashscreen_image.scale_x = screen_size.x / splashscreen_image.size_x;
+    splashscreen_image.scale_y = screen_size.y / splashscreen_image.size_y;
 }
 
 bool splashscreen_is_done()
@@ -49,8 +49,6 @@ void splashscreen_update()
         splashscreen_image->alpha = 0;
     }
     splashscreen_timer += time_step;
-    DEBUG_VAR(splashscreen_timer, 16);
-    DEBUG_VAR(splashscreen_image->alpha, 32);
 }
 
 void splashscreen_close()

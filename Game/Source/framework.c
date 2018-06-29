@@ -18,6 +18,7 @@ typedef struct
 {
     int state;
     int nextState;
+    int frameCounter;
 } framework_t;
 
 framework_t framework;
@@ -28,9 +29,6 @@ void framework_init()
     video_set(1280, 720, 0, 2); // 1280x720, Window
 
     on_frame = framework_update;
-
-    splashscreen_init();
-    mainmenu_init();
 }
 
 void framework_setup(ENTITY * ent, int subsystem)
@@ -53,7 +51,15 @@ void framework_update()
     switch(framework.state)
     {
     case FRAMEWORK_STATE_STARTUP:
-        framework_transfer(FRAMEWORK_STATE_SPLASHSCREEN);
+        if(framework.frameCounter == 1)
+        {
+            // spiel im ersten frame initialisieren
+            splashscreen_init();
+            mainmenu_init();
+
+            // framework_transfer(FRAMEWORK_STATE_SPLASHSCREEN);
+            framework_transfer(FRAMEWORK_STATE_MAINMENU);
+        }
         break;
 
     case FRAMEWORK_STATE_SPLASHSCREEN:
@@ -63,7 +69,7 @@ void framework_update()
         break;
 
     case FRAMEWORK_STATE_MAINMENU:
-        mainmenu_init();
+        mainmenu_update();
         break;
 
     case FRAMEWORK_STATE_CREDITS:
@@ -133,4 +139,6 @@ void framework_update()
         on_frame = NULL;
         sys_exit(NULL);
     }
+
+    framework.frameCounter += 1;
 }
