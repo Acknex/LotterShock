@@ -1,0 +1,13 @@
+acklog.txt
+*.bak
+*.raw
+*.wed
+ackerr.txt
+*.blend?
+/game/level/*.$$M
+/game/level/*.$$p
+/game/level/*.$$w
+/game/lottershock.cd
+/game/lottershock.zip
+shot_*.jpg
+*.log
