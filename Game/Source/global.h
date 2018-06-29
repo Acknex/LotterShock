@@ -1,6 +1,11 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+// boolstuff!
+typedef int bool;
+#define true  1
+#define false 0
+
 //! Markiert die Entity als "TOT" und sorgt dafür, dass sie zu Ende des Frames gelöscht wird.
 #define SK_ENTITY_DEAD skill89
 
@@ -21,5 +26,9 @@
 #define SUBSYSTEM_ENEMY_WARLOCK 101
 #define SUBSYSTEM_ENEMY_SPUTNIK 103
 #define SUBSYSTEM_ENEMY_EYE     104
+
+
+
+#define SUBSYSTEM_LOOP(ptr,system) for(ptr = ent_next(NULL); ptr != NULL; ptr = ent_next(ptr)) if(ptr->SK_SUBSYSTEM == (system))
 
 #endif // GLOBAL_H
