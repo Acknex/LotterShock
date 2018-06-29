@@ -1,1 +1,1 @@
-penis
+#define penis short
