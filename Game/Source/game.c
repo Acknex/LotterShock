@@ -14,6 +14,7 @@ void game_init()
 {
     weapons_init();
     GIB_GlobalInit();
+    ESELSLERCHE_GlobalInit();
 }
 
 void game_open()

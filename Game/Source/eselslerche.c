@@ -36,12 +36,31 @@
 #define EL_STATE_DEAD 5
 #define EL_STATE_HIT 6
 
-BMAP* EL_bmapSplatter = "splatter_green_01.png";
+BMAP* EL_bmapSplatter[5];
 
 // uses: EL_RUNSPEED, EL_TURNSPEED, EL_ANIMSPEED, EL_EXPLODEDIST, EL_ACTIVEDIST
 action Eselslerche()
 {
-    framework_setup(my, SUBSYSTEM_ENEMY_LERCHE);
+   framework_setup(my, SUBSYSTEM_ENEMY_LERCHE);
+	//TODO: useful default values
+	if(my->EL_RUNSPEED == 0) my->EL_RUNSPEED = 12;
+	if(my->EL_TURNSPEED == 0) my->EL_TURNSPEED = 10;
+	if(my->EL_ANIMSPEED == 0) my->EL_ANIMSPEED = 5;
+	if(my->EL_EXPLODEDIST == 0) my->EL_EXPLODEDIST = 300;
+	if(my->EL_ACTIVEDIST == 0) my->EL_ACTIVEDIST = 5000;
+	my->HEALTH = 50;
+	ENEMY_HIT_init(my);
+	vec_scale(&my->scale_x, 2);
+	set(my, SHADOW);
+}
+
+void ESELSLERCHE_GlobalInit()
+{
+	EL_bmapSplatter[0] = bmap_create("splatter_green_01.png");
+	EL_bmapSplatter[1] = bmap_create("splatter_green_02.png");
+	EL_bmapSplatter[2] = bmap_create("splatter_green_03.png");
+	EL_bmapSplatter[3] = bmap_create("splatter_green_04.png");
+	EL_bmapSplatter[4] = bmap_create("splatter_green_05.png");
 }
 
 void ESELSLERCHE_Init()
@@ -49,16 +68,6 @@ void ESELSLERCHE_Init()
 	ENTITY * ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENEMY_LERCHE)
    {
-   	//TODO: useful default values
-   	if(ptr->EL_RUNSPEED == 0) ptr->EL_RUNSPEED = 12;
-   	if(ptr->EL_TURNSPEED == 0) ptr->EL_TURNSPEED = 10;
-   	if(ptr->EL_ANIMSPEED == 0) ptr->EL_ANIMSPEED = 5;
-   	if(ptr->EL_EXPLODEDIST == 0) ptr->EL_EXPLODEDIST = 300;
-   	if(ptr->EL_ACTIVEDIST == 0) ptr->EL_ACTIVEDIST = 5000;
-		ptr->HEALTH = 50;
-		ENEMY_HIT_init(ptr);
-		vec_scale(&ptr->scale_x, 2);
-		set(ptr, SHADOW);
 	}	
 }
 
@@ -82,7 +91,8 @@ void ESELSLERCHE_Update()
 				ptr->DAMAGE_HIT = 0;
 				ptr->event = NULL;
 				ptr->EL_STATE = EL_STATE_HIT;
-				SPLATTER_explode(10, &ptr->x, 200, EL_bmapSplatter);
+				var rnd = random(5);
+				SPLATTER_explode(10, &ptr->x, 200, EL_bmapSplatter[rnd]);
 			}
 			
 			switch(ptr->EL_STATE)    	
@@ -130,6 +140,9 @@ void ESELSLERCHE_Update()
 
 			}	
 		}
+	
+		if (ptr->EL_STATE != EL_STATE_EXPLODE && ptr->EL_STATE != EL_STATE_DEAD && ptr->EL_STATE != EL_STATE_INACTIVE)
+			c_updatehull(ptr, ptr->frame);
 
 		if (ptr->EL_STATE != EL_STATE_EXPLODE)
 		{
@@ -253,7 +266,8 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 		{
 			GIB_Spawn(&ptr->x);
 		}
-		SPLATTER_explode(40, &ptr->x, 600, EL_bmapSplatter);
+		var rnd = integer(random(5));
+		SPLATTER_explode(40, &ptr->x, 600, EL_bmapSplatter[rnd]);
 		PARTICLE_explode(50, &ptr->x);
 		ptr->EL_STATE = EL_STATE_DEAD;
 		ptr->SK_ENTITY_DEAD = 1;
@@ -265,7 +279,6 @@ void ESELSLERCHE__die(ENTITY* ptr)
 	var animState;
 	animState = clamp(ptr->EL_ANIMSTATE, 0, 50);
 	ent_animate(ptr, EL_DIEANIM, ptr->EL_ANIMSTATE, 0);
-
 	/* transitions */
 	if(animState >= 50)
 	{
@@ -310,3 +323,14 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 	}
 }
 
+
+void spawn_startup()
+{
+	
+	wait(-5);
+	while(1)
+	{
+		ENTITY* ptr = ent_create("cEselslerche.mdl", vector(2200,-2750,100), Eselslerche);
+		wait(-10);
+	}
+}
