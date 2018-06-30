@@ -4,6 +4,7 @@
 #include "music_player.h"
 #include "game.h"
 #include "input.h"
+#include "credits.h"
 
 #define FRAMEWORK_ALPHA_BLENDSPEED  25
 
@@ -82,6 +83,7 @@ void framework_update()
             mainmenu_init();
             music_init();
             game_init();
+            credits_init();
 
             // TODO: Fix relative link?
             music_start("Media/intro.mp3", 1.0, false);
@@ -129,7 +131,9 @@ void framework_update()
     }
 
     case FRAMEWORK_STATE_CREDITS:
-        error("framework: credits not implemented yet.");
+        credits_update();
+        if(credits_isdone())
+            framework_transfer(FRAMEWORK_STATE_MAINMENU);
         break;
 
     case FRAMEWORK_STATE_LOAD:
@@ -193,7 +197,7 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_CREDITS:
-            error("framework: credits not implemented yet.");
+            credits_close();
             break;
 
         case FRAMEWORK_STATE_LOAD:
@@ -231,7 +235,7 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_CREDITS:
-            error("framework: credits not implemented yet.");
+            credits_open();
             break;
 
         case FRAMEWORK_STATE_LOAD:
