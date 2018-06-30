@@ -2,6 +2,8 @@
 #include "input.h"
 #include "math.h"
 #include "dmgsys.h"
+#include "movement.h"
+#include "projectiles.h"
 
 #define WEAPONS_COUNT 5
 
@@ -18,10 +20,11 @@
 #define WEAPONS_FLAME_COUNT 25
 #define WEAPONS_FLAME_DAMPING 5.0
 
+#define WEAPONS_CELLGUN_DAMAGE 7
+
 typedef struct weapons_data_t
 {
-	ENTITY * ent;
-	SOUND  * snd;
+    ENTITY * ent;
 	bool unlocked;
 	bool autofire;
 	bool streaming;
@@ -177,16 +180,11 @@ void weapons_init()
     weapons.weapon[WEAPON_CELLGUN].ent = weapons_wp_cellgun;
     weapons.weapon[WEAPON_FLAMETHROWER].ent = weapons_wp_flamethrower;
 
-    weapons.weapon[WEAPON_SWORD].snd = weapons_snd_sword1;
-    weapons.weapon[WEAPON_SHOTGUN].snd = weapons_snd_shotgun;
-    weapons.weapon[WEAPON_CELLGUN].snd = weapons_snd_cellgun;
-    weapons.weapon[WEAPON_FLAMETHROWER].snd = weapons_snd_flamethrower;
-
     weapons.weapon[WEAPON_SWORD].attackspeed = 40;
     weapons.weapon[WEAPON_SHOTGUN].attackspeed = 10;
     weapons.weapon[WEAPON_FLAMETHROWER].streaming = true;
     weapons.weapon[WEAPON_CELLGUN].streaming = true;
-    weapons.weapon[WEAPON_CELLGUN].attackspeed = 10.0;
+    weapons.weapon[WEAPON_CELLGUN].attackspeed = 20.0;
 
     weapons.weapon[WEAPON_SWORD].max_ammo        = 0;
     weapons.weapon[WEAPON_SHOTGUN].max_ammo      = 36;
@@ -347,6 +345,8 @@ void weapons_shoot_flamethrower()
 
 	vec_normalize(dir, WEAPONS_FLAME_VEL);
 
+    vec_add(dir, playerGetSpeedVec());
+
 	effect (weapons_flame_effect, maxv(1, time_frame * WEAPONS_FLAME_COUNT), pos, dir);
 	
 }
@@ -395,7 +395,7 @@ void weapons_shoot_cellgun()
 	VECTOR pos;
 	vec_for_vertex (pos, weapons_wp_cellgun, 393);
 	vec_add(pos, weapons_wp_cellgun.x);
-	vec_scale(pos, 0.1);
+    vec_scale(pos, 1);
 
 	vec_rotate(pos, camera.pan);
 	vec_add(pos, camera.x);
@@ -403,7 +403,9 @@ void weapons_shoot_cellgun()
 	VECTOR speed;
 	vec_set(speed,vector(600,0,0));
 	vec_rotate(speed,camera.pan);
-	projectileCreate(PROJECTILE_TYPE_CELL, 1, pos, speed);
+    PROJECTILE * pr0 = projectileCreate(PROJECTILE_TYPE_CELL, 1, pos, speed);
+    pr0->source = player;
+    pr0->dmg = WEAPONS_CELLGUN_DAMAGE;
 }
 
 var weaponGetKickbackFac(var progress, var kickPoint)
@@ -458,16 +460,16 @@ void weapons_update()
 			if(isdown)
 			{
 				if(weapons.current == WEAPON_CELLGUN)
-				isdown = WEAPONS_CURRENT.ammo >= 3;
+                    isdown = WEAPONS_CURRENT.ammo >= 3;
 				else if(weapons.current == WEAPON_FLAMETHROWER)
-				isdown = weapons_draw_ammo(1.5 * time_step);
+                    isdown = weapons_draw_ammo(1.5 * time_step);
 			}
 			if(weapons.attacking != isdown)
 			{
 				if(isdown)
 				{
 					if(weapons.current == WEAPON_FLAMETHROWER)
-					snd_play(weapons_snd_flamethrower_start, 100, 0);
+                        snd_play(weapons_snd_flamethrower_start, 100, 0);
 					weapons.attackprogress = 0;
 					weapons.attackstate = 0;
 				}
@@ -476,7 +478,7 @@ void weapons_update()
 					if(weapons.current == WEAPON_FLAMETHROWER)
 					{
 						if(weapons.flamefade == 100)
-						snd_play(weapons_snd_flamethrower_end, 30, 0);
+                            snd_play(weapons_snd_flamethrower_end, 30, 0);
 					}
 					else if(weapons.current == WEAPON_CELLGUN)
 					{
@@ -502,7 +504,7 @@ void weapons_update()
 
 		switch(weapons.current)
 		{
-			case WEAPON_SWORD:
+        case WEAPON_SWORD:
 			vec_set(sourcePosePos, WEAPONS_SWORD_DEFAULT_STANCE_POS);
 			vec_set(sourcePoseAng, WEAPONS_SWORD_DEFAULT_STANCE_ANG);
 
@@ -546,7 +548,7 @@ void weapons_update()
 
 			break;
 
-			case WEAPON_SHOTGUN:
+        case WEAPON_SHOTGUN:
 			if(input_down(INPUT_BLOCK) || 1)
 			{
 				vec_set(sourcePosePos, WEAPONS_SHOTGUN_SIGHT_STANCE_POS);
@@ -570,7 +572,7 @@ void weapons_update()
 			{
 				if(weapons.attackstate == 0)
 				{
-					var id = snd_play(WEAPONS_CURRENT.snd, 100, 0);
+                    var id = snd_play(weapons_snd_shotgun, 100, 0);
 					snd_tune(id, 0, 90 + random(20), 0);
 					weapons.attackstate = 3;
 					weapons_shoot_shotgun();
@@ -641,7 +643,7 @@ void weapons_update()
                         {
                             if(weapons_draw_ammo(1))
                             {
-                                snd_play(WEAPONS_CURRENT.snd, 100, 0);
+                                snd_play(weapons_snd_cellgun, 100, 0);
                                 weapons_shoot_cellgun();
                             }
                             weapons.attackstate += 1;
@@ -689,8 +691,6 @@ void weapons_update()
             break;
         }
 
- 
-
 		if(weapons.attacking && weapons.current != WEAPON_SHOTGUN)
 		{
 			vec_lerp(WEAPONS_CURRENT.ent.x, sourcePosePos, targetPosePos, 0.01 * weapons.attackprogress);
@@ -727,8 +727,14 @@ void weapons_update()
 	}
 	else
 	{
-		weapons_wp_cellgun_bzzt.flags2 &= ~SHOW;
-	}
+        weapons_wp_cellgun_bzzt.flags2 &= ~SHOW;
+
+        if(weapons.electro != 0)
+        {
+            snd_stop(weapons.electro);
+            weapons.electro = 0;
+        }
+    }
 
 }
 
