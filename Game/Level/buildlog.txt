@@ -1,0 +1,33 @@
+
+-dialog menue.$$M -pal palette.pcx -az 0 -el 60 -sunrgb 58 58 58 -ambrgb 19 19 19  -fog1 100 100 100  -fog2 19 39 100  -fog3 100 19 19 -noportals -hiprec -litmapsonly -writelog -mesh -mergeacross -terralit -tesselate -solidsky -nodetail -quiet -preview -threads 8 -gamma 1.50 -phongangle 120  -lmambient 50  -sizeshaded 236 -litres 1.00 -litcomp 0.50 -litmax 196 -litscale 0.50 -radsubdiv 64 -radbounce 0 -noportals -nobsp -bound 56000 -fat 64  48  8  -narrow 32  32  0  
+WMP to WMB Compiler V7.35 (WMB7) [CPUs: 8]
+ Report mode: QUIET
+
+Initialize map  ... [Load map] ...  ok 
+Building geometry ... ok 
+Prepare lighting ... ok 
+Generating 1 direct lights ............. ok 
+Radiosity disabled. 
+Generating lightmaps ............. ok
+Generating meshes ... ok
+Writing WMB file ... ok
+ 
+Time:   0.0 sec
+
+ 
+-dialog menue.$$M -pal palette.pcx -az 0 -el 60 -sunrgb 58 58 58 -ambrgb 19 19 19  -fog1 100 100 100  -fog2 19 39 100  -fog3 100 19 19 -noportals -hiprec -litmapsonly -writelog -mesh -mergeacross -terralit -tesselate -solidsky -nodetail -quiet -preview -threads 8 -gamma 1.50 -phongangle 120  -lmambient 50  -sizeshaded 236 -litres 1.00 -litcomp 0.50 -litmax 196 -litscale 0.50 -radsubdiv 64 -radbounce 0 -noportals -nobsp -bound 56000 -fat 64  48  8  -narrow 32  32  0  
+WMP to WMB Compiler V7.35 (WMB7) [CPUs: 8]
+ Report mode: QUIET
+
+Initialize map  ... [Load map] ...  ok 
+Building geometry ... ok 
+Prepare lighting ... ok 
+Generating 1 direct lights ............. ok 
+Radiosity disabled. 
+Generating lightmaps ............. ok
+Generating meshes ... ok
+Writing WMB file ... ok
+ 
+Time:   0.0 sec
+
+ 
