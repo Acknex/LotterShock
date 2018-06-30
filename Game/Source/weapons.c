@@ -53,41 +53,38 @@ typedef struct weapons_t
 
 weapons_t weapons;
 
-
-MATERIAL* shotgunTest_mat =
-{
-	effect = "shotgunTest.fx";
-	flags = AUTORELOAD;
-}
-
 ENTITY * weapons_wp_sword =
 {
 	type = "gipsy_sword.mdl";
+	material = matWeaponBasic;
 	view = camera;
 }
 
 ENTITY * weapons_wp_shotgun =
 {
 	type = "triple_shotgun.mdl";
-	material = shotgunTest_mat;
+	material = matWeaponBasic;
 	view = camera;
 }
 
 ENTITY * weapons_wp_cellgun =
 {
 	type = "trident_of_lightning.mdl";
+	material = matWeaponBasic;
 	view = camera;
 }
 
 ENTITY * weapons_wp_flamethrower =
 {
 	type = "flamemother.mdl";
+	material = matWeaponBasic;
 	view = camera;
 }
 
 ENTITY * weapons_wp_cellgun_bzzt =
 {
 	type = "bzzt+4.png";
+	material = matWeaponBasic;
 	view = camera;
 }
 
