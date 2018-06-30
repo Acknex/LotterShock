@@ -36,7 +36,7 @@ action keypad() {
 	
 	my.emask |= ENABLE_CLICK;
 	my.event = keypad_event;
-	set(me, PASSABLE);
+	//set(me, PASSABLE);
 
 	while(me) {
 		if (mouse_ent == me) {
@@ -44,6 +44,7 @@ action keypad() {
 		} else {
 			my.skin = 1;
 		}
+		draw_text("asd", 10, 10, COLOR_RED);
 		wait(1);
 	}
 }
