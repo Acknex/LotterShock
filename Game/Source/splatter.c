@@ -15,9 +15,11 @@ void SPLATTER_explode(var count, VECTOR* pos, var distance, BMAP* decal)
 		var dist = c_trace(pos, &targetPos, mode);
 		if(HIT_TARGET)
 		{
-	      PARTICLE* p = ent_decal(you, decal, minv(distance - dist, 500), random(360));
-	      p->lifespan = 160;
+	      PARTICLE* p = ent_decal(you, decal, minv((distance - dist) * 0.8, 270), random(360));
+	      p->lifespan = 320;
 	      p->event = SPLATTER__fade_effect;
+	      p->flags |= TRANSLUCENT;
+	      p->alpha = 100;
 		}
 		
 	}
@@ -25,9 +27,9 @@ void SPLATTER_explode(var count, VECTOR* pos, var distance, BMAP* decal)
 
 void SPLATTER__fade_effect(PARTICLE* p)
 {
-	//if (p->lifespan < 40)
+	if (p->lifespan < 40)
 	{
-		p->alpha = 50;//maxv(0, p->alpha - 3* time_step);
+		p->alpha = maxv(0, p->alpha - 3* time_step);
 	}	
 }
 
