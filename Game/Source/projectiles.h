@@ -135,7 +135,15 @@
 	
 	void p_projBounce_fade_event(PARTICLE* p)
 	{
-		p.alpha = p.lifespan/p.skill_a*100;
+		var blubb = p.lifespan/p.skill_a*100;
+		if(blubb > 100)
+		{
+			blubb = 100;
+			var blubb2 = maxv((p.lifespan - p.skill_b) * 4.0, 0);
+			if(blubb2 <= 100)
+				blubb += blubb2;
+		}
+		p.alpha = blubb;
 		//vec_fill(p.blue,255*p.lifespan/p.skill_a); // bringt nichts
 	}
 
@@ -146,6 +154,7 @@
 		p.event = p_projBounce_fade_event;
 		p.lifespan = lifespan;
 		p.skill_a = fadeStart;
+		p.skill_b = lifespan - 25;
 	}
 
 	void projectiles_update()
@@ -198,10 +207,16 @@
 				else
 				{
 					proj->lifetime = 0;
-					PARTICLE* p = ent_decal(you, bulletHoleCool_bmp, 9+random(2), 0);
+					BMAP* bmp = projBounce1_bmp;
+					if(proj->type == PROJECTILE_TYPE_CELL)
+					{
+						bmp = projBounce2_bmp;
+					}
+					PARTICLE* p = ent_decal(you, bmp, 9+random(2), 0);
 					if(p)
 					{
-						p->material = matDecalBasic;
+						matDecalBullethole.skin1 = bulletHoleCool_bmp;
+						p->material = matDecalBullethole;
 					}
 					p_decal_setup_fade(p, 120+random(10), 10);
 					effect(p_bullet_impact_smoke,1+(random(2) > 1),target,normal);

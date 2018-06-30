@@ -36,6 +36,11 @@ MATERIAL *matDecalGlow =
 	effect = "Shaders/decal_glow.fx";
 }
 
+MATERIAL *matDecalBullethole =
+{
+	effect = "Shaders/decal_bullethole.fx";
+}
+
 MATERIAL *matPPBlurVertical =
 {
 	effect = "Shaders/pp_blur.fx";
