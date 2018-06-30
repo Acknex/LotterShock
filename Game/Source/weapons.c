@@ -297,15 +297,17 @@ void weapons_flame_effect_event(PARTICLE *p)
 
 	if(p->skill_z <= 0)
 	{
-		dmgsys_set_src(DMGSYS_PLAYER, player, 1);
+        dmgsys_set_src(DMGSYS_PLAYER, player, 5);
 		c_scan(p->x, vector(0,0,0), vector(360, 360, p->size), ACTIVATE_SHOOT | IGNORE_PASSABLE | IGNORE_PASSENTS | SCAN_ENTS);
 		p->skill_z = 1;
 	}
 	p->skill_z -= time_step;
 
 	if(p->skill_y > 10)
-	vec_set(p->blue, vector(64, 192 + random(64), 255 - random(32)));
-
+    {
+        var r = random(255);
+        vec_set(p->blue, vector(0, random(r), r));
+    }
 	p->skill_y += 10 * time_step;
 
 	p->size = clamp(p->size + 10 * time_step, 5, 50);
@@ -430,10 +432,17 @@ void weapons_update()
 	if(key_3) weapons_add(WEAPON_CELLGUN);
 	if(key_4) weapons_add(WEAPON_FLAMETHROWER);
 
+    if(key_5)
+    {
+        int i;
+        for(i = 1; i <= WEAPONS_COUNT; i++)
+            weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
+    }
+
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_UP))
-	weapons_select_next(1);
-	if(!weapons.attacking && input_hit(INPUT_WEAPON_DOWN))
-	weapons_select_next(-1);
+        weapons_select_next(1);
+    if(!weapons.attacking && input_hit(INPUT_WEAPON_DOWN))
+        weapons_select_next(-1);
 
 	ent_animate(weapons_wp_sword, "Erect", 10 * clamp(weapons.swordLength, 0, 10), ANM_SKIP);
 

@@ -41,23 +41,26 @@ BMAP* EL_bmapSplatter = "splatter_green_01.png";
 action Eselslerche()
 {
     framework_setup(my, SUBSYSTEM_ENEMY_LERCHE);
+
+    ENTITY * ptr = my;
+
+    //TODO: useful default values
+    if(ptr->EL_RUNSPEED == 0) ptr->EL_RUNSPEED = 12;
+    if(ptr->EL_TURNSPEED == 0) ptr->EL_TURNSPEED = 10;
+    if(ptr->EL_ANIMSPEED == 0) ptr->EL_ANIMSPEED = 5;
+    if(ptr->EL_EXPLODEDIST == 0) ptr->EL_EXPLODEDIST = 300;
+    if(ptr->EL_ACTIVEDIST == 0) ptr->EL_ACTIVEDIST = 5000;
+    ptr->HEALTH = 50;
+    ENEMY_HIT_init(ptr);
+    vec_scale(&ptr->scale_x, 2);
+    set(ptr, SHADOW);
 }
 
 void ESELSLERCHE_Init()
 {
 	ENTITY * ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENEMY_LERCHE)
-   {
-   	//TODO: useful default values
-   	if(ptr->EL_RUNSPEED == 0) ptr->EL_RUNSPEED = 12;
-   	if(ptr->EL_TURNSPEED == 0) ptr->EL_TURNSPEED = 10;
-   	if(ptr->EL_ANIMSPEED == 0) ptr->EL_ANIMSPEED = 5;
-   	if(ptr->EL_EXPLODEDIST == 0) ptr->EL_EXPLODEDIST = 300;
-   	if(ptr->EL_ACTIVEDIST == 0) ptr->EL_ACTIVEDIST = 5000;
-		ptr->HEALTH = 50;
-		ENEMY_HIT_init(ptr);
-		vec_scale(&ptr->scale_x, 2);
-		set(ptr, SHADOW);
+    {
 	}	
 }
 

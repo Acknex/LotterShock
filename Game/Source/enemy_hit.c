@@ -5,16 +5,17 @@ void ENEMY_HIT_init(ENTITY* ent)
 {
 	ent->event = ENEMY_HIT_event;
 	ent->emask |= ENABLE_SHOOT;	
+    ent->emask |= ENABLE_SCAN;
 }
 
 void ENEMY_HIT_event()
 {
 	//todo: handle projectiles
-	if(event_type == EVENT_SHOOT)
-	{
+    if(event_type == EVENT_SHOOT || event_type == EVENT_SCAN)
+    {
 		if (dmgsys_get_src() == DMGSYS_PLAYER)
 		{
-			my->DAMAGE_HIT = dmgsys_get_dmg();
+            my->DAMAGE_HIT += dmgsys_get_dmg();
 			ENTITY* ent = dmgsys_get_ctx();
 			//pushback only if player attacked
 			//TODO: instead of player alone, also react on weapon type
