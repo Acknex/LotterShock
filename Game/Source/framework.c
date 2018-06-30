@@ -166,7 +166,8 @@ void framework_update()
             level_load(LEVEL_FILE);
 #endif
 			wait_for(level_load);
-			ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
+			ENTITY *sky = ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
+			bmap_to_cubemap(ent_getskin(sky, 0));
 			
         }
         

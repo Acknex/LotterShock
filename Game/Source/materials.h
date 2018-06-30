@@ -10,6 +10,11 @@ MATERIAL *matLevel =
 	effect = "Shaders/walls_unlit.fx";
 }
 
+MATERIAL *matTree =
+{
+	effect = "Shaders/tree.fx";
+}
+
 MATERIAL *matWeaponBasic =
 {
 	effect = "Shaders/weapon_basic.fx";
@@ -61,6 +66,16 @@ MATERIAL *matPPCombine =
 	effect = "Shaders/pp_combine.fx";
 }
 
+MATERIAL *matPPDesync =
+{
+	effect = "Shaders/desync.fx";
+}
+
+void pp_desync(var strength)
+{
+	matPPDesync.skill1 = floatv(strength);
+}
+
 void UpdateRenderTargets()
 {
 	if(bmapPPOriginal)
@@ -95,6 +110,7 @@ void SetupPostprocessing()
 	pp_add(matPPBlurVertical);
 	pp_add(matPPBlurHorizontal);
 	pp_add(matPPCombine);
+	pp_add(matPPDesync);
 }
 
 void SetupDefaultMaterials()
