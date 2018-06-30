@@ -38,6 +38,7 @@ void game_update()
 
     movement_update();
     weapons_update();
+	 hud_update();
 	 ESELSLERCHE_Update();
 
     if(input_hit(INPUT_NAVBACK))
