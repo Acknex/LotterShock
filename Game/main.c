@@ -24,7 +24,10 @@
 #include "weapons.c"
 #include "movement.c"
 #include "input.c"
+#include "splatter.c"
+#include "credits.c"
 
 void main()
 {
-	framework_init();}
+	framework_init();
+}
