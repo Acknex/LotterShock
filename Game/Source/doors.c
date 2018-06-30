@@ -33,7 +33,7 @@ void keycard_update() {
 // skill1: KEY_ID
 // skill2: KEYPAD_ID
 // skill3: EXPECTED_KEY
-action keypad() {	
+action Keypad() {	
 	my.emask = ENABLE_CLICK | ENABLE_TOUCH | ENABLE_RELEASE;
 	my.event = keypad_event;
 }
