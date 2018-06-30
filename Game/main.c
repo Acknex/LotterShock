@@ -15,6 +15,7 @@
 #include "projectiles.h"
 #include "materials.h"
 #include "items.h"
+#include "journals.h"
 
 #ifdef DEBUG
 #include <default.c>
@@ -41,8 +42,10 @@
 #include "gib.c"
 #include "items.c"
 #include "particle.c"
+#include "journals.c"
 
 void main()
 {
+	collision_mode = 2;
 	framework_init();
 }

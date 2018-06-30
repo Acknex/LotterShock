@@ -30,4 +30,6 @@ var weaponGetKickbackFac(var progress, var kickPoint);
 
 var weaponGetAttackProgress();
 
+int weapons_disabled = 0;
+
 #endif // WEAPONS_H
