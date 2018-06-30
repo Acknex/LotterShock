@@ -99,32 +99,13 @@ void input_init()
 {
     int i,k;
 
-
-/*typedef struct
-{
-    char down;
-    char justPressed;
-    var scanCodes[4];
-    var gamepadKeys[4];
-    var useAxis;
-    float factor;
-    char cinfo[32];
-    EVENT fnc;
-} INPUT;
-*/
-///*
-
     memset(input, 0, sizeof(INPUT) * INPUT_MAX);
     for(i = 0; i < INPUT_MAX; i++)
     {
         INPUT *pinput = &input[i];
         pinput->down = 0;
         pinput->justPressed = 0;
-        for(k = 0; k < 4; k++)
-        {
-            (pinput->scanCodes)[k] = -1;
-            // error(str_printf(NULL, "%d, %d", i, k));
-        }
+        for(k = 0; k < 4; k++) (pinput->scanCodes)[k] = -1;
         for(k = 0; k < 4; k++) (pinput->gamepadKeys)[k] = -1;
         pinput->useAxis = -1;
         pinput->factor = 0;
