@@ -330,7 +330,7 @@ void weapons_flame_effect_event(PARTICLE *p)
 #ifdef WEAPONS_DOUBLE_FLAME_EFFECT     
 			VECTOR secondary_position;
 			vec_set(&secondary_position, &normal);
-			vec_normalize(&secondary_position,25.);
+			vec_normalize(&secondary_position,15.);
 			vec_add(&secondary_position, &p->x);      
              effect (weapons_secondary_flame_effect, 1, &secondary_position, nullvector);
 #endif
@@ -345,7 +345,7 @@ void weapons_flame_effect_event(PARTICLE *p)
 			vec_add(p->x, dist);
 		}
 #ifdef WEAPONS_DOUBLE_FLAME_EFFECT     
-		p->size = clamp(p->size + 10 * time_step, 5, 80);
+		p->size = clamp(p->size + 8 * time_step, 5, 80);
 #endif
 	}
 	else
