@@ -21,11 +21,33 @@ var playerJumpHangtime = 6;
 ANGLE playerPanSmoothed; // for weapon sway
 ANGLE playerWeaponSway;
 ANGLE playerAngle;
+var playerHealth = 100;
+var playerHealthMax = 100;
+var playerLives = 3;
 
+var playerGetLives()
+{
+	return playerLives;
+}
 
+var playerGetHealth()
+{
+	return playerHealth;
+}
+
+var playerGetMaxHealth()
+{
+	return playerHealthMax;
+}
 
 void movement_update()
 {
+	if(playerHealth <= 0)
+	{
+		playerHealth = 0;
+		draw_quad(NULL,vector(0,0,0),NULL,vector(screen_size.x+1,screen_size.y+1,0),NULL,COLOR_RED,50,0);
+		return;
+	}
 	if(!player)
 	{
 		VECTOR spawnPos,vMin,vMax;
@@ -34,6 +56,7 @@ void movement_update()
 		vec_lerp(spawnPos,vMin,vMax,0.5); // keine lust, auf die richtigen pointer zu achten -.- wird eh nicht portiert
 		player = ent_create(CUBE_MDL, spawnPos, NULL);
 		set(player,INVISIBLE);
+		playerHealth = playerHealthMax;
 	}
 	vec_set(player.min_x,vector(-48,-48,-48));
 	vec_set(player.max_x,vector(48,48,138));

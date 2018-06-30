@@ -11,4 +11,10 @@ ANGLE* playerGetWeaponSway();
 
 void playerAddSpeed(VECTOR* v);
 
+var playerGetLives();
+
+var playerGetHealth();
+
+var playerGetMaxHealth();
+
 #endif // MOVEMENT_H
