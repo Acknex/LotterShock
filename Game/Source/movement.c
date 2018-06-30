@@ -536,7 +536,7 @@ void movement_update()
 	if(progress > 0)
 	{
 		var kickbackFac = weaponGetKickbackFac(progress, 30)*0.2;
-		if(weapons_get_current() == WEAPON_CELLGUN) kickbackFac *= 0.125;
+		if(weapons_get_current() == WEAPON_CELLGUN) kickbackFac *= 0.25;
 		var recoilSide = sinv(total_ticks*5);
 		ang_rotate(camera.pan, vector(recoilSide*25*kickbackFac,30*kickbackFac,-5*recoilSide*kickbackFac));
 	}
