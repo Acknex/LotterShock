@@ -3,6 +3,8 @@
 #include "movement.h"
 #include "input.h"
 #include "eselslerche.h"
+#include "projectiles.h"
+#include "gib.h"
 
 #include <windows.h>
 
@@ -11,7 +13,7 @@ bool game_done;
 void game_init()
 {
     weapons_init();
-    ESELSLERCHE_Init();
+    GIB_GlobalInit();
 }
 
 void game_open()
@@ -20,6 +22,7 @@ void game_open()
     mouse_pointer = 0;
     weapons_open();
     ESELSLERCHE_Init();
+    hud_show();
 }
 
 void game_capture_mouse()
@@ -38,8 +41,17 @@ void game_update()
 
     movement_update();
     weapons_update();
+    projectiles_update();
+    //keycard_update();
+    medipack_update();
+    keypad_update();
+    medipack_update();
+    doors_update();
+    
+    
 	 hud_update();
 	 ESELSLERCHE_Update();
+	 GIB_Update();
 
     if(input_hit(INPUT_NAVBACK))
         game_done = true;
@@ -47,6 +59,9 @@ void game_update()
 
 void game_close()
 {
+movement_close();
+projectiles_close();
+    hud_hide();
     weapons_close();
     mouse_pointer = 1;
 }

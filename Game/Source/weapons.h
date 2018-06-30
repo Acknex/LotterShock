@@ -26,4 +26,8 @@ int weapons_get_ammo();
 
 int weapons_get_current();
 
+var weaponGetKickbackFac(var progress, var kickPoint);
+
+var weaponGetAttackProgress();
+
 #endif // WEAPONS_H

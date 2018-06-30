@@ -12,6 +12,9 @@
 #include "mainmenu.h"
 #include "input.h"
 #include "doors.h"
+#include "projectiles.h"
+#include "materials.h"
+#include "items.h"
 
 #ifdef DEBUG
 #include <default.c>
@@ -28,11 +31,14 @@
 #include "splatter.c"
 #include "credits.c"
 #include "math.c"
-#include "eselslerche.c"
 #include "scan.c"
 #include "dmgsys.c"
 #include "hud.c"
+#include "enemy_hit.c"
+#include "eselslerche.c"
 #include "doors.c"
+#include "gib.c"
+#include "items.c"
 
 void main()
 {
