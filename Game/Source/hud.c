@@ -11,6 +11,8 @@
 
 #define HUD_BARS_MAX_ALPHA 50
 
+#define HUD_AMMO_COLOR vector(32,200,255)
+
 BMAP * hud_bar_background_bmap = "hud_bar_background.png";
 
 BMAP * hud_health_label_bmap = "health_label.png";
@@ -119,7 +121,11 @@ void hud_show()
 	
 	int i;
 	for(i = 0; i<4; ++i)
+	{
 		hud_place_label(hud_weapon_icon[i], distance_between_bars);
+		vec_set(hud_weapon_icon[i].blue, HUD_AMMO_COLOR);
+		set(hud_weapon_icon[i], LIGHT);
+	}
 	
 	
 	hud_place_bar(HUD_HP_label, HUD_HP_bars, 0);
