@@ -133,7 +133,7 @@ void hud_update()
     
     
     
-	int weaponID = 1;//weapons_get_current();
+	int weaponID = weapons_get_current();
 	
 	hud_show_weapon_icon(weaponID-1);
 	if(weaponID > 0)
@@ -142,5 +142,8 @@ void hud_update()
 		var max_ammo = 100;//weapons_get_max_ammo();
 		
 		hud_update_bar(HUD_Ammo_bars, hud_ammobar_bmap, ammo, max_ammo);
+		set(HUD_Ammo_bars, SHOW);
 	}
+	else
+		reset(HUD_Ammo_bars, SHOW);
 }
