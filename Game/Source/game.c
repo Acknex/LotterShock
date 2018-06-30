@@ -3,6 +3,7 @@
 #include "movement.h"
 #include "input.h"
 #include "eselslerche.h"
+#include "skull.h"
 #include "projectiles.h"
 #include "gib.h"
 
@@ -14,6 +15,8 @@ void game_init()
 {
     weapons_init();
     GIB_GlobalInit();
+    ESELSLERCHE_GlobalInit();
+    SKULL_GlobalInit();
 }
 
 void game_open()
@@ -22,6 +25,7 @@ void game_open()
     mouse_pointer = 0;
     weapons_open();
     ESELSLERCHE_Init();
+    SKULL_Init();
     hud_show();
 }
 
@@ -51,6 +55,7 @@ void game_update()
     
 	 hud_update();
 	 ESELSLERCHE_Update();
+	 SKULL_Update();
 	 GIB_Update();
 
     if(input_hit(INPUT_NAVBACK))
