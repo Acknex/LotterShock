@@ -11,6 +11,7 @@
 #include "splashscreen.h"
 #include "mainmenu.h"
 #include "input.h"
+#include "doors.h"
 
 #ifdef DEBUG
 #include <default.c>
@@ -29,6 +30,9 @@
 #include "math.c"
 #include "eselslerche.c"
 #include "scan.c"
+#include "dmgsys.c"
+#include "hud.c"
+#include "doors.c"
 
 void main()
 {

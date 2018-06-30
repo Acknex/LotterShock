@@ -5,6 +5,7 @@
 #include "game.h"
 #include "input.h"
 #include "credits.h"
+#include "hud.h"
 
 #define FRAMEWORK_ALPHA_BLENDSPEED  25
 
@@ -41,7 +42,7 @@ PANEL * framework_load_screen =
 void framework_init()
 {
     fps_max = 61;
-    d3d_triplebuffer = 1; // mit vsync
+    d3d_triplebuffer = 0; // mit vsync
     video_set(1280, 720, 0, 2); // 1280x720, Window
 
     on_frame = framework_update;
@@ -84,6 +85,7 @@ void framework_update()
             music_init();
             game_init();
             credits_init();
+        		hud_init();
 
             // TODO: Fix relative link?
             music_start("Media/intro.mp3", 1.0, false);
@@ -145,6 +147,7 @@ void framework_update()
             level_load(LEVEL_FILE);
 #endif
         }
+        hud_show();
         if(framework.loaderState >= 6)
         {
             framework_load_screen->alpha -= FRAMEWORK_ALPHA_BLENDSPEED * time_step;
