@@ -83,13 +83,6 @@ ENTITY * weapons_wp_flamethrower =
 	view = camera;
 }
 
-ENTITY * weapons_wp_cellgun_bzzt =
-{
-	type = "bzzt+4.png";
-	material = matWeaponBasic;
-	view = camera;
-}
-
 BMAP * weapons_bullethole_decal = "bullet_hole.tga";
 
 BMAP * weapons_fire_01 = "fire.pcx";
@@ -498,9 +491,15 @@ void weapons_shoot_cellgun()
 	vec_rotate(pos, camera.pan);
 	vec_add(pos, camera.x);
 
+    vec_set(target, screen_size);
+    vec_scale(target, 0.5);
+    target.z = 10000;
+    vec_for_screen(target, camera);
+
+
 	VECTOR speed;
-	vec_set(speed,vector(600,0,0));
-	vec_rotate(speed,camera.pan);
+    vec_diff(speed, target, pos);
+    vec_normalize(speed, 600);
     PROJECTILE * pr0 = projectileCreate(PROJECTILE_TYPE_CELL, 1, pos, speed);
     pr0->source = player;
     pr0->dmg = WEAPONS_CELLGUN_DAMAGE;
@@ -534,9 +533,9 @@ void weapons_update()
     }
 
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_UP))
-	weapons_select_next(1);
+        weapons_select_next(1);
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_DOWN))
-	weapons_select_next(-1);
+        weapons_select_next(-1);
 
 	ent_animate(weapons_wp_sword, "Erect", 10 * clamp(weapons.swordLength, 0, 10), ANM_SKIP);
 
@@ -544,9 +543,9 @@ void weapons_update()
 	for(i = 1; i < WEAPONS_COUNT; i++)
 	{
 		if(i == weapons.current)
-		weapons.weapon[i].ent.flags2 |= SHOW;
-		else
-		weapons.weapon[i].ent.flags2 &= ~SHOW;
+            weapons.weapon[i].ent.flags2 |= SHOW;
+        else
+            weapons.weapon[i].ent.flags2 &= ~SHOW;
 	}
 
 	if(weapons.current > 0)
@@ -824,14 +823,8 @@ void weapons_update()
 	}
 	else weapons.attackprogress = 0;
 
-	if(weapons.current == WEAPON_CELLGUN)
-	{
-		weapons_wp_cellgun_bzzt.flags2 |= SHOW;
-	}
-	else
-	{
-        weapons_wp_cellgun_bzzt.flags2 &= ~SHOW;
-
+    if(weapons.current != WEAPON_CELLGUN)
+    {
         if(weapons.electro != 0)
         {
             snd_stop(weapons.electro);
@@ -846,8 +839,13 @@ void weapons_close()
 	int i;
 	for(i = 1; i < WEAPONS_COUNT; i++)
 	{
-		weapons.weapon[i].ent.flags2 &= ~SHOW;
+        weapons.weapon[i].ent.flags2 &= ~SHOW;
 	}
 	weapons.attackprogress = 0; // no more head swaying
 	on_o = NULL;
+    if(weapons.electro != 0)
+    {
+        snd_stop(weapons.electro);
+        weapons.electro = 0;
+    }
 }

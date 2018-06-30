@@ -11,10 +11,10 @@ float fAlpha;
 float4 vecSkill1;
 
 Texture entSkin1;
-sampler sTexture0 = sampler_state { Texture = <entSkin1>; MipFilter = Point; MagFilter = Point; MinFilter = Point; };
+sampler sTexture0 = sampler_state { Texture = <entSkin1>; MipFilter = Linear; MagFilter = Linear; MinFilter = Linear; };
 
 Texture mtlSkin1;
-sampler sTexture1 = sampler_state { Texture = <mtlSkin1>; MipFilter = Point; MagFilter = Point; MinFilter = Point; };
+sampler sTexture1 = sampler_state { Texture = <mtlSkin1>; MipFilter = Linear; MagFilter = Linear; MinFilter = Linear; };
 
 struct out_ps // Output to the pixelshader fragment
 {
