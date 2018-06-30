@@ -12,15 +12,18 @@
 #define WEAPONS_CURRENT (weapons.weapon[weapons.current])
 
 #define WEAPONS_SHOTGUN_RANGE  8000
-#define WEAPONS_SHOTGUN_SPREAD 4 // *2 grad
+#define WEAPONS_SHOTGUN_SPREAD 8 // *2 grad
 #define WEAPONS_SHOTGUN_DAMAGE 5
 
 #define WEAPONS_FLAME_VEL 100
 #define WEAPONS_FLAME_SPREAD 13
 #define WEAPONS_FLAME_COUNT 25
-#define WEAPONS_FLAME_DAMPING 5.0
+#define WEAPONS_FLAME_DAMPING 2.0
+#define WEAPONS_FLAME_GRAVITY 5.0
 
 #define WEAPONS_CELLGUN_DAMAGE 7
+
+#define WEAPONS_DOUBLE_FLAME_EFFECT
 
 typedef struct weapons_data_t
 {
@@ -47,51 +50,43 @@ typedef struct weapons_t
 	var speartimer;
 	var electro;
 	weapons_data_t weapon[WEAPONS_COUNT];
+    VECTOR flamedir;
 } weapons_t;
 
 weapons_t weapons;
 
-
-MATERIAL* shotgunTest_mat =
-{
-	effect = "shotgunTest.fx";
-	flags = AUTORELOAD;
-}
-
 ENTITY * weapons_wp_sword =
 {
 	type = "gipsy_sword.mdl";
+	material = matWeaponBasic;
 	view = camera;
 }
 
 ENTITY * weapons_wp_shotgun =
 {
 	type = "triple_shotgun.mdl";
-	material = shotgunTest_mat;
+	material = matWeaponBasic;
 	view = camera;
 }
 
 ENTITY * weapons_wp_cellgun =
 {
 	type = "trident_of_lightning.mdl";
+	material = matWeaponBasic;
 	view = camera;
 }
 
 ENTITY * weapons_wp_flamethrower =
 {
 	type = "flamemother.mdl";
-	view = camera;
-}
-
-ENTITY * weapons_wp_cellgun_bzzt =
-{
-	type = "bzzt+4.png";
+	material = matWeaponBasic;
 	view = camera;
 }
 
 BMAP * weapons_bullethole_decal = "bullet_hole.tga";
 
 BMAP * weapons_fire_01 = "fire.pcx";
+BMAP * weapons_fire_02 = "fire2.pcx";
 
 SOUND * weapons_snd_sword1 = "sword_swing1.wav";
 SOUND * weapons_snd_sword2 = "sword_swing2.wav";
@@ -249,7 +244,7 @@ void weapons_shoot_shotgun()
 		
 		vec_add(dir, camera.x);
 		dmgsys_set_src(DMGSYS_PLAYER, player, WEAPONS_SHOTGUN_DAMAGE);
-		var dist = c_trace(camera.x, dir, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
+        var dist = c_trace(camera.x, dir, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
 		/*if(HIT_TARGET)
 		{
 			PARTICLE *p = ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
@@ -272,7 +267,7 @@ void weapons_secondary_flame_effect_event(PARTICLE *p)
 	
 	vec_set(p->x, p->skill_x);
 	
-	var r = 6;
+	var r = 10;
 	var o = r/2;
 	vec_add(p->x, vector(random(r)-o,random(r)-o,random(r)-o));
 	
@@ -285,12 +280,12 @@ void weapons_secondary_flame_effect(PARTICLE *p)
 {
 	vec_set(p->skill_x, p->x);
 	
-	p->bmap = weapons_fire_01;
+	p->bmap = weapons_fire_02;
 	p->flags = LIGHT|TRANSLUCENT|BRIGHT;
 	p->alpha = 0;
-	vec_set(p->blue, vector(32, 32, 192));
+	vec_set(p->blue, vector(32, 70, 192));
 	p->lifespan = 100;
-	p->size = 25 + random(35);
+	p->size = 45 + random(35);
 	p->event = weapons_secondary_flame_effect_event;
 }
 
@@ -298,13 +293,13 @@ void weapons_flame_effect_event(PARTICLE *p)
 {
 	if(p->skill_x == 0)
 	{
-		p->vel_x -= minv(abs(p->vel_x), WEAPONS_FLAME_DAMPING) * sign(p->vel_x) * time_step;
-		p->vel_y -= minv(abs(p->vel_y), WEAPONS_FLAME_DAMPING) * sign(p->vel_y) * time_step;
-		p->vel_z -= minv(abs(p->vel_z), WEAPONS_FLAME_DAMPING) * sign(p->vel_z) * time_step;
-		p->vel_z -= 10 * time_step;
+        p->skill_a -= minv(abs(p->skill_a), p->skill[3]) * sign(p->skill_a) * time_step;
+        p->skill_b -= minv(abs(p->skill_b), p->skill[3]) * sign(p->skill_b) * time_step;
+        p->skill_c -= minv(abs(p->skill_c), p->skill[3]) * sign(p->skill_c) * time_step;
+        p->skill_c -= WEAPONS_FLAME_GRAVITY * time_step;
 
 		VECTOR src, dest;
-		vec_set(dest, p->vel_x);
+        vec_set(dest, p->skill_a);
 		vec_normalize(dest, maxv(1, vec_length(dest)));
 
 		vec_set(src, dest);
@@ -321,28 +316,63 @@ void weapons_flame_effect_event(PARTICLE *p)
 			p->skill_x = 1;
 			p->flags &= ~STREAK;
 			
+            
+#ifdef WEAPONS_DOUBLE_FLAME_EFFECT     
 			VECTOR secondary_position;
 			vec_set(&secondary_position, &normal);
-			vec_normalize(&secondary_position,25.);
-			vec_add(&secondary_position, &p->x);
-			
-			effect (weapons_secondary_flame_effect, 1, &secondary_position, nullvector);
-			//p->lifespan = 0;
+			vec_normalize(&secondary_position,15.);
+			vec_add(&secondary_position, &p->x);      
+             effect (weapons_secondary_flame_effect, 1, &secondary_position, nullvector);
+#endif
+            // p->lifespan = 0;
 			
 		}
 		else
 		{
 			VECTOR dist;
-			vec_set(dist, p->vel_x);
+            vec_set(dist, p->skill_a);
 			vec_scale(dist, time_step);
 			vec_add(p->x, dist);
 		}
+#ifdef WEAPONS_DOUBLE_FLAME_EFFECT     
+		p->size = clamp(p->size + 8 * time_step, 5, 80);
+#endif
+	}
+	else
+	{
+		//p->size = clamp(p->size - time_step, 35, 100);
 	}
 
 	if(p->skill_z <= 0)
 	{
-		dmgsys_set_src(DMGSYS_PLAYER, player, 1);
-		c_scan(p->x, vector(0,0,0), vector(360, 360, p->size), ACTIVATE_SHOOT | IGNORE_PASSABLE | IGNORE_PASSENTS | SCAN_ENTS);
+        dmgsys_set_src(DMGSYS_PLAYER, player, 2);
+        // c_scan(p->x, vector(0,0,0), vector(360, 360, p->size), IGNORE_PASSABLE | IGNORE_PASSENTS | SCAN_ENTS);
+        ENTITY * it;
+        for(it = ent_next(NULL); it != NULL; it = ent_next(it))
+        {
+            if(it->SK_SUBSYSTEM < 1000)
+                continue;
+
+            VECTOR tmp;
+            vec_diff(tmp, p->x, it->x);
+            vec_rotateback(tmp, it->pan);
+
+            if(tmp.x < it->min_x || tmp.y < it->min_y || tmp.z < it->min_z)
+                continue;
+            if(tmp.x > it->max_x || tmp.y > it->max_y || tmp.z > it->max_z)
+                continue;
+
+            if((it->emask & ENABLE_SHOOT) && (it->event))
+            {
+                my = it;
+                event_type = EVENT_SHOOT;
+                function fo();
+                fo = it->event;
+                fo();
+                my = NULL;
+            }
+        }
+
 		p->skill_z = 1;
 	}
 	p->skill_z -= time_step;
@@ -351,16 +381,14 @@ void weapons_flame_effect_event(PARTICLE *p)
 		p->flags &= ~STREAK;
 	
 	
-	p->red = maxv(255-p->skill_y, 128);// - random(32);
-	p->green = maxv(90,180-p->skill_y*1.5);// + random(64);
-	p->blue = maxv(64, 128-p->skill_y*80);
+    p->red   = maxv(128, 255 - p->skill_y);// - random(32);
+    p->green = maxv(90,  180 - p->skill_y*1.5);// + random(64);
+    p->blue  = maxv(64,  128 - p->skill_y*80);
 
 	p->skill_y += 10 * time_step;
-	
-	if(p->skill_y < 40)
-		p->size = clamp(p->size + 10 * time_step, 5, 50);
-	if(p->skill_y > 60)
-		p->size = clamp(p->size - time_step, 35, 50);
+#ifndef WEAPONS_DOUBLE_FLAME_EFFECT   
+	p->size += 10*time_step;
+#endif  
 
 	p->alpha = p->lifespan/2;
 	if(p->lifespan < 30)
@@ -373,17 +401,21 @@ void weapons_flame_effect_event(PARTICLE *p)
 
 void weapons_flame_effect(PARTICLE *p)
 {
-	p->bmap = weapons_fire_01;
-	vec_rotate(p->vel_x, vector(
-	random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
-	random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
-	random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD ));
+    p->bmap = weapons_fire_01;
 	p->flags = TRANSLUCENT | LIGHT | BRIGHT | STREAK;
 	vec_set(p->blue, vector(255, 192, 192));
-	p->lifespan = 100;
+
+    vec_set(p->skill_a, weapons.flamedir);
+    vec_rotate(p->skill_a, vector(
+        random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
+        random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
+        random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD ));
+
+    p->lifespan = 100;
 	p->size = 5 + random(5);
 	p->event = weapons_flame_effect_event;
 	p->alpha = 80 + random(10);
+    p->skill[3] = (0.5 + random(1)/2) * WEAPONS_FLAME_DAMPING;
 }
 
 void weapons_shoot_flamethrower()
@@ -402,7 +434,9 @@ void weapons_shoot_flamethrower()
 
 	vec_normalize(dir, WEAPONS_FLAME_VEL);
 
-    vec_add(dir, playerGetSpeedVec());
+    vec_set(weapons.flamedir, dir);
+
+    vec_add(weapons.flamedir, playerGetSpeedVec());
 
 	effect (weapons_flame_effect, maxv(1, time_frame * WEAPONS_FLAME_COUNT), pos, dir);
 	
@@ -457,9 +491,15 @@ void weapons_shoot_cellgun()
 	vec_rotate(pos, camera.pan);
 	vec_add(pos, camera.x);
 
+    vec_set(target, screen_size);
+    vec_scale(target, 0.5);
+    target.z = 10000;
+    vec_for_screen(target, camera);
+
+
 	VECTOR speed;
-	vec_set(speed,vector(600,0,0));
-	vec_rotate(speed,camera.pan);
+    vec_diff(speed, target, pos);
+    vec_normalize(speed, 600);
     PROJECTILE * pr0 = projectileCreate(PROJECTILE_TYPE_CELL, 1, pos, speed);
     pr0->source = player;
     pr0->dmg = WEAPONS_CELLGUN_DAMAGE;
@@ -486,11 +526,16 @@ void weapons_update()
 	if(key_2) weapons_add(WEAPON_SHOTGUN);
 	if(key_3) weapons_add(WEAPON_CELLGUN);
 	if(key_4) weapons_add(WEAPON_FLAMETHROWER);
+    if(key_5)
+    {
+        for(i = 1; i <= WEAPONS_COUNT; i++)
+            weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
+    }
 
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_UP))
-	weapons_select_next(1);
+        weapons_select_next(1);
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_DOWN))
-	weapons_select_next(-1);
+        weapons_select_next(-1);
 
 	ent_animate(weapons_wp_sword, "Erect", 10 * clamp(weapons.swordLength, 0, 10), ANM_SKIP);
 
@@ -498,9 +543,9 @@ void weapons_update()
 	for(i = 1; i < WEAPONS_COUNT; i++)
 	{
 		if(i == weapons.current)
-		weapons.weapon[i].ent.flags2 |= SHOW;
-		else
-		weapons.weapon[i].ent.flags2 &= ~SHOW;
+            weapons.weapon[i].ent.flags2 |= SHOW;
+        else
+            weapons.weapon[i].ent.flags2 &= ~SHOW;
 	}
 
 	if(weapons.current > 0)
@@ -778,14 +823,8 @@ void weapons_update()
 	}
 	else weapons.attackprogress = 0;
 
-	if(weapons.current == WEAPON_CELLGUN)
-	{
-		weapons_wp_cellgun_bzzt.flags2 |= SHOW;
-	}
-	else
-	{
-        weapons_wp_cellgun_bzzt.flags2 &= ~SHOW;
-
+    if(weapons.current != WEAPON_CELLGUN)
+    {
         if(weapons.electro != 0)
         {
             snd_stop(weapons.electro);
@@ -800,8 +839,13 @@ void weapons_close()
 	int i;
 	for(i = 1; i < WEAPONS_COUNT; i++)
 	{
-		weapons.weapon[i].ent.flags2 &= ~SHOW;
+        weapons.weapon[i].ent.flags2 &= ~SHOW;
 	}
 	weapons.attackprogress = 0; // no more head swaying
 	on_o = NULL;
+    if(weapons.electro != 0)
+    {
+        snd_stop(weapons.electro);
+        weapons.electro = 0;
+    }
 }

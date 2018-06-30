@@ -7,8 +7,8 @@
 
 Texture entSkin1;
 Texture entSkin2;
-sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Point; MagFilter = Point; MinFilter = Point; };
-sampler sLightmap = sampler_state { Texture = <entSkin2>; MipFilter = Point; MagFilter = Point; MinFilter = Point; };
+sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Linear; MagFilter = Linear; MinFilter = Linear; };
+sampler sLightmap = sampler_state { Texture = <entSkin2>; MipFilter = Linear; MagFilter = Linear; MinFilter = Linear; };
 
 struct out_ps // Output to the pixelshader fragment
 {

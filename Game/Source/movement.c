@@ -12,8 +12,10 @@
 #define PLAYER_C_MOVE_MODE_DEFAULT (IGNORE_PASSABLE | IGNORE_SPRITES | IGNORE_PUSH | IGNORE_CONTENT | GLIDE)
 #define PLAYER_C_TRACE_MODE_DEFAULT (IGNORE_PASSABLE | IGNORE_SPRITES | IGNORE_PUSH | IGNORE_CONTENT)
 
+#define GROUP_PLAYER 3
+
 var playerSpeedFac = 1;
-var playerMaxSpeedFac = 72;
+var playerMaxSpeedFac = 72; // "fac" shouldn't be there
 var playerWeaponBob = 0;
 var playerHeightAboveGround = 96; // does not include vertical camera.z to player.z offset!
 var playerCameraHeight = 108;
@@ -30,6 +32,16 @@ var playerSlideCounter = 0;
 var playerSlidePerc = 0;
 VECTOR playerSlideDir;
 var playerSlidePan = 0;
+var playerHasDoubleJump = 2;
+var playerExtraJumpsLeft = 0;
+var playerHasEntMorphBall = 1;
+var playerEntMorphBallActive = 0;
+var playerEntMorphBallPerc = 0;
+
+var playerEntMorphBallPan = 0;
+var playerEntMorphBallTilt = 0;
+var playerEntMorphBallSpeedAdaptFac = 1;
+VECTOR playerEntMorphBallPinkFlarePos;
 
 void movement_close()
 {
@@ -56,23 +68,238 @@ void playerAddHealth(var amount)
 	playerHealth = clamp(playerHealth+amount,0,playerHealthMax);
 }
 
-	void p_playerSlide_smoke(PARTICLE* p)
+void p_playerSlide_smoke(PARTICLE* p)
+{
+	vec_add(p.vel_x,vector(random(2)-1,random(2)-1,random(2)-1));
+	vec_scale(p.vel_x,2+random(2));
+	p.x += (random(2)-1)*48*(1-abs(normal.x));
+	p.y += (random(2)-1)*48*(1-abs(normal.y));
+	p.z += (random(2)-1)*48*(1-abs(normal.z));
+	p.vel_z *= 0.5;
+	p.bmap = smokeSprite1_bmp;
+	set(p,MOVE);
+	//p.gravity = -0.2;
+	p.alpha = 18+random(5);
+	vec_fill(p.blue,60+random(30));
+	p.size = 40+random(25);
+	p.event = p_bullet_impact_smoke_fade;
+}
+
+BMAP* pinkFlare_bmp = "pinkFlare.tga";
+
+void p_pinkFlare_fade(PARTICLE* p)
+{
+	p.size = p.lifespan*8;
+}
+
+void p_pinkFlare(PARTICLE* p)
+{
+	p.bmap = pinkFlare_bmp;
+	set(p,BRIGHT);
+	p.alpha = 2;
+	vec_fill(p.blue,255);
+	p.size = 72;
+	p.lifespan = 12;
+	p.event = p_pinkFlare_fade;
+}
+
+//VECTOR playerEntMorhBallCamPos;
+
+
+var playerEntMorphBallIsActive()
+{
+	return (playerEntMorphBallActive || playerEntMorphBallPerc);
+}
+
+var weaponsCurrentPrev = 0;
+
+void playerEntMorphBallDo()
+{
+	VECTOR temp,temp2;
+	if(input_hit(INPUT_MORPHBALL) && playerEntMorphBallPerc == 100) playerEntMorphBallActive = 2;
+	if(playerEntMorphBallActive == 2)
 	{
-		vec_add(p.vel_x,vector(random(2)-1,random(2)-1,random(2)-1));
-		vec_scale(p.vel_x,2+random(2));
-		p.x += (random(2)-1)*48*(1-abs(normal.x));
-		p.y += (random(2)-1)*48*(1-abs(normal.y));
-		p.z += (random(2)-1)*48*(1-abs(normal.z));
-		p.vel_z *= 0.5;
-		p.bmap = smokeSprite1_bmp;
-		set(p,MOVE);
-		//p.gravity = -0.2;
-		p.alpha = 18+random(5);
-		vec_fill(p.blue,60+random(30));
-		p.size = 40+random(25);
-		p.event = p_bullet_impact_smoke_fade;
+		playerEntMorphBallPerc = maxv(playerEntMorphBallPerc-10*time_step,0);
+		if(!playerEntMorphBallPerc) playerEntMorphBallActive = 0;
+	}
+	else playerEntMorphBallPerc = minv(playerEntMorphBallPerc+10*time_step,100);
+	
+	vec_set(player.min_x,vector(-40,-40,-24));
+	vec_set(player.max_x,vector(40,40,24));
+	
+	//var dist = vec_dist(player.x,camera.x);
+	/*if(dist < 512)
+	{
+	}*/
+
+	var PLAYER_SPEED_Z_PREV = player.PLAYER_SPEED_Z;
+	player.PLAYER_SPEED_Z = 0;
+	VECTOR targetSpeed;
+	if(playerEntMorphBallActive != 1 || playerEntMorphBallPerc < 50) vec_set(targetSpeed,nullvector);
+	else
+	{
+		vec_set(targetSpeed,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
+		if(targetSpeed.x || targetSpeed.y)
+		{
+			vec_normalize(targetSpeed,playerMaxSpeedFac);
+			vec_rotate(targetSpeed,vector(camera.pan,0,0));
+		}
+	}
+	vec_lerp(player.PLAYER_SPEED_X,player.PLAYER_SPEED_X,targetSpeed,playerEntMorphBallSpeedAdaptFac*0.25*time_step*(0.2+0.8*((targetSpeed.x || targetSpeed.y))));
+	playerEntMorphBallSpeedAdaptFac = minv(playerEntMorphBallSpeedAdaptFac+0.1*time_step,1);
+	
+	player.min_x -= 2;
+	player.min_y -= 2;
+	player.max_x += 2;
+	player.max_y += 2;
+	var moveDist = c_move(player,nullvector,vector(player.PLAYER_SPEED_X*time_step,player.PLAYER_SPEED_Y*time_step,0),PLAYER_C_MOVE_MODE_DEFAULT);
+	player.min_x += 2;
+	player.min_y += 2;
+	player.max_x -= 2;
+	player.max_y -= 2;
+	if(HIT_TARGET)
+	{
+		effect(p_bullet_impact_smoke,3+(random(2) > 1),target,normal);
+		vec_set(bounce,normal);
+		vec_scale(bounce,-2*vec_dot(player.PLAYER_SPEED_X,normal));
+		vec_add(player.PLAYER_SPEED_X,bounce);
+		playerEntMorphBallSpeedAdaptFac = 1;
+	}
+
+	if(vec_to_angle(temp,player.PLAYER_SPEED_X) > 1) // && groundContact
+	{
+		playerEntMorphBallPan += ang(temp.x-playerEntMorphBallPan)*time_step;
+		playerEntMorphBallPan = ang(playerEntMorphBallPan);
+	}
+	if(playerEntMorphBallActive != 1)
+	{
+		playerEntMorphBallTilt += (-360-playerEntMorphBallTilt)*0.35*time_step;
+	}
+	else
+	{
+		playerEntMorphBallTilt -= moveDist*2;
+		playerEntMorphBallTilt %= 360;
+	}
+	vec_set(player.pan,vector(playerEntMorphBallPan,0,0));
+	ang_rotate(player.pan,vector(0,playerEntMorphBallTilt,0));
+
+	player.PLAYER_SPEED_Z = PLAYER_SPEED_Z_PREV;
+	ent_animate(player,"ball",clamp(playerEntMorphBallPerc*1.1-10,0,100),0);
+
+	var trace_dist = 1024;
+	player.min_x += 8;
+	player.min_y += 8;
+	player.max_x -= 8;
+	player.max_y -= 8;
+	me = player; // for USE_BOX
+	c_trace(player.x,vector(player.x,player.y,player.z-trace_dist),PLAYER_C_TRACE_MODE_DEFAULT | USE_BOX);
+	me = NULL;
+	player.min_x -= 8;
+	player.min_y -= 8;
+	player.max_x += 8;
+	player.max_y += 8;
+	
+	if(!trace_hit) target.z = -99999;
+	var heightWanted = target.z+46+(100-playerEntMorphBallPerc)*0.5;
+	
+	if(player.z > heightWanted+(2+4*player.PLAYER_GROUND_CONTACT)*time_step || player.PLAYER_SPEED_Z > 0)
+	{
+		player.PLAYER_GROUND_CONTACT = 0;
+		playerJumpHangtime = maxv(playerJumpHangtime-time_step,0);
+		var fac = 1;
+		if(!input[INPUT_JUMP].down) playerJumpHangtime = 0;
+		if(playerJumpHangtime > 0) fac = 0.667;
+		player.PLAYER_SPEED_Z = maxv(player.PLAYER_SPEED_Z-fac*24*playerSpeedFac*time_step,-240);
+		c_move(player,nullvector,vector(0,0,player.PLAYER_SPEED_Z*time_step),PLAYER_C_MOVE_MODE_DEFAULT);
+		if(HIT_TARGET && normal.z < 0 && target.z > player.z) player.PLAYER_SPEED_Z = minv(player.PLAYER_SPEED_Z,0);
+		player.z = maxv(player.z,heightWanted);
+
+		if(input[INPUT_JUMP].justPressed && playerExtraJumpsLeft > 0)
+		{
+			playerExtraJumpsLeft--;
+			playerJumpHangtime = 6;
+			player.PLAYER_SPEED_Z = minv(player.PLAYER_SPEED_Z*0.1+80,100);
+		}
+	}
+	else
+	{
+		player.z += (heightWanted-player.z)*time_step;
+		player.PLAYER_SPEED_Z = 0;
+		player.PLAYER_GROUND_CONTACT = 1;
+		static var smoke_counter = 0;
+		smoke_counter += moveDist;
+		if(smoke_counter > 10)
+		{
+			smoke_counter -= 10;
+			effect(p_playerSlide_smoke,2,target,normal);
+		}
+		playerExtraJumpsLeft = playerHasDoubleJump;
+		if(input[INPUT_JUMP].justPressed)
+		{
+			player.PLAYER_GROUND_CONTACT = 0;
+			playerJumpHangtime = 6;
+			player.PLAYER_SPEED_Z = 80;
+			effect(p_playerSlide_smoke,30,target,normal);
+		}
+	}
+
+	DEBUG_VAR(player.min_z,500);
+	DEBUG_VAR(player.max_z,520);
+
+	///////////////////////
+	// camera
+
+	vec_set(temp,vector(player.x-player.PLAYER_SPEED_X-128*0,player.y-player.PLAYER_SPEED_Y-256,player.z+420));
+	if(playerEntMorphBallActive != 1) vec_for_bone(temp2,player,"Bone19");
+	else vec_set(temp2,player.x);
+	c_ignore(GROUP_PLAYER,0);
+	me = player;
+	var dist = c_trace(player.x,temp,PLAYER_C_TRACE_MODE_DEFAULT | USE_BOX);
+	me = NULL;
+	if(trace_hit) vec_set(temp,target);
+	
+	vec_lerp(temp,temp2,temp,playerEntMorphBallPerc*0.01);
+	vec_lerp(camera.x,camera.x,temp,time_step*(1-playerEntMorphBallPerc*0.00875));
+	vec_diff(temp,player.x,camera.x);
+	vec_to_angle(temp2,temp);
+	temp2.z = 0;
+	if(playerEntMorphBallActive != 1)
+	{
+		VECTOR temp3;
+		ang_diff(temp3,vector(playerEntMorphBallPan,0,0),temp2);
+		vec_scale(temp3,(100-playerEntMorphBallPerc)*0.005);
+		ang_add(temp2,temp3);
+	}
+	ang_diff(temp,temp2,camera.pan);
+	vec_scale(temp,time_step); // minv(1,2*time_step)
+	ang_add(camera.pan,temp);
+	
+	vec_diff(temp,player.x,playerEntMorphBallPinkFlarePos);
+	vec_normalize(temp,1);
+	while(vec_dist(playerEntMorphBallPinkFlarePos,player.x) > 1)
+	{
+		vec_add(playerEntMorphBallPinkFlarePos,temp);
+		effect(p_pinkFlare,1,playerEntMorphBallPinkFlarePos,nullvector);
 	}
 	
+	if(!playerEntMorphBallPerc && !playerEntMorphBallActive)
+	{
+		weapons_disabled = 0;
+		weapons.current = weaponsCurrentPrev;
+	}
+}
+
+var playerLightRange = 0;
+var playerLightDuration = 0;
+var playerLightDurationMax = 2;
+void playerSetLight(COLOR* color, var lightRange, var duration)
+{
+	if(!player) return;
+	vec_set(player.blue,color);
+	playerLightRange = player.lightrange = lightRange;
+	playerLightDurationMax = playerLightDuration = duration;
+}
+
 void movement_update()
 {
 	if(playerHealth <= 0)
@@ -86,11 +313,45 @@ void movement_update()
 		VECTOR spawnPos,vMin,vMax;
 		if(region_get("playerSpawn",1,vMin,vMax) == 0) // kein spawnareal gefunden
 		return;
-		vec_lerp(spawnPos,vMin,vMax,0.5); // keine lust, auf die richtigen pointer zu achten -.- wird eh nicht portiert
-		player = ent_create(CUBE_MDL, spawnPos, NULL);
-		set(player,INVISIBLE);
+		vec_lerp(spawnPos,vMin,vMax,0.5);
+		player = ent_create("cbabe_male.mdl", spawnPos, NULL);
+		//set(player,INVISIBLE);
+		player.group = GROUP_PLAYER;
 		playerHealth = playerHealthMax;
 	}
+	player.lightrange = playerLightRange*(playerLightDuration/playerLightDurationMax);
+	playerLightDuration = maxv(playerLightDuration-time_step,0);
+	//vec_set(player.blue,vector(20,150,255));
+	//player.lightrange = 3000;
+	
+	if(player.z < -3000)
+	{
+		VECTOR spawnPos,vMin,vMax;
+		if(region_get("playerSpawn",1,vMin,vMax))
+		{
+			vec_lerp(player.x,vMin,vMax,0.5);
+			vec_set(playerEntMorphBallPinkFlarePos,player.x);
+		}
+	}
+	
+	if(playerHasEntMorphBall && input_hit(INPUT_MORPHBALL) && !playerEntMorphBallPerc)
+	{
+		vec_set(playerEntMorphBallPinkFlarePos,player.x);
+		playerEntMorphBallActive = 1;
+		playerEntMorphBallPan = player.pan;
+		weaponsCurrentPrev = weapons.current;
+		weapons.current = 0;
+		weapons_disabled = 1;
+		weapons_update();
+	}
+	if(playerEntMorphBallActive)
+	{
+		//weapons_close();
+		camera.genius = NULL;
+		playerEntMorphBallDo();
+		return;
+	}
+	camera.genius = player;
 	vec_set(player.min_x,vector(-48,-48,-48));
 	vec_set(player.max_x,vector(48,48,138));
 	
@@ -127,7 +388,7 @@ void movement_update()
 	// movement
 	
 	var playerCrouchingOld = playerCrouching;
-	if(player.PLAYER_GROUND_CONTACT) playerCrouching = (key_ctrl) | (playerSlideCounter > 0);
+	if(player.PLAYER_GROUND_CONTACT) playerCrouching = input_down(INPUT_CROUCH) | (playerSlideCounter > 0);
 	else playerCrouching = 0;
 	//if(playerCrouching) playerCrouchPerc = minv(playerCrouchPerc+20*time_step,100);
 	//else playerCrouchPerc = maxv(playerCrouchPerc-20*time_step,0);
@@ -145,6 +406,7 @@ void movement_update()
 			playerSlidePan = camera.pan;
 			playerSlideCounter = 12;
 			vec_set(playerSlideDir,vector(player.PLAYER_SPEED_X,player.PLAYER_SPEED_Y,0));
+			vec_normalize(playerSlideDir,playerMaxSpeedFac*1.125);
 		}
 	}
 	
@@ -231,9 +493,17 @@ void movement_update()
 		c_move(player,nullvector,vector(0,0,player.PLAYER_SPEED_Z*time_step),PLAYER_C_MOVE_MODE_DEFAULT);
 		if(HIT_TARGET && normal.z < 0 && target.z > player.z) player.PLAYER_SPEED_Z = minv(player.PLAYER_SPEED_Z,0);
 		player.z = maxv(player.z,heightWanted);
+
+		if(input[INPUT_JUMP].justPressed && playerExtraJumpsLeft > 0)
+		{
+			playerExtraJumpsLeft--;
+			playerJumpHangtime = 6;
+			player.PLAYER_SPEED_Z = minv(player.PLAYER_SPEED_Z*0.1+80,100);
+		}
 	}
 	else
 	{
+		playerExtraJumpsLeft = playerHasDoubleJump;
 		player.z += (heightWanted-player.z)*0.5*time_step;
 		player.PLAYER_SPEED_Z = 0;
 		player.PLAYER_GROUND_CONTACT = 1;
@@ -266,7 +536,8 @@ void movement_update()
 	if(progress > 0)
 	{
 		var kickbackFac = weaponGetKickbackFac(progress, 30)*0.2;
-		var recoilSide = sinv(total_ticks*10);
+		if(weapons_get_current() == WEAPON_CELLGUN) kickbackFac *= 0.125;
+		var recoilSide = sinv(total_ticks*5);
 		ang_rotate(camera.pan, vector(recoilSide*25*kickbackFac,30*kickbackFac,-5*recoilSide*kickbackFac));
 	}
 	camera.tilt += playerSlidePerc*0.1;
