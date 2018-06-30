@@ -351,6 +351,7 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 }
 
 
+#ifdef ESEL_TEST
 void spawn_startup()
 {
 	
@@ -361,3 +362,4 @@ void spawn_startup()
 		wait(-10);
 	}
 }
+#endif
