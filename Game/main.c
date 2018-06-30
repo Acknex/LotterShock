@@ -12,6 +12,7 @@
 #include "mainmenu.h"
 #include "input.h"
 #include "doors.h"
+#include "projectiles.h"
 #include "materials.h"
 #include "items.h"
 
