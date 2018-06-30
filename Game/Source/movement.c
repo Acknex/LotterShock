@@ -25,10 +25,10 @@ void movement_update()
 	if(!player)
 	{
 		VECTOR spawnPos,vMin,vMax;
-        if(region_get("playerSpawn",1,vMin,vMax) == 0) // kein spawnareal gefunden
-            return;
+		if(region_get("playerSpawn",1,vMin,vMax) == 0) // kein spawnareal gefunden
+			return;
 		vec_lerp(spawnPos,vMin,vMax,0.5); // keine lust, auf die richtigen pointer zu achten -.- wird eh nicht portiert
-        player = ent_create(CUBE_MDL, spawnPos, NULL);
+		player = ent_create(CUBE_MDL, spawnPos, NULL);
 		set(player,INVISIBLE);
 	}
 	vec_set(player.min_x,vector(-32,-32,-32));
@@ -61,40 +61,46 @@ void movement_update()
 	
 	// gravity
 	
+	var trace_dist = 1024;
 	var minZ = player.min_z;
 	var maxZ = player.max_z;
 	player.min_z = -0.25; // fake a flat collision hull (instead of an ellipsoid)
 	player.max_z = 0.25;
-    c_trace(player.x,vector(player.x,player.y,player.z-1024),PLAYER_C_TRACE_MODE_DEFAULT);
+    c_trace(player.x,vector(player.x,player.y,player.z-trace_dist),PLAYER_C_TRACE_MODE_DEFAULT);
 	player.min_z = minZ;
 	player.max_z = maxZ;
 	
-	if(!trace_hit) target.z = -99999;
+	
+	if(!trace_hit) target.z = -trace_dist;
 	var heightWanted = target.z+playerHeightAboveGround;
-    var PLAYER_DIST_TO_GROUND = heightWanted-player.z;
-    if(PLAYER_DIST_TO_GROUND > (1+16*player.PLAYER_GROUND_CONTACT)*time_step || player.PLAYER_SPEED_Z > 0)
+	var PLAYER_DIST_TO_GROUND = heightWanted-player.z;
+	var PLAYER_PLANNED_DIST_TO_GROUND = (1+16*player.PLAYER_GROUND_CONTACT)*time_step;
+
+	var fac = 1;
+	if(!input[INPUT_JUMP].down)
+		playerJumpHangtime = 0;
+	if(playerJumpHangtime > 0) 
+		fac = 0.667;
+	var EFFECT_OF_GRAVITY = -fac*12*playerSpeedFac*time_step;
+	player.PLAYER_SPEED_Z = maxv(player.PLAYER_SPEED_Z+EFFECT_OF_GRAVITY,-60);
+	
+	if(PLAYER_DIST_TO_GROUND > PLAYER_PLANNED_DIST_TO_GROUND || player.PLAYER_SPEED_Z > 0)
 	{
-        player.PLAYER_GROUND_CONTACT = 0;
-		var fac = 1;
-		if(!input[INPUT_JUMP].down) playerJumpHangtime = 0;
+		player.PLAYER_GROUND_CONTACT = 0;
 		playerJumpHangtime = maxv(playerJumpHangtime-time_step,0);
-		if(playerJumpHangtime > 0) fac = 0.667;
-        player.PLAYER_SPEED_Z = maxv(player.PLAYER_SPEED_Z-fac*12*playerSpeedFac*time_step,-240);
 	}
 	else
 	{
-		player.z += (heightWanted-player.z)*time_step;
-		player.z += (heightWanted-player.z)*time_step; // this is not a typo
-        player.PLAYER_GROUND_CONTACT = 1;
+		player.PLAYER_GROUND_CONTACT = 1;
 		if(input[INPUT_JUMP].justPressed)
 		{
-            player.PLAYER_GROUND_CONTACT = 0;
+			player.PLAYER_GROUND_CONTACT = 0;
 			playerJumpHangtime = 6;
-            player.PLAYER_SPEED_Z = 60;
+			player.PLAYER_SPEED_Z = 60;
 		}
 	}
 	
-    c_move(player,nullvector,vector(0,0,maxv(player.PLAYER_SPEED_Z*time_step,heightWanted-player.z)),PLAYER_C_MOVE_MODE_DEFAULT);
+	c_move(player,nullvector,vector(0,0,maxv(player.PLAYER_SPEED_Z*time_step,heightWanted-player.z)),PLAYER_C_MOVE_MODE_DEFAULT);
 	
 	// camera
 	
