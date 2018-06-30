@@ -4,6 +4,7 @@
 #include "splatter.h"
 #include "scan.h"
 #include "enemy_hit.h"
+#include "gib.h"
 
 #define EL_RUNSPEED skill1
 #define EL_TURNSPEED skill2
@@ -17,6 +18,7 @@
 #define EL_RUNSPEEDCUR skill24
 #define EL_EXPLODESTATE skill25
 #define EL_HITDIR skill30
+#define EL_RAMPAGE skill31
 
 
 #define EL_WALKANIM "walk"
@@ -51,10 +53,11 @@ void ESELSLERCHE_Init()
    	if(ptr->EL_TURNSPEED == 0) ptr->EL_TURNSPEED = 10;
    	if(ptr->EL_ANIMSPEED == 0) ptr->EL_ANIMSPEED = 5;
    	if(ptr->EL_EXPLODEDIST == 0) ptr->EL_EXPLODEDIST = 300;
-   	if(ptr->EL_ACTIVEDIST == 0) ptr->EL_ACTIVEDIST = 3000;
+   	if(ptr->EL_ACTIVEDIST == 0) ptr->EL_ACTIVEDIST = 5000;
 		ptr->HEALTH = 50;
 		ENEMY_HIT_init(ptr);
 		vec_scale(&ptr->scale_x, 2);
+		set(ptr, SHADOW);
 	}	
 }
 
@@ -209,8 +212,13 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	if (SCAN_IsPlayerInSight(ptr, ptr->EL_EXPLODEDIST, 360))
 	{
 		ptr->EL_STATE = EL_STATE_EXPLODE;
+		set(ptr, PASSABLE);
 	}
-	else if (!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90) && (!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100)))
+	else if (
+		!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90) 
+		&& (!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100))
+		&& !ptr->EL_RAMPAGE
+	)
 	{
 		ptr->EL_STATE = EL_STATE_WAIT;
 		ptr->EL_ANIMSTATE = 0;
@@ -232,20 +240,20 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 	}
 	else
 	{
-		vec_add(&ptr->scale_x, vec_scale(vector(time_step, time_step, time_step),3));
+		vec_add(&ptr->scale_x, vec_scale(vector(time_step, time_step, time_step),2));
 	}
 	
-	set(ptr, PASSABLE);
-	//TODO: explode animation
-	//ptr->EL_STATE = EL_STATE_DIE;
-	//ptr->EL_ANIMSTATE = 0;
-
 	/* transitions */
-	if(ptr->EL_EXPLODESTATE >= 3)
+	if(ptr->EL_EXPLODESTATE >= 2.5)
 	{
-		SPLATTER_explode(100, &ptr->x, 600, EL_bmapSplatter);
-		ptr->EL_STATE = EL_STATE_DEAD;
 		set(ptr, PASSABLE|INVISIBLE);
+		var i;
+		for ( i = 0; i < 5; i++)
+		{
+			GIB_Spawn(&ptr->x);
+		}
+		SPLATTER_explode(40, &ptr->x, 600, EL_bmapSplatter);
+		ptr->EL_STATE = EL_STATE_DEAD;
 		ptr->SK_ENTITY_DEAD = 1;
 	}
 }
@@ -277,7 +285,7 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 	
 	VECTOR dir;
 	vec_set(&dir, ptr->DAMAGE_VEC);
-	vec_scale(&dir, 0.5*time_step);
+	vec_scale(&dir, 1.2*time_step);
 	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
 	c_move(ptr, nullvector, dir, mode);
 
@@ -288,7 +296,8 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 	}
 	else if (animState >= 90)
 	{
-		ptr->EL_STATE = EL_STATE_INACTIVE;			
+		ptr->EL_STATE = EL_STATE_RUN;			
+		ptr->EL_RAMPAGE = 1;
 		ptr->event = ENEMY_HIT_event;
 		ptr->EL_ANIMSTATE = 0;
 		ptr->DAMAGE_VEC = nullvector;
