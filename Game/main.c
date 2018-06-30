@@ -28,11 +28,15 @@
 #include "splatter.c"
 #include "credits.c"
 #include "math.c"
-#include "eselslerche.c"
 #include "scan.c"
 #include "dmgsys.c"
 #include "hud.c"
+<<<<<<< HEAD
+#include "enemy_hit.c"
+#include "eselslerche.c"
+=======
 #include "doors.c"
+>>>>>>> 8c798225195780f7198da81210ae66dd703f8631
 
 void main()
 {

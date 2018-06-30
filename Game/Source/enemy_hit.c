@@ -1,19 +1,29 @@
-#ifndef ENEMY_HIT_H
-#define ENEMY_HIT_H
+#include "dmgsys.h"
+#include "enemy_hit.h"
+
+void ENEMY_HIT_init(ENTITY* ent)
+{
+	ent->event = ENEMY_HIT_event;
+	ent->emask |= ENABLE_SHOOT;	
+}
 
 void ENEMY_HIT_event()
 {
 	//todo: handle projectiles
 	if(event_type == EVENT_SHOOT)
 	{
-		if (you == player)
+		if (dmgsys_get_src() == DMGSYS_PLAYER)
 		{
-			//TODO: get weapon type from player
-			//TODO: get damage from player
-			var damage = 1000; //stub
-			my->DAMAGE_HIT = damage;
+			my->DAMAGE_HIT = dmgsys_get_dmg();
+			ENTITY* ent = dmgsys_get_ctx();
+			//pushback only if player attacked
+			//TODO: instead of player alone, also react on weapon type
+			if (ent == player)
+			{
+				vec_set (my->DAMAGE_VEC, &my->x);
+				vec_sub (my->DAMAGE_VEC, &ent->x);
+				vec_normalize (my->DAMAGE_VEC, 10);
+			}
 		}
 	}
 }
-
-#endif
