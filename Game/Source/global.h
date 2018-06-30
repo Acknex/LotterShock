@@ -14,6 +14,12 @@ typedef int bool;
 //! Definiert, welches Subsystem die Entity besitzt.
 #define SK_SUBSYSTEM   skill99
 
+//skill21-39: reserved for specific use
+//skill40-49 reserved for shader
+//skill50-67 reserved for common use
+#define HEALTH skill50
+#define DAMAGE_HIT skill51
+
 #define SUBSYSTEM_FRAMEWORK     1
 #define SUBSYSTEM_USABLES       2
 #define SUBSYSTEM_CREDITS       3
@@ -23,6 +29,7 @@ typedef int bool;
 #define SUBSYSTEM_INPUT         7
 #define SUBSYSTEM_MUSIC         8
 #define SUBSYSTEM_WEAPONS       9
+#define SUBSYSTEM_PROJECTILE    10
 
 #define SUBSYSTEM_ENEMY_LERCHE  100
 #define SUBSYSTEM_ENEMY_WARLOCK 101

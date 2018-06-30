@@ -5,7 +5,7 @@ var SCAN_IsPlayerNear(ENTITY* ent, var distance)
 	if (player == NULL)
 		return 0;
 		
-	if (vec_dist(&player->x, ent->x < distance))
+	if (vec_dist(&player->x, ent->x) < distance)
 		return 1;
 	else
 		return 0;
@@ -13,6 +13,7 @@ var SCAN_IsPlayerNear(ENTITY* ent, var distance)
 
 var SCAN_IsPlayerInSight(ENTITY* ent, var distance, var fov)
 {
+//	return 0;
 	if (player == NULL)
 		return 0;
 		
@@ -28,14 +29,14 @@ var SCAN_IsPlayerInSight(ENTITY* ent, var distance, var fov)
 	{
 		if (you == player)	
 		{
-			VECTOR* vecDir;
-			vec_set(vecDir, &player->x);
-			vec_sub(vecDir, &ent->x);
+			VECTOR vecDir;
+			vec_set(&vecDir, &player->x);
+			vec_sub(&vecDir, &ent->x);
 			
-			ANGLE* vecAng;
-			vec_to_angle(vecAng, vecDir);
+			ANGLE vecAng;
+			vec_to_angle(&vecAng, &vecDir);
 			
-			if (absv(vecAng->pan - ent->pan) <= fov)
+			if (absv(vecAng.pan - ent->pan) <= fov)
 				return 1;
 		}
 	}
