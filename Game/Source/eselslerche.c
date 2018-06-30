@@ -47,7 +47,7 @@ void ESELSLERCHE_Init()
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENEMY_LERCHE)
    {
    	//TODO: useful default values
-   	if(ptr->EL_RUNSPEED == 0) ptr->EL_RUNSPEED = 8;
+   	if(ptr->EL_RUNSPEED == 0) ptr->EL_RUNSPEED = 12;
    	if(ptr->EL_TURNSPEED == 0) ptr->EL_TURNSPEED = 10;
    	if(ptr->EL_ANIMSPEED == 0) ptr->EL_ANIMSPEED = 5;
    	if(ptr->EL_EXPLODEDIST == 0) ptr->EL_EXPLODEDIST = 200;
@@ -207,7 +207,7 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	{
 		ptr->EL_STATE = EL_STATE_EXPLODE;
 	}
-	else if (!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90))
+	else if (!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90) && (!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100)))
 	{
 		ptr->EL_STATE = EL_STATE_WAIT;
 		ptr->EL_ANIMSTATE = 0;

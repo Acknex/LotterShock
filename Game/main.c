@@ -12,6 +12,7 @@
 #include "mainmenu.h"
 #include "input.h"
 #include "doors.h"
+#include "materials.h"
 
 #ifdef DEBUG
 #include <default.c>
