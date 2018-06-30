@@ -1,11 +1,12 @@
 #ifndef GIB_H
 #define GIB_H
 
-void GIB_spawn(VECTOR* pos);
+void GIB_Spawn(VECTOR* pos);
 
 /* local */
-void GIB_Init();
 void GIB_Update();
 void GIB_GlobalInit();
-void GIB_Close();
+void GIB__fall(ENTITY* ptr);
+void GIB__floor(ENTITY* ptr);
+
 #endif

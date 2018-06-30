@@ -25,6 +25,11 @@ MATERIAL *matDecalBasic =
 	effect = "Shaders/decal_basic.fx";
 }
 
+MATERIAL *matDecalGlow =
+{
+	effect = "Shaders/decal_glow.fx";
+}
+
 MATERIAL *matPPBlurVertical =
 {
 	effect = "Shaders/pp_blur.fx";
