@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "splashscreen.h"
 #include "mainmenu.h"
+#include "music_player.h"
 
 // TODO:
 // -
@@ -63,6 +64,7 @@ void framework_transfer(int state)
 //! Aktualisiert alles.
 void framework_update()
 {
+    updateMusic();
     if(key_esc)
         framework_transfer(FRAMEWORK_STATE_SHUTDOWN);
 
