@@ -54,7 +54,6 @@ SOUND* eselslerche_snd_spot2 = "eselslerche_spot2.wav";
 action Eselslerche()
 {
    framework_setup(my, SUBSYSTEM_ENEMY_LERCHE);
-	//TODO: useful default values
 	if(my->EL_RUNSPEED == 0) my->EL_RUNSPEED = 12;
 	if(my->EL_TURNSPEED == 0) my->EL_TURNSPEED = 10;
 	if(my->EL_ANIMSPEED == 0) my->EL_ANIMSPEED = 5;
@@ -64,6 +63,7 @@ action Eselslerche()
 	ENEMY_HIT_init(my);
 	vec_scale(&my->scale_x, 2);
 	set(my, SHADOW);
+	c_setminmax(me);
 }
 
 void ESELSLERCHE_GlobalInit()
@@ -77,10 +77,6 @@ void ESELSLERCHE_GlobalInit()
 
 void ESELSLERCHE_Init()
 {
-	ENTITY * ptr;
-	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENEMY_LERCHE)
-   {
-	}	
 }
 
 void ESELSLERCHE_Update()
@@ -91,7 +87,7 @@ void ESELSLERCHE_Update()
 		if (player != NULL)
     	{
     		DEBUG_VAR(ptr->EL_STATE, 50);
-    		DEBUG_VAR(ptr->EL_ACTIVEDIST, 95);
+    		//DEBUG_VAR(ptr->EL_ACTIVEDIST, 95);
 
 			ptr->EL_ANIMSTATE += ptr->EL_ANIMSPEED * time_step;
 			ptr->EL_ANIMSTATELIM = clamp(ptr->EL_ANIMSTATE, 0, 100);
@@ -158,15 +154,12 @@ void ESELSLERCHE_Update()
 			}	
 		}
 	
-//		if (ptr->EL_STATE != EL_STATE_EXPLODE && ptr->EL_STATE != EL_STATE_DEAD && ptr->EL_STATE != EL_STATE_INACTIVE)
-//			c_updatehull(ptr, ptr->frame);
-
-		if (ptr->EL_STATE != EL_STATE_EXPLODE)
+		if (ptr->EL_STATE != EL_STATE_EXPLODE && ptr->EL_STATE != EL_STATE_DIE && ptr->EL_STATE != EL_STATE_DEAD )
 		{
-			VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 10);
+			VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 100);
 			VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
 			me = ptr;
-			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;
+			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON | USE_BOX;
 			c_trace(from, to, mode);
 			if(HIT_TARGET)
 				ptr->z = hit.z - ptr->min_z;
