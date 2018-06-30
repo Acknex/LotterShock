@@ -78,7 +78,7 @@ PANEL* HUD_HP_text =
 TEXT* HUD_HP_infotext =	
 {
 	layer = 3;
-	font = "Console#20b";
+	font = "Console#50b";
 	blue = 0;
 	green = 0;
 	red = 0;
@@ -201,6 +201,9 @@ void hud_show()
 
 void hud_hide()
 {
+	reset(HUD_Head, SHOW);
+	reset(HUD_HP_infotext, SHOW);
+	reset(HUD_HP_text, SHOW);
 	reset(HUD_crosshair, SHOW);
 	reset(HUD_HP_label, SHOW);
 	//reset(HUD_HP_bars, SHOW);
@@ -243,6 +246,9 @@ void hud_update()
 {
 	var player_maxhealth = playerGetMaxHealth();
 	var player_health = playerGetHealth();
+	
+	STRING *infostring = str_printf(NULL, "%d", (int)player_health);
+	str_cpy((HUD_HP_infotext->pstring)[0], infostring);
 	//
    /*hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, player_health, player_maxhealth);
    

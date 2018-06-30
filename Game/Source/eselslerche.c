@@ -6,6 +6,7 @@
 #include "enemy_hit.h"
 #include "gib.h"
 #include "particle.h"
+#include "movement.h"
 
 #define EL_RUNSPEED skill1
 #define EL_TURNSPEED skill2
@@ -49,6 +50,8 @@ SOUND* eselslerche_snd_idle2 = "eselslerche_idle2.wav";
 
 SOUND* eselslerche_snd_spot1 = "eselslerche_spot1.wav";
 SOUND* eselslerche_snd_spot2 = "eselslerche_spot2.wav";
+
+SOUND* eselslerche_snd_explo = "eselslerche_explo.wav";
 
 // uses: EL_RUNSPEED, EL_TURNSPEED, EL_ANIMSPEED, EL_EXPLODEDIST, EL_ACTIVEDIST
 action Eselslerche()
@@ -241,6 +244,8 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	if (SCAN_IsPlayerInSight(ptr, ptr->EL_EXPLODEDIST, 360))
 	{
 		ptr->EL_STATE = EL_STATE_EXPLODE;
+		playerAddHealth(-30-random(15));
+		snd_play(eselslerche_snd_explo, 100, 0);
 		set(ptr, PASSABLE);
 	}
 	else if (
