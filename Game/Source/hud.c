@@ -53,6 +53,17 @@ PANEL* HUD_Ammo_bars =
 	layer = 2;
 }
 
+TEXT* HUD_Ammo_infotext =	
+{
+	layer = 3;
+	font = "Console#20b";
+	blue = 0;
+	green = 0;
+	red = 0;
+	string ("asd");
+	flags = CENTER_X | CENTER_Y ;
+} 
+
 PANEL *hud_weapon_icon[4];
 
 void hud_init()
@@ -74,8 +85,10 @@ void hud_place_label(PANEL *label, var offsetY)
 
 void hud_place_bar(PANEL* label, PANEL *bar, var offsetY) 
 {
+	var label_bar_ydiff = label->size_y - bar->size_y;
+	
 	bar->pos_x = HUD_BORDER_PADDING + label->size_x +3;
-	bar->pos_y = screen_size.y - label->size_y - HUD_BORDER_PADDING -offsetY;
+	bar->pos_y = screen_size.y - label->size_y - HUD_BORDER_PADDING -offsetY + label_bar_ydiff/2;
 	bar->alpha = HUD_BARS_MAX_ALPHA;
 	
 	pan_setwindow  (bar, 0, 0,0, 0, bmap_height(hud_healthbar_bmap), hud_healthbar_bmap, 0,0);
@@ -115,6 +128,9 @@ void hud_show()
 	HUD_crosshair->pos_y = (screen_size.y - HUD_crosshair.size_y) /2;
 	HUD_crosshair->alpha = 10;
 	set(HUD_crosshair, SHOW);
+	
+	HUD_Ammo_infotext->pos_x = HUD_Ammo_bars->pos_x + HUD_Ammo_bars->size_x/2;
+	HUD_Ammo_infotext->pos_y = HUD_Ammo_bars->pos_y + HUD_Ammo_bars->size_y/2;
 }
 
 void hud_show_weapon_icon(int id)
@@ -131,11 +147,23 @@ var hud_flicker_coefficient(var frequency)
 	return (1.+cos(total_ticks*frequency)) /2;
 }
 
+void hud_show_ammobar()
+{
+	set(HUD_Ammo_bars, SHOW);
+	set(HUD_Ammo_infotext, SHOW);
+}
+
+void hud_hide_ammobar()
+{
+	reset(HUD_Ammo_bars, SHOW);
+	reset(HUD_Ammo_infotext, SHOW);
+}
+
 void hud_update()
 {
 	//TODO!
 	var PLAYER_MAXHEALTH = 100;
-	var PLAYER_HEALTH = 10;
+	var PLAYER_HEALTH = 50;
 	//
    hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, PLAYER_HEALTH, PLAYER_MAXHEALTH);
    
@@ -162,8 +190,11 @@ void hud_update()
 		
 		if(max_ammo != 0)
 		{
+			hud_show_ammobar();
 			hud_update_bar(HUD_Ammo_bars, hud_ammobar_bmap, ammo, max_ammo);
-			set(HUD_Ammo_bars, SHOW);
+			
+			STRING *infostring = str_printf(NULL, "%d / %d", ammo, max_ammo);
+			str_cpy((HUD_Ammo_infotext->pstring)[0], infostring);
 			
 			if(ammo == 0)
 				HUD_Ammo_bars.alpha = HUD_BARS_MAX_ALPHA * hud_flicker_coefficient(20);
@@ -171,9 +202,9 @@ void hud_update()
 				HUD_Ammo_bars.alpha = HUD_BARS_MAX_ALPHA;
 		}
 		else
-			reset(HUD_Ammo_bars, SHOW);
+			hud_hide_ammobar();
 		
 	}
 	else
-		reset(HUD_Ammo_bars, SHOW);
+		hud_hide_ammobar();
 }
