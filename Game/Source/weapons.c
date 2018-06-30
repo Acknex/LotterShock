@@ -1,12 +1,17 @@
 #include "weapons.h"
 #include "input.h"
 #include "math.h"
+#include "dmgsys.h"
 
 #define WEAPONS_COUNT 5
 
 #define WEAPONS_LERP_SPEED 0.25
 
 #define WEAPONS_CURRENT (weapons.weapon[weapons.current])
+
+#define WEAPONS_SHOTGUN_RANGE  8000
+#define WEAPONS_SHOTGUN_SPREAD 3 // *2 grad
+#define WEAPONS_SHOTGUN_DAMAGE 5
 
 typedef struct weapons_data_t
 {
@@ -127,6 +132,21 @@ void weapons_select_next(int dir)
 
 void weapons_shoot_shotgun()
 {
+    int i;
+    for(i = 0; i < 10; i++)
+    {
+        VECTOR dir;
+        vec_for_angle(dir, vector(camera.pan + random(2*WEAPONS_SHOTGUN_SPREAD) - WEAPONS_SHOTGUN_SPREAD, camera.tilt  + random(2*WEAPONS_SHOTGUN_SPREAD) - WEAPONS_SHOTGUN_SPREAD, 0));
+        vec_normalize(dir, WEAPONS_SHOTGUN_RANGE);
+        vec_add(dir, camera.x);
+
+        dmgsys_set_src(DMGSYS_PLAYER, player, WEAPONS_SHOTGUN_DAMAGE);
+        var dist = c_trace(camera.x, dir, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
+        if(HIT_TARGET)
+        {
+            ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+        }
+    }
 }
 
 void weapons_update()
@@ -231,19 +251,22 @@ void weapons_update()
             {
                 if(weapons.attackprogress >= 10 && weapons.attackstate == 0)
                 {
-                    snd_play(WEAPONS_CURRENT.snd, 100, 0);
+                    var id = snd_play(WEAPONS_CURRENT.snd, 100, 0);
+                    snd_tune(id, 0, 90 + random(20), 0);
                     weapons.attackstate = 1;
                     weapons_shoot_shotgun();
                 }
                 else if(weapons.attackprogress >= 30 && weapons.attackstate == 1)
                 {
-                    snd_play(WEAPONS_CURRENT.snd, 100, 0);
+                    var id = snd_play(WEAPONS_CURRENT.snd, 100, 0);
+                    snd_tune(id, 0, 90 + random(20), 0);
                     weapons.attackstate = 2;
                     weapons_shoot_shotgun();
                 }
                 else if(weapons.attackprogress >= 50 && weapons.attackstate == 2)
                 {
-                    snd_play(WEAPONS_CURRENT.snd, 100, 0);
+                    var id = snd_play(WEAPONS_CURRENT.snd, 100, 0);
+                    snd_tune(id, 0, 90 + random(20), 0);
                     weapons.attackstate = 3;
                     weapons_shoot_shotgun();
                 }
