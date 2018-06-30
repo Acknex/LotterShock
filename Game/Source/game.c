@@ -29,8 +29,10 @@ void game_capture_mouse()
 
 void game_update()
 {
+#ifndef DEBUG_NO_CAPTURE
     if(window_focus)
         game_capture_mouse();
+#endif
 
     movement_update();
     weapons_update();
