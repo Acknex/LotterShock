@@ -3,6 +3,7 @@
 #include "movement.h"
 #include "input.h"
 #include "eselslerche.h"
+#include "projectiles.h"
 
 #include <windows.h>
 
@@ -38,6 +39,7 @@ void game_update()
 
     movement_update();
     weapons_update();
+    projectiles_update();
 	 hud_update();
 	 ESELSLERCHE_Update();
 
@@ -47,6 +49,8 @@ void game_update()
 
 void game_close()
 {
+movement_close();
+projectiles_close();
     weapons_close();
     mouse_pointer = 1;
 }
