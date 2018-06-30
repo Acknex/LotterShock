@@ -75,6 +75,7 @@ void mainmenu_open()
     mouse_mode = 4;
     mainmenu_selection = 0;
     mainmenu_response = MAINMENU_RESPONSE_STILLACTIVE;
+    level_load(NULL);
 }
 
 void mainmenu_update()
