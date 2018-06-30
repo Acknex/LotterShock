@@ -40,8 +40,8 @@ PANEL * framework_load_screen =
 //! Initialisiert das Spiel und so
 void framework_init()
 {
-    fps_max = 61;
-    d3d_triplebuffer = 1; // mit vsync
+    //fps_max = 61;
+    //d3d_triplebuffer = 1; // mit vsync
     video_set(1280, 720, 0, 2); // 1280x720, Window
 
     on_frame = framework_update;
