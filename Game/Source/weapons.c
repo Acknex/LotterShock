@@ -84,7 +84,9 @@ BMAP * weapons_bullethole_decal = "bullet_hole.tga";
 
 BMAP * weapons_fire_01 = "fire.pcx";
 
-SOUND * weapons_snd_sword = "sword_swing1.wav";
+SOUND * weapons_snd_sword1 = "sword_swing1.wav";
+SOUND * weapons_snd_sword2 = "sword_swing2.wav";
+SOUND * weapons_snd_sword3 = "sword_swing3.wav";
 SOUND * weapons_snd_shotgun = "shotgun_snd.wav";
 SOUND * weapons_snd_cellgun = "cellgun_snd.wav";
 SOUND * weapons_snd_cellgun_loop = "cellgun_hum.wav";
@@ -164,7 +166,7 @@ void weapons_init()
     weapons.weapon[WEAPON_CELLGUN].ent = weapons_wp_cellgun;
     weapons.weapon[WEAPON_FLAMETHROWER].ent = weapons_wp_flamethrower;
 
-    weapons.weapon[WEAPON_SWORD].snd = weapons_snd_sword;
+    weapons.weapon[WEAPON_SWORD].snd = weapons_snd_sword1;
     weapons.weapon[WEAPON_SHOTGUN].snd = weapons_snd_shotgun;
     weapons.weapon[WEAPON_CELLGUN].snd = weapons_snd_cellgun;
     weapons.weapon[WEAPON_FLAMETHROWER].snd = weapons_snd_flamethrower;
@@ -438,7 +440,7 @@ void weapons_update()
                     if(weapons.current == WEAPON_FLAMETHROWER)
                     {
                         if(weapons.flamefade == 100)
-                            snd_play(weapons_snd_flamethrower_end, 100, 0);
+                            snd_play(weapons_snd_flamethrower_end, 30, 0);
                     }
                     else if(weapons.current == WEAPON_CELLGUN)
                     {
@@ -483,7 +485,12 @@ void weapons_update()
 
             if(weapons.attacking && weapons.attackstate++ == 0)
             {
-                snd_play(WEAPONS_CURRENT.snd, 100, 0);
+                switch(integer(random(3)))
+                {
+                case 0: snd_play(weapons_snd_sword1, 100, 0); break;
+                case 1: snd_play(weapons_snd_sword2, 100, 0); break;
+                case 2: snd_play(weapons_snd_sword3, 100, 0); break;
+                }
             }
 
             if(weapons.attacking)
