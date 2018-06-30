@@ -53,7 +53,7 @@ void framework_update()
     switch(framework.state)
     {
     case FRAMEWORK_STATE_STARTUP:
-        framework_transfer(FRAMEWORK_STATE_SPLASHSCREEN);
+        //framework_transfer(FRAMEWORK_STATE_SPLASHSCREEN);
         break;
 
     case FRAMEWORK_STATE_SPLASHSCREEN:
