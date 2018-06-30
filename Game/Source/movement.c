@@ -25,6 +25,11 @@ var playerHealth = 100;
 var playerHealthMax = 100;
 var playerLives = 3;
 
+void movement_close()
+{
+	player = NULL;
+}
+
 var playerGetLives()
 {
 	return playerLives;
@@ -38,6 +43,11 @@ var playerGetHealth()
 var playerGetMaxHealth()
 {
 	return playerHealthMax;
+}
+
+void playerAddHealth(var amount)
+{
+	playerHealth = clamp(playerHealth+amount,0,playerHealthMax);
 }
 
 void movement_update()
@@ -108,7 +118,7 @@ void movement_update()
 	player.max_y -= 2;
 	if(player.PLAYER_GROUND_CONTACT)
 	{
-		playerWeaponBob += moveDist*0.8; // no time_step!
+		playerWeaponBob += moveDist*0.7; // no time_step!
 		playerWeaponBob %= 360;
 	}
 	// gravity
@@ -198,6 +208,12 @@ var playerGetSpeed()
 {
 	if(!player) return 0;
 	return vec_length(vector(player.PLAYER_SPEED_X,player.PLAYER_SPEED_Y,0));
+}
+
+VECTOR* playerGetSpeedVec()
+{
+	if(!player) return nullvector;
+	return &player.PLAYER_SPEED_X;
 }
 
 ANGLE* playerGetWeaponSway() 
