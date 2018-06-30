@@ -1,4 +1,4 @@
-action medipack() {
+action Medipack() {
 	framework_setup(my, SUBSYSTEM_MEDIPACK);
 }
 
