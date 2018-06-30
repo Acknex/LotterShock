@@ -38,6 +38,18 @@
 
 BMAP* EL_bmapSplatter[5];
 
+SOUND* eselslerche_snd_hit1 = "eselslerche_hit1.wav";
+SOUND* eselslerche_snd_hit2 = "eselslerche_hit2.wav";
+
+SOUND* eselslerche_snd_death1 = "eselslerche_death1.wav";
+SOUND* eselslerche_snd_death2 = "eselslerche_death2.wav";
+
+SOUND* eselslerche_snd_idle1 = "eselslerche_idle1.wav";
+SOUND* eselslerche_snd_idle2 = "eselslerche_idle2.wav";
+
+SOUND* eselslerche_snd_spot1 = "eselslerche_spot1.wav";
+SOUND* eselslerche_snd_spot2 = "eselslerche_spot2.wav";
+
 // uses: EL_RUNSPEED, EL_TURNSPEED, EL_ANIMSPEED, EL_EXPLODEDIST, EL_ACTIVEDIST
 action Eselslerche()
 {
@@ -91,6 +103,11 @@ void ESELSLERCHE_Update()
 				ptr->DAMAGE_HIT = 0;
 				ptr->event = NULL;
 				ptr->EL_STATE = EL_STATE_HIT;
+				switch(integer(random(2)))
+				{
+					case 0: snd_play(eselslerche_snd_hit1, 100, 0); break;
+					case 1: snd_play(eselslerche_snd_hit2, 100, 0); break;
+				}
 				SPLATTER_splat(&ptr->x, vector(73.0/255.0,159.0/255.0,0.0));
 				SPLATTER_explode(10, &ptr->x, 200, EL_bmapSplatter, 5);
 			}
@@ -204,6 +221,11 @@ void ESELSLERCHE__wait(ENTITY* ptr)
 		ptr->EL_ANIMSTATE = 0;
 		ptr->EL_RUNSPEEDCUR = 0;
 		ptr->EL_STATE = EL_STATE_RUN;
+		switch(integer(random(2)))
+		{
+			case 0: snd_play(eselslerche_snd_spot1, 100, 0); break;
+			case 1: snd_play(eselslerche_snd_spot2, 100, 0); break;
+		}
 	}
 	else if(!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100))
 	{
@@ -308,6 +330,11 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 	if (ptr->HEALTH <= 0)
 	{
 		ptr->EL_STATE = EL_STATE_DIE;
+		switch(integer(random(2)))
+		{
+			case 0: snd_play(eselslerche_snd_death1, 100, 0); break;
+			case 1: snd_play(eselslerche_snd_death2, 100, 0); break;
+		}
 	}
 	else if (animState >= 90)
 	{
@@ -324,6 +351,7 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 }
 
 
+#ifdef ESEL_TEST
 void spawn_startup()
 {
 	
@@ -334,3 +362,4 @@ void spawn_startup()
 		wait(-10);
 	}
 }
+#endif
