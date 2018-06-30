@@ -6,34 +6,39 @@
 #define HUD_Z_LAYER 2
 
 #define HUD_BARS_XPADDING 3
+#define HUD_DIST_BETWEEN_BARS 8
 
-BMAP * hud_health_label = "health_label.png";
-BMAP * hud_bar_background = "hud_bar_background.png";
-BMAP * hud_healthbar = "healthbar.png";
-BMAP * hud_ammobar = "ammobar.png";
+BMAP * hud_bar_background_bmap = "hud_bar_background.png";
+
+BMAP * hud_health_label_bmap = "health_label.png";
+BMAP * hud_healthbar_bmap = "healthbar.png";
+
+BMAP * hud_ammo_label_bmap = "ammo_label.png";
+BMAP * hud_ammobar_bmap = "ammobar.png";
 
 PANEL* HUD_HP_label =
 {
-	bmap = hud_health_label;
+	bmap = hud_health_label_bmap;
 	flags = TRANSLUCENT;
 	layer = 2;
 }
+
 PANEL* HUD_HP_bars =
 {
-	bmap = hud_bar_background;
+	bmap = hud_bar_background_bmap;
 	flags = TRANSLUCENT;
 	layer = 2;
 }
 
 PANEL* HUD_Ammo_label =
 {
-	bmap = hud_health_label;
+	bmap = hud_ammo_label_bmap;
 	flags = TRANSLUCENT;
 	layer = 2;
 }
 PANEL* HUD_Ammo_bars =
 {
-	bmap = hud_bar_background;
+	bmap = hud_bar_background_bmap;
 	flags = TRANSLUCENT;
 	layer = 2;
 }
@@ -49,9 +54,9 @@ void hud_show_bar(PANEL *label, PANEL *bar, var offsetY)
 	label->pos_y = screen_size.y - label.size_y - HUD_BORDER_PADDING- offsetY;
 	
 	bar->pos_x = HUD_BORDER_PADDING + label->size_x +3;
-	bar->pos_y = screen_size.y - label->size_y - HUD_BORDER_PADDING;
+	bar->pos_y = screen_size.y - label->size_y - HUD_BORDER_PADDING -offsetY;
 	
-	pan_setwindow  (bar, 0, 0,0, 0, bmap_height(hud_healthbar), hud_healthbar, 0,0);
+	pan_setwindow  (bar, 0, 0,0, 0, bmap_height(hud_healthbar_bmap), hud_healthbar_bmap, 0,0);
 	
 	set(label, SHOW);
 	set(bar, SHOW);
@@ -74,7 +79,9 @@ void hud_update_bar(PANEL *bar, BMAP *source, var current_value, var max_value)
 
 void hud_show()
 {
+	var distance_between_bars = HUD_HP_label->size_y + HUD_DIST_BETWEEN_BARS;
 	hud_show_bar(HUD_HP_label, HUD_HP_bars, 0);
+	hud_show_bar(HUD_Ammo_label, HUD_Ammo_bars, distance_between_bars);
 }
 
 void hud_update()
@@ -84,5 +91,6 @@ void hud_update()
 	var PLAYER_HEALTH = 30;
 	//
 	
-    hud_update_bar(HUD_HP_bars, hud_healthbar, PLAYER_HEALTH, PLAYER_MAXHEALTH);
+    hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, PLAYER_HEALTH, PLAYER_MAXHEALTH);
+    hud_update_bar(HUD_Ammo_bars, hud_ammobar_bmap, PLAYER_HEALTH, PLAYER_MAXHEALTH);
 }
