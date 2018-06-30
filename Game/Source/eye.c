@@ -1,6 +1,7 @@
 #include "global.h"
 #include "framework.h"
 #include "eye.h"
+#include "particle.h"
 
 #include "splatter.h" //temp
 
@@ -22,8 +23,10 @@ void EYE_GlobalInit()
 {
 }
 
+void spawneye();
 void EYE_Init()
 {
+	spawneye();
 }
 
 void EYE_Update()
@@ -62,6 +65,7 @@ draw_line3d(from, vector(255,255,255), 100);
 draw_line3d(to, vector(255,255,255), 100);
 	if (ptr->EYE_COUNTER > 1)
 	{
+		PARTICLE_laser(from, dist);
 		ptr->EYE_COUNTER -= 1;
 		me = ptr;
 		var mode = IGNORE_ME | IGNORE_WORLD | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | SCAN_TEXTURE | USE_POLYGON;
@@ -79,7 +83,7 @@ draw_line3d(to, vector(255,255,255), 100);
 	
 }
 
-void spawneye_startup()
+void spawneye()
 {
 	
 	wait(-5);

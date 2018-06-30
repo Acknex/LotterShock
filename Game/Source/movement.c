@@ -67,6 +67,7 @@ var playerGetMaxHealth()
 
 void playerAddHealth(var amount)
 {
+amount = absv(amount);
 	playerHealth = clamp(playerHealth+amount,0,playerHealthMax);
 	if(amount < 0) 
 	{
