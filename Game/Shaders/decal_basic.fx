@@ -7,6 +7,7 @@
 
 float4 vecAmbient;
 float4 vecFogColor;
+float fAlpha;
 
 Texture entSkin1;
 sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Point; MagFilter = Point; MinFilter = Point; };
@@ -75,9 +76,10 @@ out_frag ps(out_ps In)
 	color.rgb += specular;
 	
 	float fogAttenuation = max(viewDistance - vecFog.x, 0.0) * vecFog.z;
-	
 	color.rgb = lerp(color.rgb, vecFogColor.rgb, fogAttenuation);
+	
 	Out.color = color;
+	Out.color.a *= fAlpha;
 	
 	Out.glow = 0.0;
 	
