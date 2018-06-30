@@ -5,6 +5,7 @@
 #include "scan.h"
 #include "enemy_hit.h"
 #include "gib.h"
+#include "particle.h"
 
 #define EL_RUNSPEED skill1
 #define EL_TURNSPEED skill2
@@ -202,7 +203,7 @@ void ESELSLERCHE__wait(ENTITY* ptr)
 
 void ESELSLERCHE__run(ENTITY* ptr)
 {
-	ptr->EL_RUNSPEEDCUR = minv(ptr->EL_RUNSPEEDCUR + 3*time_step, ptr->EL_RUNSPEED);
+	ptr->EL_RUNSPEEDCUR = minv(ptr->EL_RUNSPEEDCUR + 4*time_step, ptr->EL_RUNSPEED);
 	ESELSLERCHE__turnToPlayer(ptr);
 	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
 	c_move(ptr, vector(ptr->EL_RUNSPEEDCUR, 0, 0), nullvector, mode);
@@ -253,6 +254,7 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 			GIB_Spawn(&ptr->x);
 		}
 		SPLATTER_explode(40, &ptr->x, 600, EL_bmapSplatter);
+		PARTICLE_explode(50, &ptr->x);
 		ptr->EL_STATE = EL_STATE_DEAD;
 		ptr->SK_ENTITY_DEAD = 1;
 	}
