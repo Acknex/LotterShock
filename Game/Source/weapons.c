@@ -166,33 +166,39 @@ int weapons_get_current()
 
 void weapons_init()
 {
-	memset(&weapons, 0, sizeof(weapons_t));
-	weapons.weapon[WEAPON_SWORD].ent = weapons_wp_sword;
-	weapons.weapon[WEAPON_SHOTGUN].ent = weapons_wp_shotgun;
-	weapons.weapon[WEAPON_CELLGUN].ent = weapons_wp_cellgun;
-	weapons.weapon[WEAPON_FLAMETHROWER].ent = weapons_wp_flamethrower;
-
-	weapons.weapon[WEAPON_SWORD].snd = weapons_snd_sword1;
-	weapons.weapon[WEAPON_SHOTGUN].snd = weapons_snd_shotgun;
-	weapons.weapon[WEAPON_CELLGUN].snd = weapons_snd_cellgun;
-	weapons.weapon[WEAPON_FLAMETHROWER].snd = weapons_snd_flamethrower;
-
-	weapons.weapon[WEAPON_SWORD].attackspeed = 40;
-	weapons.weapon[WEAPON_SHOTGUN].attackspeed = 10;
-	weapons.weapon[WEAPON_FLAMETHROWER].streaming = true;
-	weapons.weapon[WEAPON_CELLGUN].streaming = true;
-	weapons.weapon[WEAPON_CELLGUN].attackspeed = 10;
-
-	weapons.weapon[WEAPON_SWORD].max_ammo        = 0;
-	weapons.weapon[WEAPON_SHOTGUN].max_ammo      = 36;
-	weapons.weapon[WEAPON_CELLGUN].max_ammo      = 150;
-	weapons.weapon[WEAPON_FLAMETHROWER].max_ammo = 300;
-
 	int i;
 	for(i = 1; i <= WEAPONS_COUNT; i++)
 	weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
 
 	on_o = weapons_erect_sword;
+
+    memset(&weapons, 0, sizeof(weapons_t));
+    weapons.weapon[WEAPON_SWORD].ent = weapons_wp_sword;
+    weapons.weapon[WEAPON_SHOTGUN].ent = weapons_wp_shotgun;
+    weapons.weapon[WEAPON_CELLGUN].ent = weapons_wp_cellgun;
+    weapons.weapon[WEAPON_FLAMETHROWER].ent = weapons_wp_flamethrower;
+
+    weapons.weapon[WEAPON_SWORD].snd = weapons_snd_sword1;
+    weapons.weapon[WEAPON_SHOTGUN].snd = weapons_snd_shotgun;
+    weapons.weapon[WEAPON_CELLGUN].snd = weapons_snd_cellgun;
+    weapons.weapon[WEAPON_FLAMETHROWER].snd = weapons_snd_flamethrower;
+
+    weapons.weapon[WEAPON_SWORD].attackspeed = 40;
+    weapons.weapon[WEAPON_SHOTGUN].attackspeed = 10;
+    weapons.weapon[WEAPON_FLAMETHROWER].streaming = true;
+    weapons.weapon[WEAPON_CELLGUN].streaming = true;
+    weapons.weapon[WEAPON_CELLGUN].attackspeed = 1;
+
+    weapons.weapon[WEAPON_SWORD].max_ammo        = 0;
+    weapons.weapon[WEAPON_SHOTGUN].max_ammo      = 36;
+    weapons.weapon[WEAPON_CELLGUN].max_ammo      = 150;
+    weapons.weapon[WEAPON_FLAMETHROWER].max_ammo = 300;
+
+    int i;
+    for(i = 1; i <= WEAPONS_COUNT; i++)
+        weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
+
+    on_o = weapons_erect_sword;
 }
 
 void weapons_open()
@@ -576,128 +582,116 @@ void weapons_update()
 				}
 			}
 
-			break;
-			case WEAPON_FLAMETHROWER:
-			vec_set(sourcePosePos, WEAPONS_FLAME_DEFAULT_STANCE_POS);
-			vec_set(sourcePoseAng, WEAPONS_FLAME_DEFAULT_STANCE_ANG);
+            break;
+        case WEAPON_FLAMETHROWER:
+            vec_set(sourcePosePos, WEAPONS_FLAME_DEFAULT_STANCE_POS);
+            vec_set(sourcePoseAng, WEAPONS_FLAME_DEFAULT_STANCE_ANG);
 
-			vec_set(targetPosePos, sourcePosePos);
-			vec_set(targetPoseAng, sourcePoseAng);
+            vec_set(targetPosePos, sourcePosePos);
+            vec_set(targetPoseAng, sourcePoseAng);
 
-			if(weapons.attacking)
-			{
-				if(!weapons.flamesound)
-				weapons.flamesound = snd_loop(weapons_snd_flamethrower, 0, 0);
-				snd_tune(weapons.flamesound, weapons.flamefade, 0, 0);
+            if(weapons.attacking)
+            {
+                if(!weapons.flamesound)
+                    weapons.flamesound = snd_loop(weapons_snd_flamethrower, 0, 0);
+                snd_tune(weapons.flamesound, weapons.flamefade, 0, 0);
 
-				weapons.flamefade = clamp(weapons.flamefade + 20 * time_step, 0, 100);
+                weapons.flamefade = clamp(weapons.flamefade + 20 * time_step, 0, 100);
 
-				weapons_shoot_flamethrower();
-			}
-			else
-			{
-				if(weapons.flamesound)
-				{
-					weapons.flamefade = clamp(weapons.flamefade - 20 * time_step, 0, 100);
-					snd_tune(weapons.flamesound, weapons.flamefade, 0, 0);
+                weapons_shoot_flamethrower();
+            }
+            else
+            {
+                if(weapons.flamesound)
+                {
+                    weapons.flamefade = clamp(weapons.flamefade - 20 * time_step, 0, 100);
+                    snd_tune(weapons.flamesound, weapons.flamefade, 0, 0);
 
-					if(weapons.flamefade == 0)
-					{
-						snd_stop(weapons.flamesound);
-						weapons.flamesound = 0;
-					}
-				}
-			}
+                    if(weapons.flamefade == 0)
+                    {
+                        snd_stop(weapons.flamesound);
+                        weapons.flamesound = 0;
+                    }
+                }
+            }
 
-			break;
-			case WEAPON_CELLGUN:
-			vec_set(sourcePosePos, WEAPONS_CELLGUN_DEFAULT_STANCE_POS);
-			vec_set(sourcePoseAng, WEAPONS_CELLGUN_DEFAULT_STANCE_ANG);
+            break;
+        case WEAPON_CELLGUN:
+            vec_set(sourcePosePos, WEAPONS_CELLGUN_DEFAULT_STANCE_POS);
+            vec_set(sourcePoseAng, WEAPONS_CELLGUN_DEFAULT_STANCE_ANG);
 
-			vec_set(targetPosePos, sourcePosePos);
-			vec_set(targetPoseAng, sourcePoseAng);
+            vec_set(targetPosePos, sourcePosePos);
+            vec_set(targetPoseAng, sourcePoseAng);
 
-			if(weapons.attacking || weapons.attackstate != 0)
-			{
-				if(weapons.spearpower < 100)
-				{
-					ent_animate(weapons_wp_cellgun, "PowerUp", weapons.spearpower, 0);
-					weapons.spearpower += WEAPONS_CURRENT.attackspeed * time_step;
-					weapons.speartimer = weapons.spearpower % 100;
-					weapons.attackstate = 0;
-				}
-				else
-				{
-					ent_animate(weapons_wp_cellgun, "ShootStuff", weapons.speartimer, ANM_CYCLE);
-					weapons.speartimer += WEAPONS_CURRENT.attackspeed * time_step;
-					if(weapons.speartimer >= 100)
-					weapons.speartimer -= 100;
+            if(weapons.attacking || weapons.attackstate != 0)
+            {
+                if(weapons.spearpower < 100)
+                {
+                    ent_animate(weapons_wp_cellgun, "PowerUp", weapons.spearpower, 0);
+                    weapons.spearpower += WEAPONS_CURRENT.attackspeed * time_step;
+                    weapons.speartimer = weapons.spearpower % 100;
+                    weapons.attackstate = 0;
+                }
+                else
+                {
+                    int spearshots[3] = { 0, 33, 66, 999 };
 
-					weapons.spearpower = 100;
+                    if(weapons.speartimer >= spearshots[weapons.attackstate])
+                    {
+                        if(weapons.attackstate < 3)
+                        {
+                            if(weapons_draw_ammo(1))
+                            {
+                                snd_play(WEAPONS_CURRENT.snd, 100, 0);
+                                weapons_shoot_cellgun();
+                            }
+                            weapons.attackstate += 1;
+                        }
+                    }
 
-					if(weapons.speartimer >= 0 && weapons.speartimer < 30 && weapons.attackstate == 0)
-					{
-						if(weapons_draw_ammo(1))
-						{
-							snd_play(WEAPONS_CURRENT.snd, 100, 0);
-							weapons_shoot_cellgun();
-						}
-						weapons.attackstate = 1;
-					}
-					else if(weapons.speartimer >= 30 && weapons.speartimer < 60 && weapons.attackstate == 1)
-					{
-						if(weapons_draw_ammo(1))
-						{
-							snd_play(WEAPONS_CURRENT.snd, 100, 0);
-							weapons_shoot_cellgun();
-						}
-						weapons.attackstate = 2;
-					}
-					else if(weapons.speartimer >= 60 && weapons.speartimer < 90 && weapons.attackstate == 2)
-					{
-						if(weapons_draw_ammo(1))
-						{
-							snd_play(WEAPONS_CURRENT.snd, 100, 0);
-							weapons_shoot_cellgun();
-						}
-						weapons.attackstate = 3;
-					}
-					else if(weapons.speartimer >= 90 && weapons.attackstate == 3)
-					{
-						weapons.attackstate = 0;
-					}
+                    ent_animate(weapons_wp_cellgun, "ShootStuff", weapons.speartimer, ANM_CYCLE);
+                    weapons.speartimer += WEAPONS_CURRENT.attackspeed * time_step;
+                    if(weapons.speartimer >= 100) {
+                        weapons.speartimer -= 100;
+                        weapons.attackstate = 0;
+                    }
 
-				}
-			}
-			else
-			{
-				snd_pause(weapons.electro);
-				ent_animate(weapons_wp_cellgun, "PowerDown", 100 - weapons.spearpower, 0);
-				weapons.spearpower -= WEAPONS_CURRENT.attackspeed * time_step;
-				if(weapons.spearpower < 0)
-				weapons.spearpower = 0;
-			}
+                    weapons.spearpower = 100;
+                }
+            }
+            else
+            {
+                snd_pause(weapons.electro);
+                ent_animate(weapons_wp_cellgun, "PowerDown", 100 - weapons.spearpower, 0);
+                weapons.spearpower -= WEAPONS_CURRENT.attackspeed * time_step;
+                if(weapons.spearpower < 0)
+                    weapons.spearpower = 0;
+            }
 
-			if(weapons.spearpower <= 0)
-			{
-				if(weapons.electro != 0)
-				snd_stop(weapons.electro);
-				weapons.electro = 0;
-			}
-			else
-			{
-				if(weapons.electro == 0)
-				weapons.electro = snd_loop(weapons_snd_cellgun_loop, 0, 0);
-				snd_tune(weapons.electro, weapons.spearpower, 0, 0);
-			}
+            if(weapons.spearpower <= 0)
+            {
+                if(weapons.electro != 0)
+                    snd_stop(weapons.electro);
+                weapons.electro = 0;
+            }
+            else
+            {
+                if(weapons.electro == 0)
+                    weapons.electro = snd_loop(weapons_snd_cellgun_loop, 0, 0);
+                snd_tune(weapons.electro, weapons.spearpower, 0, 0);
+            }
 
-			DEBUG_VAR(weapons.spearpower, 16);
-			DEBUG_VAR(weapons.speartimer, 32);
-			DEBUG_VAR(weapons.electro, 48);
+            DEBUG_VAR(weapons.spearpower, 16);
+            DEBUG_VAR(weapons.speartimer, 32);
+            DEBUG_VAR(weapons.electro, 48);
 
-			break;
-		}
+            DEBUG_VAR(weapons.attacking, 64);
+            DEBUG_VAR(weapons.attackstate, 72);
 
+            break;
+        }
+
+ 
 
 		if(weapons.attacking && weapons.current != WEAPON_SHOTGUN)
 		{
