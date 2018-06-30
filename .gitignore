@@ -1,13 +1,19 @@
 acklog.txt
+ackerr.txt
+
 *.bak
 *.raw
 *.wed
-ackerr.txt
 *.blend?
-/game/level/*.$$M
-/game/level/*.$$p
-/game/level/*.$$w
-/game/lottershock.cd
-/game/lottershock.zip
+
+# Levelfiles
+*.$$M
+*.$$p
+*.$$w
 shot_*.jpg
 *.log
+
+# Felix komischer Qt-Stuff
+*.pro
+*.pro.user
+*.autosave
