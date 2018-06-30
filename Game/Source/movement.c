@@ -43,6 +43,7 @@ var playerEntMorphBallPan = 0;
 var playerEntMorphBallTilt = 0;
 var playerEntMorphBallSpeedAdaptFac = 1;
 VECTOR playerEntMorphBallPinkFlarePos;
+var playerChromaticAbbTime = 0;
 
 void movement_close()
 {
@@ -67,6 +68,10 @@ var playerGetMaxHealth()
 void playerAddHealth(var amount)
 {
 	playerHealth = clamp(playerHealth+amount,0,playerHealthMax);
+	if(amount < 0) 
+	{
+		playerChromaticAbbTime = 0.5;
+	}
 }
 
 void p_playerSlide_smoke(PARTICLE* p)
@@ -306,9 +311,12 @@ void movement_update()
 	if(playerHealth <= 0)
 	{
 		playerHealth = 0;
-		draw_quad(NULL,vector(0,0,0),NULL,vector(screen_size.x+1,screen_size.y+1,0),NULL,COLOR_RED,50,0);
+		// draw_quad(NULL,vector(0,0,0),NULL,vector(screen_size.x+1,screen_size.y+1,0),NULL,COLOR_RED,50,0);
+		pp_desync(40);
 		return;
 	}
+	playerChromaticAbbTime = maxv(0, playerChromaticAbbTime - time_step/16);
+	pp_desync(playerChromaticAbbTime/0.4*30);
 	if(!player)
 	{
 		VECTOR spawnPos,vMin,vMax;
