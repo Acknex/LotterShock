@@ -2,6 +2,7 @@
 #include "splashscreen.h"
 #include "mainmenu.h"
 #include "music_player.h"
+#include "game.h"
 
 #define FRAMEWORK_ALPHA_BLENDSPEED  25
 
@@ -57,7 +58,6 @@ void framework_transfer(int state)
 //! Aktualisiert alles.
 void framework_update()
 {
-    updateMusic();
     if(key_esc)
         framework_transfer(FRAMEWORK_STATE_SHUTDOWN);
 
@@ -69,11 +69,15 @@ void framework_update()
             // spiel im ersten frame initialisieren
             splashscreen_init();
             mainmenu_init();
+            music_init();
+            game_init();
+
+            // TODO: Fix relative link?
+            music_start("Media/intro.mp3", 1.0, false);
 
             // Ladebildschirm passend skalieren
             framework_load_screen.scale_x = screen_size.x / framework_load_screen.size_x;
             framework_load_screen.scale_y = screen_size.y / framework_load_screen.size_y;
-
 
 #ifdef DEBUG_FRAMEWORK_FASTSTART
             framework_transfer(FRAMEWORK_STATE_LOAD);
@@ -139,9 +143,7 @@ void framework_update()
         break;
 
     case FRAMEWORK_STATE_GAME:
-#ifndef DEBUG_LEVEL
-        error("framework: game not implemented yet.");
-#endif
+        game_update();
         break;
     }
 
@@ -166,9 +168,7 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_GAME:
-#ifndef DEBUG_LEVEL
-            error("framework: credits not implemented yet.");
-#endif
+            game_close();
             break;
         }
 
@@ -195,12 +195,13 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_GAME:
-#ifndef DEBUG_LEVEL
-            error("framework: game not implemented yet.");
-#endif
+            game_open();
             break;
         }
     }
+
+    // Update music after updating the whole game state
+    music_update();
 
     if(framework.state == FRAMEWORK_STATE_SHUTDOWN)
     {
