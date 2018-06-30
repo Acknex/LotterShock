@@ -15,12 +15,15 @@
 #define EL_ANIMSTATELIM skill22
 #define EL_STATE skill23
 #define EL_RUNSPEEDCUR skill24
+#define EL_EXPLODESTATE skill25
+#define EL_HITDIR skill30
+
 
 #define EL_WALKANIM "walk"
 #define EL_WAITANIM "stand"
 #define EL_DIEANIM "dance"
 #define EL_TURNANIM "turn"
-
+#define EL_HITANIM ""
 
 #define EL_STATE_INACTIVE 0
 #define EL_STATE_WAIT 1
@@ -200,11 +203,17 @@ void ESELSLERCHE__run(ENTITY* ptr)
 
 void ESELSLERCHE__explode(ENTITY* ptr)
 {
+//	EL_EXPLODESTATE
 	set(ptr, PASSABLE);
 	SPLATTER_explode(100, &ptr->x, 600, EL_bmapSplatter);
 	//TODO: explode animation
 	ptr->EL_STATE = EL_STATE_DIE;
 	ptr->EL_ANIMSTATE = 0;
+	if(ptr->EL_EXPLODESTATE >= 50)
+	{
+		ptr->EL_STATE = EL_STATE_DEAD;
+		set(ptr, PASSABLE);
+	}
 }
 
 void ESELSLERCHE__die(ENTITY* ptr)
@@ -223,7 +232,16 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 {
 	var animState;
 	animState = clamp(ptr->EL_ANIMSTATE, 0, 90);
+	var animMirror;
+	if (animState <=45)
+		animMirror = animState;
+	else
+		animMirror = 90 - animState;
+	ent_animate(ptr, EL_HITANIM, animMirror, 0);
 	
+	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
+	c_move(ptr, nullvector, vec_scale(ptr->DAMAGE_VEC, time_step), mode);
+
 	if (animState >= 90)
 	{
 		if (ptr->HEALTH <= 0)
@@ -236,6 +254,7 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 			ptr->event = ENEMY_HIT_event;
 		}
 		ptr->EL_ANIMSTATE = 0;
+		ptr->DAMAGE_VEC = nullvector;
 	}
 }
 
