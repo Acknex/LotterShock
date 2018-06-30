@@ -43,6 +43,7 @@
 #include "items.c"
 #include "particle.c"
 #include "journals.c"
+#include "eye.c"
 
 void main()
 {
