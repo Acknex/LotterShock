@@ -92,6 +92,7 @@ void ESELSLERCHE_Update()
 				ptr->event = NULL;
 				ptr->EL_STATE = EL_STATE_HIT;
 				var rnd = random(5);
+				SPLATTER_splat(&ptr->x, vector(0,0.8,0));
 				SPLATTER_explode(10, &ptr->x, 200, EL_bmapSplatter[rnd]);
 			}
 			
