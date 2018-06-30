@@ -80,6 +80,12 @@ ENTITY * weapons_wp_flamethrower =
     view = camera;
 }
 
+ENTITY * weapons_wp_cellgun_bzzt =
+{
+    type = "bzzt+4.png";
+    view = camera;
+}
+
 BMAP * weapons_bullethole_decal = "bullet_hole.tga";
 
 BMAP * weapons_fire_01 = "fire.pcx";
@@ -207,8 +213,19 @@ void weapons_select_next(int dir)
     } while(start != weapons.current);
 }
 
+bool weapons_draw_ammo(var amount)
+{
+	if(WEAPONS_CURRENT.ammo < amount)
+		return false;
+	
+	WEAPONS_CURRENT.ammo -= amount;
+	return true;
+}
+
 void weapons_shoot_shotgun()
 {
+    if(!weapons_draw_ammo(1))
+        return;
     int i;
     for(i = 0; i < 10; i++)
     {
@@ -230,6 +247,7 @@ void weapons_shoot_shotgun()
             p->lifespan = 640;
         }
     }
+    
 }
 
 void weapons_flame_effect_event(PARTICLE *p)
@@ -304,6 +322,9 @@ void weapons_flame_effect(PARTICLE *p)
 
 void weapons_shoot_flamethrower()
 {
+    if(!weapons_draw_ammo(0.3))
+        return;
+	
     VECTOR pos;
     vec_set(pos, weapons_wp_flamethrower.x);
     vec_add(pos,  vector(370, 0, 30));
@@ -319,6 +340,8 @@ void weapons_shoot_flamethrower()
     vec_normalize(dir, WEAPONS_FLAME_VEL);
 
     effect (weapons_flame_effect, maxv(1, time_frame * WEAPONS_FLAME_COUNT), pos, dir);
+    
+    
 }
 
 void weapons_shoot_sword(VECTOR * _pos, VECTOR * _ang)
@@ -367,14 +390,7 @@ void weapons_shoot_cellgun()
     vec_rotate(pos, camera.pan);
     vec_add(pos, camera.x);
 
-
-    /*
-    draw_line3d(pos, NULL, 100);
-    draw_line3d(pos, COLOR_GREEN, 100);
-    draw_line3d(end, COLOR_GREEN, 100);
-
-    draw_point3d(end, COLOR_BLUE, 100, 1);
-    */
+    // TODO: Add cellgun projectile
 }
 
 var weaponGetKickbackFac(var progress, var kickPoint)
@@ -440,7 +456,7 @@ void weapons_update()
                     if(weapons.current == WEAPON_FLAMETHROWER)
                     {
                         if(weapons.flamefade == 100)
-                            snd_play(weapons_snd_flamethrower_end, 100, 0);
+                            snd_play(weapons_snd_flamethrower_end, 30, 0);
                     }
                     else if(weapons.current == WEAPON_CELLGUN)
                     {
@@ -590,6 +606,7 @@ void weapons_update()
                     ent_animate(weapons_wp_cellgun, "PowerUp", weapons.spearpower, 0);
                     weapons.spearpower += WEAPONS_CURRENT.attackspeed * time_step;
                     weapons.speartimer = weapons.spearpower % 100;
+                    weapons.attackstate = 0;
                 }
                 else
                 {
@@ -612,7 +629,7 @@ void weapons_update()
                         weapons_shoot_cellgun();
                         weapons.attackstate = 2;
                     }
-                    else if(weapons.speartimer >= 60 && weapons.attackstate == 2)
+                    else if(weapons.speartimer >= 60 && weapons.speartimer < 90 && weapons.attackstate == 2)
                     {
                         snd_play(WEAPONS_CURRENT.snd, 100, 0);
                         weapons_shoot_cellgun();
@@ -682,6 +699,15 @@ void weapons_update()
 				weapons.attacking = 0;
 			}
 		}
+    }
+
+    if(weapons.current == WEAPON_CELLGUN)
+    {
+        weapons_wp_cellgun_bzzt.flags2 |= SHOW;
+    }
+    else
+    {
+        weapons_wp_cellgun_bzzt.flags2 &= ~SHOW;
     }
 }
 

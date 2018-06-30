@@ -33,7 +33,7 @@ void keycard_update() {
 // skill1: KEY_ID
 // skill2: KEYPAD_ID
 // skill3: EXPECTED_KEY
-action keypad() {	
+action Keypad() {	
 	my.emask = ENABLE_CLICK | ENABLE_TOUCH | ENABLE_RELEASE;
 	my.event = keypad_event;
 }
@@ -64,6 +64,7 @@ void keypad_event() {
 				} else {
 					printf("Falsch");
 				}
+				str_cpy(keypad_input, "");
 			}
 		break;
 		case EVENT_TOUCH:

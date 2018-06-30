@@ -6,6 +6,7 @@ void hud_init();
 
 void hud_show();
 void hud_update();
+void hud_hide();
 
 
 #endif
