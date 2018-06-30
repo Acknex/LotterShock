@@ -6,7 +6,6 @@
 #define PRAGMA_PATH "Assets"
 #define PRAGMA_PATH "Media"
 
-#include "config.h"
 #include "global.h"
 #include "framework.h"
 #include "splashscreen.h"
@@ -19,7 +18,9 @@
 #include "framework.c"
 #include "splashscreen.c"
 #include "mainmenu.c"
-#include "splatter.c"
+#include "music_player.c"
+#include "game.c"
+#include "weapons.c"
 
 void main()
 {

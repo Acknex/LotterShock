@@ -1,10 +1,8 @@
 #include "framework.h"
 #include "splashscreen.h"
 #include "mainmenu.h"
-
-// TODO:
-// -
-// -
+#include "music_player.h"
+#include "game.h"
 
 #define FRAMEWORK_ALPHA_BLENDSPEED  25
 
@@ -21,7 +19,6 @@ typedef struct
     int state;
     int nextState;
     int frameCounter;
-
     int loaderState;
 } framework_t;
 
@@ -40,11 +37,9 @@ PANEL * framework_load_screen =
 //! Initialisiert das Spiel und so
 void framework_init()
 {
-    fps_max = 60;
+    fps_max = 61;
+    d3d_triplebuffer = 1; // mit vsync
     video_set(1280, 720, 0, 2); // 1280x720, Window
-
-    // framework_load_screen.size_x = screen_size.x / framework_load_screen.size_x;
-    // framework_load_screen.size_y = screen_size.y / framework_load_screen.size_y;
 
     on_frame = framework_update;
 }
@@ -74,6 +69,15 @@ void framework_update()
             // spiel im ersten frame initialisieren
             splashscreen_init();
             mainmenu_init();
+            music_init();
+            game_init();
+
+            // TODO: Fix relative link?
+            music_start("Media/intro.mp3", 1.0, false);
+
+            // Ladebildschirm passend skalieren
+            framework_load_screen.scale_x = screen_size.x / framework_load_screen.size_x;
+            framework_load_screen.scale_y = screen_size.y / framework_load_screen.size_y;
 
 #ifdef DEBUG_FRAMEWORK_FASTSTART
             framework_transfer(FRAMEWORK_STATE_LOAD);
@@ -139,9 +143,7 @@ void framework_update()
         break;
 
     case FRAMEWORK_STATE_GAME:
-#ifndef DEBUG_LEVEL
-        error("framework: game not implemented yet.");
-#endif
+        game_update();
         break;
     }
 
@@ -166,9 +168,7 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_GAME:
-#ifndef DEBUG_LEVEL
-            error("framework: credits not implemented yet.");
-#endif
+            game_close();
             break;
         }
 
@@ -195,12 +195,13 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_GAME:
-#ifndef DEBUG_LEVEL
-            error("framework: game not implemented yet.");
-#endif
+            game_open();
             break;
         }
     }
+
+    // Update music after updating the whole game state
+    music_update();
 
     if(framework.state == FRAMEWORK_STATE_SHUTDOWN)
     {
