@@ -19,6 +19,10 @@ typedef int bool;
 //skill50-67 reserved for common use
 #define HEALTH skill50
 #define DAMAGE_HIT skill51
+#define DAMAGE_VEC skill52
+//#define DAMAGE_VEC skill53
+//#define DAMAGE_VEC skill54
+
 
 #define SUBSYSTEM_FRAMEWORK     1
 #define SUBSYSTEM_USABLES       2
