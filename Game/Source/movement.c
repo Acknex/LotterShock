@@ -13,14 +13,41 @@
 #define PLAYER_C_TRACE_MODE_DEFAULT (IGNORE_PASSABLE | IGNORE_SPRITES | IGNORE_PUSH | IGNORE_CONTENT)
 
 var playerSpeedFac = 1;
-var playerMaxSpeedFac = 80;
+var playerMaxSpeedFac = 72;
 var playerWeaponBob = 0;
 var playerHeightAboveGround = 96; // does not include vertical camera.z to player.z offset!
-var playerCameraHeight = 96;
+var playerCameraHeight = 108;
 var playerJumpHangtime = 6;
+ANGLE playerPanSmoothed; // for weapon sway
+ANGLE playerWeaponSway;
+ANGLE playerAngle;
+var playerHealth = 100;
+var playerHealthMax = 100;
+var playerLives = 3;
+
+var playerGetLives()
+{
+	return playerLives;
+}
+
+var playerGetHealth()
+{
+	return playerHealth;
+}
+
+var playerGetMaxHealth()
+{
+	return playerHealthMax;
+}
 
 void movement_update()
 {
+	if(playerHealth <= 0)
+	{
+		playerHealth = 0;
+		draw_quad(NULL,vector(0,0,0),NULL,vector(screen_size.x+1,screen_size.y+1,0),NULL,COLOR_RED,50,0);
+		return;
+	}
 	if(!player)
 	{
 		VECTOR spawnPos,vMin,vMax;
@@ -29,31 +56,42 @@ void movement_update()
 		vec_lerp(spawnPos,vMin,vMax,0.5); // keine lust, auf die richtigen pointer zu achten -.- wird eh nicht portiert
 		player = ent_create(CUBE_MDL, spawnPos, NULL);
 		set(player,INVISIBLE);
+		playerHealth = playerHealthMax;
 	}
 	vec_set(player.min_x,vector(-48,-48,-48));
 	vec_set(player.max_x,vector(48,48,138));
 	
 	// rotation
 	
+	vec_set(camera.pan,playerAngle);
+	VECTOR temp;
 	camera.pan += -mouse_force.x*10*time_step;
 	camera.pan %= 360;
 	camera.tilt = clamp(camera.tilt+mouse_force.y*10*time_step,-85,85);
 	player.pan = camera.pan;
 	move_min_z = 0.5;
 	disable_z_glide = 1;
+	move_friction = 0;
+	ang_diff(temp,camera.pan,playerPanSmoothed);
+	vec_scale(temp,minv(1,2*time_step));
+	ang_add(playerPanSmoothed,temp);
+	ang_diff(playerWeaponSway,camera.pan,playerPanSmoothed);
+	//draw_text(str_printf(NULL,"camera: (%d,%d,%d)",(int)camera.pan,(int)camera.tilt,(int)camera.roll),10,240,COLOR_RED);
+	//draw_text(str_printf(NULL,"playerPanSmoothed: (%d,%d,%d)",(int)playerPanSmoothed.pan,(int)playerPanSmoothed.tilt,(int)playerPanSmoothed.roll),10,260,COLOR_RED);
+	//draw_text(str_printf(NULL,"playerWeaponSway: (%d,%d,%d)",(int)playerWeaponSway.pan,(int)playerWeaponSway.tilt,(int)playerWeaponSway.roll),10,280,COLOR_RED);
+	
 	
 	// movement
 	
 	VECTOR targetSpeed;
 	vec_set(targetSpeed,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
-var playerAccelerationFac = 1;
+	var playerAccelerationFac = 1;
 	if(targetSpeed.x || targetSpeed.y)
 	{
 		playerAccelerationFac = 0.5;
 		vec_normalize(targetSpeed,playerMaxSpeedFac*playerSpeedFac);
 		vec_rotate(targetSpeed,vector(camera.pan,0,0));
 	}
-	VECTOR temp;
 	vec_set(temp,vector(player.PLAYER_SPEED_X,player.PLAYER_SPEED_Y,0));
 	vec_lerp(temp,temp,targetSpeed,playerAccelerationFac*time_step);
 	player.PLAYER_SPEED_X = temp.x;
@@ -106,13 +144,14 @@ var playerAccelerationFac = 1;
 		var fac = 1;
 		if(!input[INPUT_JUMP].down) playerJumpHangtime = 0;
 		if(playerJumpHangtime > 0) fac = 0.667;
-		player.PLAYER_SPEED_Z = maxv(player.PLAYER_SPEED_Z-fac*20*playerSpeedFac*time_step,-240);
+		player.PLAYER_SPEED_Z = maxv(player.PLAYER_SPEED_Z-fac*24*playerSpeedFac*time_step,-240);
 		c_move(player,nullvector,vector(0,0,player.PLAYER_SPEED_Z*time_step),PLAYER_C_MOVE_MODE_DEFAULT);
+		if(HIT_TARGET && normal.z < 0 && target.z > player.z) player.PLAYER_SPEED_Z = minv(player.PLAYER_SPEED_Z,0);
 		player.z = maxv(player.z,heightWanted);
 	}
 	else
 	{
-	player.z += (heightWanted-player.z)*0.5*time_step;
+		player.z += (heightWanted-player.z)*0.5*time_step;
 		player.PLAYER_SPEED_Z = 0;
 		player.PLAYER_GROUND_CONTACT = 1;
 		if(input[INPUT_JUMP].justPressed)
@@ -138,6 +177,39 @@ var playerAccelerationFac = 1;
 	camera.z = player.z+playerCameraHeight+sinv(playerWeaponBob)*6;
 	camera.arc = 95;
 	camera.roll += (-(input[INPUT_LEFT].down-input[INPUT_RIGHT].down)*2-camera.roll)*0.5*time_step;
+	
+	vec_set(playerAngle,camera.pan);
+	var progress = weaponGetAttackProgress();
+	if(progress > 0)
+	{
+		var kickbackFac = weaponGetKickbackFac(progress, 30)*0.2;
+		var recoilSide = sinv(total_ticks*10);
+		ang_rotate(camera.pan, vector(recoilSide*25*kickbackFac,30*kickbackFac,-5*recoilSide*kickbackFac));
+		
+	}
+}
+
+var playerGetCameraBob()
+{
+	return playerWeaponBob;
+}
+
+var playerGetSpeed()
+{
+	if(!player) return 0;
+	return vec_length(vector(player.PLAYER_SPEED_X,player.PLAYER_SPEED_Y,0));
+}
+
+ANGLE* playerGetWeaponSway() 
+{
+	return &playerWeaponSway;
+}
+
+void playerAddSpeed(VECTOR* v)
+{
+	if(!player) return 0;
+	player.PLAYER_SPEED_X += v.x;
+	player.PLAYER_SPEED_Y += v.y;
 }
 
 //////////////////////////////
