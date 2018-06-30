@@ -51,6 +51,7 @@ void game_update()
     keypad_update();
     medipack_update();
     doors_update();
+    journals_update();
     
     
 	 hud_update();
