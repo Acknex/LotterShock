@@ -46,7 +46,7 @@ void game_update()
     movement_update();
     if(!weapons_disabled) weapons_update();
     projectiles_update();
-    //keycard_update();
+    keycard_update();
     medipack_update();
     keypad_update();
     medipack_update();

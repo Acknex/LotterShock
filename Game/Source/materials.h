@@ -10,6 +10,11 @@ MATERIAL *matLevel =
 	effect = "Shaders/walls_unlit.fx";
 }
 
+MATERIAL *matTree =
+{
+	effect = "Shaders/tree.fx";
+}
+
 MATERIAL *matWeaponBasic =
 {
 	effect = "Shaders/weapon_basic.fx";

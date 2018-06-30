@@ -1,5 +1,5 @@
-/*action Keycard() {
-	framework_setup(my, SUBSYSTEM_USABLES);
+action Keycard() {
+	framework_setup(my, SUBSYSTEM_KEYCARDS);
 }
 
 void keycard_init() {
@@ -10,10 +10,11 @@ int keycard_lvl = 0;
 
 void keycard_update() {
 	ENTITY *ptr;
-	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_USABLES) {
+	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_KEYCARDS) {
 		ptr->pan += time_step;
 		
-		if (c_trace(ptr.x, player.x, IGNORE_ME) > 0) {
+		var trace = c_trace(ptr.x, player.x, IGNORE_ME);
+		if ((trace > 0) && (trace < 100)) {
 			if (you == player) {
 				
 				if (player) {
@@ -26,7 +27,7 @@ void keycard_update() {
 			}
 		}
 	}
-}*/
+}
 
 // skill1: KEY_ID
 // skill2: KEYPAD_ID

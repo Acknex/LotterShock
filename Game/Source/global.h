@@ -38,6 +38,7 @@ typedef int bool;
 #define SUBSYSTEM_DOORS         12
 #define SUBSYSTEM_KEYPADS       13
 #define SUBSYSTEM_JOURNALS      14
+#define SUBSYSTEM_KEYCARDS      15
 
 #define SUBSYSTEM_ENEMY_LERCHE  100
 #define SUBSYSTEM_ENEMY_WARLOCK 101
