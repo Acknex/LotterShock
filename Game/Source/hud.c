@@ -77,12 +77,19 @@ void hud_init()
 	hud_weapon_icon[WEAPON_SHOTGUN-1] = pan_create("bmap = label_shotgun.png",2);
 	hud_weapon_icon[WEAPON_CELLGUN-1] = pan_create("bmap = label_cellgun.png",2);
 	hud_weapon_icon[WEAPON_FLAMETHROWER-1] = pan_create("bmap = label_flamethrower.png",2);
+	/*
+	int i;
+	for(i=0; i<4; ++i)
+	{
+		hud_weapon_icon[i].scale_x = 0.8;
+		hud_weapon_icon[i].scale_y = 0.8;
+	}*/
 }
 
 void hud_place_label(PANEL *label, var offsetY)
 {
 	label->pos_x = HUD_BORDER_PADDING;
-	label->pos_y = screen_size.y - label.size_y - HUD_BORDER_PADDING - offsetY;
+	label->pos_y = screen_size.y - label.size_y*label.scale_y - HUD_BORDER_PADDING - offsetY;
 	label->alpha = HUD_BARS_MAX_ALPHA;
 	
 	set(label, SHOW);
@@ -90,10 +97,10 @@ void hud_place_label(PANEL *label, var offsetY)
 
 void hud_place_bar(PANEL* label, PANEL *bar, var offsetY) 
 {
-	var label_bar_ydiff = label->size_y - bar->size_y;
+	var label_bar_ydiff = label->size_y*label->scale_y - bar->size_y;
 	
-	bar->pos_x = HUD_BORDER_PADDING + label->size_x +3;
-	bar->pos_y = screen_size.y - label->size_y - HUD_BORDER_PADDING -offsetY + label_bar_ydiff/2;
+	bar->pos_x = HUD_BORDER_PADDING + label->size_x*label->scale_x +3;
+	bar->pos_y = screen_size.y - label->size_y*label->scale_y - HUD_BORDER_PADDING -offsetY + label_bar_ydiff/2;
 	bar->alpha = HUD_BARS_MAX_ALPHA;
 	
 	pan_setwindow  (bar, 0, 0,0, 0, bmap_height(hud_healthbar_bmap), hud_healthbar_bmap, 0,0);
@@ -103,14 +110,14 @@ void hud_place_bar(PANEL* label, PANEL *bar, var offsetY)
 
 void hud_update_bar(PANEL *bar, BMAP *source, var current_value, var max_value)
 {
-	var bar_size = bar->size_x-HUD_BARS_XPADDING*2;
+	var bar_size = bar->size_x*bar->scale_x-HUD_BARS_XPADDING*2;
 	bar_size *= current_value / max_value;
 	
-	var HUD_BARS_YPADDING = (bar->size_y-bmap_height(source))/2;
+	var HUD_BARS_YPADDING = (bar->size_y*bar->scale_y - bmap_height(source))/2;
 	
 	pan_setwindow  (	bar, 1, 
 							HUD_BARS_XPADDING,HUD_BARS_YPADDING, 
-							bar_size ,bmap_height(source), 
+							bar_size ,bmap_height(source)*bar->scale_y, 
 							source, 
 							0,0);
 }
@@ -118,7 +125,7 @@ void hud_update_bar(PANEL *bar, BMAP *source, var current_value, var max_value)
 
 void hud_show()
 {
-	var distance_between_bars = HUD_HP_label->size_y + HUD_DIST_BETWEEN_BARS;
+	var distance_between_bars = HUD_HP_label->size_y*HUD_HP_label->scale_y + HUD_DIST_BETWEEN_BARS;
 	hud_place_label(HUD_HP_label, 0);
 	
 	int i;
@@ -130,16 +137,16 @@ void hud_show()
 	}
 	
 	
-	hud_place_bar(HUD_HP_label, HUD_HP_bars, 0);
 	hud_place_bar(hud_weapon_icon[0], HUD_Ammo_bars, distance_between_bars);
+	hud_place_bar(HUD_HP_label, HUD_HP_bars, 0);
 	
 	HUD_crosshair->pos_x = (screen_size.x - HUD_crosshair.size_x*HUD_crosshair.scale_x) /2;
-	HUD_crosshair->pos_y = (screen_size.y - HUD_crosshair.size_y*HUD_crosshair.scale_y) /2;
+	HUD_crosshair->pos_y = (screen_size.y - HUD_crosshair.size_y*HUD_crosshair.scale_x) /2;
 	HUD_crosshair->alpha = 10;
 	set(HUD_crosshair, SHOW);
 	
-	HUD_Ammo_infotext->pos_x = HUD_Ammo_bars->pos_x + HUD_Ammo_bars->size_x/2;
-	HUD_Ammo_infotext->pos_y = HUD_Ammo_bars->pos_y + HUD_Ammo_bars->size_y/2;
+	HUD_Ammo_infotext->pos_x = HUD_Ammo_bars->pos_x + HUD_Ammo_bars->size_x*HUD_Ammo_bars->scale_x/2;
+	HUD_Ammo_infotext->pos_y = HUD_Ammo_bars->pos_y + HUD_Ammo_bars->size_y*HUD_Ammo_bars->scale_y/2;
 }
 
 void hud_hide()
