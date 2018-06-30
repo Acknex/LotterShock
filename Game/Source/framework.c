@@ -259,6 +259,7 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_LOAD:
+        		music_start("Media/background.mp3", 3, true);
             framework.loaderState = 0;
             set(framework_load_screen, SHOW);
             framework_load_screen->alpha = 100;

@@ -1,6 +1,6 @@
 #include "global.h"
 #include "framework.h"
-#include "eselslerche.h"
+#include "SKULL.h"
 #include "splatter.h"
 #include "scan.h"
 #include "enemy_hit.h"
@@ -36,10 +36,9 @@
 #define EL_STATE_DEAD 5
 #define EL_STATE_HIT 6
 
-BMAP* EL_bmapSplatter[5];
 
 // uses: EL_RUNSPEED, EL_TURNSPEED, EL_ANIMSPEED, EL_EXPLODEDIST, EL_ACTIVEDIST
-action Eselslerche()
+action SKULL()
 {
    framework_setup(my, SUBSYSTEM_ENEMY_LERCHE);
 	//TODO: useful default values
@@ -54,16 +53,11 @@ action Eselslerche()
 	set(my, SHADOW);
 }
 
-void ESELSLERCHE_GlobalInit()
+void SKULL_GlobalInit()
 {
-	EL_bmapSplatter[0] = bmap_create("splatter_green_01.png");
-	EL_bmapSplatter[1] = bmap_create("splatter_green_02.png");
-	EL_bmapSplatter[2] = bmap_create("splatter_green_03.png");
-	EL_bmapSplatter[3] = bmap_create("splatter_green_04.png");
-	EL_bmapSplatter[4] = bmap_create("splatter_green_05.png");
 }
 
-void ESELSLERCHE_Init()
+void SKULL_Init()
 {
 	ENTITY * ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENEMY_LERCHE)
@@ -71,7 +65,7 @@ void ESELSLERCHE_Init()
 	}	
 }
 
-void ESELSLERCHE_Update()
+void SKULL_Update()
 {
 	ENTITY * ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENEMY_LERCHE)
@@ -99,37 +93,37 @@ void ESELSLERCHE_Update()
 			{
 				case EL_STATE_INACTIVE:
 				{
-					ESELSLERCHE__inactive(ptr);
+					SKULL__inactive(ptr);
 					break;
 				}
 
 				case EL_STATE_WAIT:
 				{
-					ESELSLERCHE__wait(ptr);
+					SKULL__wait(ptr);
 					break;
 				}
 
 				case EL_STATE_RUN:
 				{
-					ESELSLERCHE__run(ptr);
+					SKULL__run(ptr);
 					break;
 				}
 
 				case EL_STATE_EXPLODE:
 				{
-					ESELSLERCHE__explode(ptr);
+					SKULL__explode(ptr);
 					break;
 				}
 
 				case EL_STATE_DIE:
 				{
-					ESELSLERCHE__die(ptr);
+					SKULL__die(ptr);
 					break;
 				}
 
 				case EL_STATE_HIT:
 				{
-					ESELSLERCHE__hit(ptr);
+					SKULL__hit(ptr);
 					break;
 				}
 
@@ -157,7 +151,7 @@ void ESELSLERCHE_Update()
 	}	
 }
 
-var ESELSLERCHE__turnToPlayer(ENTITY* ptr)
+var SKULL__turnToPlayer(ENTITY* ptr)
 {
 	ANGLE vecAngle;
 	VECTOR vecTemp;
@@ -181,7 +175,7 @@ var ESELSLERCHE__turnToPlayer(ENTITY* ptr)
 //		return 0;
 }
 
-void ESELSLERCHE__inactive(ENTITY* ptr)
+void SKULL__inactive(ENTITY* ptr)
 {
 	/* transitions */
 	if(SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST))
@@ -194,12 +188,12 @@ void ESELSLERCHE__inactive(ENTITY* ptr)
 	}
 }
 
-void ESELSLERCHE__wait(ENTITY* ptr)
+void SKULL__wait(ENTITY* ptr)
 {
 	ent_animate(ptr, EL_TURNANIM, ptr->EL_ANIMSTATE, ANM_CYCLE);
 
 	/* transitions */
-	if (ESELSLERCHE__turnToPlayer(ptr) != 0)
+	if (SKULL__turnToPlayer(ptr) != 0)
 	{
 		ptr->EL_ANIMSTATE = 0;
 		ptr->EL_RUNSPEEDCUR = 0;
@@ -214,10 +208,10 @@ void ESELSLERCHE__wait(ENTITY* ptr)
 	}
 }
 
-void ESELSLERCHE__run(ENTITY* ptr)
+void SKULL__run(ENTITY* ptr)
 {
 	ptr->EL_RUNSPEEDCUR = minv(ptr->EL_RUNSPEEDCUR + 4*time_step, ptr->EL_RUNSPEED);
-	ESELSLERCHE__turnToPlayer(ptr);
+	SKULL__turnToPlayer(ptr);
 	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
 	c_move(ptr, vector(ptr->EL_RUNSPEEDCUR, 0, 0), nullvector, mode);
 	ent_animate(ptr, EL_WALKANIM, ptr->EL_ANIMSTATE, ANM_CYCLE);
@@ -244,7 +238,7 @@ void ESELSLERCHE__run(ENTITY* ptr)
 
 }
 
-void ESELSLERCHE__explode(ENTITY* ptr)
+void SKULL__explode(ENTITY* ptr)
 {
 	
 	ptr->EL_EXPLODESTATE += time_step;
@@ -274,7 +268,7 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 	}
 }
 
-void ESELSLERCHE__die(ENTITY* ptr)
+void SKULL__die(ENTITY* ptr)
 {
 	var animState;
 	animState = clamp(ptr->EL_ANIMSTATE, 0, 50);
@@ -287,7 +281,7 @@ void ESELSLERCHE__die(ENTITY* ptr)
 	}
 }
 
-void ESELSLERCHE__hit(ENTITY* ptr)
+void SKULL__hit(ENTITY* ptr)
 {
 	var animState;
 	animState = clamp(ptr->EL_ANIMSTATE, 0, 90);
@@ -324,13 +318,13 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 }
 
 
-void spawn_startup()
+void spawnskull_startup()
 {
 	
 	wait(-5);
 	while(1)
 	{
-		ENTITY* ptr = ent_create("cEselslerche.mdl", vector(5900,-6050,250), Eselslerche);
+		//ENTITY* ptr = ent_create("skull.mdl", vector(5900,-6050,250), SKULL);
 		wait(-10);
 	}
 }

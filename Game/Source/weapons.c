@@ -261,14 +261,30 @@ void weapons_shoot_shotgun()
 
 void weapons_secondary_flame_effect_event(PARTICLE *p)
 {
-	if(p->lifespan <50)
+	p->skill_a += time_step;
+	
+	if(p->skill_a < 30)
 		p->alpha += time_step;
 	else
-		p->alpha -= time_step;
+		if (p->skill_a > 60)
+			p->alpha -= 0.5*time_step;
+		p->alpha -= 0.3*time_step;
+	
+	vec_set(p->x, p->skill_x);
+	
+	var r = 6;
+	var o = r/2;
+	vec_add(p->x, vector(random(r)-o,random(r)-o,random(r)-o));
+	
+	
+	if(p->alpha <= 0)
+		p->lifespan = 0;
 }
 
 void weapons_secondary_flame_effect(PARTICLE *p)
 {
+	vec_set(p->skill_x, p->x);
+	
 	p->bmap = weapons_fire_01;
 	p->flags = LIGHT|TRANSLUCENT|BRIGHT;
 	p->alpha = 0;
@@ -344,10 +360,15 @@ void weapons_flame_effect_event(PARTICLE *p)
 	if(p->skill_y < 40)
 		p->size = clamp(p->size + 10 * time_step, 5, 50);
 	if(p->skill_y > 60)
-		p->size = clamp(p->size - time_step, 25, 50);
+		p->size = clamp(p->size - time_step, 35, 50);
 
-	//if(p->lifespan < 25)
-	p->alpha = p->lifespan;
+	p->alpha = p->lifespan/2;
+	if(p->lifespan < 30)
+	{
+		p->alpha = 2*p->lifespan - 45;
+		if(p->alpha <= 0)
+			p->lifespan = 0;
+	}	
 }
 
 void weapons_flame_effect(PARTICLE *p)
