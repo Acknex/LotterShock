@@ -33,7 +33,7 @@ void framework_init()
 
 void framework_setup(ENTITY * ent, int subsystem)
 {
-    if(ent == NULL) error("framework_setup mit NULL aufgerufen!");
+    if(ent == NULL) error("framework: framework_setup mit NULL aufgerufen!");
     ent->SK_SUBSYSTEM = subsystem;
 }
 
@@ -69,19 +69,39 @@ void framework_update()
         break;
 
     case FRAMEWORK_STATE_MAINMENU:
+    {
         mainmenu_update();
+        int response = mainmenu_get_response();
+        if(response != MAINMENU_RESPONSE_STILLACTIVE)
+        {
+            switch(response)
+            {
+            case MAINMENU_RESPONSE_START:
+                framework_transfer(FRAMEWORK_STATE_LOAD);
+                break;
+            case MAINMENU_RESPONSE_CREDITS:
+                framework_transfer(FRAMEWORK_STATE_CREDITS);
+                break;
+            case MAINMENU_RESPONSE_EXIT:
+                framework_transfer(FRAMEWORK_STATE_SHUTDOWN);
+                break;
+            default:
+                error("framework: unknown response from main menu.");
+            }
+        }
         break;
+    }
 
     case FRAMEWORK_STATE_CREDITS:
-        error("credits not implemented yet.");
+        error("framework: credits not implemented yet.");
         break;
 
     case FRAMEWORK_STATE_LOAD:
-        error("game load not implemented yet.");
+        error("framework: game load not implemented yet.");
         break;
 
     case FRAMEWORK_STATE_GAME:
-        error("game not implemented yet.");
+        error("framework: game not implemented yet.");
         break;
     }
 
@@ -98,15 +118,15 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_CREDITS:
-            error("credits not implemented yet.");
+            error("framework: credits not implemented yet.");
             break;
 
         case FRAMEWORK_STATE_LOAD:
-            error("credits not implemented yet.");
+            error("framework: credits not implemented yet.");
             break;
 
         case FRAMEWORK_STATE_GAME:
-            error("credits not implemented yet.");
+            error("framework: credits not implemented yet.");
             break;
         }
         framework.state = framework.nextState;
@@ -121,15 +141,15 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_CREDITS:
-            error("credits not implemented yet.");
+            error("framework: credits not implemented yet.");
             break;
 
         case FRAMEWORK_STATE_LOAD:
-            error("game load not implemented yet.");
+            error("framework: game load not implemented yet.");
             break;
 
         case FRAMEWORK_STATE_GAME:
-            error("game not implemented yet.");
+            error("framework: game not implemented yet.");
             break;
         }
     }
