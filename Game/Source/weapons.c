@@ -12,13 +12,14 @@
 #define WEAPONS_CURRENT (weapons.weapon[weapons.current])
 
 #define WEAPONS_SHOTGUN_RANGE  8000
-#define WEAPONS_SHOTGUN_SPREAD 4 // *2 grad
+#define WEAPONS_SHOTGUN_SPREAD 8 // *2 grad
 #define WEAPONS_SHOTGUN_DAMAGE 5
 
 #define WEAPONS_FLAME_VEL 100
 #define WEAPONS_FLAME_SPREAD 13
 #define WEAPONS_FLAME_COUNT 25
-#define WEAPONS_FLAME_DAMPING 5.0
+#define WEAPONS_FLAME_DAMPING 2.0
+#define WEAPONS_FLAME_GRAVITY 5.0
 
 #define WEAPONS_CELLGUN_DAMAGE 7
 
@@ -47,6 +48,7 @@ typedef struct weapons_t
 	var speartimer;
 	var electro;
 	weapons_data_t weapon[WEAPONS_COUNT];
+    VECTOR flamedir;
 } weapons_t;
 
 weapons_t weapons;
@@ -249,7 +251,7 @@ void weapons_shoot_shotgun()
 		
 		vec_add(dir, camera.x);
 		dmgsys_set_src(DMGSYS_PLAYER, player, WEAPONS_SHOTGUN_DAMAGE);
-		var dist = c_trace(camera.x, dir, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
+        var dist = c_trace(camera.x, dir, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
 		/*if(HIT_TARGET)
 		{
 			PARTICLE *p = ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
@@ -298,13 +300,13 @@ void weapons_flame_effect_event(PARTICLE *p)
 {
 	if(p->skill_x == 0)
 	{
-		p->vel_x -= minv(abs(p->vel_x), WEAPONS_FLAME_DAMPING) * sign(p->vel_x) * time_step;
-		p->vel_y -= minv(abs(p->vel_y), WEAPONS_FLAME_DAMPING) * sign(p->vel_y) * time_step;
-		p->vel_z -= minv(abs(p->vel_z), WEAPONS_FLAME_DAMPING) * sign(p->vel_z) * time_step;
-		p->vel_z -= 10 * time_step;
+        p->skill_a -= minv(abs(p->skill_a), p->skill[3]) * sign(p->skill_a) * time_step;
+        p->skill_b -= minv(abs(p->skill_b), p->skill[3]) * sign(p->skill_b) * time_step;
+        p->skill_c -= minv(abs(p->skill_c), p->skill[3]) * sign(p->skill_c) * time_step;
+        p->skill_c -= WEAPONS_FLAME_GRAVITY * time_step;
 
 		VECTOR src, dest;
-		vec_set(dest, p->vel_x);
+        vec_set(dest, p->skill_a);
 		vec_normalize(dest, maxv(1, vec_length(dest)));
 
 		vec_set(src, dest);
@@ -321,19 +323,20 @@ void weapons_flame_effect_event(PARTICLE *p)
 			p->skill_x = 1;
 			p->flags &= ~STREAK;
 			
+            /*
 			VECTOR secondary_position;
 			vec_set(&secondary_position, &normal);
 			vec_normalize(&secondary_position,25.);
 			vec_add(&secondary_position, &p->x);
-			
-			effect (weapons_secondary_flame_effect, 1, &secondary_position, nullvector);
-			//p->lifespan = 0;
+            */
+            // effect (weapons_secondary_flame_effect, 1, &secondary_position, nullvector);
+            // p->lifespan = 0;
 			
 		}
 		else
 		{
 			VECTOR dist;
-			vec_set(dist, p->vel_x);
+            vec_set(dist, p->skill_a);
 			vec_scale(dist, time_step);
 			vec_add(p->x, dist);
 		}
@@ -341,8 +344,34 @@ void weapons_flame_effect_event(PARTICLE *p)
 
 	if(p->skill_z <= 0)
 	{
-		dmgsys_set_src(DMGSYS_PLAYER, player, 1);
-		c_scan(p->x, vector(0,0,0), vector(360, 360, p->size), ACTIVATE_SHOOT | IGNORE_PASSABLE | IGNORE_PASSENTS | SCAN_ENTS);
+        dmgsys_set_src(DMGSYS_PLAYER, player, 2);
+        // c_scan(p->x, vector(0,0,0), vector(360, 360, p->size), IGNORE_PASSABLE | IGNORE_PASSENTS | SCAN_ENTS);
+        ENTITY * it;
+        for(it = ent_next(NULL); it != NULL; it = ent_next(it))
+        {
+            if(it->SK_SUBSYSTEM < 1000)
+                continue;
+
+            VECTOR tmp;
+            vec_diff(tmp, p->x, it->x);
+            vec_rotateback(tmp, it->pan);
+
+            if(tmp.x < it->min_x || tmp.y < it->min_y || tmp.z < it->min_z)
+                continue;
+            if(tmp.x > it->max_x || tmp.y > it->max_y || tmp.z > it->max_z)
+                continue;
+
+            if((it->emask & ENABLE_SHOOT) && (it->event))
+            {
+                my = it;
+                event_type = EVENT_SHOOT;
+                function fo();
+                fo = it->event;
+                fo();
+                my = NULL;
+            }
+        }
+
 		p->skill_z = 1;
 	}
 	p->skill_z -= time_step;
@@ -351,16 +380,17 @@ void weapons_flame_effect_event(PARTICLE *p)
 		p->flags &= ~STREAK;
 	
 	
-	p->red = maxv(255-p->skill_y, 128);// - random(32);
-	p->green = maxv(90,180-p->skill_y*1.5);// + random(64);
-	p->blue = maxv(64, 128-p->skill_y*80);
+    p->red   = maxv(128, 255 - p->skill_y);// - random(32);
+    p->green = maxv(90,  180 - p->skill_y*1.5);// + random(64);
+    p->blue  = maxv(64,  128 - p->skill_y*80);
 
 	p->skill_y += 10 * time_step;
 	
-	if(p->skill_y < 40)
-		p->size = clamp(p->size + 10 * time_step, 5, 50);
-	if(p->skill_y > 60)
-		p->size = clamp(p->size - time_step, 35, 50);
+    // if(p->skill_y < 40)
+    // 	p->size = clamp(p->size + 10 * time_step, 5, 50);
+    // if(p->skill_y > 60)
+    // 	p->size = clamp(p->size - time_step, 35, 50);
+    p->size += 10 * time_step;
 
 	p->alpha = p->lifespan/2;
 	if(p->lifespan < 30)
@@ -373,17 +403,21 @@ void weapons_flame_effect_event(PARTICLE *p)
 
 void weapons_flame_effect(PARTICLE *p)
 {
-	p->bmap = weapons_fire_01;
-	vec_rotate(p->vel_x, vector(
-	random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
-	random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
-	random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD ));
+    p->bmap = weapons_fire_01;
 	p->flags = TRANSLUCENT | LIGHT | BRIGHT | STREAK;
 	vec_set(p->blue, vector(255, 192, 192));
-	p->lifespan = 100;
+
+    vec_set(p->skill_a, weapons.flamedir);
+    vec_rotate(p->skill_a, vector(
+        random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
+        random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
+        random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD ));
+
+    p->lifespan = 100;
 	p->size = 5 + random(5);
 	p->event = weapons_flame_effect_event;
 	p->alpha = 80 + random(10);
+    p->skill[3] = (0.5 + random(1)/2) * WEAPONS_FLAME_DAMPING;
 }
 
 void weapons_shoot_flamethrower()
@@ -402,7 +436,9 @@ void weapons_shoot_flamethrower()
 
 	vec_normalize(dir, WEAPONS_FLAME_VEL);
 
-    vec_add(dir, playerGetSpeedVec());
+    vec_set(weapons.flamedir, dir);
+
+    vec_add(weapons.flamedir, playerGetSpeedVec());
 
 	effect (weapons_flame_effect, maxv(1, time_frame * WEAPONS_FLAME_COUNT), pos, dir);
 	
