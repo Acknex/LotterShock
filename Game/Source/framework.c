@@ -46,8 +46,10 @@ void framework_init()
     particle_mode = 8;
     video_set(1600, 900, 0, 2); // 1280x720, Window
     
+#ifndef FRAMEWORK_NO_POSTPROCESS
     SetupDefaultMaterials();
     SetupPostprocessing();
+#endif
 
     on_frame = framework_update;
 #ifdef DEBUG
@@ -163,6 +165,9 @@ void framework_update()
 #else
             level_load(LEVEL_FILE);
 #endif
+			wait_for(level_load);
+			ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
+			
         }
         
         if(framework.loaderState >= 6)

@@ -43,3 +43,22 @@ var SCAN_IsPlayerInSight(ENTITY* ent, var distance, var fov)
 	
 	return 0;
 }
+
+var SCAN_IsPlayerBehind(ENTITY* ent, var distance)
+{
+	if (player == NULL)
+		return 0;
+		
+		
+			VECTOR vecDir;
+			vec_set(&vecDir, &player->x);
+			vec_sub(&vecDir, &ent->x);
+			
+			ANGLE vecAng;
+			vec_to_angle(&vecAng, &vecDir);
+			
+			if ((absv(vecAng.pan - ent->pan) >= 100) && (vec_dist(&player->x, ent->x) > distance))
+				return 1;
+			else	
+				return 0;
+}
