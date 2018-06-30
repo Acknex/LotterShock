@@ -1,4 +1,4 @@
-
+#include "weapons.h"
 
 #define HUD_ELEMENT_COUNT 1
 
@@ -15,6 +15,15 @@ BMAP * hud_healthbar_bmap = "healthbar.png";
 
 BMAP * hud_ammo_label_bmap = "ammo_label.png";
 BMAP * hud_ammobar_bmap = "ammobar.png";
+
+BMAP * hud_weapon_icon[4];
+
+PANEL* HUD_crosshair =
+{
+	bmap = "fadenkreuz.png";
+	flags = TRANSLUCENT;
+	layer = 2;
+}
 
 PANEL* HUD_HP_label =
 {
@@ -46,6 +55,10 @@ PANEL* HUD_Ammo_bars =
 
 void hud_init()
 {
+	hud_weapon_icon[WEAPON_SWORD] = bmap_create("label_sword.png");
+	hud_weapon_icon[WEAPON_SHOTGUN] = bmap_create("label_shotgun.png");
+	hud_weapon_icon[WEAPON_CELLGUN] = bmap_create("label_cellgun.png");
+	hud_weapon_icon[WEAPON_FLAMETHROWER] = bmap_create("label_flamethrower.png");
 }
 
 void hud_show_bar(PANEL *label, PANEL *bar, var offsetY) 
@@ -82,6 +95,23 @@ void hud_show()
 	var distance_between_bars = HUD_HP_label->size_y + HUD_DIST_BETWEEN_BARS;
 	hud_show_bar(HUD_HP_label, HUD_HP_bars, 0);
 	hud_show_bar(HUD_Ammo_label, HUD_Ammo_bars, distance_between_bars);
+	
+	HUD_crosshair->pos_x = (screen_size.x - HUD_crosshair.size_x) /2;
+	HUD_crosshair->pos_y = (screen_size.y - HUD_crosshair.size_y) /2;
+	HUD_crosshair->alpha = 10;
+	set(HUD_crosshair, SHOW);
+}
+
+BMAP *hud_current_weapon_icon(int id)
+{
+	int id = weapons_get_current();
+	switch(id)
+	{
+		case WEAPON_SWORD:
+		case WEAPON_SHOTGUN:
+		case WEAPON_CELLGUN:
+		case WEAPON_FLAMETHROWER:
+	}
 }
 
 void hud_update()
@@ -90,7 +120,10 @@ void hud_update()
 	var PLAYER_MAXHEALTH = 50;
 	var PLAYER_HEALTH = 30;
 	//
+	var ammo = 20;//weapons_get_ammo();
+	var max_ammo = 100;//weapons_get_max_ammo();
+	
 	
     hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, PLAYER_HEALTH, PLAYER_MAXHEALTH);
-    hud_update_bar(HUD_Ammo_bars, hud_ammobar_bmap, PLAYER_HEALTH, PLAYER_MAXHEALTH);
+    hud_update_bar(HUD_Ammo_bars, hud_ammobar_bmap, ammo, max_ammo);
 }
