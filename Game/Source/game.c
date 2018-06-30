@@ -13,6 +13,7 @@ bool game_done;
 void game_init()
 {
     weapons_init();
+    GIB_GlobalInit();
 }
 
 void game_open()
@@ -21,7 +22,6 @@ void game_open()
     mouse_pointer = 0;
     weapons_open();
     ESELSLERCHE_Init();
-    GIB_GlobalInit();
     hud_show();
 }
 
@@ -63,7 +63,6 @@ movement_close();
 projectiles_close();
     hud_hide();
     weapons_close();
-    GIB_Close();
     mouse_pointer = 1;
 }
 
