@@ -12,8 +12,8 @@
 #define WEAPONS_CURRENT (weapons.weapon[weapons.current])
 
 #define WEAPONS_SHOTGUN_RANGE  8000
-#define WEAPONS_SHOTGUN_SPREAD 8 // *2 grad
-#define WEAPONS_SHOTGUN_DAMAGE 5
+#define WEAPONS_SHOTGUN_SPREAD 6 // *2 grad
+#define WEAPONS_SHOTGUN_DAMAGE 10
 
 #define WEAPONS_FLAME_VEL 100
 #define WEAPONS_FLAME_SPREAD 13
