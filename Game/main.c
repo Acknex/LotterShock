@@ -44,5 +44,6 @@
 
 void main()
 {
+	collision_mode = 2;
 	framework_init();
 }

@@ -26,4 +26,6 @@
 	
 	var playerEntMorphBallIsActive();
 
+	void playerSetLight(COLOR* color, var lightRange, var duration);
+
 #endif // MOVEMENT_H
