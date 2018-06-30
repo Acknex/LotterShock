@@ -1,4 +1,5 @@
 #include "mainmenu.h"
+#include "input.h"
 
 #define MAINMENU_ITEM_COUNT 3
 
@@ -45,7 +46,7 @@ PANEL * mainmenu_items[MAINMENU_ITEM_COUNT];
 
 int mainmenu_selection;
 
-int mainmenu_response = MAINMENU_RESPONSE_STILLACTIVE;
+int mainmenu_response;
 
 int mainmenu_get_response()
 {
@@ -73,13 +74,25 @@ void mainmenu_open()
     mainmenu_selection_pan->alpha = 0;
     mouse_mode = 4;
     mainmenu_selection = 0;
+    mainmenu_response = MAINMENU_RESPONSE_STILLACTIVE;
 }
 
 void mainmenu_update()
 {
     int i;
 
-    for(i = 0; i < 3; i++)
+    if(input_hit(INPUT_DOWN) && mainmenu_selection < (MAINMENU_ITEM_COUNT-1))
+    {
+        mainmenu_selection += 1;
+        snd_play(mainmenu_swap_snd, 100, 0);
+    }
+    if(input_hit(INPUT_UP) && mainmenu_selection > 0)
+    {
+        mainmenu_selection -= 1;
+        snd_play(mainmenu_swap_snd, 100, 0);
+    }
+
+    for(i = 0; i < MAINMENU_ITEM_COUNT; i++)
     {
         mainmenu_items[i]->alpha = clamp(
             mainmenu_items[i]->alpha + MAINMENU_FADE_SPEED * time_step,
@@ -103,7 +116,7 @@ void mainmenu_update()
     mainmenu_selection_pan->pos_x = mainmenu_items[mainmenu_selection]->pos_x;
     mainmenu_selection_pan->pos_y = mainmenu_items[mainmenu_selection]->pos_y;
 
-    if(mouse_left && mainmenu_response == MAINMENU_RESPONSE_STILLACTIVE && mouse_panel != NULL)
+    if(input_hit(INPUT_USE) || input_hit(INPUT_ATTACK) || input_hit(INPUT_JUMP))
     {
         snd_play(mainmenu_accept_snd, 100, 0);
         switch(mainmenu_selection)

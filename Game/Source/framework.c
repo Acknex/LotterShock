@@ -1,10 +1,9 @@
 #include "framework.h"
 #include "splashscreen.h"
 #include "mainmenu.h"
-
-// TODO:
-// -
-// -
+#include "music_player.h"
+#include "game.h"
+#include "input.h"
 
 #define FRAMEWORK_ALPHA_BLENDSPEED  25
 
@@ -15,13 +14,13 @@
 #define FRAMEWORK_STATE_LOAD         3
 #define FRAMEWORK_STATE_GAME         4
 #define FRAMEWORK_STATE_SPLASHSCREEN 5
+#define FRAMEWORK_STATE_UNLOAD       6
 
 typedef struct
 {
     int state;
     int nextState;
     int frameCounter;
-
     int loaderState;
 } framework_t;
 
@@ -40,12 +39,14 @@ PANEL * framework_load_screen =
 //! Initialisiert das Spiel und so
 void framework_init()
 {
+    fps_max = 61;
+    d3d_triplebuffer = 1; // mit vsync
     video_set(1280, 720, 0, 2); // 1280x720, Window
 
-    framework_load_screen.size_x = screen_size.x / framework_load_screen.size_x;
-    framework_load_screen.size_y = screen_size.y / framework_load_screen.size_y;
-
     on_frame = framework_update;
+#ifdef DEBUG
+    on_esc = NULL;
+#endif
 }
 
 void framework_setup(ENTITY * ent, int subsystem)
@@ -62,8 +63,12 @@ void framework_transfer(int state)
 //! Aktualisiert alles.
 void framework_update()
 {
-    if(key_esc)
+#ifdef DEBUG
+    if(key_alt || key_f4)
         framework_transfer(FRAMEWORK_STATE_SHUTDOWN);
+#endif
+
+    input_update();
 
     switch(framework.state)
     {
@@ -71,8 +76,19 @@ void framework_update()
         if(framework.frameCounter == 1)
         {
             // spiel im ersten frame initialisieren
+            input_init();
+
             splashscreen_init();
             mainmenu_init();
+            music_init();
+            game_init();
+
+            // TODO: Fix relative link?
+            music_start("Media/intro.mp3", 1.0, false);
+
+            // Ladebildschirm passend skalieren
+            framework_load_screen.scale_x = screen_size.x / framework_load_screen.size_x;
+            framework_load_screen.scale_y = screen_size.y / framework_load_screen.size_y;
 
 #ifdef DEBUG_FRAMEWORK_FASTSTART
             framework_transfer(FRAMEWORK_STATE_LOAD);
@@ -125,7 +141,7 @@ void framework_update()
             level_load(LEVEL_FILE);
 #endif
         }
-        else if(framework.loaderState > 3)
+        if(framework.loaderState >= 6)
         {
             framework_load_screen->alpha -= FRAMEWORK_ALPHA_BLENDSPEED * time_step;
             if(framework_load_screen->alpha <= 0)
@@ -138,14 +154,36 @@ void framework_update()
         break;
 
     case FRAMEWORK_STATE_GAME:
-        error("framework: game not implemented yet.");
+        game_update();
+        if(game_is_done())
+            framework_transfer(FRAMEWORK_STATE_UNLOAD);
         break;
+    case FRAMEWORK_STATE_UNLOAD:
+        level_load(NULL);
+        framework_transfer(FRAMEWORK_STATE_MAINMENU);
+        break;
+
+    case FRAMEWORK_STATE_UNLOAD:
+        break;
+
+    default:
+        error(str_printf(NULL, "framework: unsupported state %d!", framework.state));
+
     }
 
     if(framework.state != framework.nextState)
     {
+        diag(str_printf(NULL, "\nstate transition from %d to %d.", framework.state, framework.nextState));
+
         switch(framework.state)
         {
+        case FRAMEWORK_STATE_SHUTDOWN:
+            error("framework: shutdown state should never be left again!");
+            break;
+
+        case FRAMEWORK_STATE_STARTUP:
+            break;
+
         case FRAMEWORK_STATE_SPLASHSCREEN:
             splashscreen_close();
             break;
@@ -163,14 +201,27 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_GAME:
-            error("framework: credits not implemented yet.");
+            game_close();
             break;
+
+        case FRAMEWORK_STATE_UNLOAD:
+            break;
+
+        default:
+            error(str_printf(NULL, "framework: unsupported state %d!", framework.state));
         }
 
         framework.state = framework.nextState;
 
         switch(framework.state)
         {
+        case FRAMEWORK_STATE_SHUTDOWN:
+            break;
+
+        case FRAMEWORK_STATE_STARTUP:
+            error("framework: startup state should never be entered again!");
+            break;
+
         case FRAMEWORK_STATE_SPLASHSCREEN:
             splashscreen_open();
             break;
@@ -190,10 +241,19 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_GAME:
-            error("framework: game not implemented yet.");
+            game_open();
             break;
+
+        case FRAMEWORK_STATE_UNLOAD:
+            break;
+
+        default:
+            error(str_printf(NULL, "framework: unsupported state %d!", framework.state));
         }
     }
+
+    // Update music after updating the whole game state
+    music_update();
 
     if(framework.state == FRAMEWORK_STATE_SHUTDOWN)
     {
