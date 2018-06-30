@@ -17,4 +17,7 @@ void weapons_close();
 //! Adds the weapon with the given ID to the arsenal
 void weapons_add(int id);
 
+//! Erects the sword and makes it longer.
+void weapons_erect_sword();
+
 #endif // WEAPONS_H

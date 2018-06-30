@@ -44,7 +44,7 @@ float4 ps(out_ps In): COLOR
 	float4 color;
 	color.rgba = tex2D(sTexture, In.uv0);
 	float glow = color.a;
-	color.a = 1.0f;
+	color.a = 1.0;
 	
 	float3 light = tex2D(sLightmap, In.uv1).rgb;
 	
