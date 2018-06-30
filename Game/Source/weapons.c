@@ -496,10 +496,10 @@ void weapons_update()
             {
                 VECTOR pos, ang;
                 var i;
-                for(i = 0; i < 20; i++)
+                for(i = 0; i < 5; i++)
                 {
-                    vec_lerp(pos, sourcePosePos, targetPosePos, 0.01 * (weapons.attackprogress + 0.05 * i * WEAPONS_CURRENT.attackspeed));
-                    ang_lerp(ang, sourcePoseAng, targetPoseAng, 0.01 * (weapons.attackprogress + 0.05 * i * WEAPONS_CURRENT.attackspeed));
+                    vec_lerp(pos, sourcePosePos, targetPosePos, 0.01 * (weapons.attackprogress + 0.2 * i * WEAPONS_CURRENT.attackspeed));
+                    ang_lerp(ang, sourcePoseAng, targetPoseAng, 0.01 * (weapons.attackprogress + 0.2 * i * WEAPONS_CURRENT.attackspeed));
                     weapons_shoot_sword(pos, ang);
                 }
             }
