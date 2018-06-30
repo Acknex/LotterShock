@@ -41,7 +41,7 @@ typedef int bool;
 #define SUBSYSTEM_ENEMY_EYE     104
 #define SUBSYSTEM_ENEMY_GIB     105
 
-
+#define FX_WAITTIME				640
 
 #define SUBSYSTEM_LOOP(ptr,system) for(ptr = ent_next(NULL); ptr != NULL; ptr = ent_next(ptr)) if(ptr->SK_SUBSYSTEM == (system))
 
