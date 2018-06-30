@@ -141,8 +141,8 @@ void ESELSLERCHE_Update()
 			}	
 		}
 	
-		if (ptr->EL_STATE != EL_STATE_EXPLODE && ptr->EL_STATE != EL_STATE_DEAD && ptr->EL_STATE != EL_STATE_INACTIVE)
-			c_updatehull(ptr, ptr->frame);
+//		if (ptr->EL_STATE != EL_STATE_EXPLODE && ptr->EL_STATE != EL_STATE_DEAD && ptr->EL_STATE != EL_STATE_INACTIVE)
+//			c_updatehull(ptr, ptr->frame);
 
 		if (ptr->EL_STATE != EL_STATE_EXPLODE)
 		{
@@ -330,7 +330,7 @@ void spawn_startup()
 	wait(-5);
 	while(1)
 	{
-		ENTITY* ptr = ent_create("cEselslerche.mdl", vector(2200,-2750,100), Eselslerche);
+		ENTITY* ptr = ent_create("cEselslerche.mdl", vector(5900,-6050,250), Eselslerche);
 		wait(-10);
 	}
 }
