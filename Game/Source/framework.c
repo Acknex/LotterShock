@@ -65,7 +65,7 @@ void framework_transfer(int state)
 void framework_update()
 {
 #ifdef DEBUG
-    if(key_alt || key_f4)
+    if(key_alt && key_f4)
         framework_transfer(FRAMEWORK_STATE_SHUTDOWN);
 #endif
 

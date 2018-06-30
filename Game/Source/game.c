@@ -11,11 +11,13 @@ bool game_done;
 void game_init()
 {
     weapons_init();
+    ESELSLERCHE_Init();
 }
 
 void game_open()
 {
     game_done = false;
+    mouse_pointer = 0;
     weapons_open();
     ESELSLERCHE_Init();
 }
@@ -45,6 +47,7 @@ void game_update()
 void game_close()
 {
     weapons_close();
+    mouse_pointer = 1;
 }
 
 bool game_is_done()

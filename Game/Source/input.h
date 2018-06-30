@@ -25,7 +25,8 @@ typedef struct
 #define INPUT_WEAPON_UP 7
 #define INPUT_WEAPON_DOWN 8
 #define INPUT_NAVBACK 9
-#define INPUT_MAX 10
+#define INPUT_BLOCK 10
+#define INPUT_MAX 11
 
 #define INPUT_TYPE_KEYBOARD 0
 #define INPUT_TYPE_GAMEPAD 1
