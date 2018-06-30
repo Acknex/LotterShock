@@ -5,6 +5,9 @@
 #include <fog>
 #include <normal>
 
+float4 vecAmbient;
+float4 vecFogColor;
+
 Texture entSkin1;
 sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Point; MagFilter = Point; MinFilter = Point; };
 
@@ -18,7 +21,7 @@ struct out_ps // Output to the pixelshader fragment
 
 out_ps vs(
 	float4 inPos : POSITION,
-	float3 inNormal : NORMAL
+	float3 inNormal : NORMAL,
 	float2 inTexCoord0 : TEXCOORD0)
 {
 	out_ps Out;
@@ -26,7 +29,7 @@ out_ps vs(
 	Out.Pos = DoTransform(inPos);
 	Out.uv0 = inTexCoord0;
 	Out.worldPos = mul(matWorld, float4(inPos.xyz, 1.0));
-	Out.normal = mul(matWorld, float4(inNormal, 1.0));
+	Out.normal = mul(matWorld, float4(inNormal, 0.0));
 	
 	return Out;
 }
@@ -34,25 +37,35 @@ out_ps vs(
 float4 ps(out_ps In): COLOR
 {
 	In.normal = normalize(In.normal);
-	float viewDistance = distance(vecViewPos.xyz - In.worldPos);
+	float3 viewDirection = vecViewPos.xyz - In.worldPos;
+	float viewDistance = length(viewDirection);
+	viewDirection = normalize(viewDirection);
 	
 	float4 color;
 	color.rgb = tex2D(sTexture, In.uv0);
 	color.a = 1.0;
 	
 	float3 light = vecAmbient.rgb;
+	float3 specular = 0.0;
 	
 	for(int i = 0; i < 8; i++)
 	{
-		float3 lightDir = vecLightPos[i].xyz - In.worldPos;
-		float lightDistance = length(lightDir);
-		float lightFactor = saturate(dot(In.normal, lightDir/lightDistance));
-		float lightAttenuation = vecLightPos[i].w / (lightDistance * lightDistance);
+		float3 lightDirection = vecLightPos[i].xyz - In.worldPos;
+		float lightDistance = length(lightDirection);
+		float lightFactor = saturate(dot(In.normal, lightDirection/lightDistance));
+		float lightAttenuation = saturate(1.0 - lightDistance/vecLightPos[i].w);
+		lightAttenuation *= lightAttenuation;
+		
+		float3 lightHalf = normalize(viewDirection + lightDirection);
+		float lightSpecularFactor = saturate(dot(lightHalf, In.normal));
+		lightSpecularFactor = pow(lightSpecularFactor, 10.0);
 		
 		light += lightFactor * lightAttenuation * vecLightColor[i].rgb;
+		specular += lightSpecularFactor * vecLightColor[i].rgb * color.r;
 	}
 	
 	color.rgb *= light;
+	color.rgb += specular;
 	
 	float fogAttenuation = max(viewDistance - vecFog.x, 0.0) * vecFog.z;
 	
