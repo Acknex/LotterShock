@@ -13,7 +13,8 @@ void keycard_update() {
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_KEYCARDS) {
 		ptr->pan += time_step;
 		
-		if (c_trace(ptr.x, player.x, IGNORE_ME) > 0) {
+		var trace = c_trace(ptr.x, player.x, IGNORE_ME);
+		if ((trace > 0) && (trace < 100)) {
 			if (you == player) {
 				
 				if (player) {
