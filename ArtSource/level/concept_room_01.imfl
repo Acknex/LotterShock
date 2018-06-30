@@ -1,0 +1,3823 @@
+obj {
+	name = "Plane.253"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 10
+	faces = 4
+	vminpos = 175.000000,-175.000000,-18.720854
+	vmaxpos = 225.000000,-125.000000,0.000004
+	vcenter = 210.000000,-150.000000,-7.488340
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.035"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 10
+	faces = 4
+	vminpos = 175.000000,-225.000000,-18.720854
+	vmaxpos = 225.000000,-175.000000,0.000004
+	vcenter = 210.000000,-200.000000,-7.488340
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.252"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 10
+	faces = 4
+	vminpos = 175.000000,-275.000000,-18.720854
+	vmaxpos = 225.000000,-225.000000,0.000004
+	vcenter = 210.000000,-250.000000,-7.488340
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.251"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 24.999990,325.000000,300.000000
+	vmaxpos = 75.000008,375.000000,300.000000
+	vcenter = 50.000000,350.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.250"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 124.999992,275.000000,300.000000
+	vmaxpos = 175.000015,325.000000,300.000000
+	vcenter = 150.000000,300.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.249"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 74.999992,275.000000,300.000000
+	vmaxpos = 125.000008,325.000000,300.000000
+	vcenter = 100.000000,300.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.248"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 74.999985,274.999969,300.000000
+	vmaxpos = 125.000008,275.000031,400.000000
+	vcenter = 99.999992,275.000000,349.532806
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.247"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = 24.999950,275.000031,300.000000
+	vmaxpos = 75.000031,325.000000,400.000000
+	vcenter = 63.020828,313.020905,350.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.246"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 124.999985,274.999969,300.000000
+	vmaxpos = 175.000000,275.000031,400.000000
+	vcenter = 150.000000,275.000000,349.532806
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.245"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 174.999985,275.000000,300.000000
+	vmaxpos = 225.000015,325.000000,300.000000
+	vcenter = 200.000000,300.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.244"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 174.999985,174.999985,300.000000
+	vmaxpos = 225.000015,225.000015,300.000000
+	vcenter = 200.000000,200.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.243"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 174.999985,224.999985,300.000000
+	vmaxpos = 225.000015,275.000000,300.000000
+	vcenter = 200.000000,250.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.242"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 124.999992,24.999990,300.000000
+	vmaxpos = 175.000015,75.000008,300.000000
+	vcenter = 150.000000,50.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.241"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 124.999992,74.999992,300.000000
+	vmaxpos = 175.000015,125.000008,300.000000
+	vcenter = 150.000000,100.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.240"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 124.999992,124.999992,300.000000
+	vmaxpos = 175.000015,175.000015,300.000000
+	vcenter = 150.000000,150.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.230"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 174.999985,-175.000015,300.000000
+	vmaxpos = 225.000015,-124.999992,300.000000
+	vcenter = 200.000000,-150.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.229"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 174.999985,-125.000008,300.000000
+	vmaxpos = 225.000015,-74.999992,300.000000
+	vcenter = 200.000000,-100.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.228"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 224.999985,-75.000008,300.000000
+	vmaxpos = 275.000000,-24.999990,300.000000
+	vcenter = 250.000000,-50.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.227"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 224.999985,-25.000010,300.000000
+	vmaxpos = 275.000000,25.000010,300.000000
+	vcenter = 250.000000,0.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.226"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 174.999985,-25.000010,300.000000
+	vmaxpos = 225.000015,25.000010,300.000000
+	vcenter = 200.000000,0.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.225"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 174.999985,-75.000008,300.000000
+	vmaxpos = 225.000015,-24.999990,300.000000
+	vcenter = 200.000000,-50.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.223"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 125.000000,-225.000000,-0.000004
+	vmaxpos = 175.000000,-175.000000,0.000004
+	vcenter = 150.000000,-200.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.222"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 75.000000,-175.000000,-0.000004
+	vmaxpos = 125.000000,-125.000000,0.000004
+	vcenter = 100.000000,-150.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.221"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 75.000000,-125.000000,-0.000004
+	vmaxpos = 125.000000,-75.000000,0.000004
+	vcenter = 100.000000,-100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.220"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,-125.000000,-0.000004
+	vmaxpos = 75.000000,-75.000000,0.000004
+	vcenter = 50.000000,-100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.219"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,-175.000000,-0.000004
+	vmaxpos = 75.000000,-125.000000,0.000004
+	vcenter = 50.000000,-150.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.218"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 125.000000,-75.000000,-0.000004
+	vmaxpos = 175.000000,-25.000000,0.000004
+	vcenter = 150.000000,-50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.217"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 125.000000,-25.000000,-0.000004
+	vmaxpos = 175.000000,25.000000,0.000004
+	vcenter = 150.000000,0.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.216"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 125.000000,25.000000,-0.000004
+	vmaxpos = 175.000000,75.000000,0.000004
+	vcenter = 150.000000,50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.215"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 125.000000,75.000000,-0.000004
+	vmaxpos = 175.000000,125.000000,0.000004
+	vcenter = 150.000000,100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.214"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 125.000000,125.000000,-0.000004
+	vmaxpos = 175.000000,175.000000,0.000004
+	vcenter = 150.000000,150.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.213"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 125.000000,175.000000,-0.000004
+	vmaxpos = 175.000000,225.000000,0.000004
+	vcenter = 150.000000,200.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.212"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 125.000000,225.000000,-0.000004
+	vmaxpos = 175.000000,275.000000,0.000004
+	vcenter = 150.000000,250.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.211"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 125.000000,275.000000,-0.000004
+	vmaxpos = 175.000000,325.000000,0.000004
+	vcenter = 150.000000,300.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.210"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 75.000000,275.000000,-0.000004
+	vmaxpos = 125.000000,325.000000,0.000004
+	vcenter = 100.000000,300.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.209"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 75.000000,225.000000,-0.000004
+	vmaxpos = 125.000000,275.000000,0.000004
+	vcenter = 100.000000,250.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.208"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 75.000000,175.000000,-0.000004
+	vmaxpos = 125.000000,225.000000,0.000004
+	vcenter = 100.000000,200.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.207"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 75.000000,125.000000,-0.000004
+	vmaxpos = 125.000000,175.000000,0.000004
+	vcenter = 100.000000,150.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.206"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 75.000000,75.000000,-0.000004
+	vmaxpos = 125.000000,125.000000,0.000004
+	vcenter = 100.000000,100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.205"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 75.000000,25.000000,-0.000004
+	vmaxpos = 125.000000,75.000000,0.000004
+	vcenter = 100.000000,50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.204"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 75.000000,-25.000000,-0.000004
+	vmaxpos = 125.000000,25.000000,0.000004
+	vcenter = 100.000000,0.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.203"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 75.000000,-75.000000,-0.000004
+	vmaxpos = 125.000000,-25.000000,0.000004
+	vcenter = 100.000000,-50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.202"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 174.999985,324.999969,200.000000
+	vmaxpos = 225.000000,325.000031,300.000000
+	vcenter = 200.000000,325.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.201"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 174.999985,324.999969,99.999992
+	vmaxpos = 225.000000,325.000031,200.000000
+	vcenter = 200.000000,325.000000,149.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.200"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 174.999985,324.999969,-0.000006
+	vmaxpos = 225.000000,325.000031,100.000008
+	vcenter = 200.000000,325.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.199"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 124.999985,324.999969,-0.000006
+	vmaxpos = 175.000000,325.000031,100.000008
+	vcenter = 150.000000,325.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.198"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 124.999985,324.999969,99.999992
+	vmaxpos = 175.000000,325.000031,200.000000
+	vcenter = 150.000000,325.000000,149.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.197"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 124.999985,324.999969,200.000000
+	vmaxpos = 175.000000,325.000031,300.000000
+	vcenter = 150.000000,325.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.196"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 125.000000,125.000000,99.999992
+	vmaxpos = 175.000000,175.000000,100.000008
+	vcenter = 150.000000,150.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.195"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 75.000000,125.000000,99.999992
+	vmaxpos = 125.000000,175.000000,100.000008
+	vcenter = 100.000000,150.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.194"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 125.000000,125.000000,200.000000
+	vmaxpos = 175.000000,175.000000,200.000000
+	vcenter = 150.000000,150.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.193"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 124.999985,174.999985,99.999992
+	vmaxpos = 175.000000,175.000031,200.000000
+	vcenter = 149.999985,175.000000,149.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.192"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 124.999985,124.999954,99.999992
+	vmaxpos = 175.000000,125.000038,200.000000
+	vcenter = 150.000000,125.000000,149.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.056"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 74.999985,124.999954,99.999992
+	vmaxpos = 125.000008,125.000038,200.000000
+	vcenter = 99.999992,125.000000,149.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.055"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 74.999985,174.999985,99.999992
+	vmaxpos = 125.000008,175.000031,200.000000
+	vcenter = 100.000000,175.000000,149.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.048"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 75.000000,125.000000,200.000000
+	vmaxpos = 125.000000,175.000000,200.000000
+	vcenter = 100.000000,150.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.191"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -125.000008,24.999990,300.000000
+	vmaxpos = -74.999992,75.000008,300.000000
+	vcenter = -100.000000,50.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.189"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000010,24.999990,300.000000
+	vmaxpos = 25.000010,75.000008,300.000000
+	vcenter = 0.000000,50.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.188"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000008,24.999990,300.000000
+	vmaxpos = -24.999990,75.000008,300.000000
+	vcenter = -50.000004,50.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.187"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 174.999985,24.999990,300.000000
+	vmaxpos = 225.000015,75.000008,300.000000
+	vcenter = 200.000000,50.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.186"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 174.999985,74.999992,300.000000
+	vmaxpos = 225.000015,125.000008,300.000000
+	vcenter = 200.000000,100.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.185"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000008,74.999992,300.000000
+	vmaxpos = -24.999990,125.000008,300.000000
+	vcenter = -50.000004,100.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.184"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000010,74.999992,300.000000
+	vmaxpos = 25.000010,125.000008,300.000000
+	vcenter = 0.000000,100.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.182"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -125.000008,74.999992,300.000000
+	vmaxpos = -74.999992,125.000008,300.000000
+	vcenter = -100.000000,100.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.181"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -125.000008,124.999992,300.000000
+	vmaxpos = -74.999992,175.000015,300.000000
+	vcenter = -100.000000,150.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.179"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000010,124.999992,300.000000
+	vmaxpos = 25.000010,175.000015,300.000000
+	vcenter = 0.000000,150.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.178"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000008,124.999992,300.000000
+	vmaxpos = -24.999990,175.000015,300.000000
+	vcenter = -50.000004,150.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.176"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000010,224.999985,300.000000
+	vmaxpos = 25.000010,275.000000,300.000000
+	vcenter = 0.000000,250.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.175"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000008,224.999985,300.000000
+	vmaxpos = -24.999990,275.000000,300.000000
+	vcenter = -50.000004,250.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.174"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000008,174.999985,300.000000
+	vmaxpos = -24.999990,225.000015,300.000000
+	vcenter = -50.000004,200.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.173"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000010,174.999985,300.000000
+	vmaxpos = 25.000010,225.000015,300.000000
+	vcenter = 0.000000,200.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.170"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000010,275.000000,300.000000
+	vmaxpos = 25.000010,325.000000,300.000000
+	vcenter = 0.000000,300.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.169"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000008,275.000000,300.000000
+	vmaxpos = -24.999990,325.000000,300.000000
+	vcenter = -50.000004,300.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.168"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000008,325.000000,300.000000
+	vmaxpos = -24.999990,375.000000,300.000000
+	vcenter = -50.000004,350.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.167"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000010,325.000000,300.000000
+	vmaxpos = 25.000010,375.000000,300.000000
+	vcenter = 0.000000,350.000000,300.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.165"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,325.000000,200.000000
+	vmaxpos = 75.000000,375.000000,200.000000
+	vcenter = 50.000000,350.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.164"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = 24.999950,325.000031,200.000000
+	vmaxpos = 75.000031,375.000000,300.000000
+	vcenter = 63.020828,363.020905,250.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.163"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000000,325.000000,200.000000
+	vmaxpos = 25.000000,375.000000,200.000000
+	vcenter = 0.000000,350.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.162"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000000,325.000000,200.000000
+	vmaxpos = -25.000000,375.000000,200.000000
+	vcenter = -50.000000,350.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.161"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000000,275.000000,200.000000
+	vmaxpos = -25.000000,325.000000,200.000000
+	vcenter = -50.000000,300.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.160"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000000,225.000000,200.000000
+	vmaxpos = -25.000000,275.000000,200.000000
+	vcenter = -50.000000,250.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.159"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000000,175.000000,200.000000
+	vmaxpos = -25.000000,225.000000,200.000000
+	vcenter = -50.000000,200.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.158"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000000,175.000000,200.000000
+	vmaxpos = -25.000000,225.000000,200.000000
+	vcenter = -50.000000,200.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.157"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -125.000015,75.000000,200.000000
+	vmaxpos = -124.999985,125.000000,300.000000
+	vcenter = -125.000000,100.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.156"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -125.000015,125.000000,200.000000
+	vmaxpos = -124.999985,175.000000,300.000000
+	vcenter = -125.000000,150.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.155"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -75.000015,275.000000,200.000000
+	vmaxpos = -74.999985,325.000000,300.000000
+	vcenter = -75.000000,300.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.154"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000004,-75.000000,200.000000
+	vmaxpos = -24.999996,-25.000000,300.000000
+	vcenter = -25.000000,-50.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.153"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = -75.000092,-24.999931,200.000000
+	vmaxpos = -24.999926,25.000006,300.000000
+	vcenter = -36.979195,13.020878,250.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.149"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = -124.999962,174.999939,200.000000
+	vmaxpos = -75.000000,225.000061,300.000000
+	vcenter = -86.979141,186.979187,250.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.148"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -75.000015,225.000000,200.000000
+	vmaxpos = -74.999985,275.000000,300.000000
+	vcenter = -75.000000,250.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.147"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000011,225.000000,100.000000
+	vmaxpos = -24.999983,275.000000,200.000000
+	vcenter = -24.999996,250.000000,149.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.146"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = -74.999962,174.999939,100.000000
+	vmaxpos = -25.000000,225.000061,200.000000
+	vcenter = -36.979141,186.979187,150.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.145"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000015,374.999969,200.000000
+	vmaxpos = 25.000006,375.000031,300.000000
+	vcenter = -0.000005,375.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.144"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 74.999985,324.999969,200.000000
+	vmaxpos = 125.000008,325.000031,300.000000
+	vcenter = 99.999992,325.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.143"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = -75.000000,325.000000,200.000000
+	vmaxpos = -25.000011,375.000031,300.000000
+	vcenter = -63.020847,363.020874,250.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.142"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = -25.000000,275.000000,100.000000
+	vmaxpos = 24.999989,325.000031,200.000000
+	vcenter = -13.020846,313.020874,150.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.141"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 74.999985,324.999969,99.999992
+	vmaxpos = 125.000008,325.000031,200.000000
+	vcenter = 99.999992,325.000000,149.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.140"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 24.999985,324.999969,99.999992
+	vmaxpos = 75.000008,325.000031,200.000000
+	vcenter = 49.999992,325.000000,149.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.139"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000000,125.000000,200.000000
+	vmaxpos = -25.000000,175.000000,200.000000
+	vcenter = -50.000000,150.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.138"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,125.000000,200.000000
+	vmaxpos = 75.000000,175.000000,200.000000
+	vcenter = 50.000000,150.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.137"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000000,125.000000,200.000000
+	vmaxpos = 25.000000,175.000000,200.000000
+	vcenter = 0.000000,150.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.049"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 175.000000,125.000000,200.000000
+	vmaxpos = 175.000031,175.000000,300.000000
+	vcenter = 175.000000,150.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.136"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,-175.000000,99.999992
+	vmaxpos = 275.000000,-125.000000,100.000008
+	vcenter = 250.000000,-150.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.135"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,-225.000000,99.999992
+	vmaxpos = 275.000000,-175.000000,100.000008
+	vcenter = 250.000000,-200.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.134"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,-125.000000,200.000000
+	vmaxpos = 275.000000,-75.000000,200.000000
+	vcenter = 250.000000,-100.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.133"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,25.000000,200.000000
+	vmaxpos = 275.000000,75.000000,200.000000
+	vcenter = 250.000000,50.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.132"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,-25.000000,200.000000
+	vmaxpos = 275.000000,25.000000,200.000000
+	vcenter = 250.000000,0.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.131"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,-75.000000,200.000000
+	vmaxpos = 275.000000,-25.000000,200.000000
+	vcenter = 250.000000,-50.000000,200.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.130"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = 225.000000,-125.000046,200.000000
+	vmaxpos = 274.999939,-74.999947,300.000000
+	vcenter = 236.979111,-86.979172,250.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.128"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 274.999969,-75.000000,200.000000
+	vmaxpos = 275.000031,-25.000000,300.000000
+	vcenter = 275.000000,-50.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.127"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 274.999969,-25.000000,200.000000
+	vmaxpos = 275.000031,25.000000,300.000000
+	vcenter = 275.000000,0.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.126"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = 224.999969,25.000000,200.000000
+	vmaxpos = 275.000000,74.999992,300.000000
+	vcenter = 236.979111,36.979156,250.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.125"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = 224.999969,-175.000000,200.000000
+	vmaxpos = 275.000000,-125.000008,300.000000
+	vcenter = 236.979111,-163.020844,250.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.124"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = 224.999969,-175.000000,99.999992
+	vmaxpos = 275.000000,-125.000008,200.000000
+	vcenter = 236.979111,-163.020844,150.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.119"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 224.999985,25.000000,100.000000
+	vmaxpos = 225.000015,75.000000,200.000000
+	vcenter = 225.000000,50.000000,149.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.118"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 224.999985,-25.000000,100.000000
+	vmaxpos = 225.000015,25.000000,200.000000
+	vcenter = 225.000000,0.000000,149.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.117"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 224.999985,-75.000000,100.000000
+	vmaxpos = 225.000015,-25.000000,200.000000
+	vcenter = 225.000000,-50.000000,149.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.116"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 224.999985,-125.000000,100.000000
+	vmaxpos = 225.000015,-75.000000,200.000000
+	vcenter = 225.000000,-100.000000,149.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.115"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 24.999985,324.999969,-0.000006
+	vmaxpos = 75.000008,325.000031,100.000008
+	vcenter = 49.999992,325.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.114"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 74.999985,324.999969,-0.000006
+	vmaxpos = 125.000008,325.000031,100.000008
+	vcenter = 99.999992,325.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.113"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = -25.000000,275.000000,-0.000001
+	vmaxpos = 24.999989,325.000031,100.000000
+	vcenter = -13.020846,313.020874,50.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.112"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000011,225.000000,0.000000
+	vmaxpos = -24.999983,275.000000,100.000000
+	vcenter = -24.999996,250.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.111"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -125.000015,24.999996,-0.000006
+	vmaxpos = -74.999992,25.000008,100.000008
+	vcenter = -100.000000,25.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.110"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = -124.999962,124.999939,-0.000003
+	vmaxpos = -75.000000,175.000061,100.000008
+	vcenter = -86.979141,136.979172,50.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.109"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = 174.999985,75.000000,200.000000
+	vmaxpos = 225.000000,125.000000,300.000000
+	vcenter = 213.020859,113.020844,250.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.108"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -125.000000,125.000000,99.999992
+	vmaxpos = -75.000000,175.000000,100.000008
+	vcenter = -100.000000,150.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.107"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000000,125.000000,99.999992
+	vmaxpos = -25.000000,175.000000,100.000008
+	vcenter = -50.000000,150.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.106"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -75.000015,124.999954,99.999992
+	vmaxpos = -24.999994,125.000038,200.000000
+	vcenter = -50.000008,125.000000,149.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.105"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -125.000015,124.999954,99.999992
+	vmaxpos = -74.999992,125.000038,200.000000
+	vcenter = -100.000008,125.000000,149.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.104"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -75.000015,174.999985,99.999992
+	vmaxpos = -24.999994,175.000031,200.000000
+	vcenter = -50.000011,175.000000,149.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.103"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -125.000015,174.999985,99.999992
+	vmaxpos = -74.999992,175.000031,200.000000
+	vcenter = -100.000000,175.000000,149.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.102"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = 174.999985,75.000000,99.999992
+	vmaxpos = 225.000000,125.000000,200.000000
+	vcenter = 213.020859,113.020844,150.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.101"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 47
+	faces = 23
+	vminpos = 174.999969,74.999870,100.000000
+	vmaxpos = 225.000137,125.000122,105.917923
+	vcenter = 188.668823,88.125465,104.459663
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.100"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000015,174.999985,99.999992
+	vmaxpos = 25.000006,175.000031,200.000000
+	vcenter = -0.000005,175.000000,149.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.099"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 24.999985,174.999985,99.999992
+	vmaxpos = 75.000008,175.000031,200.000000
+	vcenter = 49.999996,175.000000,149.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.098"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000015,124.999954,99.999992
+	vmaxpos = 25.000006,125.000038,200.000000
+	vcenter = -0.000005,125.000000,149.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.097"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 24.999985,124.999954,99.999992
+	vmaxpos = 75.000008,125.000038,200.000000
+	vcenter = 49.999992,125.000000,149.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.096"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,125.000000,99.999992
+	vmaxpos = 75.000000,175.000000,100.000008
+	vcenter = 50.000000,150.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.095"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -24.999996,125.000000,99.999992
+	vmaxpos = 25.000004,175.000000,100.000008
+	vcenter = 0.000004,150.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.092"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = -74.999962,174.999939,-0.000003
+	vmaxpos = -25.000000,225.000061,100.000008
+	vcenter = -36.979141,186.979187,50.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.091"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = 175.000000,174.999954,-0.000003
+	vmaxpos = 224.999954,225.000046,100.000000
+	vcenter = 186.979141,213.020813,50.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.090"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 47
+	faces = 23
+	vminpos = -25.000090,-125.000015,200.000000
+	vmaxpos = 25.000095,-74.999893,205.917923
+	vcenter = 11.874534,-111.331177,204.459686
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.089"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 47
+	faces = 23
+	vminpos = -25.000086,-75.000076,200.000000
+	vmaxpos = 25.000006,-24.999924,205.917923
+	vcenter = 11.331170,-38.125458,204.459686
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.088"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 47
+	faces = 23
+	vminpos = -25.000067,-125.000061,94.082069
+	vmaxpos = 25.000000,-74.999947,100.000008
+	vcenter = 11.331162,-111.874550,95.540337
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.087"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 47
+	faces = 23
+	vminpos = -25.000071,-75.000084,94.082069
+	vmaxpos = 25.000076,-24.999996,100.000008
+	vcenter = 11.874544,-38.668831,95.540337
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.086"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,-125.000000,99.999992
+	vmaxpos = 275.000000,-75.000000,100.000008
+	vcenter = 250.000000,-100.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.085"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 175.000000,75.000000,-0.000004
+	vmaxpos = 225.000000,125.000000,0.000004
+	vcenter = 200.000000,100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.084"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,-125.000000,-0.000004
+	vmaxpos = 275.000000,-75.000000,0.000004
+	vcenter = 250.000000,-100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.083"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,25.000000,99.999992
+	vmaxpos = 275.000000,75.000000,100.000008
+	vcenter = 250.000000,50.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.082"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,-25.000000,99.999992
+	vmaxpos = 275.000000,25.000000,100.000008
+	vcenter = 250.000000,0.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.081"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,-75.000000,99.999992
+	vmaxpos = 275.000000,-25.000000,100.000008
+	vcenter = 250.000000,-50.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.080"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 275.000000,-75.000000,99.999992
+	vmaxpos = 325.000000,-25.000000,100.000008
+	vcenter = 300.000000,-50.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.079"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 275.000000,-25.000000,99.999992
+	vmaxpos = 325.000000,25.000000,100.000008
+	vcenter = 300.000000,0.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.078"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 47
+	faces = 23
+	vminpos = -25.000071,-75.000084,94.082069
+	vmaxpos = 25.000076,-24.999996,100.000008
+	vcenter = 11.874544,-38.668831,95.540337
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.077"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 47
+	faces = 23
+	vminpos = -25.000067,-125.000061,94.082069
+	vmaxpos = 25.000000,-74.999947,100.000008
+	vcenter = 11.331162,-111.874550,95.540337
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.076"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = -75.000092,-24.999931,99.999992
+	vmaxpos = -24.999926,25.000006,200.000000
+	vcenter = -36.979195,13.020878,150.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.075"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = -75.000092,-24.999931,-0.000006
+	vmaxpos = -24.999926,25.000006,100.000008
+	vcenter = -36.979195,13.020878,50.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.074"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = -75.000092,-24.999931,-0.000006
+	vmaxpos = -24.999926,25.000006,100.000008
+	vcenter = -36.979195,13.020878,50.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.058"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000004,-75.000000,0.000000
+	vmaxpos = -24.999996,-25.000000,100.000000
+	vcenter = -25.000000,-50.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.054"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 275.000000,25.000000,99.999992
+	vmaxpos = 325.000000,75.000000,100.000008
+	vcenter = 300.000000,50.000000,100.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.053"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = -25.000042,-74.999977,99.999992
+	vmaxpos = 25.000027,-25.000000,200.000000
+	vcenter = 13.020827,-36.979141,150.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.051"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = -24.999960,-125.000061,100.000000
+	vmaxpos = 25.000000,-74.999947,200.000000
+	vcenter = 13.020860,-113.020821,150.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.073"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = 225.000000,-125.000046,-0.000003
+	vmaxpos = 274.999939,-74.999947,100.000000
+	vcenter = 236.979111,-86.979172,50.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.072"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 174.999985,125.000000,0.000000
+	vmaxpos = 175.000015,175.000000,100.000000
+	vcenter = 175.000000,150.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.070"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 224.999985,74.999985,-0.000006
+	vmaxpos = 275.000000,75.000015,100.000008
+	vcenter = 250.000000,75.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.068"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = 274.999969,25.000000,-0.000006
+	vmaxpos = 325.000000,75.000000,100.000008
+	vcenter = 313.020874,63.020847,50.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.067"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = 275.000000,-75.000000,-0.000001
+	vmaxpos = 325.000000,-24.999998,100.000000
+	vcenter = 313.020874,-63.020847,50.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.063"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000004,-125.000000,200.000000
+	vmaxpos = -24.999996,-75.000000,300.000000
+	vcenter = -25.000000,-100.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.062"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000004,-175.000000,200.000000
+	vmaxpos = -24.999996,-125.000000,300.000000
+	vcenter = -25.000000,-150.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.061"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000004,-225.000000,200.000000
+	vmaxpos = -24.999996,-175.000000,300.000000
+	vcenter = -25.000000,-200.000000,249.532776
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.060"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000004,-225.000000,100.000000
+	vmaxpos = -24.999996,-175.000000,200.000000
+	vcenter = -25.000000,-200.000000,149.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.059"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000004,-175.000000,100.000000
+	vmaxpos = -24.999996,-125.000000,200.000000
+	vcenter = -25.000000,-150.000000,149.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.057"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000004,-125.000000,0.000000
+	vmaxpos = -24.999996,-75.000000,100.000000
+	vcenter = -25.000000,-100.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.050"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 48
+	faces = 46
+	vminpos = -50.000019,-225.000000,-0.000001
+	vmaxpos = -25.000000,-125.000000,100.000000
+	vcenter = -37.500004,-175.000000,66.916725
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.047"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = -25.000004,-125.000000,0.000000
+	vmaxpos = -24.999996,-75.000000,100.000000
+	vcenter = -25.000000,-100.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.005"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 324.999969,-25.000000,0.000000
+	vmaxpos = 325.000000,25.000000,100.000000
+	vcenter = 325.000000,0.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.004"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 224.999985,-175.000000,0.000000
+	vmaxpos = 225.000015,-125.000000,100.000000
+	vcenter = 225.000000,-150.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000000,-25.000000,-0.000004
+	vmaxpos = 25.000000,25.000000,0.000004
+	vcenter = 0.000000,0.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Camera"
+	importstate = 0
+	mesh = 0
+	group = 0
+	mgroup = 0
+	vertices = 0
+	faces = 0
+	vminpos = 0.000000,0.000000,0.000000
+	vmaxpos = 0.000000,0.000000,0.000000
+	vcenter = 0.000000,0.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 0
+}
+
+obj {
+	name = "Plane.001"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000000,-75.000000,-0.000004
+	vmaxpos = 25.000000,-25.000000,0.000004
+	vcenter = 0.000000,-50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.002"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,-75.000000,-0.000004
+	vmaxpos = 75.000000,-25.000000,0.000004
+	vcenter = 50.000000,-50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.003"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,-25.000000,-0.000004
+	vmaxpos = 75.000000,25.000000,0.000004
+	vcenter = 50.000000,0.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.009"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000000,75.000000,-0.000004
+	vmaxpos = 25.000000,125.000000,0.000004
+	vcenter = 0.000000,100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.008"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000000,25.000000,-0.000004
+	vmaxpos = 25.000000,75.000000,0.000004
+	vcenter = 0.000000,50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.007"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,25.000000,-0.000004
+	vmaxpos = 75.000000,75.000000,0.000004
+	vcenter = 50.000000,50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.006"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,75.000000,-0.000004
+	vmaxpos = 75.000000,125.000000,0.000004
+	vcenter = 50.000000,100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.013"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000000,75.000000,-0.000004
+	vmaxpos = -25.000000,125.000000,0.000004
+	vcenter = -50.000000,100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.012"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000000,25.000000,-0.000004
+	vmaxpos = -25.000000,75.000000,0.000004
+	vcenter = -50.000000,50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.011"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -125.000000,25.000000,-0.000004
+	vmaxpos = -75.000000,75.000000,0.000004
+	vcenter = -100.000000,50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.010"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -125.000000,75.000000,-0.000004
+	vmaxpos = -75.000000,125.000000,0.000004
+	vcenter = -100.000000,100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.017"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000000,175.000000,-0.000004
+	vmaxpos = 25.000000,225.000000,0.000004
+	vcenter = 0.000000,200.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.016"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000000,125.000000,-0.000004
+	vmaxpos = 25.000000,175.000000,0.000004
+	vcenter = 0.000000,150.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.015"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,125.000000,-0.000004
+	vmaxpos = 75.000000,175.000000,0.000004
+	vcenter = 50.000000,150.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.014"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,175.000000,-0.000004
+	vmaxpos = 75.000000,225.000000,0.000004
+	vcenter = 50.000000,200.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.018"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -75.000000,125.000000,-0.000004
+	vmaxpos = -25.000000,175.000000,0.000004
+	vcenter = -50.000000,150.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.020"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -175.000000,75.000000,-0.000004
+	vmaxpos = -125.000000,125.000000,0.000004
+	vcenter = -150.000000,100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.019"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -175.000000,25.000000,-0.000004
+	vmaxpos = -125.000000,75.000000,0.000004
+	vcenter = -150.000000,50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.022"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,225.000000,-0.000004
+	vmaxpos = 75.000000,275.000000,0.000004
+	vcenter = 50.000000,250.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.021"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000000,225.000000,-0.000004
+	vmaxpos = 25.000000,275.000000,0.000004
+	vcenter = 0.000000,250.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.024"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000000,275.000000,-0.000004
+	vmaxpos = 25.000000,325.000000,0.000004
+	vcenter = 0.000000,300.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.023"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,275.000000,-0.000004
+	vmaxpos = 75.000000,325.000000,0.000004
+	vcenter = 50.000000,300.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.028"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 175.000000,225.000000,-0.000004
+	vmaxpos = 225.000000,275.000000,0.000004
+	vcenter = 200.000000,250.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.027"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,225.000000,-0.000004
+	vmaxpos = 275.000000,275.000000,0.000004
+	vcenter = 250.000000,250.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.026"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,275.000000,-0.000004
+	vmaxpos = 275.000000,325.000000,0.000004
+	vcenter = 250.000000,300.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.025"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 175.000000,275.000000,-0.000004
+	vmaxpos = 225.000000,325.000000,0.000004
+	vcenter = 200.000000,300.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.034"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 175.000000,-25.000000,-0.000004
+	vmaxpos = 225.000000,25.000000,0.000004
+	vcenter = 200.000000,0.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.033"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 175.000000,-75.000000,-0.000004
+	vmaxpos = 225.000000,-25.000000,0.000004
+	vcenter = 200.000000,-50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.032"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,-75.000000,-0.000004
+	vmaxpos = 275.000000,-25.000000,0.000004
+	vcenter = 250.000000,-50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.031"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,-25.000000,-0.000004
+	vmaxpos = 275.000000,25.000000,0.000004
+	vcenter = 250.000000,0.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.030"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 225.000000,25.000000,-0.000004
+	vmaxpos = 275.000000,75.000000,0.000004
+	vcenter = 250.000000,50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.029"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 175.000000,25.000000,-0.000004
+	vmaxpos = 225.000000,75.000000,0.000004
+	vcenter = 200.000000,50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.046"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000000,-175.000000,-0.000004
+	vmaxpos = 25.000000,-125.000000,0.000004
+	vcenter = 0.000000,-150.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.045"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000000,-225.000000,-0.000004
+	vmaxpos = 25.000000,-175.000000,0.000004
+	vcenter = 0.000000,-200.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.044"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 25.000000,-225.000000,-0.000004
+	vmaxpos = 75.000000,-175.000000,0.000004
+	vcenter = 50.000000,-200.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.043"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 125.000000,-175.000000,-0.000004
+	vmaxpos = 175.000000,-125.000000,0.000004
+	vcenter = 150.000000,-150.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.042"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 125.000000,-125.000000,-0.000004
+	vmaxpos = 175.000000,-75.000000,0.000004
+	vcenter = 150.000000,-100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.041"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = -25.000000,-125.000000,-0.000004
+	vmaxpos = 25.000000,-75.000000,0.000004
+	vcenter = 0.000000,-100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.040"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 175.000000,-125.000000,-0.000004
+	vmaxpos = 225.000000,-75.000000,0.000004
+	vcenter = 200.000000,-100.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.036"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 75.000000,-225.000000,-0.000004
+	vmaxpos = 125.000000,-175.000000,0.000004
+	vcenter = 100.000000,-200.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.039"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 275.000000,25.000000,-0.000004
+	vmaxpos = 325.000000,75.000000,0.000004
+	vcenter = 300.000000,50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.038"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 275.000000,-25.000000,-0.000004
+	vmaxpos = 325.000000,25.000000,0.000004
+	vcenter = 300.000000,0.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.037"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 4
+	faces = 1
+	vminpos = 275.000000,-75.000000,-0.000004
+	vmaxpos = 325.000000,-25.000000,0.000004
+	vcenter = 300.000000,-50.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.052"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 16
+	faces = 9
+	vminpos = 224.999985,-225.000000,0.000000
+	vmaxpos = 225.000015,-175.000000,100.000000
+	vcenter = 225.000000,-200.000000,49.532791
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+obj {
+	name = "Plane.071"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 22
+	faces = 8
+	vminpos = 174.999969,75.000000,-0.000006
+	vmaxpos = 225.000015,124.999992,100.000008
+	vcenter = 186.979156,86.979149,50.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+
+scalefactor=1.000000;
+importpos=0.000000,0.000000,0.000000;
+addTexToWad=0;
+useCurrGroup=1;
+destFolderName="MeshTex";
+createGroup=0;
+addBlocksAuto=1;
+light_intensity_to_radius=1000;
+extern_skins=1;
+checkFacesLevel=5;
+importAtCameraPos=1;
+importAtNullPos=0;
+importAtCustomPos=0;
+autoCenter=0;

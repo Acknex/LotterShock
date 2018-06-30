@@ -1,4 +1,5 @@
 #include "splashscreen.h"
+#include "input.h"
 
 BMAP * splashscreen_image_map = "splashscreen.png";
 
@@ -32,6 +33,8 @@ void splashscreen_open()
 
 void splashscreen_update()
 {
+    if(input_hit(INPUT_USE) || input_hit(INPUT_ATTACK) || input_hit(INPUT_JUMP))
+        splashscreen_timer = 70;
     if(splashscreen_timer < 20)
     {
         splashscreen_image->alpha = 5 * splashscreen_timer;

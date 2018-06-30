@@ -9,4 +9,6 @@ void game_update();
 
 void game_close();
 
+bool game_is_done();
+
 #endif // GAME_H

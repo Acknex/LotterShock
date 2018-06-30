@@ -3,6 +3,8 @@
 #include "mainmenu.h"
 #include "music_player.h"
 #include "game.h"
+#include "input.h"
+#include "credits.h"
 
 #define FRAMEWORK_ALPHA_BLENDSPEED  25
 
@@ -13,6 +15,7 @@
 #define FRAMEWORK_STATE_LOAD         3
 #define FRAMEWORK_STATE_GAME         4
 #define FRAMEWORK_STATE_SPLASHSCREEN 5
+#define FRAMEWORK_STATE_UNLOAD       6
 
 typedef struct
 {
@@ -42,6 +45,9 @@ void framework_init()
     video_set(1280, 720, 0, 2); // 1280x720, Window
 
     on_frame = framework_update;
+#ifdef DEBUG
+    on_esc = NULL;
+#endif
 }
 
 void framework_setup(ENTITY * ent, int subsystem)
@@ -58,8 +64,12 @@ void framework_transfer(int state)
 //! Aktualisiert alles.
 void framework_update()
 {
-    if(key_esc)
+#ifdef DEBUG
+    if(key_alt && key_f4)
         framework_transfer(FRAMEWORK_STATE_SHUTDOWN);
+#endif
+
+    input_update();
 
     switch(framework.state)
     {
@@ -67,10 +77,13 @@ void framework_update()
         if(framework.frameCounter == 1)
         {
             // spiel im ersten frame initialisieren
+            input_init();
+
             splashscreen_init();
             mainmenu_init();
             music_init();
             game_init();
+            credits_init();
 
             // TODO: Fix relative link?
             music_start("Media/intro.mp3", 1.0, false);
@@ -118,7 +131,9 @@ void framework_update()
     }
 
     case FRAMEWORK_STATE_CREDITS:
-        error("framework: credits not implemented yet.");
+        credits_update();
+        if(credits_isdone())
+            framework_transfer(FRAMEWORK_STATE_MAINMENU);
         break;
 
     case FRAMEWORK_STATE_LOAD:
@@ -144,13 +159,35 @@ void framework_update()
 
     case FRAMEWORK_STATE_GAME:
         game_update();
+        if(game_is_done())
+            framework_transfer(FRAMEWORK_STATE_UNLOAD);
         break;
+    case FRAMEWORK_STATE_UNLOAD:
+        level_load(NULL);
+        framework_transfer(FRAMEWORK_STATE_MAINMENU);
+        break;
+
+    case FRAMEWORK_STATE_UNLOAD:
+        break;
+
+    default:
+        error(str_printf(NULL, "framework: unsupported state %d!", framework.state));
+
     }
 
     if(framework.state != framework.nextState)
     {
+        diag(str_printf(NULL, "\nstate transition from %d to %d.", framework.state, framework.nextState));
+
         switch(framework.state)
         {
+        case FRAMEWORK_STATE_SHUTDOWN:
+            error("framework: shutdown state should never be left again!");
+            break;
+
+        case FRAMEWORK_STATE_STARTUP:
+            break;
+
         case FRAMEWORK_STATE_SPLASHSCREEN:
             splashscreen_close();
             break;
@@ -160,7 +197,7 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_CREDITS:
-            error("framework: credits not implemented yet.");
+            credits_close();
             break;
 
         case FRAMEWORK_STATE_LOAD:
@@ -170,12 +207,25 @@ void framework_update()
         case FRAMEWORK_STATE_GAME:
             game_close();
             break;
+
+        case FRAMEWORK_STATE_UNLOAD:
+            break;
+
+        default:
+            error(str_printf(NULL, "framework: unsupported state %d!", framework.state));
         }
 
         framework.state = framework.nextState;
 
         switch(framework.state)
         {
+        case FRAMEWORK_STATE_SHUTDOWN:
+            break;
+
+        case FRAMEWORK_STATE_STARTUP:
+            error("framework: startup state should never be entered again!");
+            break;
+
         case FRAMEWORK_STATE_SPLASHSCREEN:
             splashscreen_open();
             break;
@@ -185,7 +235,7 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_CREDITS:
-            error("framework: credits not implemented yet.");
+            credits_open();
             break;
 
         case FRAMEWORK_STATE_LOAD:
@@ -197,6 +247,12 @@ void framework_update()
         case FRAMEWORK_STATE_GAME:
             game_open();
             break;
+
+        case FRAMEWORK_STATE_UNLOAD:
+            break;
+
+        default:
+            error(str_printf(NULL, "framework: unsupported state %d!", framework.state));
         }
     }
 
