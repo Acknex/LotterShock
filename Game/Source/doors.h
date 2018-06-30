@@ -4,10 +4,11 @@
 #define KEYCARD_LVL skill1
 #define KEYPAD_KEY_ID skill1
 #define KEYPAD_ID skill2
+#define EXPECTED_KEY skill3
 
 SOUND* snd_beep = "Beep.wav";
 
-STRING* keypad_input = "#20";
+STRING* keypad_input = "";
 int current_keypad_id = 0;
 
 void keycard();
