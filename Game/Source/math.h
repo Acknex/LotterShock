@@ -7,9 +7,6 @@
  * Provides math helpers and useful functions.
  */
 
-#include "list.h"
-
-
 
 #define PI 3.14159265
 
@@ -247,65 +244,5 @@ var point_to_line2D_dist ( var px, var py, var l1x, var l1y, var l2x, var l2y );
  * WARNING! this function results in a division by zero when both line description points are same!
  */
 var point_to_line2D_escalar ( var px, var py, var l1x, var l1y, var l2x, var l2y );
-
-
-/**
- * Calculates a spline
- * \param	List*(VECTOR*)	Input points
- * \param	int				Details. Set how many VECTOR*s are returned
- * \return						List*(VECTOR*) of Points that make the spline more detailed
- * 
- */
-List* calculate_spline(List* _points,  int _detail);
-
-/**
- * Calculates a spline
- * \param	points      Input points
- * \param	pointcount  Number of points in points.
- * \param	pos         Interpolation position between 0 and 1.
- * \return	            Vector at pos.
- * 
- */
-VECTOR* math_get_spline(VECTOR* points, int pointcount, float pos);
-
-
-/**
- * Calculates a position on a bezier courve
- * \param	pos         Vector to store result in.
- * \param	points      Pointer to a vector array that stores all points for the bezier courve.
- * \param	count       Number of vectors in the points array.
- * \param	p           Interpolation factor, between 0 and 1.
- * \return	            Point on the bezier courve.
- */
-VECTOR *vec_to_bezier(VECTOR *pos, VECTOR *points, int count, float p);
-
-
-/**
- * Calculates a position on a catmull courve
- * \param	pos         Vector to store result in.
- * \param	points      Pointer to a vector array that stores all points for the bezier courve.
- * \param	count       Number of vectors in the points array.
- * \param	p           Interpolation factor, between 0 and 1.
- * \return	            Point on the catmull courve.
- */
-VECTOR *vec_to_catmull(VECTOR *pos, VECTOR *v0, VECTOR *v1, VECTOR *v2, VECTOR *v3, float s);
-
-/**
- * Compares 2 float values with a precision of %.2f
- * \param	_f1         First float
- * \param   _f2         Second float
- * \return	            "1" if _f1 > _f2, "-1" if _f2 > _f1, "0" if _f1 == _f2
- */
-int float_cmp(float _f1, float _f2);
-
-/**
- * \brief   Computes the world to custom coordinates tranformation matrix (matView)
- * \param   _matrix         Pointer to a float matrix to be filled 
- * \param   _vecPos         World position vector of the coordinate system
- * \param   _vecDir         World direction vector of the coordinate system
- */
-void mat_eye ( float *_matrix, VECTOR *_vecPos, VECTOR *_vecDir );
-
-#include "math.c"
 
 #endif
