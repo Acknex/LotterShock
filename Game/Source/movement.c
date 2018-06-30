@@ -111,10 +111,12 @@ var playerEntMorphBallIsActive()
 	return (playerEntMorphBallActive || playerEntMorphBallPerc);
 }
 
+var weaponsCurrentPrev = 0;
+
 void playerEntMorphBallDo()
 {
 	VECTOR temp,temp2;
-	if(key_shift && playerEntMorphBallPerc == 100) playerEntMorphBallActive = 2;
+	if(input_hit(INPUT_MORPHBALL) && playerEntMorphBallPerc == 100) playerEntMorphBallActive = 2;
 	if(playerEntMorphBallActive == 2)
 	{
 		playerEntMorphBallPerc = maxv(playerEntMorphBallPerc-10*time_step,0);
@@ -133,7 +135,7 @@ void playerEntMorphBallDo()
 	var PLAYER_SPEED_Z_PREV = player.PLAYER_SPEED_Z;
 	player.PLAYER_SPEED_Z = 0;
 	VECTOR targetSpeed;
-	if(playerEntMorphBallActive != 1) vec_set(targetSpeed,nullvector);
+	if(playerEntMorphBallActive != 1 || playerEntMorphBallPerc < 50) vec_set(targetSpeed,nullvector);
 	else
 	{
 		vec_set(targetSpeed,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
@@ -279,6 +281,23 @@ void playerEntMorphBallDo()
 		vec_add(playerEntMorphBallPinkFlarePos,temp);
 		effect(p_pinkFlare,1,playerEntMorphBallPinkFlarePos,nullvector);
 	}
+	
+	if(!playerEntMorphBallPerc && !playerEntMorphBallActive)
+	{
+		weapons_disabled = 0;
+		weapons.current = weaponsCurrentPrev;
+	}
+}
+
+var playerLightRange = 0;
+var playerLightDuration = 0;
+var playerLightDurationMax = 2;
+void playerSetLight(COLOR* color, var lightRange, var duration)
+{
+	if(!player) return;
+	vec_set(player.blue,color);
+	playerLightRange = player.lightrange = lightRange;
+	playerLightDurationMax = playerLightDuration = duration;
 }
 
 void movement_update()
@@ -300,6 +319,10 @@ void movement_update()
 		player.group = GROUP_PLAYER;
 		playerHealth = playerHealthMax;
 	}
+	player.lightrange = playerLightRange*(playerLightDuration/playerLightDurationMax);
+	playerLightDuration = maxv(playerLightDuration-time_step,0);
+	//vec_set(player.blue,vector(20,150,255));
+	//player.lightrange = 3000;
 	
 	if(player.z < -3000)
 	{
@@ -311,14 +334,19 @@ void movement_update()
 		}
 	}
 	
-	if(playerHasEntMorphBall && key_shift && !playerEntMorphBallPerc)
+	if(playerHasEntMorphBall && input_hit(INPUT_MORPHBALL) && !playerEntMorphBallPerc)
 	{
 		vec_set(playerEntMorphBallPinkFlarePos,player.x);
 		playerEntMorphBallActive = 1;
 		playerEntMorphBallPan = player.pan;
+		weaponsCurrentPrev = weapons.current;
+		weapons.current = 0;
+		weapons_disabled = 1;
+		weapons_update();
 	}
 	if(playerEntMorphBallActive)
 	{
+		//weapons_close();
 		camera.genius = NULL;
 		playerEntMorphBallDo();
 		return;
@@ -360,7 +388,7 @@ void movement_update()
 	// movement
 	
 	var playerCrouchingOld = playerCrouching;
-	if(player.PLAYER_GROUND_CONTACT) playerCrouching = (key_ctrl) | (playerSlideCounter > 0);
+	if(player.PLAYER_GROUND_CONTACT) playerCrouching = input_down(INPUT_CROUCH) | (playerSlideCounter > 0);
 	else playerCrouching = 0;
 	//if(playerCrouching) playerCrouchPerc = minv(playerCrouchPerc+20*time_step,100);
 	//else playerCrouchPerc = maxv(playerCrouchPerc-20*time_step,0);
@@ -508,7 +536,8 @@ void movement_update()
 	if(progress > 0)
 	{
 		var kickbackFac = weaponGetKickbackFac(progress, 30)*0.2;
-		var recoilSide = sinv(total_ticks*10);
+		if(weapons_get_current() == WEAPON_CELLGUN) kickbackFac *= 0.125;
+		var recoilSide = sinv(total_ticks*5);
 		ang_rotate(camera.pan, vector(recoilSide*25*kickbackFac,30*kickbackFac,-5*recoilSide*kickbackFac));
 	}
 	camera.tilt += playerSlidePerc*0.1;

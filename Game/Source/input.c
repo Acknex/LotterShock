@@ -123,6 +123,8 @@ void input_init()
     strcpy(input[INPUT_WEAPON_UP].cinfo,"WEAPON_UP");
     strcpy(input[INPUT_WEAPON_DOWN].cinfo,"WEAPON_DOWN");
     strcpy(input[INPUT_NAVBACK].cinfo,"NAVBACK");
+	 strcpy(input[INPUT_CROUCH].cinfo,"CROUCH");
+    strcpy(input[INPUT_MORPHBALL].cinfo,"ENTMORPHBALL");
 
     //////////////////////////////
     // configurable stuff
@@ -137,6 +139,8 @@ void input_init()
     input_add(INPUT_ATTACK,     INPUT_TYPE_KEYBOARD, 280);
     input_add(INPUT_BLOCK,      INPUT_TYPE_KEYBOARD, 281);
     input_add(INPUT_NAVBACK,    INPUT_TYPE_KEYBOARD, key_for_str("esc"));
+    input_add(INPUT_CROUCH,    INPUT_TYPE_KEYBOARD, key_for_str("ctrl"));
+    input_add(INPUT_MORPHBALL,    INPUT_TYPE_KEYBOARD, key_for_str("shiftl"));
 
     input_add(INPUT_WEAPON_UP,  INPUT_TYPE_KEYBOARD, key_for_str("q"));  // mickey.z
     input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_KEYBOARD, key_for_str("e"));
