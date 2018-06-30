@@ -12,18 +12,22 @@ STRING* GIB_strModels[3];
 
 void GIB_spawn(VECTOR* pos)
 {
-    framework_setup(my, SUBSYSTEM_ENEMY_GIB);	
+	framework_setup(my, SUBSYSTEM_ENEMY_GIB);	
+	var rnd = random(3);
+//   ent_create(GIB_strModels[rnd], pos, GIB_Init)
 }
 
 void GIB_GlobalInit()
 {
-//	GIB_strModels[0] = str_create();
+	GIB_strModels[0] = str_create("gib1.mdl");
+	GIB_strModels[1] = str_create("gib2.mdl");
+	GIB_strModels[2] = str_create("gib3.mdl");
 }
 
 void GIB_Close()
 {
 	var i;
-	for (i = 0; i < 5; i++)
+	for (i = 0; i < 3; i++)
 	{
 		ptr_remove(GIB_strModels[i]);
 	}
@@ -55,7 +59,7 @@ void GIB_Update()
 			}
 			else
 			{
-				c_
+//				c_
 			}
 		}
 	}
