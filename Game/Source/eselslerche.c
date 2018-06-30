@@ -47,11 +47,11 @@ void ESELSLERCHE_Init()
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENEMY_LERCHE)
    {
    	//TODO: useful default values
-   	if(ptr->EL_RUNSPEED == 0) ptr->EL_RUNSPEED = 0;
-   	if(ptr->EL_TURNSPEED == 0) ptr->EL_TURNSPEED = 0;
-   	if(ptr->EL_ANIMSPEED == 0) ptr->EL_ANIMSPEED = 0;
-   	if(ptr->EL_EXPLODEDIST == 0) ptr->EL_EXPLODEDIST = 0;
-   	if(ptr->EL_ACTIVEDIST == 0) ptr->EL_ACTIVEDIST = 0;
+   	if(ptr->EL_RUNSPEED == 0) ptr->EL_RUNSPEED = 8;
+   	if(ptr->EL_TURNSPEED == 0) ptr->EL_TURNSPEED = 10;
+   	if(ptr->EL_ANIMSPEED == 0) ptr->EL_ANIMSPEED = 5;
+   	if(ptr->EL_EXPLODEDIST == 0) ptr->EL_EXPLODEDIST = 200;
+   	if(ptr->EL_ACTIVEDIST == 0) ptr->EL_ACTIVEDIST = 3000;
 		ptr->HEALTH = 50;
 		ENEMY_HIT_init(ptr);
 		
