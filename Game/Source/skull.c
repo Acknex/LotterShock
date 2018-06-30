@@ -42,6 +42,7 @@ action Skull()
 	vec_scale(&my->scale_x, 1.5);
 	set(my, SHADOW);
 	SKULL__toFloor(me);
+	c_setminmax(me);
 }
 
 void SKULL_GlobalInit()
@@ -259,6 +260,7 @@ void SKULL__hit(ENTITY* ptr)
 	/* transitions */
 	if (ptr->HEALTH <= 0)
 	{
+		reset(ptr, TRANSLUCENT);
 		ptr->SKL_STATE = SKL_STATE_DIE;
 	}
 	else if (ptr->SKL_COUNTER >= 40)
