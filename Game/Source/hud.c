@@ -37,14 +37,14 @@ PANEL* HUD_HP_label =
 	flags = TRANSLUCENT;
 	layer = 2;
 }
-
+/*
 PANEL* HUD_HP_bars =
 {
 	bmap = hud_bar_background_bmap;
 	flags = TRANSLUCENT | LIGHT;
 	layer = 2;
 }
-/*
+
 PANEL* HUD_Ammo_label =
 {
 	bmap = hud_ammo_label_bmap;
@@ -69,6 +69,30 @@ TEXT* HUD_Ammo_infotext =
 	flags = CENTER_X | CENTER_Y ;
 } 
 
+PANEL* HUD_HP_text =
+{
+	bmap = "HP.png";
+	flags = TRANSLUCENT;
+	layer = 2;
+}
+TEXT* HUD_HP_infotext =	
+{
+	layer = 3;
+	font = "Console#20b";
+	blue = 0;
+	green = 0;
+	red = 0;
+	string ("100");
+	flags = CENTER_X | CENTER_Y ;
+} 
+
+PANEL* HUD_Head =
+{
+	bmap = "lotterindahouse.png";
+	flags = TRANSLUCENT | LIGHT;
+	layer = 2;
+}
+
 PANEL *hud_weapon_icon[4];
 
 void hud_init()
@@ -77,15 +101,18 @@ void hud_init()
 	hud_weapon_icon[WEAPON_SHOTGUN-1] = pan_create("bmap = label_shotgun.png",2);
 	hud_weapon_icon[WEAPON_CELLGUN-1] = pan_create("bmap = label_cellgun.png",2);
 	hud_weapon_icon[WEAPON_FLAMETHROWER-1] = pan_create("bmap = label_flamethrower.png",2);
-	/*
+	
 	int i;
 	for(i=0; i<4; ++i)
 	{
 		hud_weapon_icon[i].scale_x = 0.8;
 		hud_weapon_icon[i].scale_y = 0.8;
-	}*/
+	}
 }
 
+
+//var true_size(PANEL *)
+ 
 void hud_place_label(PANEL *label, var offsetY)
 {
 	label->pos_x = HUD_BORDER_PADDING;
@@ -95,12 +122,10 @@ void hud_place_label(PANEL *label, var offsetY)
 	set(label, SHOW);
 }
 
-void hud_place_bar(PANEL* label, PANEL *bar, var offsetY) 
+void hud_place_bar(PANEL *bar, var offsetX) 
 {
-	var label_bar_ydiff = label->size_y*label->scale_y - bar->size_y;
-	
-	bar->pos_x = HUD_BORDER_PADDING + label->size_x*label->scale_x +3;
-	bar->pos_y = screen_size.y - label->size_y*label->scale_y - HUD_BORDER_PADDING -offsetY + label_bar_ydiff/2;
+	bar->pos_x = offsetX;
+	bar->pos_y = screen_size.y - bar->size_y*bar->scale_y - HUD_BORDER_PADDING;
 	bar->alpha = HUD_BARS_MAX_ALPHA;
 	
 	pan_setwindow  (bar, 0, 0,0, 0, bmap_height(hud_healthbar_bmap), hud_healthbar_bmap, 0,0);
@@ -125,26 +150,45 @@ void hud_update_bar(PANEL *bar, BMAP *source, var current_value, var max_value)
 
 void hud_show()
 {
-	var ammo_YOffset = HUD_HP_bars->size_y*HUD_HP_bars->scale_y;
-	var distance_between_bars = ammo_YOffset + HUD_DIST_BETWEEN_BARS;
+	
+	HUD_Head->pos_x = (screen_size.x- HUD_Head->size_x*HUD_Head->scale_x)/2;
+	HUD_Head->pos_y = screen_size.y - HUD_Head->size_y*HUD_Head->scale_y - HUD_BORDER_PADDING;
+	set(HUD_Head, SHOW);
+	
+	var space_left = HUD_Head->pos_x - HUD_BORDER_PADDING;
+	space_left /= 2;
+	
+	var lb_leftElement = HUD_BORDER_PADDING;
+	var lb_rightElement = HUD_BORDER_PADDING+space_left;
+	
+	var ub_leftElement = lb_rightElement-HUD_BARS_XPADDING;
+	var ub_rightElement = HUD_Head->pos_x-HUD_BARS_XPADDING;
+	
+	var center_leftElement = (ub_leftElement+lb_leftElement)/2;
+	var center_rightElement = (ub_rightElement+lb_rightElement)/2;
+	
+	var cc_left = (center_leftElement+lb_leftElement)/2;
+	var cc_right = (center_leftElement+ub_leftElement)/2;
+	
+	var element_width = space_left - HUD_BARS_XPADDING;
+	
 	
 	int i;
-	for(i = 0; i<4; ++i)
+	for(i=0; i<4; ++i)
 	{
-		hud_place_label(hud_weapon_icon[i], distance_between_bars);
-		vec_set(hud_weapon_icon[i].blue, HUD_AMMO_COLOR);
-		set(hud_weapon_icon[i], LIGHT);
+	 	hud_weapon_icon[i]->pos_x = center_rightElement - hud_weapon_icon[i].size_x*hud_weapon_icon[i].scale_x/2;
+	 	hud_weapon_icon[i]->pos_y = screen_size.y - HUD_BORDER_PADDING - hud_weapon_icon[i].size_y*hud_weapon_icon[i].scale_y;
 	}
+	hud_place_bar(HUD_Ammo_bars, center_rightElement - HUD_Ammo_bars.size_x*HUD_Ammo_bars.scale_x/2);
 	
-	hud_place_bar(hud_weapon_icon[0], HUD_Ammo_bars, distance_between_bars);
+	HUD_HP_text->pos_x = cc_right - HUD_HP_text->size_x*HUD_HP_text->scale_x/2;
+	HUD_HP_text->pos_y = screen_size.y - HUD_BORDER_PADDING - HUD_HP_text.size_y*HUD_HP_text.scale_y ;
+	set(HUD_HP_text, SHOW);
 	
+	HUD_HP_infotext->pos_x = cc_left;
+	HUD_HP_infotext->pos_y = HUD_HP_text->pos_y + HUD_HP_text->size_x*HUD_HP_text->scale_x/2;
+	set(HUD_HP_infotext, SHOW);
 	
-	var desiredWidth = hud_weapon_icon[0]->size_x*hud_weapon_icon[0]->scale_x + 3 + HUD_Ammo_bars->size_x*HUD_Ammo_bars->scale_x;
-	HUD_HP_bars.scale_x = desiredWidth / HUD_HP_bars.size_x;
-	HUD_HP_bars.pos_x = HUD_BORDER_PADDING;
-	HUD_HP_bars.pos_y = screen_size.y - HUD_HP_bars.size_y*HUD_HP_bars.scale_y - HUD_BORDER_PADDING;
-	pan_setwindow  (HUD_HP_bars, 0, 0,0, 0, bmap_height(hud_healthbar_bmap), hud_healthbar_bmap, 0,0);
-	set(HUD_HP_bars, SHOW);
 	
 	HUD_crosshair->pos_x = (screen_size.x - HUD_crosshair.size_x*HUD_crosshair.scale_x) /2;
 	HUD_crosshair->pos_y = (screen_size.y - HUD_crosshair.size_y*HUD_crosshair.scale_x) /2;
@@ -157,9 +201,12 @@ void hud_show()
 
 void hud_hide()
 {
+	reset(HUD_Head, SHOW);
+	reset(HUD_HP_infotext, SHOW);
+	reset(HUD_HP_text, SHOW);
 	reset(HUD_crosshair, SHOW);
 	reset(HUD_HP_label, SHOW);
-	reset(HUD_HP_bars, SHOW);
+	//reset(HUD_HP_bars, SHOW);
 	//reset(HUD_Ammo_label, SHOW);
 	reset(HUD_Ammo_bars, SHOW);
 	reset(HUD_Ammo_infotext, SHOW);
@@ -197,10 +244,10 @@ void hud_hide_ammobar()
 
 void hud_update()
 {
-	var player_maxhealth = playerGetHealth();
-	var player_health = playerGetMaxHealth();
+	var player_maxhealth = playerGetMaxHealth();
+	var player_health = playerGetHealth();
 	//
-   hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, player_health, player_maxhealth);
+   /*hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, player_health, player_maxhealth);
    
    var player_healthratio = player_health/player_maxhealth;
    if(player_healthratio < 0.3)
@@ -212,7 +259,7 @@ void hud_update()
 		HUD_HP_bars.red = (255-2*hp_flicker_brightness)*hud_flicker_coefficient(hp_flicker_frequency)+ 2*hp_flicker_brightness;
 		HUD_HP_bars.green = (255-hp_flicker_brightness)*hud_flicker_coefficient(hp_flicker_frequency) + hp_flicker_brightness;
 		HUD_HP_bars.blue = (255-hp_flicker_brightness)*hud_flicker_coefficient(hp_flicker_frequency) + hp_flicker_brightness;
-	}
+	}*/
 	
 	
 	int weaponID = weapons_get_current();
