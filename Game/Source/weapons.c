@@ -40,6 +40,9 @@ typedef struct weapons_t
 	int swordLength;
 	var flamesound;
 	var flamefade;
+	var spearpower;
+	var speartimer;
+	var electro;
 	weapons_data_t weapon[WEAPONS_COUNT];
 } weapons_t;
 
@@ -77,13 +80,22 @@ ENTITY * weapons_wp_flamethrower =
 	view = camera;
 }
 
+ENTITY * weapons_wp_cellgun_bzzt =
+{
+	type = "bzzt+4.png";
+	view = camera;
+}
+
 BMAP * weapons_bullethole_decal = "bullet_hole.tga";
 
 BMAP * weapons_fire_01 = "fire.pcx";
 
-SOUND * weapons_snd_sword = "sword_snd.wav";
+SOUND * weapons_snd_sword1 = "sword_swing1.wav";
+SOUND * weapons_snd_sword2 = "sword_swing2.wav";
+SOUND * weapons_snd_sword3 = "sword_swing3.wav";
 SOUND * weapons_snd_shotgun = "shotgun_snd.wav";
 SOUND * weapons_snd_cellgun = "cellgun_snd.wav";
+SOUND * weapons_snd_cellgun_loop = "cellgun_hum.wav";
 SOUND * weapons_snd_flamethrower = "flamethrower_snd.wav";
 SOUND * weapons_snd_flamethrower_start = "flamethrower_start_snd.wav";
 SOUND * weapons_snd_flamethrower_end = "flamethrower_end_snd.wav";
@@ -117,7 +129,7 @@ VECTOR debugVec;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define WEAPONS_CELLGUN_DEFAULT_STANCE_POS rel_for_screen(vector(screen_size.x + 20, screen_size.y - 20, 50), camera)
-#define WEAPONS_CELLGUN_DEFAULT_STANCE_ANG vector(180,0,0)
+#define WEAPONS_CELLGUN_DEFAULT_STANCE_ANG vector(180,0,160)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -160,7 +172,7 @@ void weapons_init()
 	weapons.weapon[WEAPON_CELLGUN].ent = weapons_wp_cellgun;
 	weapons.weapon[WEAPON_FLAMETHROWER].ent = weapons_wp_flamethrower;
 
-	weapons.weapon[WEAPON_SWORD].snd = weapons_snd_sword;
+	weapons.weapon[WEAPON_SWORD].snd = weapons_snd_sword1;
 	weapons.weapon[WEAPON_SHOTGUN].snd = weapons_snd_shotgun;
 	weapons.weapon[WEAPON_CELLGUN].snd = weapons_snd_cellgun;
 	weapons.weapon[WEAPON_FLAMETHROWER].snd = weapons_snd_flamethrower;
@@ -168,8 +180,8 @@ void weapons_init()
 	weapons.weapon[WEAPON_SWORD].attackspeed = 40;
 	weapons.weapon[WEAPON_SHOTGUN].attackspeed = 10;
 	weapons.weapon[WEAPON_FLAMETHROWER].streaming = true;
+	weapons.weapon[WEAPON_CELLGUN].streaming = true;
 	weapons.weapon[WEAPON_CELLGUN].attackspeed = 10;
-
 
 	weapons.weapon[WEAPON_SWORD].max_ammo        = 0;
 	weapons.weapon[WEAPON_SHOTGUN].max_ammo      = 36;
@@ -201,6 +213,16 @@ void weapons_select_next(int dir)
 	} while(start != weapons.current);
 }
 
+bool weapons_draw_ammo(var amount)
+{
+	if(WEAPONS_CURRENT.max_ammo <= 0)
+	return true;
+	if(WEAPONS_CURRENT.ammo < amount)
+	return false;
+	WEAPONS_CURRENT.ammo -= amount;
+	return true;
+}
+
 void weapons_shoot_shotgun()
 {
 	int i;
@@ -227,7 +249,9 @@ void weapons_shoot_shotgun()
 		var dist = c_trace(camera.x, dir, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
 		/*if(HIT_TARGET)
 		{
-			ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+			PARTICLE *p = ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+			p->material = matDecalBasic;
+			p->lifespan = 640;
 		}*/
 	}
 }
@@ -319,6 +343,7 @@ void weapons_shoot_flamethrower()
 	vec_normalize(dir, WEAPONS_FLAME_VEL);
 
 	effect (weapons_flame_effect, maxv(1, time_frame * WEAPONS_FLAME_COUNT), pos, dir);
+	
 }
 
 void weapons_shoot_sword(VECTOR * _pos, VECTOR * _ang)
@@ -343,7 +368,12 @@ void weapons_shoot_sword(VECTOR * _pos, VECTOR * _ang)
 	var dist = c_trace(pos, end, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
 	if(HIT_TARGET)
 	{
-		ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+		PARTICLE *p = ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+		if(p)
+		{
+			p->material = matDecalBasic;
+			p->lifespan = 640;
+		}
 	}
 
 	/*
@@ -355,6 +385,21 @@ void weapons_shoot_sword(VECTOR * _pos, VECTOR * _ang)
 	*/
 }
 
+void weapons_shoot_cellgun()
+{
+	VECTOR pos;
+	vec_for_vertex (pos, weapons_wp_cellgun, 393);
+	vec_add(pos, weapons_wp_cellgun.x);
+	vec_scale(pos, 0.1);
+
+	vec_rotate(pos, camera.pan);
+	vec_add(pos, camera.x);
+
+	VECTOR speed;
+	vec_set(speed,vector(600,0,0));
+	vec_rotate(speed,camera.pan);
+	projectileCreate(PROJECTILE_TYPE_CELL, 1, pos, speed);
+}
 
 var weaponGetKickbackFac(var progress, var kickPoint)
 {
@@ -405,18 +450,34 @@ void weapons_update()
 		if(WEAPONS_CURRENT.streaming)
 		{
 			var isdown = input_down(INPUT_ATTACK);
+			if(isdown)
+			{
+				if(weapons.current == WEAPON_CELLGUN)
+				isdown = WEAPONS_CURRENT.ammo >= 3;
+				else if(weapons.current == WEAPON_FLAMETHROWER)
+				isdown = weapons_draw_ammo(1.5 * time_step);
+			}
 			if(weapons.attacking != isdown)
 			{
 				if(isdown)
 				{
+					if(weapons.current == WEAPON_FLAMETHROWER)
 					snd_play(weapons_snd_flamethrower_start, 100, 0);
 					weapons.attackprogress = 0;
 					weapons.attackstate = 0;
 				}
 				else
 				{
-					if(weapons.flamefade == 100)
-					snd_play(weapons_snd_flamethrower_end, 30, 0);
+					if(weapons.current == WEAPON_FLAMETHROWER)
+					{
+						if(weapons.flamefade == 100)
+						snd_play(weapons_snd_flamethrower_end, 30, 0);
+					}
+					else if(weapons.current == WEAPON_CELLGUN)
+					{
+						snd_stop(weapons.electro);
+						weapons.electro = 0;
+					}
 				}
 				weapons.attacking = isdown;
 			}
@@ -425,9 +486,12 @@ void weapons_update()
 		{
 			if(!weapons.attacking && input_hit(INPUT_ATTACK))
 			{
-				weapons.attacking = 1;
-				weapons.attackprogress = 0;
-				weapons.attackstate = 0;
+				if(weapons_draw_ammo(1))
+				{
+					weapons.attacking = 1;
+					weapons.attackprogress = 0;
+					weapons.attackstate = 0;
+				}
 			}
 		}
 
@@ -455,17 +519,22 @@ void weapons_update()
 
 			if(weapons.attacking && weapons.attackstate++ == 0)
 			{
-				snd_play(WEAPONS_CURRENT.snd, 100, 0);
+				switch(integer(random(3)))
+				{
+					case 0: snd_play(weapons_snd_sword1, 100, 0); break;
+					case 1: snd_play(weapons_snd_sword2, 100, 0); break;
+					case 2: snd_play(weapons_snd_sword3, 100, 0); break;
+				}
 			}
 
 			if(weapons.attacking)
 			{
 				VECTOR pos, ang;
 				var i;
-				for(i = 0; i < 20; i++)
+				for(i = 0; i < 5; i++)
 				{
-					vec_lerp(pos, sourcePosePos, targetPosePos, 0.01 * (weapons.attackprogress + 0.05 * i * WEAPONS_CURRENT.attackspeed));
-					ang_lerp(ang, sourcePoseAng, targetPoseAng, 0.01 * (weapons.attackprogress + 0.05 * i * WEAPONS_CURRENT.attackspeed));
+					vec_lerp(pos, sourcePosePos, targetPosePos, 0.01 * (weapons.attackprogress + 0.2 * i * WEAPONS_CURRENT.attackspeed));
+					ang_lerp(ang, sourcePoseAng, targetPoseAng, 0.01 * (weapons.attackprogress + 0.2 * i * WEAPONS_CURRENT.attackspeed));
 					weapons_shoot_sword(pos, ang);
 				}
 			}
@@ -547,27 +616,89 @@ void weapons_update()
 
 			vec_set(targetPosePos, sourcePosePos);
 			vec_set(targetPoseAng, sourcePoseAng);
-			
-			
-			if(weapons.attacking)
+
+			if(weapons.attacking || weapons.attackstate != 0)
 			{
-				if(weapons.attackstate == 0)
+				if(weapons.spearpower < 100)
 				{
-					weapons.attackstate = 1;
-					
-					VECTOR pos,speed;
-					vec_set(speed,vector(600,0,0));
-					vec_rotate(speed,camera.pan);
-					vec_set(pos,vector(camera.x,camera.y,camera.z-2));
-					projectileCreate(PROJECTILE_TYPE_CELL, 1, pos, speed);
+					ent_animate(weapons_wp_cellgun, "PowerUp", weapons.spearpower, 0);
+					weapons.spearpower += WEAPONS_CURRENT.attackspeed * time_step;
+					weapons.speartimer = weapons.spearpower % 100;
+					weapons.attackstate = 0;
+				}
+				else
+				{
+					ent_animate(weapons_wp_cellgun, "ShootStuff", weapons.speartimer, ANM_CYCLE);
+					weapons.speartimer += WEAPONS_CURRENT.attackspeed * time_step;
+					if(weapons.speartimer >= 100)
+					weapons.speartimer -= 100;
+
+					weapons.spearpower = 100;
+
+					if(weapons.speartimer >= 0 && weapons.speartimer < 30 && weapons.attackstate == 0)
+					{
+						if(weapons_draw_ammo(1))
+						{
+							snd_play(WEAPONS_CURRENT.snd, 100, 0);
+							weapons_shoot_cellgun();
+						}
+						weapons.attackstate = 1;
+					}
+					else if(weapons.speartimer >= 30 && weapons.speartimer < 60 && weapons.attackstate == 1)
+					{
+						if(weapons_draw_ammo(1))
+						{
+							snd_play(WEAPONS_CURRENT.snd, 100, 0);
+							weapons_shoot_cellgun();
+						}
+						weapons.attackstate = 2;
+					}
+					else if(weapons.speartimer >= 60 && weapons.speartimer < 90 && weapons.attackstate == 2)
+					{
+						if(weapons_draw_ammo(1))
+						{
+							snd_play(WEAPONS_CURRENT.snd, 100, 0);
+							weapons_shoot_cellgun();
+						}
+						weapons.attackstate = 3;
+					}
+					else if(weapons.speartimer >= 90 && weapons.attackstate == 3)
+					{
+						weapons.attackstate = 0;
+					}
+
 				}
 			}
-			
+			else
+			{
+				snd_pause(weapons.electro);
+				ent_animate(weapons_wp_cellgun, "PowerDown", 100 - weapons.spearpower, 0);
+				weapons.spearpower -= WEAPONS_CURRENT.attackspeed * time_step;
+				if(weapons.spearpower < 0)
+				weapons.spearpower = 0;
+			}
+
+			if(weapons.spearpower <= 0)
+			{
+				if(weapons.electro != 0)
+				snd_stop(weapons.electro);
+				weapons.electro = 0;
+			}
+			else
+			{
+				if(weapons.electro == 0)
+				weapons.electro = snd_loop(weapons_snd_cellgun_loop, 0, 0);
+				snd_tune(weapons.electro, weapons.spearpower, 0, 0);
+			}
+
+			DEBUG_VAR(weapons.spearpower, 16);
+			DEBUG_VAR(weapons.speartimer, 32);
+			DEBUG_VAR(weapons.electro, 48);
 
 			break;
 		}
 
-		
+
 		if(weapons.attacking && weapons.current != WEAPON_SHOTGUN)
 		{
 			vec_lerp(WEAPONS_CURRENT.ent.x, sourcePosePos, targetPosePos, 0.01 * weapons.attackprogress);
@@ -597,6 +728,16 @@ void weapons_update()
 		}
 	}
 	else weapons.attackprogress = 0;
+
+	if(weapons.current == WEAPON_CELLGUN)
+	{
+		weapons_wp_cellgun_bzzt.flags2 |= SHOW;
+	}
+	else
+	{
+		weapons_wp_cellgun_bzzt.flags2 &= ~SHOW;
+	}
+
 }
 
 void weapons_close()

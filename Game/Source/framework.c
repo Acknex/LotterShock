@@ -6,6 +6,7 @@
 #include "input.h"
 #include "credits.h"
 #include "hud.h"
+#include "materials.h"
 
 #define FRAMEWORK_ALPHA_BLENDSPEED  25
 
@@ -42,7 +43,11 @@ PANEL * framework_load_screen =
 void framework_init()
 {
     fps_max = 61;
+    particle_mode = 8;
     video_set(1600, 900, 0, 2); // 1280x720, Window
+    
+    SetupDefaultMaterials();
+    SetupPostprocessing();
 
     on_frame = framework_update;
 #ifdef DEBUG
@@ -59,6 +64,19 @@ void framework_setup(ENTITY * ent, int subsystem)
 void framework_transfer(int state)
 {
     framework.nextState = state;
+}
+
+void framework_cleanup()
+{
+    ENTITY * ent;
+    ent = ent_next(NULL);
+    while(ent)
+    {
+        you = ent;
+        ent = ent_next(ent);
+        if(you.SK_ENTITY_DEAD)
+            ptr_remove(you);
+    }
 }
 
 //! Aktualisiert alles.
@@ -146,7 +164,7 @@ void framework_update()
             level_load(LEVEL_FILE);
 #endif
         }
-        hud_show();
+        
         if(framework.loaderState >= 6)
         {
             framework_load_screen->alpha -= FRAMEWORK_ALPHA_BLENDSPEED * time_step;
@@ -260,6 +278,9 @@ void framework_update()
 
     // Update music after updating the whole game state
     music_update();
+
+    // Cleanup all dead entities
+    framework_cleanup();
 
     if(framework.state == FRAMEWORK_STATE_SHUTDOWN)
     {

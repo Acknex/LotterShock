@@ -47,14 +47,14 @@ void ESELSLERCHE_Init()
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENEMY_LERCHE)
    {
    	//TODO: useful default values
-   	if(ptr->EL_RUNSPEED == 0) ptr->EL_RUNSPEED = 8;
+   	if(ptr->EL_RUNSPEED == 0) ptr->EL_RUNSPEED = 12;
    	if(ptr->EL_TURNSPEED == 0) ptr->EL_TURNSPEED = 10;
    	if(ptr->EL_ANIMSPEED == 0) ptr->EL_ANIMSPEED = 5;
-   	if(ptr->EL_EXPLODEDIST == 0) ptr->EL_EXPLODEDIST = 200;
+   	if(ptr->EL_EXPLODEDIST == 0) ptr->EL_EXPLODEDIST = 300;
    	if(ptr->EL_ACTIVEDIST == 0) ptr->EL_ACTIVEDIST = 3000;
 		ptr->HEALTH = 50;
 		ENEMY_HIT_init(ptr);
-		
+		vec_scale(&ptr->scale_x, 2);
 	}	
 }
 
@@ -126,14 +126,17 @@ void ESELSLERCHE_Update()
 
 			}	
 		}
-		VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 10);
-		VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
-		me = ptr;
-		var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;
-		c_trace(from, to, mode);
-		if(HIT_TARGET)
-			ptr->z = hit.z - ptr->min_z;
-			DEBUG_VAR(vec_dist(&player->x, ptr->x) , 150);
+
+		if (ptr->EL_STATE != EL_STATE_EXPLODE)
+		{
+			VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 10);
+			VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
+			me = ptr;
+			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;
+			c_trace(from, to, mode);
+			if(HIT_TARGET)
+				ptr->z = hit.z - ptr->min_z;
+		}
 	}	
 }
 
@@ -207,7 +210,7 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	{
 		ptr->EL_STATE = EL_STATE_EXPLODE;
 	}
-	else if (!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90))
+	else if (!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90) && (!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100)))
 	{
 		ptr->EL_STATE = EL_STATE_WAIT;
 		ptr->EL_ANIMSTATE = 0;
@@ -221,18 +224,29 @@ void ESELSLERCHE__run(ENTITY* ptr)
 
 void ESELSLERCHE__explode(ENTITY* ptr)
 {
-//	EL_EXPLODESTATE
+	
+	ptr->EL_EXPLODESTATE += time_step;
+	if (ptr->EL_EXPLODESTATE < 1)
+	{
+		vec_sub(&ptr->scale_x, vector(time_step, time_step, time_step));
+	}
+	else
+	{
+		vec_add(&ptr->scale_x, vec_scale(vector(time_step, time_step, time_step),3));
+	}
+	
 	set(ptr, PASSABLE);
-	SPLATTER_explode(100, &ptr->x, 600, EL_bmapSplatter);
 	//TODO: explode animation
-	ptr->EL_STATE = EL_STATE_DIE;
-	ptr->EL_ANIMSTATE = 0;
+	//ptr->EL_STATE = EL_STATE_DIE;
+	//ptr->EL_ANIMSTATE = 0;
 
 	/* transitions */
-	if(ptr->EL_EXPLODESTATE >= 50)
+	if(ptr->EL_EXPLODESTATE >= 3)
 	{
+		SPLATTER_explode(100, &ptr->x, 600, EL_bmapSplatter);
 		ptr->EL_STATE = EL_STATE_DEAD;
-		set(ptr, PASSABLE);
+		set(ptr, PASSABLE|INVISIBLE);
+		ptr->SK_ENTITY_DEAD = 1;
 	}
 }
 
