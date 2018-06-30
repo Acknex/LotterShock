@@ -1,8 +1,11 @@
-#ifndef ENEMY_HIT_H
-#define ENEMY_HIT_H
-
 #include "dmgsys.h"
 #include "enemy_hit.h"
+
+void ENEMY_HIT_init(ENTITY* ent)
+{
+	ent->event = ENEMY_HIT_event;
+	ent->emask |= ENABLE_SHOOT;	
+}
 
 void ENEMY_HIT_event()
 {
@@ -19,11 +22,8 @@ void ENEMY_HIT_event()
 			{
 				vec_set (my->DAMAGE_VEC, &my->x);
 				vec_sub (my->DAMAGE_VEC, &ent->x);
-				vec_normalize (my->DAMAGE_VEC);
-				vec_scale (my->DAMAGE_VEC, 3);
+				vec_normalize (my->DAMAGE_VEC, 10);
 			}
 		}
 	}
 }
-
-#endif

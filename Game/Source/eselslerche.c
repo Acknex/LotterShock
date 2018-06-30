@@ -23,7 +23,7 @@
 #define EL_WAITANIM "stand"
 #define EL_DIEANIM "dance"
 #define EL_TURNANIM "turn"
-#define EL_HITANIM ""
+#define EL_HITANIM "asleepfall"
 
 #define EL_STATE_INACTIVE 0
 #define EL_STATE_WAIT 1
@@ -52,8 +52,9 @@ void ESELSLERCHE_Init()
    	if(ptr->EL_ANIMSPEED == 0) ptr->EL_ANIMSPEED = 0;
    	if(ptr->EL_EXPLODEDIST == 0) ptr->EL_EXPLODEDIST = 0;
    	if(ptr->EL_ACTIVEDIST == 0) ptr->EL_ACTIVEDIST = 0;
-		ptr->event = ENEMY_HIT_event;
 		ptr->HEALTH = 50;
+		ENEMY_HIT_init(ptr);
+		
 	}	
 }
 
@@ -76,6 +77,8 @@ void ESELSLERCHE_Update()
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
 				ptr->event = NULL;
+				ptr->EL_STATE = EL_STATE_HIT;
+				SPLATTER_explode(10, &ptr->x, 200, EL_bmapSplatter);
 			}
 			
 			switch(ptr->EL_STATE)    	
@@ -123,6 +126,13 @@ void ESELSLERCHE_Update()
 
 			}	
 		}
+		VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 10);
+		VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
+		me = ptr;
+		var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;
+		c_trace(from, to, mode);
+		if(HIT_TARGET)
+			ptr->z = hit.z - ptr->min_z;
 	}	
 }
 
@@ -239,20 +249,21 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 		animMirror = 90 - animState;
 	ent_animate(ptr, EL_HITANIM, animMirror, 0);
 	
+	VECTOR dir;
+	vec_set(&dir, ptr->DAMAGE_VEC);
+	vec_scale(&dir, 0.5*time_step);
 	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
-	c_move(ptr, nullvector, vec_scale(ptr->DAMAGE_VEC, time_step), mode);
+	c_move(ptr, nullvector, dir, mode);
+
+	if (ptr->HEALTH <= 0)
+	{
+		ptr->EL_STATE = EL_STATE_DIE;
+	}
 
 	if (animState >= 90)
 	{
-		if (ptr->HEALTH <= 0)
-		{
-			ptr->EL_STATE = EL_STATE_DIE;
-		}
-		else
-		{
-			ptr->EL_STATE = EL_STATE_WAIT;			
-			ptr->event = ENEMY_HIT_event;
-		}
+		ptr->EL_STATE = EL_STATE_WAIT;			
+		ptr->event = ENEMY_HIT_event;
 		ptr->EL_ANIMSTATE = 0;
 		ptr->DAMAGE_VEC = nullvector;
 	}
