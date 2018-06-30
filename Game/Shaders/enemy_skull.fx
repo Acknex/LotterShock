@@ -48,7 +48,9 @@ out_frag ps(out_ps In)
 	
 	In.normal = normalize(In.normal);
 	
-	float4 color = tex2D(sTexture, In.uv0);
+	float4 color;
+	color.rgb = tex2D(sTexture, In.uv0);
+	color.a = 1.0f;
 	
 	float glowFactor = saturate(color.b - color.r) * 5.0;
 	Out.glow.rgb = glowFactor * color.rgb;
@@ -79,5 +81,7 @@ technique object
 	{
 		VertexShader = compile vs_3_0 vs();
 		PixelShader = compile ps_3_0 ps();
+		AlphaBlendEnable = false;
+		ZWriteEnable = true;
 	}
 }
