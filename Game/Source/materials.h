@@ -106,6 +106,7 @@ void SetupDefaultMaterials()
 	effect_load(mtl_model, "Shaders/walls_unlit.fx");
 	effect_load(mtl_flat, "Shaders/walls_unlit.fx");
 	effect_load(mtl_shaded, "Shaders/walls_unlit.fx");
+	effect_load(mtl_sky, "Shaders/sky.fx");
 }
 
 #endif
