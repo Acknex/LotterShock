@@ -165,6 +165,9 @@ void framework_update()
 #else
             level_load(LEVEL_FILE);
 #endif
+			wait_for(level_load);
+			ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
+			
         }
         
         if(framework.loaderState >= 6)
