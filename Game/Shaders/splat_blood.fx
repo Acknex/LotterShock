@@ -91,7 +91,7 @@ out_frag ps(out_ps In)
 	Out.color = color;
 	Out.glow = 0.0;
 	
-	return color;
+	return Out;
 }
 
 
