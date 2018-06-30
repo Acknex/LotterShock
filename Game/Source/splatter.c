@@ -16,7 +16,7 @@ void SPLATTER_explode(var count, VECTOR* pos, var distance, BMAP* decal)
 		if(HIT_TARGET)
 		{
 	      PARTICLE* p = ent_decal(you, decal, minv((distance - dist) * 0.8, 270), random(360));
-	      p->lifespan = 320;
+	      p->lifespan = 640;
 	      p->event = SPLATTER__fade_effect;
 	      p->flags |= TRANSLUCENT;
 	      p->alpha = 100;
