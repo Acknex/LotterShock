@@ -8,9 +8,13 @@
 float4 vecAmbient;
 float4 vecFogColor;
 float fAlpha;
+float4 vecSkill1;
 
 Texture entSkin1;
-sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Point; MagFilter = Point; MinFilter = Point; };
+sampler sTexture0 = sampler_state { Texture = <entSkin1>; MipFilter = Point; MagFilter = Point; MinFilter = Point; };
+
+Texture mtlSkin1;
+sampler sTexture1 = sampler_state { Texture = <mtlSkin1>; MipFilter = Point; MagFilter = Point; MinFilter = Point; };
 
 struct out_ps // Output to the pixelshader fragment
 {
@@ -49,8 +53,8 @@ out_frag ps(out_ps In)
 	float3 viewDirection = vecViewPos.xyz - In.worldPos;
 	float viewDistance = length(viewDirection);
 	
-	float4 color;
-	color = tex2D(sTexture, In.uv0);
+	float4 color0 = tex2D(sTexture0, In.uv0);
+	float4 color1 = tex2D(sTexture1, In.uv0);
 	
 	float3 light = vecAmbient.rgb;
 	
@@ -65,15 +69,17 @@ out_frag ps(out_ps In)
 		light += lightFactor * lightAttenuation * vecLightColor[i].rgb;
 	}
 	
-	color.rgb *= light;
+	color1.rgb *= light;
 	
 	float fogAttenuation = max(viewDistance - vecFog.x, 0.0) * vecFog.z;
-	color.rgb = lerp(color.rgb, vecFogColor.rgb, fogAttenuation);
+	color1.rgb = lerp(color1.rgb, vecFogColor.rgb, fogAttenuation);
 	
-	Out.color = color;
-	Out.color.a *= fAlpha;
+	float coolFactor = saturate(fAlpha - 1.0);
 	
-	Out.glow = 0.0;
+	Out.color = color1 + color0 * coolFactor;
+	Out.color.a = color1.a * saturate(fAlpha);
+	
+	Out.glow = lerp(color0, 0.0, 1.0 - coolFactor);
 	
 	return Out;
 }
