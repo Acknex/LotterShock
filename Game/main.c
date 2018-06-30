@@ -28,10 +28,11 @@
 #include "splatter.c"
 #include "credits.c"
 #include "math.c"
-#include "eselslerche.c"
 #include "scan.c"
 #include "dmgsys.c"
 #include "hud.c"
+#include "enemy_hit.c"
+#include "eselslerche.c"
 #include "doors.c"
 
 void main()
