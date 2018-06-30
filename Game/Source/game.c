@@ -2,6 +2,7 @@
 #include "weapons.h"
 #include "movement.h"
 #include "input.h"
+#include "eselslerche.h"
 
 #include <windows.h>
 
@@ -16,6 +17,7 @@ void game_open()
 {
     game_done = false;
     weapons_open();
+    ESELSLERCHE_Init();
 }
 
 void game_capture_mouse()
@@ -32,6 +34,7 @@ void game_update()
 
     movement_update();
     weapons_update();
+	 ESELSLERCHE_Update();
 
     if(input_hit(INPUT_NAVBACK))
         game_done = true;
