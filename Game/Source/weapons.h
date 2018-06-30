@@ -20,4 +20,8 @@ void weapons_add(int id);
 //! Erects the sword and makes it longer.
 void weapons_erect_sword();
 
+var weaponGetKickbackFac(var progress, var kickPoint);
+
+var weaponGetAttackProgress();
+
 #endif // WEAPONS_H
