@@ -1,5 +1,5 @@
 #include "credits.h"
-#include "wm3load.h"
+//#include "wm3load.h"
 
 var CREDITS_vDone = 0;
 
@@ -13,7 +13,7 @@ void credits_open()
 	CREDITS_vDone = 0;
 	level_load(""); /* load empty level */
 	wait(1);
-	//WM3_load("media\\skaph.wm3");	
+//WM3_load("media\\skaph.wm3");	
 }
 
 void credits_close()
