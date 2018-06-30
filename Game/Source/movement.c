@@ -32,7 +32,8 @@ var playerSlideCounter = 0;
 var playerSlidePerc = 0;
 VECTOR playerSlideDir;
 var playerSlidePan = 0;
-var playerHasDoubleJump = 2;
+var playerHasDoubleJump = 1;
+var playerHoverPossible = 0;
 var playerExtraJumpsLeft = 0;
 var playerHasEntMorphBall = 1;
 var playerEntMorphBallActive = 0;
@@ -207,7 +208,7 @@ void playerEntMorphBallDo()
 		player.PLAYER_GROUND_CONTACT = 0;
 		playerJumpHangtime = maxv(playerJumpHangtime-time_step,0);
 		var fac = 1;
-		if(!input[INPUT_JUMP].down) playerJumpHangtime = 0;
+		if(!input[INPUT_JUMP].down) playerHoverPossible = playerJumpHangtime = 0;
 		if(playerJumpHangtime > 0) fac = 0.667;
 		player.PLAYER_SPEED_Z = maxv(player.PLAYER_SPEED_Z-fac*24*playerSpeedFac*time_step,-240);
 		c_move(player,nullvector,vector(0,0,player.PLAYER_SPEED_Z*time_step),PLAYER_C_MOVE_MODE_DEFAULT);
@@ -486,9 +487,15 @@ void movement_update()
 	{
 		player.PLAYER_GROUND_CONTACT = 0;
 		playerJumpHangtime = maxv(playerJumpHangtime-time_step,0);
+		playerHoverPossible = maxv(playerHoverPossible-time_step,0);
 		var fac = 1;
-		if(!input[INPUT_JUMP].down) playerJumpHangtime = 0;
+		if(!input[INPUT_JUMP].down) playerHoverPossible = playerJumpHangtime = 0;
 		if(playerJumpHangtime > 0) fac = 0.667;
+		if(playerHoverPossible)
+		{
+			fac *= clamp(player.PLAYER_SPEED_Z*0.05,0,1);
+			effect(p_playerSlide_smoke,2,target,vector(0,0,-30-random(30)));
+		}
 		player.PLAYER_SPEED_Z = maxv(player.PLAYER_SPEED_Z-fac*24*playerSpeedFac*time_step,-240);
 		c_move(player,nullvector,vector(0,0,player.PLAYER_SPEED_Z*time_step),PLAYER_C_MOVE_MODE_DEFAULT);
 		if(HIT_TARGET && normal.z < 0 && target.z > player.z) player.PLAYER_SPEED_Z = minv(player.PLAYER_SPEED_Z,0);
@@ -498,6 +505,7 @@ void movement_update()
 		{
 			playerExtraJumpsLeft--;
 			playerJumpHangtime = 6;
+			playerHoverPossible = 16;
 			player.PLAYER_SPEED_Z = minv(player.PLAYER_SPEED_Z*0.1+80,100);
 		}
 	}
