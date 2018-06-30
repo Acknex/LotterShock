@@ -6,9 +6,7 @@
 #include <normal>
 
 Texture entSkin1;
-Texture entSkin2;
 sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Point; MagFilter = Point; MinFilter = Point; };
-sampler sLightmap = sampler_state { Texture = <entSkin2>; MipFilter = Point; MagFilter = Point; MinFilter = Point; };
 
 struct out_ps // Output to the pixelshader fragment
 {
@@ -42,11 +40,10 @@ float4 ps(out_ps In): COLOR
 	float viewDistance = distance(vecViewPos.xyz - In.worldPos);
 	
 	float4 color;
-	color.rgba = tex2D(sTexture, In.uv0);
-	float glow = color.a;
+	color.rgb = tex2D(sTexture, In.uv0);
 	color.a = 1.0;
 	
-	float3 light = tex2D(sLightmap, In.uv1).rgb;
+	float3 light = vecAmbient.rgb;
 	
 	for(int i = 0; i < 8; i++)
 	{
@@ -58,7 +55,7 @@ float4 ps(out_ps In): COLOR
 		light += lightFactor * lightAttenuation * vecLightColor[i].rgb;
 	}
 	
-	color.rgb *= lerp(light, float3(1.0), glow);
+	color.rgb *= light;
 	
 	float fogAttenuation = max(viewDistance - vecFog.x, 0.0) * vecFog.z;
 	
