@@ -96,7 +96,7 @@ void SetupDefaultMaterials()
 {
 	fog_color = 2;
 	camera.fog_start = 0.0;
-	camera.fog_end = 30000.0;
+	camera.fog_end = 20000.0;
 	
 	effect_load(mtl_model, "Shaders/walls_unlit.fx");
 	effect_load(mtl_flat, "Shaders/walls_unlit.fx");

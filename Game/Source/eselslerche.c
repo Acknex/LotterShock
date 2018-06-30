@@ -91,7 +91,7 @@ void ESELSLERCHE_Update()
 				ptr->DAMAGE_HIT = 0;
 				ptr->event = NULL;
 				ptr->EL_STATE = EL_STATE_HIT;
-				SPLATTER_splat(&ptr->x, vector(0,0.8,0));
+				SPLATTER_splat(&ptr->x, vector(73.0/255.0,159.0/255.0,0.0));
 				SPLATTER_explode(10, &ptr->x, 200, EL_bmapSplatter, 5);
 			}
 			
