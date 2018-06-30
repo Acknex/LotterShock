@@ -130,8 +130,8 @@ SOUND * weapons_snd_flamethrower_end = "flamethrower_end_snd.wav";
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define WEAPONS_CELLGUN_DEFAULT_STANCE_POS rel_for_screen(vector(screen_size.x + 20, screen_size.y - 20, 50), camera)
-#define WEAPONS_CELLGUN_DEFAULT_STANCE_ANG vector(180,0,160)
+#define WEAPONS_CELLGUN_DEFAULT_STANCE_POS rel_for_screen(vector(screen_size.x + 20, screen_size.y, 40), camera)
+#define WEAPONS_CELLGUN_DEFAULT_STANCE_ANG vector(0,0,160)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -468,8 +468,8 @@ void weapons_update()
 			{
 				if(isdown)
 				{
-					if(weapons.current == WEAPON_FLAMETHROWER)
-                        snd_play(weapons_snd_flamethrower_start, 100, 0);
+//					if(weapons.current == WEAPON_FLAMETHROWER)
+//                        snd_play(weapons_snd_flamethrower_start, 100, 0);
 					weapons.attackprogress = 0;
 					weapons.attackstate = 0;
 				}
