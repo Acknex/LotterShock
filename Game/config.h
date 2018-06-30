@@ -1,3 +1,0 @@
-#define DEBUG
-#define DEBUG_NO_MUSIC
-#define DEBUG_FRAMEWORK_FASTSTART
