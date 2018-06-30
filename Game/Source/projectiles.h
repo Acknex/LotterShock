@@ -6,6 +6,7 @@
 	#define PROJECTILES_H
 
 #include "dmgsys.h"
+#include "materials.h"
 
 	typedef struct PROJECTILE
 	{
@@ -182,6 +183,10 @@
 						size = 32+random(8);
 					}
 					PARTICLE* p = ent_decal(you, bmp, size, random(360));
+					if(p)
+					{
+						p->material = matDecalGlow;
+					}
 					p_decal_setup_fade(p, 16+random(6), 12);
 					vec_add(proj->pos,normal);
 					vec_set(bounce,normal);
@@ -194,6 +199,10 @@
 				{
 					proj->lifetime = 0;
 					PARTICLE* p = ent_decal(you, bulletHoleCool_bmp, 9+random(2), 0);
+					if(p)
+					{
+						p->material = matDecalBasic;
+					}
 					p_decal_setup_fade(p, 120+random(10), 10);
 					effect(p_bullet_impact_smoke,1+(random(2) > 1),target,normal);
 				}
