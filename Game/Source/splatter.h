@@ -2,6 +2,7 @@
 #define SPLATTER_H
 
 void SPLATTER_explode(var count, VECTOR* pos, var distance, BMAP* decal);
+void SPLATTER_splat(VECTOR* pos, VECTOR* n);
 
 
 //local

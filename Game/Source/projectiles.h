@@ -5,6 +5,9 @@
 #ifndef PROJECTILES_H
 	#define PROJECTILES_H
 
+#include "dmgsys.h"
+#include "materials.h"
+
 	typedef struct PROJECTILE
 	{
 		int type;
@@ -14,6 +17,8 @@
 		ENTITY* ent;
 		VECTOR pos,prevPos,speed;
 		var lifetime;
+                var dmg;
+                ENTITY * source;
 		struct PROJECTILE *next;
 	} PROJECTILE;
 
@@ -48,9 +53,11 @@
 		projectileList = NULL;
 	}
 
-	void projectileCreate(int type, int friendly, VECTOR* pos, VECTOR* speed)
+        PROJECTILE * projectileCreate(int type, int friendly, VECTOR* pos, VECTOR* speed)
 	{
 		PROJECTILE *projNew = (PROJECTILE*)sys_malloc(sizeof(PROJECTILE));
+                memset(projNew, 0, sizeof(PROJECTILE));
+
 		projNew->next = projectileList;
 		projectileList = projNew; 
 		projNew->type = type;
@@ -65,18 +72,19 @@
 		
 		switch(type)
 		{
-			case PROJECTILE_TYPE_SHOTGUN:
+                    case PROJECTILE_TYPE_SHOTGUN:
 			projNew->bounces = 1;
 			projNew->lifetime = 16;
 			projNew->friendly = 1;
 			break;
 
-			case PROJECTILE_TYPE_CELL:
-			projNew->bounces = 64;
+                    case PROJECTILE_TYPE_CELL:
+                        projNew->bounces = 0;
 			projNew->lifetime = 48;
 			projNew->friendly = 1;
 			break;
 		}
+                return projNew;
 	}
 	
 	void p_projectile_shotgun(PARTICLE* p)
@@ -152,8 +160,14 @@
 			vec_scale(temp,time_step);
 			vec_add(proj->pos,temp);
 			//proj->speed.z -= time_step;
-			if(proj->friendly && player) set(player,PASSABLE);
-			c_trace(proj->prevPos,proj->pos,PROJECTILE_C_TRACE_MODE_DEFAULT | USE_POLYGON | SCAN_TEXTURE);
+                        if(proj->friendly && player)
+                            set(player,PASSABLE);
+
+                        if(proj->friendly)
+                            dmgsys_set_src(DMGSYS_PLAYER, proj->source, proj->dmg);
+                        else
+                            dmgsys_set_src(DMGSYS_ENEMY, proj->source, proj->dmg);
+                        c_trace(proj->prevPos,proj->pos,PROJECTILE_C_TRACE_MODE_DEFAULT | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
 			if(proj->friendly && player) reset(player,PASSABLE);
 			if(trace_hit)
 			{
@@ -169,6 +183,10 @@
 						size = 32+random(8);
 					}
 					PARTICLE* p = ent_decal(you, bmp, size, random(360));
+					if(p)
+					{
+						p->material = matDecalGlow;
+					}
 					p_decal_setup_fade(p, 16+random(6), 12);
 					vec_add(proj->pos,normal);
 					vec_set(bounce,normal);
@@ -181,6 +199,10 @@
 				{
 					proj->lifetime = 0;
 					PARTICLE* p = ent_decal(you, bulletHoleCool_bmp, 9+random(2), 0);
+					if(p)
+					{
+						p->material = matDecalBasic;
+					}
 					p_decal_setup_fade(p, 120+random(10), 10);
 					effect(p_bullet_impact_smoke,1+(random(2) > 1),target,normal);
 				}
