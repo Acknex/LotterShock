@@ -12,7 +12,6 @@ struct out_ps // Output to the pixelshader fragment
 {
 	float4 Pos : POSITION;
 	float2 uv0 : TEXCOORD0;
-	float2 uv1 : TEXCOORD1;
 	float3 worldPos : TEXCOORD2;
 	float3 normal : TEXCOORD3;
 };
@@ -20,14 +19,12 @@ struct out_ps // Output to the pixelshader fragment
 out_ps vs(
 	float4 inPos : POSITION,
 	float3 inNormal : NORMAL
-	float2 inTexCoord0 : TEXCOORD0
-	float2 inTexCoord1 : TEXCOORD1)
+	float2 inTexCoord0 : TEXCOORD0)
 {
 	out_ps Out;
 	
 	Out.Pos = DoTransform(inPos);
 	Out.uv0 = inTexCoord0;
-	Out.uv1 = inTexCoord1;
 	Out.worldPos = mul(matWorld, float4(inPos.xyz, 1.0));
 	Out.normal = mul(matWorld, float4(inNormal, 1.0));
 	
