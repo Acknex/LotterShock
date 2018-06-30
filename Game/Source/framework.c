@@ -6,6 +6,7 @@
 #include "input.h"
 #include "credits.h"
 #include "hud.h"
+#include "materials.h"
 
 #define FRAMEWORK_ALPHA_BLENDSPEED  25
 
