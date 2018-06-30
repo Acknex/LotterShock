@@ -24,6 +24,17 @@ ANGLE playerAngle;
 var playerHealth = 100;
 var playerHealthMax = 100;
 var playerLives = 3;
+var playerCrouching = 0;
+var playerCrouchPerc = 0;
+var playerSlideCounter = 0;
+var playerSlidePerc = 0;
+VECTOR playerSlideDir;
+var playerSlidePan = 0;
+
+void movement_close()
+{
+	player = NULL;
+}
 
 var playerGetLives()
 {
@@ -40,6 +51,28 @@ var playerGetMaxHealth()
 	return playerHealthMax;
 }
 
+void playerAddHealth(var amount)
+{
+	playerHealth = clamp(playerHealth+amount,0,playerHealthMax);
+}
+
+	void p_playerSlide_smoke(PARTICLE* p)
+	{
+		vec_add(p.vel_x,vector(random(2)-1,random(2)-1,random(2)-1));
+		vec_scale(p.vel_x,2+random(2));
+		p.x += (random(2)-1)*48*(1-abs(normal.x));
+		p.y += (random(2)-1)*48*(1-abs(normal.y));
+		p.z += (random(2)-1)*48*(1-abs(normal.z));
+		p.vel_z *= 0.5;
+		p.bmap = smokeSprite1_bmp;
+		set(p,MOVE);
+		//p.gravity = -0.2;
+		p.alpha = 18+random(5);
+		vec_fill(p.blue,60+random(30));
+		p.size = 40+random(25);
+		p.event = p_bullet_impact_smoke_fade;
+	}
+	
 void movement_update()
 {
 	if(playerHealth <= 0)
@@ -65,8 +98,18 @@ void movement_update()
 	
 	vec_set(camera.pan,playerAngle);
 	VECTOR temp;
-	camera.pan += -mouse_force.x*10*time_step;
-	camera.pan %= 360;
+	if(playerSlideCounter > 0) camera.pan = clamp(camera.pan-mouse_force.x*10*time_step,playerSlidePan-90,playerSlidePan+90);
+	else
+	{
+		camera.pan += -mouse_force.x*10*time_step;
+		camera.pan %= 360;
+	}
+	/*if(playerSlideCounter > 0)
+	{
+		var anglediff = ang(playerSlidePan-camera.pan);
+		camera.pan = ;
+	}*/
+	
 	camera.tilt = clamp(camera.tilt+mouse_force.y*10*time_step,-85,85);
 	player.pan = camera.pan;
 	move_min_z = 0.5;
@@ -83,16 +126,52 @@ void movement_update()
 	
 	// movement
 	
-	VECTOR targetSpeed;
-	vec_set(targetSpeed,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
-	var playerAccelerationFac = 1;
-	if(targetSpeed.x || targetSpeed.y)
+	var playerCrouchingOld = playerCrouching;
+	if(player.PLAYER_GROUND_CONTACT) playerCrouching = (key_ctrl) | (playerSlideCounter > 0);
+	else playerCrouching = 0;
+	//if(playerCrouching) playerCrouchPerc = minv(playerCrouchPerc+20*time_step,100);
+	//else playerCrouchPerc = maxv(playerCrouchPerc-20*time_step,0);
+	playerCrouchPerc += (110*playerCrouching-5-playerCrouchPerc)*0.5*time_step;
+	playerCrouchPerc = clamp(playerCrouchPerc,0,100);
+	
+	playerSlideCounter = maxv(playerSlideCounter-time_step,0);
+	if(playerCrouching && !playerCrouchingOld)
 	{
-		playerAccelerationFac = 0.5;
-		vec_normalize(targetSpeed,playerMaxSpeedFac*playerSpeedFac);
-		vec_rotate(targetSpeed,vector(camera.pan,0,0));
+		vec_normalize(temp,playerMaxSpeedFac*playerSpeedFac);
+		vec_set(temp,vector(1,0,0));
+		vec_rotate(temp,vector(camera.pan,0,0));
+		if(vec_dot(vector(player.PLAYER_SPEED_X,player.PLAYER_SPEED_Y,0),temp) > playerMaxSpeedFac*0.5)
+		{
+			playerSlidePan = camera.pan;
+			playerSlideCounter = 12;
+			vec_set(playerSlideDir,vector(player.PLAYER_SPEED_X,player.PLAYER_SPEED_Y,0));
+		}
 	}
+	
+	playerSlidePerc += (110*(playerSlideCounter > 0)-5-playerSlidePerc)*0.5*time_step;
+	playerSlidePerc = clamp(playerSlidePerc,0,100);
+	playerWeaponSway.pan += -ang(playerSlidePan-camera.pan)*playerSlidePerc*0.01*0.1;
+	playerWeaponSway.roll += -ang(playerSlidePan-camera.pan)*playerSlidePerc*0.01*0.5;
+	
+	
+	VECTOR targetSpeed;
+	var playerAccelerationFac = 1;
 	vec_set(temp,vector(player.PLAYER_SPEED_X,player.PLAYER_SPEED_Y,0));
+	if(playerSlideCounter)
+	{
+		vec_set(targetSpeed,playerSlideDir);
+	}
+	else
+	{
+		vec_set(targetSpeed,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
+		if(targetSpeed.x || targetSpeed.y)
+		{
+			playerAccelerationFac = 0.5;
+			vec_normalize(targetSpeed,playerMaxSpeedFac*playerSpeedFac);
+			vec_rotate(targetSpeed,vector(camera.pan,0,0));
+		}
+		if(playerCrouchPerc > 25) vec_scale(targetSpeed,0.25);
+	}
 	vec_lerp(temp,temp,targetSpeed,playerAccelerationFac*time_step);
 	player.PLAYER_SPEED_X = temp.x;
 	player.PLAYER_SPEED_Y = temp.y;
@@ -108,9 +187,10 @@ void movement_update()
 	player.max_y -= 2;
 	if(player.PLAYER_GROUND_CONTACT)
 	{
-		playerWeaponBob += moveDist*0.8; // no time_step!
-		playerWeaponBob %= 360;
+		playerWeaponBob += moveDist*0.7*(1+playerCrouchPerc*0.015)*(1-0.01*playerSlidePerc); // no time_step!
+		playerWeaponBob %= 720;
 	}
+	if(HIT_TARGET) playerSlideCounter = 0;
 	// gravity
 	
 	var trace_dist = 1024;
@@ -132,8 +212,11 @@ void movement_update()
 	player.max_x += 8;
 	player.max_y += 8;
 	
-	
-	if(!trace_hit) target.z = -trace_dist;
+	if(!trace_hit) target.z = -99999;
+	else
+	{
+		if(playerSlideCounter > 0) effect(p_playerSlide_smoke,2,target,normal);
+	}
 	var heightWanted = target.z+playerHeightAboveGround;
 	var distToGround = player.z-heightWanted;
 	
@@ -174,9 +257,9 @@ void movement_update()
 	
 	camera.x = player.x;
 	camera.y = player.y;
-	camera.z = player.z+playerCameraHeight+sinv(playerWeaponBob)*6;
+	camera.z = player.z+playerCameraHeight+sinv(playerWeaponBob)*6-playerCrouchPerc*1.1;
 	camera.arc = 95;
-	camera.roll += (-(input[INPUT_LEFT].down-input[INPUT_RIGHT].down)*2-camera.roll)*0.5*time_step;
+	camera.roll += (-(input[INPUT_LEFT].down-input[INPUT_RIGHT].down)*2+sinv(playerWeaponBob*0.5)*(0.5+playerCrouchPerc*0.05)-camera.roll)*0.5*(1-0.01*playerSlidePerc)*time_step;
 	
 	vec_set(playerAngle,camera.pan);
 	var progress = weaponGetAttackProgress();
@@ -185,8 +268,8 @@ void movement_update()
 		var kickbackFac = weaponGetKickbackFac(progress, 30)*0.2;
 		var recoilSide = sinv(total_ticks*10);
 		ang_rotate(camera.pan, vector(recoilSide*25*kickbackFac,30*kickbackFac,-5*recoilSide*kickbackFac));
-		
 	}
+	camera.tilt += playerSlidePerc*0.1;
 }
 
 var playerGetCameraBob()
@@ -198,6 +281,12 @@ var playerGetSpeed()
 {
 	if(!player) return 0;
 	return vec_length(vector(player.PLAYER_SPEED_X,player.PLAYER_SPEED_Y,0));
+}
+
+VECTOR* playerGetSpeedVec()
+{
+	if(!player) return nullvector;
+	return &player.PLAYER_SPEED_X;
 }
 
 ANGLE* playerGetWeaponSway() 

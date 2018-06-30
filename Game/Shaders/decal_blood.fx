@@ -7,6 +7,7 @@
 
 float4 vecAmbient;
 float4 vecFogColor;
+float fAlpha;
 
 Texture entSkin1;
 sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Point; MagFilter = Point; MinFilter = Point; };
@@ -17,6 +18,12 @@ struct out_ps // Output to the pixelshader fragment
 	float2 uv0 : TEXCOORD0;
 	float3 worldPos : TEXCOORD2;
 	float3 normal : TEXCOORD3;
+};
+
+struct out_frag // fragment color output
+{
+	float4 glow : COLOR0;
+	float4 color : COLOR1;
 };
 
 out_ps vs(
@@ -34,8 +41,10 @@ out_ps vs(
 	return Out;
 }
 
-float4 ps(out_ps In): COLOR
+out_frag ps(out_ps In)
 {
+	out_frag Out;
+	
 	In.normal = normalize(In.normal);
 	float3 viewDirection = vecViewPos.xyz - In.worldPos;
 	float viewDistance = length(viewDirection);
@@ -70,7 +79,11 @@ float4 ps(out_ps In): COLOR
 	
 	color.rgb = lerp(color.rgb, vecFogColor.rgb, fogAttenuation);
 	
-	return color;
+	Out.color = color;
+	Out.color.a *= fAlpha;
+	Out.glow = 0.0;
+	
+	return Out;
 }
 
 
