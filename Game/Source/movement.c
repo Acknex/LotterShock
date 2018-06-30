@@ -9,15 +9,14 @@
 //#define PLAYER_DIST_TO_GROUND skill73
 #define PLAYER_GROUND_CONTACT skill74
 
-#define PLAYER_C_MOVE_MODE_DEFAULT (IGNORE_PASSABLE | IGNORE_SPRITES | IGNORE_PUSH | IGNORE_CONTENT)
+#define PLAYER_C_MOVE_MODE_DEFAULT (IGNORE_PASSABLE | IGNORE_SPRITES | IGNORE_PUSH | IGNORE_CONTENT | GLIDE)
 #define PLAYER_C_TRACE_MODE_DEFAULT (IGNORE_PASSABLE | IGNORE_SPRITES | IGNORE_PUSH | IGNORE_CONTENT)
 
 var playerSpeedFac = 1;
-var playerMaxSpeedFac = 60;
-var playerAccelerationFac = 0.5;
+var playerMaxSpeedFac = 80;
 var playerWeaponBob = 0;
-var playerHeightAboveGround = 64; // does not include vertical camera.z to player.z offset!
-var playerCameraHeight = 32;
+var playerHeightAboveGround = 96; // does not include vertical camera.z to player.z offset!
+var playerCameraHeight = 96;
 var playerJumpHangtime = 6;
 
 void movement_update()
@@ -26,13 +25,13 @@ void movement_update()
 	{
 		VECTOR spawnPos,vMin,vMax;
 		if(region_get("playerSpawn",1,vMin,vMax) == 0) // kein spawnareal gefunden
-			return;
+		return;
 		vec_lerp(spawnPos,vMin,vMax,0.5); // keine lust, auf die richtigen pointer zu achten -.- wird eh nicht portiert
 		player = ent_create(CUBE_MDL, spawnPos, NULL);
 		set(player,INVISIBLE);
 	}
-	vec_set(player.min_x,vector(-32,-32,-32));
-	vec_set(player.max_x,vector(32,32,48));
+	vec_set(player.min_x,vector(-48,-48,-48));
+	vec_set(player.max_x,vector(48,48,138));
 	
 	// rotation
 	
@@ -40,25 +39,40 @@ void movement_update()
 	camera.pan %= 360;
 	camera.tilt = clamp(camera.tilt+mouse_force.y*10*time_step,-85,85);
 	player.pan = camera.pan;
+	move_min_z = 0.5;
+	disable_z_glide = 1;
 	
 	// movement
 	
 	VECTOR targetSpeed;
-	vec_set(targetSpeed,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down*0.667),0));
+	vec_set(targetSpeed,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
+var playerAccelerationFac = 1;
 	if(targetSpeed.x || targetSpeed.y)
 	{
+		playerAccelerationFac = 0.5;
 		vec_normalize(targetSpeed,playerMaxSpeedFac*playerSpeedFac);
 		vec_rotate(targetSpeed,vector(camera.pan,0,0));
 	}
 	VECTOR temp;
-    vec_set(temp,vector(player.PLAYER_SPEED_X,player.PLAYER_SPEED_Y,0));
+	vec_set(temp,vector(player.PLAYER_SPEED_X,player.PLAYER_SPEED_Y,0));
 	vec_lerp(temp,temp,targetSpeed,playerAccelerationFac*time_step);
-    player.PLAYER_SPEED_X = temp.x;
-    player.PLAYER_SPEED_Y = temp.y;
+	player.PLAYER_SPEED_X = temp.x;
+	player.PLAYER_SPEED_Y = temp.y;
 	
-    var moveDist = c_move(player,nullvector,vector(player.PLAYER_SPEED_X*time_step,player.PLAYER_SPEED_Y*time_step,0),PLAYER_C_MOVE_MODE_DEFAULT);
-	playerWeaponBob += moveDist; // no time_step!
-	
+	player.min_x -= 2;
+	player.min_y -= 2;
+	player.max_x += 2;
+	player.max_y += 2;
+	var moveDist = c_move(player,nullvector,vector(player.PLAYER_SPEED_X*time_step,player.PLAYER_SPEED_Y*time_step,0),PLAYER_C_MOVE_MODE_DEFAULT);
+	player.min_x += 2;
+	player.min_y += 2;
+	player.max_x -= 2;
+	player.max_y -= 2;
+	if(player.PLAYER_GROUND_CONTACT)
+	{
+		playerWeaponBob += moveDist*0.8; // no time_step!
+		playerWeaponBob %= 360;
+	}
 	// gravity
 	
 	var trace_dist = 1024;
@@ -66,47 +80,64 @@ void movement_update()
 	var maxZ = player.max_z;
 	player.min_z = -0.25; // fake a flat collision hull (instead of an ellipsoid)
 	player.max_z = 0.25;
-    c_trace(player.x,vector(player.x,player.y,player.z-trace_dist),PLAYER_C_TRACE_MODE_DEFAULT);
+	player.min_x += 8;
+	player.min_y += 8;
+	player.max_x -= 8;
+	player.max_y -= 8;
+	me = player; // for USE_BOX
+	c_trace(player.x,vector(player.x,player.y,player.z-trace_dist),PLAYER_C_TRACE_MODE_DEFAULT | USE_BOX);
+	me = NULL;
 	player.min_z = minZ;
 	player.max_z = maxZ;
+	player.min_x -= 8;
+	player.min_y -= 8;
+	player.max_x += 8;
+	player.max_y += 8;
 	
 	
 	if(!trace_hit) target.z = -trace_dist;
 	var heightWanted = target.z+playerHeightAboveGround;
-	var PLAYER_DIST_TO_GROUND = heightWanted-player.z;
-	var PLAYER_PLANNED_DIST_TO_GROUND = (1+16*player.PLAYER_GROUND_CONTACT)*time_step;
-
-	var fac = 1;
-	if(!input[INPUT_JUMP].down)
-		playerJumpHangtime = 0;
-	if(playerJumpHangtime > 0) 
-		fac = 0.667;
-	var EFFECT_OF_GRAVITY = -fac*12*playerSpeedFac*time_step;
-	player.PLAYER_SPEED_Z = maxv(player.PLAYER_SPEED_Z+EFFECT_OF_GRAVITY,-60);
+	var distToGround = player.z-heightWanted;
 	
-	if(PLAYER_DIST_TO_GROUND > PLAYER_PLANNED_DIST_TO_GROUND || player.PLAYER_SPEED_Z > 0)
+	if(distToGround > (1+2*player.PLAYER_GROUND_CONTACT)*time_step || player.PLAYER_SPEED_Z > 0)
 	{
 		player.PLAYER_GROUND_CONTACT = 0;
 		playerJumpHangtime = maxv(playerJumpHangtime-time_step,0);
+		var fac = 1;
+		if(!input[INPUT_JUMP].down) playerJumpHangtime = 0;
+		if(playerJumpHangtime > 0) fac = 0.667;
+		player.PLAYER_SPEED_Z = maxv(player.PLAYER_SPEED_Z-fac*20*playerSpeedFac*time_step,-240);
+		c_move(player,nullvector,vector(0,0,player.PLAYER_SPEED_Z*time_step),PLAYER_C_MOVE_MODE_DEFAULT);
+		player.z = maxv(player.z,heightWanted);
 	}
 	else
 	{
+	player.z += (heightWanted-player.z)*0.5*time_step;
+		player.PLAYER_SPEED_Z = 0;
 		player.PLAYER_GROUND_CONTACT = 1;
 		if(input[INPUT_JUMP].justPressed)
 		{
 			player.PLAYER_GROUND_CONTACT = 0;
 			playerJumpHangtime = 6;
-			player.PLAYER_SPEED_Z = 60;
+			player.PLAYER_SPEED_Z = 80;
 		}
 	}
 	
-	c_move(player,nullvector,vector(0,0,maxv(player.PLAYER_SPEED_Z*time_step,heightWanted-player.z)),PLAYER_C_MOVE_MODE_DEFAULT);
+	//if(player.PLAYER_SPEED_Z) c_move(player,nullvector,vector(0,0,maxv(player.PLAYER_SPEED_Z*time_step,distToGround)),PLAYER_C_MOVE_MODE_DEFAULT);
 	
 	// camera
 	
+	/*DEBUG_VAR(playerWeaponBob,200);
+	draw_text(str_printf(NULL,"distToGround: %.1f",(double)distToGround),10,220,COLOR_RED);
+	draw_text(str_printf(NULL,"heightWanted: %.1f",(double)heightWanted),10,240,COLOR_RED);
+	draw_text(str_printf(NULL,"player.z: %.1f",(double)player.z),10,260,COLOR_RED);
+	draw_text(str_printf(NULL,"player.PLAYER_GROUND_CONTACT: %d",(int)player.PLAYER_GROUND_CONTACT),10,280,COLOR_RED);*/
+	
 	camera.x = player.x;
 	camera.y = player.y;
-	camera.z = player.z+playerCameraHeight;
+	camera.z = player.z+playerCameraHeight+sinv(playerWeaponBob)*6;
+	camera.arc = 95;
+	camera.roll += (-(input[INPUT_LEFT].down-input[INPUT_RIGHT].down)*2-camera.roll)*0.5*time_step;
 }
 
 //////////////////////////////
