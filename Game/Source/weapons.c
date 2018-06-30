@@ -465,6 +465,11 @@ void weapons_update()
 	if(key_2) weapons_add(WEAPON_SHOTGUN);
 	if(key_3) weapons_add(WEAPON_CELLGUN);
 	if(key_4) weapons_add(WEAPON_FLAMETHROWER);
+    if(key_5)
+    {
+        for(i = 1; i <= WEAPONS_COUNT; i++)
+            weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
+    }
 
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_UP))
 	weapons_select_next(1);
