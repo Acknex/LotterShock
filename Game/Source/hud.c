@@ -11,6 +11,8 @@
 
 #define HUD_BARS_MAX_ALPHA 50
 
+#define HUD_AMMO_COLOR vector(32,200,255)
+
 BMAP * hud_bar_background_bmap = "hud_bar_background.png";
 
 BMAP * hud_health_label_bmap = "health_label.png";
@@ -25,6 +27,8 @@ PANEL* HUD_crosshair =
 	bmap = "fadenkreuz.png";
 	flags = TRANSLUCENT;
 	layer = 2;
+	scale_x = 0.5;
+	scale_y = 0.5;
 }
 
 PANEL* HUD_HP_label =
@@ -119,14 +123,18 @@ void hud_show()
 	
 	int i;
 	for(i = 0; i<4; ++i)
+	{
 		hud_place_label(hud_weapon_icon[i], distance_between_bars);
+		vec_set(hud_weapon_icon[i].blue, HUD_AMMO_COLOR);
+		set(hud_weapon_icon[i], LIGHT);
+	}
 	
 	
 	hud_place_bar(HUD_HP_label, HUD_HP_bars, 0);
 	hud_place_bar(hud_weapon_icon[0], HUD_Ammo_bars, distance_between_bars);
 	
-	HUD_crosshair->pos_x = (screen_size.x - HUD_crosshair.size_x) /2;
-	HUD_crosshair->pos_y = (screen_size.y - HUD_crosshair.size_y) /2;
+	HUD_crosshair->pos_x = (screen_size.x - HUD_crosshair.size_x*HUD_crosshair.scale_x) /2;
+	HUD_crosshair->pos_y = (screen_size.y - HUD_crosshair.size_y*HUD_crosshair.scale_y) /2;
 	HUD_crosshair->alpha = 10;
 	set(HUD_crosshair, SHOW);
 	

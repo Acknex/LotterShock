@@ -48,13 +48,11 @@ out_frag ps(out_ps In)
 	In.normal = normalize(In.normal);
 	float3 viewDirection = vecViewPos.xyz - In.worldPos;
 	float viewDistance = length(viewDirection);
-	viewDirection = normalize(viewDirection);
 	
 	float4 color;
 	color = tex2D(sTexture, In.uv0);
 	
 	float3 light = vecAmbient.rgb;
-	float3 specular = 0.0;
 	
 	for(int i = 0; i < 8; i++)
 	{
@@ -64,16 +62,10 @@ out_frag ps(out_ps In)
 		float lightAttenuation = saturate(1.0 - lightDistance/vecLightPos[i].w);
 		lightAttenuation *= lightAttenuation;
 		
-		float3 lightHalf = normalize(viewDirection + lightDirection);
-		float lightSpecularFactor = saturate(dot(lightHalf, In.normal));
-		lightSpecularFactor = pow(lightSpecularFactor, 10.0);
-		
 		light += lightFactor * lightAttenuation * vecLightColor[i].rgb;
-		specular += lightSpecularFactor * vecLightColor[i].rgb * color.r;
 	}
 	
 	color.rgb *= light;
-	color.rgb += specular;
 	
 	float fogAttenuation = max(viewDistance - vecFog.x, 0.0) * vecFog.z;
 	color.rgb = lerp(color.rgb, vecFogColor.rgb, fogAttenuation);
