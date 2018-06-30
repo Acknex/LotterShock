@@ -23,6 +23,8 @@
 
 #define WEAPONS_CELLGUN_DAMAGE 7
 
+#define WEAPONS_DOUBLE_FLAME_EFFECT
+
 typedef struct weapons_data_t
 {
     ENTITY * ent;
@@ -91,6 +93,7 @@ ENTITY * weapons_wp_cellgun_bzzt =
 BMAP * weapons_bullethole_decal = "bullet_hole.tga";
 
 BMAP * weapons_fire_01 = "fire.pcx";
+BMAP * weapons_fire_02 = "fire2.pcx";
 
 SOUND * weapons_snd_sword1 = "sword_swing1.wav";
 SOUND * weapons_snd_sword2 = "sword_swing2.wav";
@@ -271,7 +274,7 @@ void weapons_secondary_flame_effect_event(PARTICLE *p)
 	
 	vec_set(p->x, p->skill_x);
 	
-	var r = 6;
+	var r = 10;
 	var o = r/2;
 	vec_add(p->x, vector(random(r)-o,random(r)-o,random(r)-o));
 	
@@ -284,12 +287,12 @@ void weapons_secondary_flame_effect(PARTICLE *p)
 {
 	vec_set(p->skill_x, p->x);
 	
-	p->bmap = weapons_fire_01;
+	p->bmap = weapons_fire_02;
 	p->flags = LIGHT|TRANSLUCENT|BRIGHT;
 	p->alpha = 0;
-	vec_set(p->blue, vector(32, 32, 192));
+	vec_set(p->blue, vector(32, 70, 192));
 	p->lifespan = 100;
-	p->size = 25 + random(35);
+	p->size = 45 + random(35);
 	p->event = weapons_secondary_flame_effect_event;
 }
 
@@ -320,13 +323,14 @@ void weapons_flame_effect_event(PARTICLE *p)
 			p->skill_x = 1;
 			p->flags &= ~STREAK;
 			
-            /*
+            
+#ifdef WEAPONS_DOUBLE_FLAME_EFFECT     
 			VECTOR secondary_position;
 			vec_set(&secondary_position, &normal);
-			vec_normalize(&secondary_position,25.);
-			vec_add(&secondary_position, &p->x);
-            */
-            // effect (weapons_secondary_flame_effect, 1, &secondary_position, nullvector);
+			vec_normalize(&secondary_position,15.);
+			vec_add(&secondary_position, &p->x);      
+             effect (weapons_secondary_flame_effect, 1, &secondary_position, nullvector);
+#endif
             // p->lifespan = 0;
 			
 		}
@@ -337,6 +341,13 @@ void weapons_flame_effect_event(PARTICLE *p)
 			vec_scale(dist, time_step);
 			vec_add(p->x, dist);
 		}
+#ifdef WEAPONS_DOUBLE_FLAME_EFFECT     
+		p->size = clamp(p->size + 8 * time_step, 5, 80);
+#endif
+	}
+	else
+	{
+		//p->size = clamp(p->size - time_step, 35, 100);
 	}
 
 	if(p->skill_z <= 0)
@@ -382,12 +393,9 @@ void weapons_flame_effect_event(PARTICLE *p)
     p->blue  = maxv(64,  128 - p->skill_y*80);
 
 	p->skill_y += 10 * time_step;
-	
-    // if(p->skill_y < 40)
-    // 	p->size = clamp(p->size + 10 * time_step, 5, 50);
-    // if(p->skill_y > 60)
-    // 	p->size = clamp(p->size - time_step, 35, 50);
-    p->size += 10 * time_step;
+#ifndef WEAPONS_DOUBLE_FLAME_EFFECT   
+	p->size += 10*time_step;
+#endif  
 
 	p->alpha = p->lifespan/2;
 	if(p->lifespan < 30)
