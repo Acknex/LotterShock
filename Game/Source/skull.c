@@ -67,7 +67,7 @@ void SKULL_Update()
 				ptr->DAMAGE_HIT = 0;
 				ptr->event = NULL;
 				ptr->SKL_STATE = SKL_STATE_HIT;
-				SPLATTER_splat(&ptr->x, vector(0,0,0.8));
+				SPLATTER_splat(&ptr->x, vector(0,0.4,0.8));
 				set(ptr, TRANSLUCENT);
 			}
 			
