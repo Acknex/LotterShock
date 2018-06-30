@@ -21,6 +21,7 @@ void game_open()
     weapons_open();
     ESELSLERCHE_Init();
     GIB_GlobalInit();
+    hud_show();
 }
 
 void game_capture_mouse()
@@ -49,6 +50,7 @@ void game_update()
 
 void game_close()
 {
+    hud_hide();
     weapons_close();
     GIB_Close();
     mouse_pointer = 1;

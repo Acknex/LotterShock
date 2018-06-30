@@ -440,7 +440,7 @@ void weapons_update()
                     if(weapons.current == WEAPON_FLAMETHROWER)
                     {
                         if(weapons.flamefade == 100)
-                            snd_play(weapons_snd_flamethrower_end, 100, 0);
+                            snd_play(weapons_snd_flamethrower_end, 30, 0);
                     }
                     else if(weapons.current == WEAPON_CELLGUN)
                     {

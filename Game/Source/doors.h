@@ -15,7 +15,7 @@ void keycard();
 void keycard_init();
 void keycard_update();
 
-void keypad();
+void Keypad();
 void keypad_event();
 
 #endif
