@@ -275,6 +275,8 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 	/* transitions */
 	if(ptr->EL_EXPLODESTATE >= 2.5)
 	{
+		me = ptr;
+		var dist = c_trace(&ptr->x, &player->x, IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
 		set(ptr, PASSABLE|INVISIBLE);
 		var i;
 		for ( i = 0; i < 5; i++)
@@ -299,6 +301,7 @@ void ESELSLERCHE__die(ENTITY* ptr)
 	{
 		ptr->EL_STATE = EL_STATE_DEAD;
 		set(ptr, PASSABLE);
+		c_updatehull(ptr, ptr->frame);
 	}
 }
 

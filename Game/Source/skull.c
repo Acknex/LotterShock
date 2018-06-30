@@ -123,8 +123,11 @@ void SKULL_Update()
 				}
 
 			}	
-			SKULL__toFloor(ptr);
-			DEBUG_VAR(ptr->SKL_ZOFFSET , 1);
+			
+			if (ptr->SKL_STATE != SKL_STATE_DIE && ptr->SKL_STATE != SKL_STATE_DEAD)
+			{
+				SKULL__toFloor(ptr);
+			}
 		}
 	
 	}	
@@ -135,7 +138,7 @@ var SKULL__toFloor(ENTITY* ptr)
 	VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 10);
 	VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
 	me = ptr;
-	var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;
+	var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON | USE_BOX;
 	c_trace(from, to, mode);
 	if(HIT_TARGET)
 		ptr->z = hit.z + 150 + ptr->SKL_ZOFFSET;
