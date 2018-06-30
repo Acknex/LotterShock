@@ -6,6 +6,8 @@ typedef int bool;
 #define true  1
 #define false 0
 
+#define LEVEL_FILE "this-is-the-only-level.wmb"
+
 //! Markiert die Entity als "TOT" und sorgt dafür, dass sie zu Ende des Frames gelöscht wird.
 #define SK_ENTITY_DEAD skill89
 

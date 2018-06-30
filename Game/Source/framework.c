@@ -6,6 +6,8 @@
 // -
 // -
 
+#define FRAMEWORK_ALPHA_BLENDSPEED  25
+
 #define FRAMEWORK_STATE_SHUTDOWN    -1
 #define FRAMEWORK_STATE_STARTUP      0
 #define FRAMEWORK_STATE_MAINMENU     1
@@ -19,14 +21,29 @@ typedef struct
     int state;
     int nextState;
     int frameCounter;
+
+    int loaderState;
 } framework_t;
 
 framework_t framework;
+
+BMAP * framework_load_screen_bmap = "game_loadingscreen.png";
+
+PANEL * framework_load_screen =
+{
+    bmap = framework_load_screen_bmap;
+    size_x = 1280;
+    size_y = 720;
+    flags = TRANSLUCENT;
+}
 
 //! Initialisiert das Spiel und so
 void framework_init()
 {
     video_set(1280, 720, 0, 2); // 1280x720, Window
+
+    framework_load_screen.size_x = screen_size.x / framework_load_screen.size_x;
+    framework_load_screen.size_y = screen_size.y / framework_load_screen.size_y;
 
     on_frame = framework_update;
 }
@@ -57,8 +74,11 @@ void framework_update()
             splashscreen_init();
             mainmenu_init();
 
-            // framework_transfer(FRAMEWORK_STATE_SPLASHSCREEN);
-            framework_transfer(FRAMEWORK_STATE_MAINMENU);
+#ifdef DEBUG_FRAMEWORK_FASTSTART
+            framework_transfer(FRAMEWORK_STATE_LOAD);
+#else
+            framework_transfer(FRAMEWORK_STATE_SPLASHSCREEN);
+#endif
         }
         break;
 
@@ -97,7 +117,24 @@ void framework_update()
         break;
 
     case FRAMEWORK_STATE_LOAD:
-        error("framework: game load not implemented yet.");
+        if(framework.loaderState == 3)
+        {
+#ifdef DEBUG_LEVEL
+            level_load(DEBUG_LEVEL);
+#else
+            level_load(LEVEL_FILE);
+#endif
+        }
+        else if(framework.loaderState > 3)
+        {
+            framework_load_screen->alpha -= FRAMEWORK_ALPHA_BLENDSPEED * time_step;
+            if(framework_load_screen->alpha <= 0)
+            {
+                framework_load_screen->alpha = 0;
+                framework_transfer(FRAMEWORK_STATE_GAME);
+            }
+        }
+        framework.loaderState += 1;
         break;
 
     case FRAMEWORK_STATE_GAME:
@@ -122,14 +159,16 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_LOAD:
-            error("framework: credits not implemented yet.");
+            reset(framework_load_screen, SHOW);
             break;
 
         case FRAMEWORK_STATE_GAME:
             error("framework: credits not implemented yet.");
             break;
         }
+
         framework.state = framework.nextState;
+
         switch(framework.state)
         {
         case FRAMEWORK_STATE_SPLASHSCREEN:
@@ -145,7 +184,9 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_LOAD:
-            error("framework: game load not implemented yet.");
+            framework.loaderState = 0;
+            set(framework_load_screen, SHOW);
+            framework_load_screen->alpha = 100;
             break;
 
         case FRAMEWORK_STATE_GAME:
