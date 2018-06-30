@@ -130,8 +130,8 @@ SOUND * weapons_snd_flamethrower_end = "flamethrower_end_snd.wav";
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define WEAPONS_CELLGUN_DEFAULT_STANCE_POS rel_for_screen(vector(screen_size.x + 20, screen_size.y - 20, 50), camera)
-#define WEAPONS_CELLGUN_DEFAULT_STANCE_ANG vector(180,0,160)
+#define WEAPONS_CELLGUN_DEFAULT_STANCE_POS rel_for_screen(vector(screen_size.x + 20, screen_size.y, 40), camera)
+#define WEAPONS_CELLGUN_DEFAULT_STANCE_ANG vector(0,0,160)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -259,6 +259,25 @@ void weapons_shoot_shotgun()
 	}
 }
 
+void weapons_secondary_flame_effect_event(PARTICLE *p)
+{
+	if(p->lifespan <50)
+		p->alpha += time_step;
+	else
+		p->alpha -= time_step;
+}
+
+void weapons_secondary_flame_effect(PARTICLE *p)
+{
+	p->bmap = weapons_fire_01;
+	p->flags = LIGHT|TRANSLUCENT|BRIGHT;
+	p->alpha = 0;
+	vec_set(p->blue, vector(32, 32, 192));
+	p->lifespan = 100;
+	p->size = 25 + random(35);
+	p->event = weapons_secondary_flame_effect_event;
+}
+
 void weapons_flame_effect_event(PARTICLE *p)
 {
 	if(p->skill_x == 0)
@@ -285,6 +304,15 @@ void weapons_flame_effect_event(PARTICLE *p)
 			vec_add(p->x, target);
 			p->skill_x = 1;
 			p->flags &= ~STREAK;
+			
+			VECTOR secondary_position;
+			vec_set(&secondary_position, &normal);
+			vec_normalize(&secondary_position,25.);
+			vec_add(&secondary_position, &p->x);
+			
+			effect (weapons_secondary_flame_effect, 1, &secondary_position, nullvector);
+			//p->lifespan = 0;
+			
 		}
 		else
 		{
@@ -303,16 +331,23 @@ void weapons_flame_effect_event(PARTICLE *p)
 	}
 	p->skill_z -= time_step;
 
-	if(p->skill_y > 10)
-	vec_set(p->blue, vector(64, 192 + random(64), 255 - random(32)));
+	if(p->skill_y > 40)
+		p->flags &= ~STREAK;
+	
+	
+	p->red = maxv(255-p->skill_y, 128);// - random(32);
+	p->green = maxv(90,180-p->skill_y*1.5);// + random(64);
+	p->blue = maxv(64, 128-p->skill_y*80);
 
 	p->skill_y += 10 * time_step;
+	
+	if(p->skill_y < 40)
+		p->size = clamp(p->size + 10 * time_step, 5, 50);
+	if(p->skill_y > 60)
+		p->size = clamp(p->size - time_step, 25, 50);
 
-	p->size = clamp(p->size + 10 * time_step, 5, 50);
-	p->alpha = 40 + random(10);
-
-	if(p->lifespan < 25)
-	p->alpha = 2.0 * p->lifespan;
+	//if(p->lifespan < 25)
+	p->alpha = p->lifespan;
 }
 
 void weapons_flame_effect(PARTICLE *p)
@@ -322,11 +357,12 @@ void weapons_flame_effect(PARTICLE *p)
 	random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
 	random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
 	random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD ));
-	p->flags = TRANSLUCENT | LIGHT | BRIGHT;
+	p->flags = TRANSLUCENT | LIGHT | BRIGHT | STREAK;
 	vec_set(p->blue, vector(255, 192, 192));
 	p->lifespan = 100;
 	p->size = 5 + random(5);
 	p->event = weapons_flame_effect_event;
+	p->alpha = 80 + random(10);
 }
 
 void weapons_shoot_flamethrower()
@@ -468,8 +504,8 @@ void weapons_update()
 			{
 				if(isdown)
 				{
-					if(weapons.current == WEAPON_FLAMETHROWER)
-                        snd_play(weapons_snd_flamethrower_start, 100, 0);
+//					if(weapons.current == WEAPON_FLAMETHROWER)
+//                        snd_play(weapons_snd_flamethrower_start, 100, 0);
 					weapons.attackprogress = 0;
 					weapons.attackstate = 0;
 				}

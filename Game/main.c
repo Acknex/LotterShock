@@ -39,6 +39,7 @@
 #include "doors.c"
 #include "gib.c"
 #include "items.c"
+#include "particle.c"
 
 void main()
 {
