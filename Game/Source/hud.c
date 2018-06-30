@@ -1,4 +1,5 @@
 #include "weapons.h"
+#include "movement.h"
 
 #define HUD_ELEMENT_COUNT 1
 
@@ -175,13 +176,12 @@ void hud_hide_ammobar()
 
 void hud_update()
 {
-	//TODO!
-	var PLAYER_MAXHEALTH = 100;
-	var PLAYER_HEALTH = 50;
+	var player_maxhealth = playerGetHealth();
+	var player_health = playerGetMaxHealth();
 	//
-   hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, PLAYER_HEALTH, PLAYER_MAXHEALTH);
+   hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, player_health, player_maxhealth);
    
-   var player_healthratio = PLAYER_HEALTH/PLAYER_MAXHEALTH;
+   var player_healthratio = player_health/player_maxhealth;
    if(player_healthratio < 0.3)
    {
 	   var hp_flicker_frequency = 50/(1.+2*player_healthratio);
