@@ -36,6 +36,7 @@
 #include "hud.c"
 #include "enemy_hit.c"
 #include "eselslerche.c"
+#include "skull.c"
 #include "doors.c"
 #include "gib.c"
 #include "items.c"
