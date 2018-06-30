@@ -1,6 +1,7 @@
 #ifndef ESELSLERCHE_H
 #define ESELSLERCHE_H
 
+void ESELSLERCHE_GlobalInit();
 void ESELSLERCHE_Init();
 void ESELSLERCHE_Update();
 void ESELSLERCHE_Destroy();

@@ -1,4 +1,5 @@
 #include "weapons.h"
+#include "movement.h"
 
 #define HUD_ELEMENT_COUNT 1
 
@@ -9,6 +10,8 @@
 #define HUD_DIST_BETWEEN_BARS 8
 
 #define HUD_BARS_MAX_ALPHA 50
+
+#define HUD_AMMO_COLOR vector(32,200,255)
 
 BMAP * hud_bar_background_bmap = "hud_bar_background.png";
 
@@ -118,7 +121,11 @@ void hud_show()
 	
 	int i;
 	for(i = 0; i<4; ++i)
+	{
 		hud_place_label(hud_weapon_icon[i], distance_between_bars);
+		vec_set(hud_weapon_icon[i].blue, HUD_AMMO_COLOR);
+		set(hud_weapon_icon[i], LIGHT);
+	}
 	
 	
 	hud_place_bar(HUD_HP_label, HUD_HP_bars, 0);
@@ -175,13 +182,12 @@ void hud_hide_ammobar()
 
 void hud_update()
 {
-	//TODO!
-	var PLAYER_MAXHEALTH = 100;
-	var PLAYER_HEALTH = 50;
+	var player_maxhealth = playerGetHealth();
+	var player_health = playerGetMaxHealth();
 	//
-   hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, PLAYER_HEALTH, PLAYER_MAXHEALTH);
+   hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, player_health, player_maxhealth);
    
-   var player_healthratio = PLAYER_HEALTH/PLAYER_MAXHEALTH;
+   var player_healthratio = player_health/player_maxhealth;
    if(player_healthratio < 0.3)
    {
 	   var hp_flicker_frequency = 50/(1.+2*player_healthratio);

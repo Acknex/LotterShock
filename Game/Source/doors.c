@@ -1,4 +1,4 @@
-action Keycard() {
+/*action Keycard() {
 	framework_setup(my, SUBSYSTEM_USABLES);
 }
 
@@ -18,9 +18,7 @@ void keycard_update() {
 				
 				if (player) {
 					// add to inventory
-					if (ptr.KEYCARD_LVL > keycard_lvl) {
-						keycard_lvl = ptr.KEYCARD_LVL;
-					}
+					keys[ptr.KEYCARD_KEY_ID] = 1;
 					
 					// remove me
 					ptr->SK_ENTITY_DEAD = 1;
@@ -28,21 +26,20 @@ void keycard_update() {
 			}
 		}
 	}
-}
+}*/
 
 // skill1: KEY_ID
 // skill2: KEYPAD_ID
 // skill3: EXPECTED_KEY
 action keypad() {	
-	framework_setup(my, SUBSYSTEM_USABLES);
+	framework_setup(my, SUBSYSTEM_KEYPADS);
 	set(me, PASSABLE);
 }
 
-void keycard_update() {
+void keypad_update() {
 	ENTITY *ptr;
-	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_USABLES) {
+	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_KEYPADS) {
 		
-		draw_text("asd", 10, 10, COLOR_RED);
 		if (mouse_ent == ptr) {
 			ptr.skin = 2;
 			if (input_hit(INPUT_USE)) {
@@ -62,8 +59,9 @@ void keycard_update() {
 				}
 				
 				if (ptr.KEYPAD_KEY_ID == 11) {
-					if (str_cmp(keypad_input, str_for_num(NULL, ptr.EXPECTED_KEY)) == 1) {
+					if (str_cmp(keypad_input, str_for_num(NULL, ptr.KEYPAD_EXPECTED_KEY)) == 1) {
 						ent_playsound(ptr, snd_keypad_yes, 100);
+						keys[ptr.KEYPAD_KEY_ID_TO_ENABLE] = 1;
 					} else {
 						ent_playsound(ptr, snd_keypad_no, 100);
 					}
@@ -74,5 +72,70 @@ void keycard_update() {
 			ptr->skin = 1;
 		}
 	
+	}
+}
+
+
+// skill1: KEY_ID
+// skill21: DOOR_STATE (0 = NONE, 1 = OPENING, 2 = CLOSING, 3 = WAITING)
+// skill22: MOVEMENT_STAGE
+action Door() {
+	my.DOOR_STATE = 0;
+	my.MOVEMENT_STAGE = 0;
+	framework_setup(my, SUBSYSTEM_DOORS);
+}
+
+void doors_update() {
+	ENTITY *ptr;
+	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_DOORS) {
+		
+		switch(ptr.DOOR_STATE) {
+			case 0:
+				if (mouse_ent == ptr) {
+					if (input_hit(INPUT_USE)) {
+						
+						if (keys[ptr.DOOR_REQUIRED_KEY_ID] == 1) {
+							ent_playsound(ptr, snd_gate, 100);
+							ptr.DOOR_STATE = 1;
+							ptr.MOVEMENT_STAGE = 400;
+						} else {
+							ent_playsound(ptr, snd_keypad_no, 100);
+						}
+					}
+				}
+			break;
+			case 1:
+				if (ptr.MOVEMENT_STAGE > 0) {
+					ptr.MOVEMENT_STAGE -=10 * time_step;
+					ptr.z +=10 * time_step;
+					
+					if (ptr.MOVEMENT_STAGE <= 0) {
+						ptr.DOOR_STATE = 3;
+						ptr.MOVEMENT_STAGE = 50;
+					}
+				}
+			break;
+			case 2:
+				if (ptr.MOVEMENT_STAGE > 0) {
+					ptr.MOVEMENT_STAGE -=10 * time_step;
+					ptr.z -=10 * time_step;
+					
+					if (ptr.MOVEMENT_STAGE <= 0) {
+						ptr.DOOR_STATE = 0;
+						ptr.MOVEMENT_STAGE = 0;
+					}
+				}			
+			break;
+			case 3:
+				if (ptr.MOVEMENT_STAGE > 0) {
+					ptr.MOVEMENT_STAGE -=1 * time_step;
+					
+					if (ptr.MOVEMENT_STAGE <= 0) {
+						ptr.DOOR_STATE = 2;
+						ptr.MOVEMENT_STAGE = 400;
+					}
+				}
+			break;
+		}
 	}
 }
