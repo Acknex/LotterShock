@@ -64,6 +64,19 @@ void framework_transfer(int state)
     framework.nextState = state;
 }
 
+void framework_cleanup()
+{
+    ENTITY * ent;
+    ent = ent_next(NULL);
+    while(ent)
+    {
+        you = ent;
+        ent = ent_next(ent);
+        if(you.SK_ENTITY_DEAD)
+            ptr_remove(you);
+    }
+}
+
 //! Aktualisiert alles.
 void framework_update()
 {
@@ -263,6 +276,9 @@ void framework_update()
 
     // Update music after updating the whole game state
     music_update();
+
+    // Cleanup all dead entities
+    framework_cleanup();
 
     if(framework.state == FRAMEWORK_STATE_SHUTDOWN)
     {
