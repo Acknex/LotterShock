@@ -43,6 +43,8 @@ void framework_init()
 {
     fps_max = 61;
     video_set(1600, 900, 0, 2); // 1280x720, Window
+    
+    SetupDefaultMaterials();
 
     on_frame = framework_update;
 #ifdef DEBUG

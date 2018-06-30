@@ -219,7 +219,9 @@ void weapons_shoot_shotgun()
         var dist = c_trace(camera.x, dir, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
         if(HIT_TARGET)
         {
-            ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+            PARTICLE *p = ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+            p->material = matDecalBasic;
+            p->lifespan = 640;
         }
     }
 }
@@ -335,7 +337,9 @@ void weapons_shoot_sword(VECTOR * _pos, VECTOR * _ang)
     var dist = c_trace(pos, end, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
     if(HIT_TARGET)
     {
-        ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+        PARTICLE *p = ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+        p->material = matDecalBasic;
+        p->lifespan = 640;
     }
 
     /*
