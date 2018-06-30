@@ -26,6 +26,10 @@
 #include "input.c"
 #include "splatter.c"
 #include "credits.c"
+#include "math.c"
+
+#include "eselslerche.c"
+#include "scan.c"
 
 void main()
 {
