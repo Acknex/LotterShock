@@ -76,7 +76,8 @@ BMAP * weapons_fire_01 = "fire.pcx";
 SOUND * weapons_snd_sword = "sword_snd.wav";
 SOUND * weapons_snd_shotgun = "shotgun_snd.wav";
 SOUND * weapons_snd_cellgun = "cellgun_snd.wav";
-SOUND * weapons_snd_flamethrower = "flamethrowing.ogg";
+SOUND * weapons_snd_flamethrower = "flamethrower_snd.wav";
+SOUND * weapons_snd_flamethrower_start = "flamethrower_start_snd.wav";
 
 VECTOR debugVec;
 
@@ -286,27 +287,38 @@ void weapons_shoot_flamethrower()
     effect (weapons_flame_effect, maxv(1, time_frame * WEAPONS_FLAME_COUNT), pos, dir);
 }
 
-void weapons_shoot_sword()
+void weapons_shoot_sword(VECTOR * _pos, VECTOR * _ang)
 {
     VECTOR pos;
-    vec_set(pos, weapons_wp_sword.x);
+    vec_set(pos, _pos);
     vec_scale(pos, 0.1);
 
     vec_rotate(pos, camera.pan);
     vec_add(pos, camera.x);
 
     VECTOR end;
-    vec_set(end, vector(0, 0, 25));
-    vec_rotate(end, weapons_wp_sword.pan);
+    vec_set(end, vector(0, 0, 5.7 + 0.9 * weapons.swordLength));
+
+    vec_scale(end, 20); // sword is kinda 10 times longer
+
+    vec_rotate(end, _ang);
     vec_rotate(end, camera.pan);
     vec_add(end, pos);
 
+    dmgsys_set_src(DMGSYS_PLAYER, player, WEAPONS_SHOTGUN_DAMAGE);
+    var dist = c_trace(pos, end, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
+    if(HIT_TARGET)
+    {
+        ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+    }
+
+    /*
     draw_line3d(pos, NULL, 100);
     draw_line3d(pos, COLOR_GREEN, 100);
     draw_line3d(end, COLOR_GREEN, 100);
 
-    draw_point3d(end, COLOR_BLUE, 100, 5);
-
+    draw_point3d(end, COLOR_BLUE, 100, 1);
+    */
 }
 
 void weapons_update()
@@ -343,11 +355,16 @@ void weapons_update()
 
         if(WEAPONS_CURRENT.streaming)
         {
-            weapons.attacking = input_down(INPUT_ATTACK);
-            if(!weapons.attacking)
+            var isdown = input_down(INPUT_ATTACK);
+            if(weapons.attacking != isdown)
             {
-                weapons.attackprogress = 0;
-                weapons.attackstate = 0;
+                if(isdown)
+                {
+                    snd_play(weapons_snd_flamethrower_start, 100, 0);
+                    weapons.attackprogress = 0;
+                    weapons.attackstate = 0;
+                }
+                weapons.attacking = isdown;
             }
         }
         else
@@ -389,7 +406,14 @@ void weapons_update()
 
             // if(weapons.attacking)
             {
-                weapons_shoot_sword();
+                VECTOR pos, ang;
+                var i;
+                for(i = 0; i < 20; i++)
+                {
+                    vec_lerp(pos, sourcePosePos, targetPosePos, 0.01 * (weapons.attackprogress + 0.05 * i * WEAPONS_CURRENT.attackspeed));
+                    ang_lerp(ang, sourcePoseAng, targetPoseAng, 0.01 * (weapons.attackprogress + 0.05 * i * WEAPONS_CURRENT.attackspeed));
+                    weapons_shoot_sword(pos, ang);
+                }
             }
 
             break;
