@@ -3,6 +3,8 @@
 #include "movement.h"
 #include "input.h"
 
+#include <windows.h>
+
 bool game_done;
 
 void game_init()
@@ -16,8 +18,18 @@ void game_open()
     weapons_open();
 }
 
+void game_capture_mouse()
+{
+    RECT rect;
+    GetWindowRect(hWnd, &rect);
+    SetCursorPos((rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2);
+}
+
 void game_update()
 {
+    if(window_focus)
+        game_capture_mouse();
+
     movement_update();
     weapons_update();
 
