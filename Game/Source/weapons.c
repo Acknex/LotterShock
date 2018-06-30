@@ -18,6 +18,7 @@ typedef struct weapons_data_t
 typedef struct weapons_t
 {
     int current;
+    bool attacking;
     weapons_data_t weapon[WEAPONS_COUNT];
 } weapons_t;
 
@@ -58,6 +59,9 @@ VECTOR debugVec;
 #define WEAPONS_SWORD_BLOCK_STANCE_POS rel_for_screen(vector(screen_size.x - 80, screen_size.y - 20, 100), camera)
 #define WEAPONS_SWORD_BLOCK_STANCE_ANG vector(0, 0, -60)
 
+#define WEAPONS_SWORD_ATTACK_STANCE_POS rel_for_screen(vector(screen_size.x/3, screen_size.y + 10, 90), camera)
+#define WEAPONS_SWORD_ATTACK_STANCE_ANG vector(00, -100, -30)
+
 void weapons_add(int id)
 {
     weapons.weapon[id].unlocked = true;
@@ -97,9 +101,9 @@ void weapons_update()
     if(key_3) weapons_add(WEAPON_CELLGUN);
     if(key_4) weapons_add(WEAPON_FLAMETHROWER);
 
-    if(input_hit(INPUT_WEAPON_UP))
+    if(!weapons.attacking && input_hit(INPUT_WEAPON_UP))
         weapons_select_next(1);
-    if(input_hit(INPUT_WEAPON_DOWN))
+    if(!weapons.attacking && input_hit(INPUT_WEAPON_DOWN))
         weapons_select_next(-1);
 
     DEBUG_VAR(weapons.current, 16);
@@ -142,6 +146,11 @@ void weapons_update()
             {
                 vec_set(targetPosePos, WEAPONS_SWORD_BLOCK_STANCE_POS);
                 vec_set(targetPoseAng, WEAPONS_SWORD_BLOCK_STANCE_ANG);
+            }
+            else if(input_down(INPUT_ATTACK))
+            {
+                vec_set(targetPosePos, WEAPONS_SWORD_ATTACK_STANCE_POS);
+                vec_set(targetPoseAng, WEAPONS_SWORD_ATTACK_STANCE_ANG);
             }
             else
             {
