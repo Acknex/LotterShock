@@ -40,6 +40,8 @@ void game_update()
 
     movement_update();
     weapons_update();
+    keycard_update();
+    medipack_update();
 	 hud_update();
 	 ESELSLERCHE_Update();
 	 GIB_Update();

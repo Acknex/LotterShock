@@ -13,6 +13,7 @@
 #include "input.h"
 #include "doors.h"
 #include "materials.h"
+#include "items.h"
 
 #ifdef DEBUG
 #include <default.c>
@@ -36,6 +37,7 @@
 #include "eselslerche.c"
 #include "doors.c"
 #include "gib.c"
+#include "items.c"
 
 void main()
 {

@@ -7,15 +7,17 @@
 #define EXPECTED_KEY skill3
 
 SOUND* snd_beep = "Beep.wav";
+SOUND* snd_keypad_yes = "keypadYes.wav";
+SOUND* snd_keypad_no = "keypadNo.wav";
 
 STRING* keypad_input = "";
 int current_keypad_id = 0;
 
-void keycard();
+void Keycard();
 void keycard_init();
 void keycard_update();
 
-void Keypad();
+void keypad();
 void keypad_event();
 
 #endif
