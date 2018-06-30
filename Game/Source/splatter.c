@@ -1,7 +1,7 @@
 #include "splatter.h"
 
 
-void SPLATTER_explode(var count, VECTOR* pos, var distance, BMAP* decal)
+void SPLATTER_explode(var count, VECTOR* pos, var distance, BMAP** decal, var bmapCount)
 {
 	var i;
 	VECTOR targetPos;
@@ -15,12 +15,13 @@ void SPLATTER_explode(var count, VECTOR* pos, var distance, BMAP* decal)
 		var dist = c_trace(pos, &targetPos, mode);
 		if(HIT_TARGET)
 		{
-	      PARTICLE* p = ent_decal(you, decal, minv((distance - dist) * 0.8, 370) * (random(0.3) + 1), random(360));
-	      p->material = matDecalBlood;
-	      p->lifespan = FX_WAITTIME;
-	      p->event = SPLATTER__fade_effect;
-	      p->flags |= TRANSLUCENT;
-	      p->alpha = 100;
+			var rnd = integer(random(bmapCount));
+	     	PARTICLE* p = ent_decal(you, decal[rnd], minv((distance - dist) * 0.8, 370) * (random(0.3) + 1), random(360));
+	     	p->material = matDecalBlood;
+	     	p->lifespan = FX_WAITTIME;
+	     	p->event = SPLATTER__fade_effect;
+	     	p->flags |= TRANSLUCENT;
+	     	p->alpha = 100;
 		}
 		
 	}
@@ -100,17 +101,3 @@ void SPLATTER_splat(VECTOR* pos, VECTOR* color)
 	}
 }
 
-
-#ifdef DEBUG
-BMAP* Splattermap = "blutlache.tga";
-action Splattertest()
-{
-	while(1)
-	{	
-		if (key_space != 0)
-			SPLATTER_explode(my->skill1, &my->x, my->skill2, Splattermap);
-		
-		wait(1);
-	}
-}
-#endif

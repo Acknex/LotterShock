@@ -91,9 +91,8 @@ void ESELSLERCHE_Update()
 				ptr->DAMAGE_HIT = 0;
 				ptr->event = NULL;
 				ptr->EL_STATE = EL_STATE_HIT;
-				var rnd = random(5);
 				SPLATTER_splat(&ptr->x, vector(0,0.8,0));
-				SPLATTER_explode(10, &ptr->x, 200, EL_bmapSplatter[rnd]);
+				SPLATTER_explode(10, &ptr->x, 200, EL_bmapSplatter, 5);
 			}
 			
 			switch(ptr->EL_STATE)    	
@@ -267,9 +266,9 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 		{
 			GIB_Spawn(&ptr->x);
 		}
-		var rnd = integer(random(5));
-		SPLATTER_explode(40, &ptr->x, 600, EL_bmapSplatter[rnd]);
-		PARTICLE_explode(50, &ptr->x);
+		SPLATTER_explode(40, &ptr->x, 600, EL_bmapSplatter, 5);
+		//PARTICLE_explode(50, &ptr->x);
+		SPLATTER_splat(&ptr->x, vector(0,0.8,0));
 		ptr->EL_STATE = EL_STATE_DEAD;
 		ptr->SK_ENTITY_DEAD = 1;
 	}
