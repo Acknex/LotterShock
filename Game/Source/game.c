@@ -19,6 +19,7 @@ void game_open()
     game_done = false;
     mouse_pointer = 0;
     weapons_open();
+    ESELSLERCHE_Init();
 }
 
 void game_capture_mouse()
@@ -37,6 +38,7 @@ void game_update()
 
     movement_update();
     weapons_update();
+	 ESELSLERCHE_Update();
 
     if(input_hit(INPUT_NAVBACK))
         game_done = true;

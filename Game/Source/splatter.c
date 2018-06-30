@@ -16,7 +16,7 @@ void SPLATTER_explode(var count, VECTOR* pos, var distance, BMAP* decal)
 		if(HIT_TARGET)
 		{
 	      PARTICLE* p = ent_decal(you, decal, minv(distance - dist, 50), random(360));
-	      p.lifespan = 160;
+	      p->lifespan = 160;
 		}
 		
 	}
@@ -24,11 +24,8 @@ void SPLATTER_explode(var count, VECTOR* pos, var distance, BMAP* decal)
 
 #ifdef DEBUG
 BMAP* Splattermap = "blutlache.tga";
-ENTITY* splatterent;
 action Splattertest()
 {
-	splatterent = me;
-	
 	while(1)
 	{	
 		if (key_space != 0)
