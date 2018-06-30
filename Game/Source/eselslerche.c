@@ -200,7 +200,8 @@ void ESELSLERCHE__run(ENTITY* ptr)
 
 void ESELSLERCHE__explode(ENTITY* ptr)
 {
-	SPLATTER_explode(50, &ptr->x, ptr->EL_EXPLODEDIST, EL_bmapSplatter);
+	set(ptr, PASSABLE);
+	SPLATTER_explode(100, &ptr->x, 1000, EL_bmapSplatter);
 	//TODO: explode animation
 	ptr->EL_STATE = EL_STATE_DIE;
 	ptr->EL_ANIMSTATE = 0;
