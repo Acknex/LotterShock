@@ -27,6 +27,8 @@ typedef struct weapons_data_t
     bool streaming;
     var cooldown;
     var attackspeed;
+    var ammo;
+    var max_ammo;
 } weapons_data_t;
 
 typedef struct weapons_t
@@ -111,6 +113,28 @@ void weapons_erect_sword()
 {
     weapons.swordLength += 1;
 }
+
+int weapons_get_max_ammo()
+{
+    if(weapons.current > 0)
+        return (int)(WEAPONS_CURRENT.max_ammo);
+    else
+        return 0;
+}
+
+int weapons_get_ammo()
+{
+    if(weapons.current > 0)
+        return (int)(WEAPONS_CURRENT.ammo);
+    else
+        return 0;
+}
+
+int weapons_get_current()
+{
+    return weapons.current;
+}
+
 
 void weapons_init()
 {
@@ -262,6 +286,29 @@ void weapons_shoot_flamethrower()
     effect (weapons_flame_effect, maxv(1, time_frame * WEAPONS_FLAME_COUNT), pos, dir);
 }
 
+void weapons_shoot_sword()
+{
+    VECTOR pos;
+    vec_set(pos, weapons_wp_sword.x);
+    vec_scale(pos, 0.1);
+
+    vec_rotate(pos, camera.pan);
+    vec_add(pos, camera.x);
+
+    VECTOR end;
+    vec_set(end, vector(0, 0, 25));
+    vec_rotate(end, weapons_wp_sword.pan);
+    vec_rotate(end, camera.pan);
+    vec_add(end, pos);
+
+    draw_line3d(pos, NULL, 100);
+    draw_line3d(pos, COLOR_GREEN, 100);
+    draw_line3d(end, COLOR_GREEN, 100);
+
+    draw_point3d(end, COLOR_BLUE, 100, 5);
+
+}
+
 void weapons_update()
 {
     int i;
@@ -275,25 +322,7 @@ void weapons_update()
     if(!weapons.attacking && input_hit(INPUT_WEAPON_DOWN))
         weapons_select_next(-1);
 
-    DEBUG_VAR(weapons.attacking, 16);
-
     ent_animate(weapons_wp_sword, "Erect", 10 * clamp(weapons.swordLength, 0, 10), ANM_SKIP);
-
-    if(weapons.current > 0)
-    {
-        draw_text(
-            str_printf(
-                NULL,
-                "x=%f y=%f z=%f  pan=%f tilt=%f roll=%f",
-                (double)WEAPONS_CURRENT.ent.x,
-                (double)WEAPONS_CURRENT.ent.y,
-                (double)WEAPONS_CURRENT.ent.z,
-                (double)WEAPONS_CURRENT.ent.pan,
-                (double)WEAPONS_CURRENT.ent.tilt,
-                (double)WEAPONS_CURRENT.ent.roll),
-            64, 16,
-            COLOR_RED);
-    }
 
     // ignore dummy weapon for visuals
     for(i = 1; i < WEAPONS_COUNT; i++)
@@ -357,6 +386,12 @@ void weapons_update()
             {
                 snd_play(WEAPONS_CURRENT.snd, 100, 0);
             }
+
+            // if(weapons.attacking)
+            {
+                weapons_shoot_sword();
+            }
+
             break;
 
         case WEAPON_SHOTGUN:
