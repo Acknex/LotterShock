@@ -162,7 +162,7 @@ void framework_update()
             level_load(LEVEL_FILE);
 #endif
         }
-        hud_show();
+        
         if(framework.loaderState >= 6)
         {
             framework_load_screen->alpha -= FRAMEWORK_ALPHA_BLENDSPEED * time_step;

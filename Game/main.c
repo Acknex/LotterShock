@@ -35,6 +35,7 @@
 #include "enemy_hit.c"
 #include "eselslerche.c"
 #include "doors.c"
+#include "gib.c"
 
 void main()
 {
