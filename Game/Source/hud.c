@@ -133,6 +133,20 @@ void hud_show()
 	HUD_Ammo_infotext->pos_y = HUD_Ammo_bars->pos_y + HUD_Ammo_bars->size_y/2;
 }
 
+void hud_hide()
+{
+	reset(HUD_crosshair, SHOW);
+	reset(HUD_HP_label, SHOW);
+	reset(HUD_HP_bars, SHOW);
+	reset(HUD_Ammo_label, SHOW);
+	reset(HUD_Ammo_bars, SHOW);
+	reset(HUD_Ammo_infotext, SHOW);
+	
+	int i;
+	for(i = 0; i<4; ++i)
+		reset(hud_weapon_icon[i], SHOW);
+}
+
 void hud_show_weapon_icon(int id)
 {
 	int i;
