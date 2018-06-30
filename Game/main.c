@@ -29,6 +29,7 @@
 #include "math.c"
 #include "eselslerche.c"
 #include "scan.c"
+#include "dmgsys.c"
 #include "hud.c"
 
 void main()
