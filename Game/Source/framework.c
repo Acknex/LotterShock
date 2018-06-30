@@ -7,6 +7,7 @@
 #include "credits.h"
 #include "hud.h"
 #include "materials.h"
+#include "meshFun.h"
 
 #define FRAMEWORK_ALPHA_BLENDSPEED  25
 
@@ -166,7 +167,9 @@ void framework_update()
             level_load(LEVEL_FILE);
 #endif
 			wait_for(level_load);
-			ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
+			meshFunDo();
+			ENTITY *sky = ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
+			bmap_to_cubemap(ent_getskin(sky, 0));
 			
         }
         
