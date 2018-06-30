@@ -7,7 +7,7 @@
 
 float4 vecAmbient;
 Texture entSkin1;
-sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Point; MagFilter = Point; MinFilter = Point; };
+sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Linear; MagFilter = Linear; MinFilter = Linear; };
 
 struct out_ps // Output to the pixelshader fragment
 {
