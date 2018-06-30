@@ -215,17 +215,16 @@ void weapons_select_next(int dir)
 
 bool weapons_draw_ammo(var amount)
 {
+    if(WEAPONS_CURRENT.max_ammo <= 0)
+        return true;
 	if(WEAPONS_CURRENT.ammo < amount)
-		return false;
-	
+        return false;
 	WEAPONS_CURRENT.ammo -= amount;
 	return true;
 }
 
 void weapons_shoot_shotgun()
 {
-    if(!weapons_draw_ammo(1))
-        return;
     int i;
     for(i = 0; i < 10; i++)
     {
@@ -322,9 +321,6 @@ void weapons_flame_effect(PARTICLE *p)
 
 void weapons_shoot_flamethrower()
 {
-    if(!weapons_draw_ammo(0.3))
-        return;
-	
     VECTOR pos;
     vec_set(pos, weapons_wp_flamethrower.x);
     vec_add(pos,  vector(370, 0, 30));
@@ -442,6 +438,13 @@ void weapons_update()
         if(WEAPONS_CURRENT.streaming)
         {
             var isdown = input_down(INPUT_ATTACK);
+            if(isdown)
+            {
+                if(weapons.current == WEAPON_CELLGUN)
+                    isdown = WEAPONS_CURRENT.ammo >= 3;
+                else if(weapons.current == WEAPON_FLAMETHROWER)
+                    isdown = weapons_draw_ammo(1.5 * time_step);
+            }
             if(weapons.attacking != isdown)
             {
                 if(isdown)
@@ -471,9 +474,12 @@ void weapons_update()
         {
             if(!weapons.attacking && input_hit(INPUT_ATTACK))
             {
-                weapons.attacking = 1;
-                weapons.attackprogress = 0;
-                weapons.attackstate = 0;
+                if(weapons_draw_ammo(1))
+                {
+                    weapons.attacking = 1;
+                    weapons.attackprogress = 0;
+                    weapons.attackstate = 0;
+                }
             }
         }
 
@@ -619,20 +625,29 @@ void weapons_update()
 
                     if(weapons.speartimer >= 0 && weapons.speartimer < 30 && weapons.attackstate == 0)
                     {
-                        snd_play(WEAPONS_CURRENT.snd, 100, 0);
-                        weapons_shoot_cellgun();
+                        if(weapons_draw_ammo(1))
+                        {
+                            snd_play(WEAPONS_CURRENT.snd, 100, 0);
+                            weapons_shoot_cellgun();
+                        }
                         weapons.attackstate = 1;
                     }
                     else if(weapons.speartimer >= 30 && weapons.speartimer < 60 && weapons.attackstate == 1)
                     {
-                        snd_play(WEAPONS_CURRENT.snd, 100, 0);
-                        weapons_shoot_cellgun();
+                        if(weapons_draw_ammo(1))
+                        {
+                            snd_play(WEAPONS_CURRENT.snd, 100, 0);
+                            weapons_shoot_cellgun();
+                        }
                         weapons.attackstate = 2;
                     }
                     else if(weapons.speartimer >= 60 && weapons.speartimer < 90 && weapons.attackstate == 2)
                     {
-                        snd_play(WEAPONS_CURRENT.snd, 100, 0);
-                        weapons_shoot_cellgun();
+                        if(weapons_draw_ammo(1))
+                        {
+                            snd_play(WEAPONS_CURRENT.snd, 100, 0);
+                            weapons_shoot_cellgun();
+                        }
                         weapons.attackstate = 3;
                     }
                     else if(weapons.speartimer >= 90 && weapons.attackstate == 3)
