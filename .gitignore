@@ -1,6 +1,8 @@
 acklog.txt
 ackerr.txt
 
+config.h
+
 *.bak
 *.raw
 *.wed
