@@ -64,6 +64,7 @@ void keypad_event() {
 				} else {
 					printf("Falsch");
 				}
+				str_cpy(keypad_input, "");
 			}
 		break;
 		case EVENT_TOUCH:
