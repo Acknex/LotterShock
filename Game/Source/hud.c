@@ -153,7 +153,7 @@ void hud_show()
 	
 	HUD_Head->pos_x = (screen_size.x- HUD_Head->size_x*HUD_Head->scale_x)/2;
 	HUD_Head->pos_y = screen_size.y - HUD_Head->size_y*HUD_Head->scale_y - HUD_BORDER_PADDING;
-	//set(HUD_Head, SHOW);
+	set(HUD_Head, SHOW);
 	
 	var space_left = HUD_Head->pos_x - HUD_BORDER_PADDING;
 	space_left /= 2;
@@ -201,6 +201,9 @@ void hud_show()
 
 void hud_hide()
 {
+	reset(HUD_Head, SHOW);
+	reset(HUD_HP_infotext, SHOW);
+	reset(HUD_HP_text, SHOW);
 	reset(HUD_crosshair, SHOW);
 	reset(HUD_HP_label, SHOW);
 	//reset(HUD_HP_bars, SHOW);
