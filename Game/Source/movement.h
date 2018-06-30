@@ -24,5 +24,6 @@
 	// amount can be negative to reduce health
 	void playerAddHealth(var amount);
 	
+	var playerEntMorphBallIsActive();
 
 #endif // MOVEMENT_H
