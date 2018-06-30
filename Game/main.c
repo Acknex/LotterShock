@@ -1,5 +1,7 @@
 #include <acknex.h>
 
+#include "config.h"
+
 #define PRAGMA_PATH "Source"
 #define PRAGMA_PATH "Assets"
 #define PRAGMA_PATH "Media"
