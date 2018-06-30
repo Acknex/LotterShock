@@ -36,6 +36,7 @@ action keypad() {
 	
 	my.emask |= ENABLE_CLICK;
 	my.event = keypad_event;
+	set(me, PASSABLE);
 
 	while(me) {
 		if (mouse_ent == me) {
