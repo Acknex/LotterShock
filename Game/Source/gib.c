@@ -17,7 +17,7 @@ void GIB_spawn(VECTOR* pos)
 
 void GIB_GlobalInit()
 {
-	GIB_strModels[0] = str_create();
+//	GIB_strModels[0] = str_create();
 }
 
 void GIB_Close()
