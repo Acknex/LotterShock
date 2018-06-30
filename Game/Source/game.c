@@ -3,6 +3,7 @@
 #include "movement.h"
 #include "input.h"
 #include "eselslerche.h"
+#include "projectiles.h"
 #include "gib.h"
 
 #include <windows.h>
@@ -40,6 +41,9 @@ void game_update()
 
     movement_update();
     weapons_update();
+    projectiles_update();
+    keycard_update();
+    medipack_update();
 	 hud_update();
 	 ESELSLERCHE_Update();
 	 GIB_Update();
@@ -50,6 +54,8 @@ void game_update()
 
 void game_close()
 {
+movement_close();
+projectiles_close();
     hud_hide();
     weapons_close();
     GIB_Close();
