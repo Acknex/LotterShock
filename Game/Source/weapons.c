@@ -261,18 +261,17 @@ void weapons_shoot_shotgun()
 
 void weapons_secondary_flame_effect_event(PARTICLE *p)
 {
-	p->alpha -= time_step;
+	if(p->lifespan <50)
+		p->alpha += time_step;
+	else
+		p->alpha -= time_step;
 }
 
 void weapons_secondary_flame_effect(PARTICLE *p)
 {
 	p->bmap = weapons_fire_01;
-	//vec_rotate(p->vel_x, vector(
-	//random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
-	//random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
-	//random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD ));
-	p->flags = LIGHT|TRANSPARENT;
-	p->alpha = 100;
+	p->flags = LIGHT|TRANSLUCENT|BRIGHT;
+	p->alpha = 0;
 	vec_set(p->blue, vector(32, 32, 192));
 	p->lifespan = 100;
 	p->size = 25 + random(35);
