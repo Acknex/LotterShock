@@ -77,7 +77,7 @@ out_frag ps(out_ps In)
 	color.rgb *= light;
 	color.rgb += specular;
 	
-	color.rgb = lerp(color.rgb, vecFogColor.rgb, satrate(In.fog));
+	color.rgb = lerp(color.rgb, vecFogColor.rgb, saturate(In.fog));
 	
 	Out.color = color;
 	Out.color.a *= fAlpha;
