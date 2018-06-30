@@ -47,11 +47,11 @@ void ESELSLERCHE_Init()
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENEMY_LERCHE)
    {
    	//TODO: useful default values
-   	if(ptr->EL_RUNSPEED == 0) ptr->EL_RUNSPEED = 0;
-   	if(ptr->EL_TURNSPEED == 0) ptr->EL_TURNSPEED = 0;
-   	if(ptr->EL_ANIMSPEED == 0) ptr->EL_ANIMSPEED = 0;
-   	if(ptr->EL_EXPLODEDIST == 0) ptr->EL_EXPLODEDIST = 0;
-   	if(ptr->EL_ACTIVEDIST == 0) ptr->EL_ACTIVEDIST = 0;
+   	if(ptr->EL_RUNSPEED == 0) ptr->EL_RUNSPEED = 12;
+   	if(ptr->EL_TURNSPEED == 0) ptr->EL_TURNSPEED = 10;
+   	if(ptr->EL_ANIMSPEED == 0) ptr->EL_ANIMSPEED = 5;
+   	if(ptr->EL_EXPLODEDIST == 0) ptr->EL_EXPLODEDIST = 200;
+   	if(ptr->EL_ACTIVEDIST == 0) ptr->EL_ACTIVEDIST = 3000;
 		ptr->HEALTH = 50;
 		ENEMY_HIT_init(ptr);
 		
@@ -133,6 +133,7 @@ void ESELSLERCHE_Update()
 		c_trace(from, to, mode);
 		if(HIT_TARGET)
 			ptr->z = hit.z - ptr->min_z;
+			DEBUG_VAR(vec_dist(&player->x, ptr->x) , 150);
 	}	
 }
 
@@ -154,7 +155,6 @@ var ESELSLERCHE__turnToPlayer(ENTITY* ptr)
 		ptr->pan = maxv(vecAngle.pan, ang(ptr->pan - ptr->EL_TURNSPEED * time_step));
 		return 0;
 	}	
-	
 //	if (integer(ang(ptr->pan)) == integer(vecAngle.pan))
 		return 1;
 //	else
@@ -163,10 +163,11 @@ var ESELSLERCHE__turnToPlayer(ENTITY* ptr)
 
 void ESELSLERCHE__inactive(ENTITY* ptr)
 {
+	/* transitions */
 	if(SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST))
 	{
 		ent_animate(ptr, EL_WAITANIM, ptr->EL_ANIMSTATE, ANM_CYCLE);
-		if (SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90) || SCAN_IsPlayerNear(ptr, 300))
+		if (SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90) || SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST * 0.3))
 		{
 			ptr->EL_STATE = EL_STATE_WAIT;
 		}
@@ -176,15 +177,20 @@ void ESELSLERCHE__inactive(ENTITY* ptr)
 void ESELSLERCHE__wait(ENTITY* ptr)
 {
 	ent_animate(ptr, EL_TURNANIM, ptr->EL_ANIMSTATE, ANM_CYCLE);
+
+	/* transitions */
 	if (ESELSLERCHE__turnToPlayer(ptr) != 0)
 	{
 		ptr->EL_ANIMSTATE = 0;
 		ptr->EL_RUNSPEEDCUR = 0;
 		ptr->EL_STATE = EL_STATE_RUN;
 	}
-	if(!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100))
+	else if(!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100))
 	{
 		ptr->EL_STATE = EL_STATE_INACTIVE;
+	}
+	else
+	{
 	}
 }
 
@@ -195,11 +201,13 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
 	c_move(ptr, vector(ptr->EL_RUNSPEEDCUR, 0, 0), nullvector, mode);
 	ent_animate(ptr, EL_WALKANIM, ptr->EL_ANIMSTATE, ANM_CYCLE);
+
+	/* transitions */
 	if (SCAN_IsPlayerInSight(ptr, ptr->EL_EXPLODEDIST, 360))
 	{
 		ptr->EL_STATE = EL_STATE_EXPLODE;
 	}
-	else if (!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90))
+	else if (!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90) && (!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100)))
 	{
 		ptr->EL_STATE = EL_STATE_WAIT;
 		ptr->EL_ANIMSTATE = 0;
@@ -219,6 +227,8 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 	//TODO: explode animation
 	ptr->EL_STATE = EL_STATE_DIE;
 	ptr->EL_ANIMSTATE = 0;
+
+	/* transitions */
 	if(ptr->EL_EXPLODESTATE >= 50)
 	{
 		ptr->EL_STATE = EL_STATE_DEAD;
@@ -231,6 +241,8 @@ void ESELSLERCHE__die(ENTITY* ptr)
 	var animState;
 	animState = clamp(ptr->EL_ANIMSTATE, 0, 50);
 	ent_animate(ptr, EL_DIEANIM, ptr->EL_ANIMSTATE, 0);
+
+	/* transitions */
 	if(animState >= 50)
 	{
 		ptr->EL_STATE = EL_STATE_DEAD;
@@ -255,17 +267,21 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
 	c_move(ptr, nullvector, dir, mode);
 
+	/* transitions */
 	if (ptr->HEALTH <= 0)
 	{
 		ptr->EL_STATE = EL_STATE_DIE;
 	}
-
-	if (animState >= 90)
+	else if (animState >= 90)
 	{
-		ptr->EL_STATE = EL_STATE_WAIT;			
+		ptr->EL_STATE = EL_STATE_INACTIVE;			
 		ptr->event = ENEMY_HIT_event;
 		ptr->EL_ANIMSTATE = 0;
 		ptr->DAMAGE_VEC = nullvector;
+	}
+	else
+	{
+		
 	}
 }
 

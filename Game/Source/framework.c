@@ -6,6 +6,7 @@
 #include "input.h"
 #include "credits.h"
 #include "hud.h"
+#include "materials.h"
 
 #define FRAMEWORK_ALPHA_BLENDSPEED  25
 
@@ -42,8 +43,9 @@ PANEL * framework_load_screen =
 void framework_init()
 {
     fps_max = 61;
-    d3d_triplebuffer = 0; // mit vsync
-    video_set(1280, 720, 0, 2); // 1280x720, Window
+    video_set(1600, 900, 0, 2); // 1280x720, Window
+    
+    SetupDefaultMaterials();
 
     on_frame = framework_update;
 #ifdef DEBUG

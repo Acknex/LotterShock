@@ -5,12 +5,12 @@
 
 #define WEAPONS_COUNT 5
 
-#define WEAPONS_LERP_SPEED 0.25
+#define WEAPONS_LERP_SPEED 0.35
 
 #define WEAPONS_CURRENT (weapons.weapon[weapons.current])
 
 #define WEAPONS_SHOTGUN_RANGE  8000
-#define WEAPONS_SHOTGUN_SPREAD 3 // *2 grad
+#define WEAPONS_SHOTGUN_SPREAD 4 // *2 grad
 #define WEAPONS_SHOTGUN_DAMAGE 5
 
 #define WEAPONS_FLAME_VEL 100
@@ -48,6 +48,13 @@ typedef struct weapons_t
 
 weapons_t weapons;
 
+
+MATERIAL* shotgunTest_mat =
+{
+	effect = "shotgunTest.fx";
+	flags = AUTORELOAD;
+}
+
 ENTITY * weapons_wp_sword =
 {
     type = "gipsy_sword.mdl";
@@ -57,6 +64,7 @@ ENTITY * weapons_wp_sword =
 ENTITY * weapons_wp_shotgun =
 {
     type = "triple_shotgun.mdl";
+	material = shotgunTest_mat;
     view = camera;
 }
 
@@ -76,7 +84,7 @@ BMAP * weapons_bullethole_decal = "bullet_hole.tga";
 
 BMAP * weapons_fire_01 = "fire.pcx";
 
-SOUND * weapons_snd_sword = "sword_snd.wav";
+SOUND * weapons_snd_sword = "sword_swing1.wav";
 SOUND * weapons_snd_shotgun = "shotgun_snd.wav";
 SOUND * weapons_snd_cellgun = "cellgun_snd.wav";
 SOUND * weapons_snd_cellgun_loop = "cellgun_hum.wav";
@@ -215,7 +223,9 @@ void weapons_shoot_shotgun()
         var dist = c_trace(camera.x, dir, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
         if(HIT_TARGET)
         {
-            ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+            PARTICLE *p = ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+            p->material = matDecalBasic;
+            p->lifespan = 640;
         }
     }
 }
@@ -331,7 +341,9 @@ void weapons_shoot_sword(VECTOR * _pos, VECTOR * _ang)
     var dist = c_trace(pos, end, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
     if(HIT_TARGET)
     {
-        ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+        PARTICLE *p = ent_decal(you, weapons_bullethole_decal, 2 + random(3) + 0.002 * dist, random(360));
+        p->material = matDecalBasic;
+        p->lifespan = 640;
     }
 
     /*
@@ -361,6 +373,20 @@ void weapons_shoot_cellgun()
 
     draw_point3d(end, COLOR_BLUE, 100, 1);
     */
+}
+
+var weaponGetKickbackFac(var progress, var kickPoint)
+{
+	progress = progress*1.8;
+	kickPoint = kickPoint*1.8;
+	if(progress <= kickPoint) return sqrt(progress/kickPoint);
+	progress = (progress-kickPoint)/(180-kickPoint)*180;
+	return (cosv(progress)*0.5+0.5);
+}
+
+var weaponGetAttackProgress()
+{
+    return weapons.attackprogress;
 }
 
 void weapons_update()
@@ -475,43 +501,39 @@ void weapons_update()
             break;
 
         case WEAPON_SHOTGUN:
-            if(input_down(INPUT_BLOCK))
-            {
-                vec_set(sourcePosePos, WEAPONS_SHOTGUN_SIGHT_STANCE_POS);
-                vec_set(sourcePoseAng, WEAPONS_SHOTGUN_SIGHT_STANCE_ANG);
-            }
-            else
-            {
-                vec_set(sourcePosePos, WEAPONS_SHOTGUN_DEFAULT_STANCE_POS);
-                vec_set(sourcePoseAng, WEAPONS_SHOTGUN_DEFAULT_STANCE_ANG);
-            }
-            vec_set(targetPosePos, sourcePosePos);
-            vec_set(targetPoseAng, sourcePoseAng);
+ 			if(input_down(INPUT_BLOCK) || 1)
+			{
+				vec_set(sourcePosePos, WEAPONS_SHOTGUN_SIGHT_STANCE_POS);
+				vec_set(sourcePoseAng, WEAPONS_SHOTGUN_SIGHT_STANCE_ANG);
+			}
+			else
+			{
+				vec_set(sourcePosePos, WEAPONS_SHOTGUN_DEFAULT_STANCE_POS);
+				vec_set(sourcePoseAng, WEAPONS_SHOTGUN_DEFAULT_STANCE_ANG);
+			}
+			vec_set(targetPosePos, sourcePosePos);
+			vec_set(targetPoseAng, sourcePoseAng);
+			var kickbackFac = weaponGetKickbackFac(weapons.attackprogress, 10);
+			targetPosePos.x += sinv(playerGetCameraBob())-2-2*kickbackFac;
+			targetPosePos.y += 2*kickbackFac;
+			targetPosePos.z -= 10*kickbackFac;
+			ang_rotate(targetPoseAng,playerGetWeaponSway());
+			//draw_text(str_printf(NULL,"kick %.1f atprogress %.1f",(double)weaponGetKickbackFac(weapons.attackprogress, 10),(double)weapons.attackprogress),400,240,COLOR_RED);
 
-            if(weapons.attacking)
-            {
-                if(weapons.attackprogress >= 10 && weapons.attackstate == 0)
-                {
-                    var id = snd_play(WEAPONS_CURRENT.snd, 100, 0);
-                    snd_tune(id, 0, 90 + random(20), 0);
-                    weapons.attackstate = 1;
-                    weapons_shoot_shotgun();
-                }
-                else if(weapons.attackprogress >= 30 && weapons.attackstate == 1)
-                {
-                    var id = snd_play(WEAPONS_CURRENT.snd, 100, 0);
-                    snd_tune(id, 0, 90 + random(20), 0);
-                    weapons.attackstate = 2;
-                    weapons_shoot_shotgun();
-                }
-                else if(weapons.attackprogress >= 50 && weapons.attackstate == 2)
-                {
-                    var id = snd_play(WEAPONS_CURRENT.snd, 100, 0);
-                    snd_tune(id, 0, 90 + random(20), 0);
-                    weapons.attackstate = 3;
-                    weapons_shoot_shotgun();
-                }
-            }
+			if(weapons.attacking)
+			{
+				if(weapons.attackstate == 0)
+				{
+					var id = snd_play(WEAPONS_CURRENT.snd, 100, 0);
+					snd_tune(id, 0, 90 + random(20), 0);
+					weapons.attackstate = 3;
+					weapons_shoot_shotgun();
+					VECTOR temp;
+					vec_set(temp,vector(-55,0,0));
+					vec_rotate(temp,vector(camera.pan,0,0));
+					playerAddSpeed(temp);
+				}
+			}
 
             break;
         case WEAPON_FLAMETHROWER:
@@ -625,23 +647,34 @@ void weapons_update()
             break;
         }
 
-        if(weapons.attacking)
-        {
-            vec_lerp(WEAPONS_CURRENT.ent.x, sourcePosePos, targetPosePos, 0.01 * weapons.attackprogress);
-            ang_lerp(WEAPONS_CURRENT.ent.pan, sourcePoseAng, targetPoseAng, 0.01 * weapons.attackprogress);
-        }
-        else
-        {
-            vec_lerp(WEAPONS_CURRENT.ent.x, WEAPONS_CURRENT.ent.x, targetPosePos, WEAPONS_LERP_SPEED);
-            ang_lerp(WEAPONS_CURRENT.ent.pan, WEAPONS_CURRENT.ent.pan, targetPoseAng, WEAPONS_LERP_SPEED);
-        }
+ 
+		if(weapons.attacking && weapons.current != WEAPON_SHOTGUN)
+		{
+			vec_lerp(WEAPONS_CURRENT.ent.x, sourcePosePos, targetPosePos, 0.01 * weapons.attackprogress);
+			ang_lerp(WEAPONS_CURRENT.ent.pan, sourcePoseAng, targetPoseAng, 0.01 * weapons.attackprogress);
+		}
+		else
+		{
+			vec_lerp(WEAPONS_CURRENT.ent.x, WEAPONS_CURRENT.ent.x, targetPosePos, WEAPONS_LERP_SPEED);
+			ang_lerp(WEAPONS_CURRENT.ent.pan, WEAPONS_CURRENT.ent.pan, targetPoseAng, WEAPONS_LERP_SPEED);
+			if(weapons.attacking && weapons.current == WEAPON_SHOTGUN)
+			{
+				vec_set(WEAPONS_CURRENT.ent.pan,targetPoseAng);
+				//var recoilSide = sinv(total_ticks*10);
+				ang_rotate(WEAPONS_CURRENT.ent.pan, vector(20*kickbackFac,12*kickbackFac,-25*kickbackFac));
+			}
+		}
+	
 
-        weapons.attackprogress += WEAPONS_CURRENT.attackspeed * time_step;
-        if(weapons.attackprogress >= 100)
-        {
-            weapons.attackprogress = 0;
-            weapons.attacking = 0;
-        }
+		if(weapons.attacking)
+		{
+			weapons.attackprogress += WEAPONS_CURRENT.attackspeed * time_step;
+			if(weapons.attackprogress >= 100)
+			{
+				weapons.attackprogress = 0;
+				weapons.attacking = 0;
+			}
+		}
     }
 }
 
