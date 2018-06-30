@@ -16,6 +16,7 @@ struct out_ps // Output to the pixelshader fragment
 {
 	float4 Pos : POSITION;
 	float2 uv0 : TEXCOORD0;
+	float fog : TEXCOORD1;
 	float3 worldPos : TEXCOORD2;
 	float3 normal : TEXCOORD3;
 };
@@ -34,6 +35,7 @@ out_ps vs(
 	out_ps Out;
 	
 	Out.Pos = DoTransform(inPos);
+	Out.fog = (Out.Pos.z - vecFog.x) * vecFog.z;
 	Out.uv0 = inTexCoord0;
 	Out.worldPos = mul(matWorld, float4(inPos.xyz, 1.0));
 	Out.normal = mul(matWorld, float4(inNormal, 0.0));
@@ -48,13 +50,11 @@ out_frag ps(out_ps In)
 	In.normal = normalize(In.normal);
 	float3 viewDirection = vecViewPos.xyz - In.worldPos;
 	float viewDistance = length(viewDirection);
-	viewDirection = normalize(viewDirection);
 	
 	float4 color;
 	color = tex2D(sTexture, In.uv0);
 	
 	float3 light = vecAmbient.rgb;
-	float3 specular = 0.0;
 	
 	for(int i = 0; i < 8; i++)
 	{
@@ -64,19 +64,12 @@ out_frag ps(out_ps In)
 		float lightAttenuation = saturate(1.0 - lightDistance/vecLightPos[i].w);
 		lightAttenuation *= lightAttenuation;
 		
-		float3 lightHalf = normalize(viewDirection + lightDirection);
-		float lightSpecularFactor = saturate(dot(lightHalf, In.normal));
-		lightSpecularFactor = pow(lightSpecularFactor, 10.0);
-		
 		light += lightFactor * lightAttenuation * vecLightColor[i].rgb;
-		specular += lightSpecularFactor * vecLightColor[i].rgb * color.r;
 	}
 	
 	color.rgb *= light;
-	color.rgb += specular;
 	
-	float fogAttenuation = max(viewDistance - vecFog.x, 0.0) * vecFog.z;
-	color.rgb = lerp(color.rgb, vecFogColor.rgb, fogAttenuation);
+	color.rgb = lerp(color.rgb, vecFogColor.rgb, saturate(In.fog));
 	
 	Out.color = color;
 	Out.color.a *= fAlpha;

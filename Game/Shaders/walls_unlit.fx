@@ -15,8 +15,9 @@ struct out_ps // Output to the pixelshader fragment
 {
 	float4 Pos : POSITION;
 	float2 uv0 : TEXCOORD0;
-	float3 worldPos : TEXCOORD1;
+	float4 worldPos : TEXCOORD1;
 	float3 normal : TEXCOORD2;
+	float fog : TEXCOORD4;
 };
 
 struct out_frag // fragment color output
@@ -33,9 +34,10 @@ out_ps vs(
 	out_ps Out;
 	
 	Out.Pos = DoTransform(inPos);
+	Out.fog = (Out.Pos.z - vecFog.x) * vecFog.z;
 	Out.uv0 = inTexCoord0;
 	Out.worldPos = mul(matWorld, float4(inPos.xyz, 1.0));
-	Out.normal = mul(matWorld, float4(inNormal, 1.0));
+	Out.normal = mul(matWorld, float4(inNormal, 0.0));
 	
 	return Out;
 }
@@ -45,7 +47,6 @@ out_frag ps(out_ps In)
 	out_frag Out;
 	
 	In.normal = normalize(In.normal);
-	float viewDistance = distance(vecViewPos.xyz, In.worldPos);
 	
 	float4 color;
 	color.rgb = tex2D(sTexture, In.uv0);
@@ -68,10 +69,7 @@ out_frag ps(out_ps In)
 	}
 	
 	color.rgb *= light;
-	
-	float fogAttenuation = max(viewDistance - vecFog.x, 0.0) * vecFog.z;
-	
-	Out.color = lerp(color, vecFogColor, fogAttenuation);
+	Out.color = lerp(color, vecFogColor, saturate(In.fog));
 	
 	return Out;
 }

@@ -38,13 +38,14 @@ typedef int bool;
 #define SUBSYSTEM_DOORS         12
 #define SUBSYSTEM_KEYPADS       13
 
-#define SUBSYSTEM_ENEMY_LERCHE  100
-#define SUBSYSTEM_ENEMY_WARLOCK 101
-#define SUBSYSTEM_ENEMY_SPUTNIK 103
-#define SUBSYSTEM_ENEMY_EYE     104
-#define SUBSYSTEM_ENEMY_GIB     105
+#define FX_WAITTIME				100
+#define SUBSYSTEM_ENEMY_GIB     101
 
-#define FX_WAITTIME				640
+// ACHTUNG! Alles größer Tausend kann verbrannt werden und bekommt schaden.
+#define SUBSYSTEM_ENEMY_LERCHE  1000
+#define SUBSYSTEM_ENEMY_WARLOCK 1001
+#define SUBSYSTEM_ENEMY_SPUTNIK 1003
+#define SUBSYSTEM_ENEMY_EYE     1004
 
 #define SUBSYSTEM_LOOP(ptr,system) for(ptr = ent_next(NULL); ptr != NULL; ptr = ent_next(ptr)) if(ptr->SK_SUBSYSTEM == (system))
 

@@ -91,9 +91,8 @@ void ESELSLERCHE_Update()
 				ptr->DAMAGE_HIT = 0;
 				ptr->event = NULL;
 				ptr->EL_STATE = EL_STATE_HIT;
-				var rnd = random(5);
-				SPLATTER_splat(&ptr->x, vector(0,0.8,0));
-				SPLATTER_explode(10, &ptr->x, 200, EL_bmapSplatter[rnd]);
+				SPLATTER_splat(&ptr->x, vector(73.0/255.0,159.0/255.0,0.0));
+				SPLATTER_explode(10, &ptr->x, 200, EL_bmapSplatter, 5);
 			}
 			
 			switch(ptr->EL_STATE)    	
@@ -142,8 +141,8 @@ void ESELSLERCHE_Update()
 			}	
 		}
 	
-		if (ptr->EL_STATE != EL_STATE_EXPLODE && ptr->EL_STATE != EL_STATE_DEAD && ptr->EL_STATE != EL_STATE_INACTIVE)
-			c_updatehull(ptr, ptr->frame);
+//		if (ptr->EL_STATE != EL_STATE_EXPLODE && ptr->EL_STATE != EL_STATE_DEAD && ptr->EL_STATE != EL_STATE_INACTIVE)
+//			c_updatehull(ptr, ptr->frame);
 
 		if (ptr->EL_STATE != EL_STATE_EXPLODE)
 		{
@@ -267,9 +266,9 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 		{
 			GIB_Spawn(&ptr->x);
 		}
-		var rnd = integer(random(5));
-		SPLATTER_explode(40, &ptr->x, 600, EL_bmapSplatter[rnd]);
-		PARTICLE_explode(50, &ptr->x);
+		SPLATTER_explode(40, &ptr->x, 600, EL_bmapSplatter, 5);
+		//PARTICLE_explode(50, &ptr->x);
+		SPLATTER_splat(&ptr->x, vector(0,0.8,0));
 		ptr->EL_STATE = EL_STATE_DEAD;
 		ptr->SK_ENTITY_DEAD = 1;
 	}
@@ -331,7 +330,7 @@ void spawn_startup()
 	wait(-5);
 	while(1)
 	{
-		ENTITY* ptr = ent_create("cEselslerche.mdl", vector(2200,-2750,100), Eselslerche);
+		ENTITY* ptr = ent_create("cEselslerche.mdl", vector(5900,-6050,250), Eselslerche);
 		wait(-10);
 	}
 }
