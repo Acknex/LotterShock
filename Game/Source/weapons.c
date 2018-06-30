@@ -59,7 +59,7 @@ ENTITY * weapons_wp_shotgun =
 
 ENTITY * weapons_wp_cellgun =
 {
-    type = "gipsy_sword.mdl";
+    type = "trident_of_lightning.mdl";
     view = camera;
 }
 
@@ -78,6 +78,7 @@ SOUND * weapons_snd_shotgun = "shotgun_snd.wav";
 SOUND * weapons_snd_cellgun = "cellgun_snd.wav";
 SOUND * weapons_snd_flamethrower = "flamethrower_snd.wav";
 SOUND * weapons_snd_flamethrower_start = "flamethrower_start_snd.wav";
+SOUND * weapons_snd_flamethrower_end = "flamethrower_end_snd.wav";
 
 VECTOR debugVec;
 
@@ -104,6 +105,13 @@ VECTOR debugVec;
 
 #define WEAPONS_FLAME_DEFAULT_STANCE_POS rel_for_screen(vector(screen_size.x, screen_size.y - 20, 400), camera)
 #define WEAPONS_FLAME_DEFAULT_STANCE_ANG vector(0,0,0)
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define WEAPONS_CELLGUN_DEFAULT_STANCE_POS rel_for_screen(vector(screen_size.x + 20, screen_size.y - 20, 50), camera)
+#define WEAPONS_CELLGUN_DEFAULT_STANCE_ANG vector(180,0,0)
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void weapons_add(int id)
 {
@@ -136,7 +144,6 @@ int weapons_get_current()
     return weapons.current;
 }
 
-
 void weapons_init()
 {
     memset(&weapons, 0, sizeof(weapons_t));
@@ -153,6 +160,17 @@ void weapons_init()
     weapons.weapon[WEAPON_SWORD].attackspeed = 40;
     weapons.weapon[WEAPON_SHOTGUN].attackspeed = 10;
     weapons.weapon[WEAPON_FLAMETHROWER].streaming = true;
+    weapons.weapon[WEAPON_CELLGUN].attackspeed = 10;
+
+
+    weapons.weapon[WEAPON_SWORD].max_ammo        = 0;
+    weapons.weapon[WEAPON_SHOTGUN].max_ammo      = 36;
+    weapons.weapon[WEAPON_CELLGUN].max_ammo      = 150;
+    weapons.weapon[WEAPON_FLAMETHROWER].max_ammo = 300;
+
+    int i;
+    for(i = 1; i <= WEAPONS_COUNT; i++)
+        weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
 
     on_o = weapons_erect_sword;
 }
@@ -305,7 +323,7 @@ void weapons_shoot_sword(VECTOR * _pos, VECTOR * _ang)
     vec_rotate(end, camera.pan);
     vec_add(end, pos);
 
-    dmgsys_set_src(DMGSYS_PLAYER, player, WEAPONS_SHOTGUN_DAMAGE);
+    dmgsys_set_src(DMGSYS_PLAYER, player, 1);
     var dist = c_trace(pos, end, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
     if(HIT_TARGET)
     {
@@ -364,6 +382,11 @@ void weapons_update()
                     weapons.attackprogress = 0;
                     weapons.attackstate = 0;
                 }
+                else
+                {
+                    if(weapons.flamefade == 100)
+                        snd_play(weapons_snd_flamethrower_end, 100, 0);
+                }
                 weapons.attacking = isdown;
             }
         }
@@ -404,7 +427,7 @@ void weapons_update()
                 snd_play(WEAPONS_CURRENT.snd, 100, 0);
             }
 
-            // if(weapons.attacking)
+            if(weapons.attacking)
             {
                 VECTOR pos, ang;
                 var i;
@@ -480,7 +503,6 @@ void weapons_update()
                 if(weapons.flamesound)
                 {
                     weapons.flamefade = clamp(weapons.flamefade - 20 * time_step, 0, 100);
-
                     snd_tune(weapons.flamesound, weapons.flamefade, 0, 0);
 
                     if(weapons.flamefade == 0)
@@ -490,6 +512,14 @@ void weapons_update()
                     }
                 }
             }
+
+            break;
+        case WEAPON_CELLGUN:
+            vec_set(sourcePosePos, WEAPONS_CELLGUN_DEFAULT_STANCE_POS);
+            vec_set(sourcePoseAng, WEAPONS_CELLGUN_DEFAULT_STANCE_ANG);
+
+            vec_set(targetPosePos, sourcePosePos);
+            vec_set(targetPoseAng, sourcePoseAng);
 
             break;
         }
