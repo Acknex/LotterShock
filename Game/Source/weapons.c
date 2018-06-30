@@ -385,7 +385,7 @@ void weapons_update()
                 else
                 {
                     if(weapons.flamefade == 100)
-                        snd_play(weapons_snd_flamethrower_end, 100, 0);
+                        snd_play(weapons_snd_flamethrower_end, 30, 0);
                 }
                 weapons.attacking = isdown;
             }
