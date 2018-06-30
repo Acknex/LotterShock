@@ -1,20 +1,28 @@
 #ifndef MOVEMENT_H
-#define MOVEMENT_H
+	#define MOVEMENT_H
 
-void movement_update();
+	void movement_close();
 
-var playerGetCameraBob();
+	void movement_update();
 
-var playerGetSpeed();
+	var playerGetCameraBob();
 
-ANGLE* playerGetWeaponSway();
+	var playerGetSpeed();
 
-void playerAddSpeed(VECTOR* v);
+	VECTOR* playerGetSpeedVec();
 
-var playerGetLives();
+	void playerAddSpeed(VECTOR* v);
 
-var playerGetHealth();
+	ANGLE* playerGetWeaponSway();
 
-var playerGetMaxHealth();
+	var playerGetLives();
+
+	var playerGetHealth();
+
+	var playerGetMaxHealth();
+	
+	// amount can be negative to reduce health
+	void playerAddHealth(var amount);
+	
 
 #endif // MOVEMENT_H
