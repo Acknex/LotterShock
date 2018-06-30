@@ -23,7 +23,5 @@
 
 void main()
 {
-	level_load("testlevel.wmb");
-	wait(1);
     framework_init();
 }

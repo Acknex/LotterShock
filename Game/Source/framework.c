@@ -40,10 +40,11 @@ PANEL * framework_load_screen =
 //! Initialisiert das Spiel und so
 void framework_init()
 {
+    fps_max = 60;
     video_set(1280, 720, 0, 2); // 1280x720, Window
 
-    framework_load_screen.size_x = screen_size.x / framework_load_screen.size_x;
-    framework_load_screen.size_y = screen_size.y / framework_load_screen.size_y;
+    // framework_load_screen.size_x = screen_size.x / framework_load_screen.size_x;
+    // framework_load_screen.size_y = screen_size.y / framework_load_screen.size_y;
 
     on_frame = framework_update;
 }
@@ -125,7 +126,7 @@ void framework_update()
             level_load(LEVEL_FILE);
 #endif
         }
-        else if(framework.loaderState > 3)
+        if(framework.loaderState >= 6)
         {
             framework_load_screen->alpha -= FRAMEWORK_ALPHA_BLENDSPEED * time_step;
             if(framework_load_screen->alpha <= 0)
@@ -138,7 +139,9 @@ void framework_update()
         break;
 
     case FRAMEWORK_STATE_GAME:
+#ifndef DEBUG_LEVEL
         error("framework: game not implemented yet.");
+#endif
         break;
     }
 
@@ -163,7 +166,9 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_GAME:
+#ifndef DEBUG_LEVEL
             error("framework: credits not implemented yet.");
+#endif
             break;
         }
 
@@ -190,7 +195,9 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_GAME:
+#ifndef DEBUG_LEVEL
             error("framework: game not implemented yet.");
+#endif
             break;
         }
     }
