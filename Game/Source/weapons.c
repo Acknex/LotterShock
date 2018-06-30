@@ -100,7 +100,6 @@ SOUND * weapons_snd_flamethrower = "flamethrower_snd.wav";
 SOUND * weapons_snd_flamethrower_start = "flamethrower_start_snd.wav";
 SOUND * weapons_snd_flamethrower_end = "flamethrower_end_snd.wav";
 
-VECTOR debugVec;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -181,7 +180,7 @@ void weapons_init()
     weapons.weapon[WEAPON_SHOTGUN].attackspeed = 10;
     weapons.weapon[WEAPON_FLAMETHROWER].streaming = true;
     weapons.weapon[WEAPON_CELLGUN].streaming = true;
-    weapons.weapon[WEAPON_CELLGUN].attackspeed = 1;
+    weapons.weapon[WEAPON_CELLGUN].attackspeed = 10.0;
 
     weapons.weapon[WEAPON_SWORD].max_ammo        = 0;
     weapons.weapon[WEAPON_SHOTGUN].max_ammo      = 36;
@@ -605,7 +604,7 @@ void weapons_update()
             vec_set(targetPosePos, sourcePosePos);
             vec_set(targetPoseAng, sourcePoseAng);
 
-            if(weapons.attacking || weapons.attackstate != 0)
+            if((weapons.attacking || weapons.attackstate != 0) && WEAPONS_CURRENT.ammo > 0)
             {
                 if(weapons.spearpower < 100)
                 {
@@ -643,7 +642,6 @@ void weapons_update()
             }
             else
             {
-                snd_pause(weapons.electro);
                 ent_animate(weapons_wp_cellgun, "PowerDown", 100 - weapons.spearpower, 0);
                 weapons.spearpower -= WEAPONS_CURRENT.attackspeed * time_step;
                 if(weapons.spearpower < 0)
@@ -659,8 +657,8 @@ void weapons_update()
             else
             {
                 if(weapons.electro == 0)
-                    weapons.electro = snd_loop(weapons_snd_cellgun_loop, 0, 0);
-                snd_tune(weapons.electro, weapons.spearpower, 0, 0);
+                    weapons.electro = snd_loop(weapons_snd_cellgun_loop, 100, 0);
+//                snd_tune(weapons.electro, weapons.spearpower, 100, 0);
             }
 
             DEBUG_VAR(weapons.spearpower, 16);
@@ -692,7 +690,7 @@ void weapons_update()
 		}
 	
 
-		if(weapons.attacking)
+        if(weapons.attacking && weapons.current != WEAPON_CELLGUN) // whoopsie
 		{
 			weapons.attackprogress += WEAPONS_CURRENT.attackspeed * time_step;
 			if(weapons.attackprogress >= 100)
