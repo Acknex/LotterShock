@@ -33,10 +33,10 @@ int current_keypad_id = 0;
 
 int keys[KEYS_MAX] = {0, 0, 0, 0, 0};
 
-void Keycard();
+void keycard();
 void keycard_update();
 
-void Door();
+void door();
 void doors_update();
 
 void keypad();

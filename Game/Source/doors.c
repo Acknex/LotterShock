@@ -1,9 +1,5 @@
-action Keycard() {
+action keycard() {
 	framework_setup(my, SUBSYSTEM_KEYCARDS);
-}
-
-void keycard_init() {
-	ent_create("keycard.mdl", vector(0,0,0), Keycard);
 }
 
 int keycard_lvl = 0;
@@ -11,13 +7,16 @@ int keycard_lvl = 0;
 void keycard_update() {
 	ENTITY *ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_KEYCARDS) {
-		ptr->pan += time_step;
+		ptr->pan += time_step * 10;
 		
 		var trace = c_trace(ptr.x, player.x, IGNORE_ME);
 		if ((trace > 0) && (trace < 100)) {
 			if (you == player) {
 				
 				if (player) {
+					
+					ent_playsound(player, snd_beep, 100);
+					
 					// add to inventory
 					keys[ptr.KEYCARD_KEY_ID] = 1;
 					
@@ -80,7 +79,7 @@ void keypad_update() {
 // skill1: KEY_ID
 // skill21: DOOR_STATE (0 = NONE, 1 = OPENING, 2 = CLOSING, 3 = WAITING)
 // skill22: MOVEMENT_STAGE
-action Door() {
+action door() {
 	my.DOOR_STATE = 0;
 	my.MOVEMENT_STAGE = 0;
 	framework_setup(my, SUBSYSTEM_DOORS);
