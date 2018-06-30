@@ -43,6 +43,7 @@ typedef int bool;
 #define SUBSYSTEM_ENEMY_SPUTNIK 103
 #define SUBSYSTEM_ENEMY_EYE     104
 #define SUBSYSTEM_ENEMY_GIB     105
+#define SUBSYSTEM_ENEMY_SKULL   106
 
 #define FX_WAITTIME				640
 
