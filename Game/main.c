@@ -53,5 +53,5 @@
 
 void main()
 {
-	framework_init();
+    framework_init();
 }

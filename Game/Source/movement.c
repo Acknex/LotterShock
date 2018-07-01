@@ -390,9 +390,9 @@ void movement_update()
 		playerEntMorphBallActive = 1;
 		playerEntMorphBallPan = player.pan;
 		weaponsCurrentPrev = weapons.current;
-		weapons.current = 0;
-		weapons_disabled = 1;
-		weapons_update();
+        weapons.current = 0;
+        weapons_disabled = 1;
+        weapons_update();
 	}
 	if(playerEntMorphBallActive)
 	{

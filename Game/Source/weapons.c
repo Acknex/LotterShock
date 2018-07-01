@@ -650,19 +650,20 @@ void weapons_update()
 #endif
 
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_UP))
-	weapons_select_next(1);
+        weapons_select_next(1);
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_DOWN))
-	weapons_select_next(-1);
+        weapons_select_next(-1);
 
 	ent_animate(weapons_wp_sword, "Erect", 10 * clamp(weapons.swordLength, 0, 10), ANM_SKIP);
 
 	// ignore dummy weapon for visuals
 	for(i = 1; i < WEAPONS_COUNT; i++)
 	{
-		if(i == weapons.current)
-		weapons.weapon[i].ent.flags2 |= SHOW;
+        if(i == weapons.current) {
+            weapons.weapon[i].ent.flags2 |= SHOW;
+        }
 		else
-		weapons.weapon[i].ent.flags2 &= ~SHOW;
+            weapons.weapon[i].ent.flags2 &= ~SHOW;
 	}
 
 	if(weapons.current > 0)
@@ -981,18 +982,24 @@ weapons_wp_cellgun.skill41 = floatd(weapons.spearpower,100);
 
 }
 
+void weapons_obscure_fix(char * ptr)
+{
+    /* this fixes the loop in weapons_close() which would not execute when the function was not called */
+}
+
 void weapons_close()
 {
+    weapons_obscure_fix("close!");
 	int i;
 	for(i = 1; i < WEAPONS_COUNT; i++)
-	{
-		weapons.weapon[i].ent.flags2 &= ~SHOW;
-	}
+    {
+        weapons.weapon[i].ent.flags2 &= ~SHOW;
+    }
 	weapons.attackprogress = 0; // no more head swaying
 	on_o = NULL;
 	if(weapons.electro != 0)
 	{
 		snd_stop(weapons.electro);
 		weapons.electro = 0;
-	}
+    }
 }

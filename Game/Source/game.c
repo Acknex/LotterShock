@@ -8,6 +8,7 @@
 #include "eye.h"
 #include "projectiles.h"
 #include "gib.h"
+#include "hud.h"
 
 #include <windows.h>
 
@@ -52,7 +53,8 @@ void game_update()
 #endif
 
     movement_update();
-    if(!weapons_disabled) weapons_update();
+    if(!weapons_disabled)
+        weapons_update();
     projectiles_update();
     collectibles_update();
     keypad_update();
