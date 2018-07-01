@@ -296,7 +296,7 @@ void sputnik_spawn_startup()
 		ENTITY* ptr = ent_create("sputnik.mdl", vector(5920,-6050,250), Sputnik);
 		wait(-10);
 	}
-	ENTITY* ptr = ent_create("sputnik.mdl", vector(5900,-6050,250), Sputnik);
+	ENTITY* ptr = ent_create("sputnik.mdl", vector(6500,-6050,250), Sputnik);
 	
 }
 #endif
