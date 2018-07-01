@@ -25,6 +25,8 @@ ANGLE playerWeaponSway;
 ANGLE playerAngle;
 var playerHealth = 100;
 var playerHealthMax = 100;
+var playerHealthOld = 100;
+var playerHealthKnockbackEffect = 100;
 var playerLives = 3;
 var playerCrouching = 0;
 var playerCrouchPerc = 0;
@@ -295,14 +297,17 @@ void playerEntMorphBallDo()
 	}
 }
 
+
 var playerLightRange = 0;
 var playerLightDuration = 0;
 var playerLightDurationMax = 2;
 void playerSetLight(COLOR* color, var lightRange, var duration)
 {
 	if(!player) return;
-	vec_set(player.blue,color);
-	playerLightRange = player.lightrange = lightRange;
+	ENTITY* entMuzzleFlashHelper = (ENTITY*)player.skill2;
+	if(!entMuzzleFlashHelper) player.skill2 = entMuzzleFlashHelper = ent_create(NULL,player.x,NULL);
+	vec_set(entMuzzleFlashHelper.blue,color);
+	playerLightRange = entMuzzleFlashHelper.lightrange = lightRange;
 	playerLightDurationMax = playerLightDuration = duration;
 }
 
@@ -313,6 +318,20 @@ void movement_update()
 		playerHealth = 0;
 		// draw_quad(NULL,vector(0,0,0),NULL,vector(screen_size.x+1,screen_size.y+1,0),NULL,COLOR_RED,50,0);
 		pp_desync(40);
+		return;
+	}
+	if(key_t)
+	{
+		camera.pan += -mouse_force.x*10*time_step;
+		camera.pan %= 360;
+		camera.tilt = clamp(camera.tilt+mouse_force.y*10*time_step,-85,85);
+		player.pan = camera.pan;
+		VECTOR temp;
+		vec_set(temp,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
+		vec_scale(temp,80*time_step);
+		vec_rotate(temp,camera.pan);
+		vec_add(player.x,temp);
+		vec_add(camera.x,temp);
 		return;
 	}
 	playerChromaticAbbTime = maxv(0, playerChromaticAbbTime - time_step/16);
@@ -328,10 +347,9 @@ void movement_update()
 		player.group = GROUP_PLAYER;
 		playerHealth = playerHealthMax;
 	}
-	player.lightrange = playerLightRange*(playerLightDuration/playerLightDurationMax);
-	playerLightDuration = maxv(playerLightDuration-time_step,0);
-	//vec_set(player.blue,vector(20,150,255));
-	//player.lightrange = 3000;
+	vec_set(player.blue,vector(230,245,255));
+	player.lightrange = 1000;
+	sun_light = 0;
 	
 	if(player.z < -3000)
 	{
@@ -382,7 +400,7 @@ void movement_update()
 	
 	camera.tilt = clamp(camera.tilt+mouse_force.y*10*time_step,-85,85);
 	player.pan = camera.pan;
-	move_min_z = 0.5;
+	move_min_z = 0.75;
 	disable_z_glide = 1;
 	move_friction = 0;
 	ang_diff(temp,camera.pan,playerPanSmoothed);
@@ -557,6 +575,27 @@ void movement_update()
 		ang_rotate(camera.pan, vector(recoilSide*25*kickbackFac,30*kickbackFac,-5*recoilSide*kickbackFac));
 	}
 	camera.tilt += playerSlidePerc*0.1;
+
+	if(playerHealthOld != playerHealth)
+	{
+		playerHealthOld = playerHealth;
+		if(playerHealthOld > playerHealth) playerHealthKnockbackEffect = 0;
+	}
+	if(playerHealthKnockbackEffect < 100)
+	{
+		playerHealthKnockbackEffect = minv(playerHealthKnockbackEffect+6*time_step,100);
+		var kickbackFac = weaponGetKickbackFac(playerHealthKnockbackEffect, 50)*0.5;
+		var recoilSide = sinv(total_ticks*7);
+		ang_rotate(camera.pan, vector(recoilSide*25*kickbackFac,30*kickbackFac,-15*recoilSide*kickbackFac));
+	}
+
+	playerLightDuration = maxv(playerLightDuration-time_step,0);
+	ENTITY* entMuzzleFlashHelper = (ENTITY*)player.skill2;
+	if(entMuzzleFlashHelper)
+	{
+		vec_set(entMuzzleFlashHelper.x,camera.x);
+		entMuzzleFlashHelper.lightrange = playerLightRange*(playerLightDuration/playerLightDurationMax);
+	}
 }
 
 var playerGetCameraBob()

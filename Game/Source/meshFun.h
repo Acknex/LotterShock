@@ -28,24 +28,27 @@ var meshFunGetDistanceToRegion(VECTOR* vpos, STRING* str_region, int regionNum, 
 
 TEXT *meshFunRegionNames_txt =
 {
-	string("ice");
+	string("ice","red");
 }
+COLOR meshFunRegionColors[2];
 
 
 void meshFunDoForEnt(ENTITY* ent)
 {
-	printf("meshFunDoForEnt: ent: %s",_chr(str_for_entfile(NULL,ent)));
+	ent_clone(ent);
+	//printf("meshFunDoForEnt: ent: %s",_chr(str_for_entfile(NULL,ent)));
 	D3DVERTEX* vbuffer;
 	short* ibuffer;
-	if(!ent_buffers(ent,0,0,&vbuffer,&ibuffer,NULL)) return;
+	if(!ent_buffers(ent,0,0,&vbuffer,&ibuffer,NULL)) { error("error"); return; }
 	int numVertices = ent_status(ent,1);
 	int i,j,regionNum,numIterations = 0;
 	for(i = 0; i < numVertices; i++)
 	{
 		D3DVERTEX* vert = &vbuffer[i];
-		VECTOR vpos,color;
+		VECTOR vpos;
+		COLOR color;
 		vec_fill(color,128);
-		vec_set(vpos,vector(vert.x,vert.y,vert.z));
+		vec_set(vpos,vector(vert.x,vert.z,vert.y));
 		vec_for_ent(vpos,ent);
 		for(j = 0; j < meshFunRegionNames_txt.strings; j++)
 		{
@@ -62,16 +65,26 @@ void meshFunDoForEnt(ENTITY* ent)
 					break;
 				}
 				minDist = minv(minDist,dist);
+				regionNum++;
 			}
-			
+			if(minDist < 2048)
+			{
+				float lerpFac = 1.0-(float)minDist/2048.0;
+				vec_lerp(color,color,meshFunRegionColors[j],lerpFac);
+			}
 		}
+		vert.x3 = (color.red-128)/128.0;
+		vert.y3 = (color.green-128)/128.0;
+		vert.z3 = (color.blue-128)/128.0;
+		
 		numIterations++;
 	}
 }
 
 void meshFunDo()
 {
-	return;
+	vec_set(meshFunRegionColors[0],vector(255,100,40));
+	vec_set(meshFunRegionColors[1],vector(5,32,255));
 	ENTITY* ent;
 	for(ent = ent_next(NULL); ent; ent = ent_next(ent))
 	{
