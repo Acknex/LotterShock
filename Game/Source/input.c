@@ -257,8 +257,8 @@ void input_init()
     input[INPUT_LEFT].positiveValue = false;
 
     // TODO: Controller + Mouse Sensitivity
-    input[INPUT_LOOK_HORIZONTAL].sensitivity = 2.0;
-    input[INPUT_LOOK_VERTICAL].sensitivity   = 2.0;
+    input[INPUT_LOOK_HORIZONTAL].sensitivity = 1.0;
+    input[INPUT_LOOK_VERTICAL].sensitivity   = 1.0;
 
     strcpy(input[INPUT_UP].cinfo,"UP");
     strcpy(input[INPUT_DOWN].cinfo,"DOWN");
@@ -312,8 +312,8 @@ void input_init()
     input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_GAMEPAD, 8); //! left shoulder
 
 
-    input_add_axis(INPUT_LOOK_HORIZONTAL, &mouse_force.x, 3.0, 0.0);
-    input_add_axis(INPUT_LOOK_VERTICAL,   &mouse_force.y, 3.0, 0.0);
+    input_add_axis(INPUT_LOOK_HORIZONTAL, &mouse_force.x, 1.0, 0.0);
+    input_add_axis(INPUT_LOOK_VERTICAL,   &mouse_force.y, 1.0, 0.0);
 
     input_add_axis(INPUT_LOOK_HORIZONTAL, &input_states.rightStick.x, 1.0 / 255.0, 0.3);
     input_add_axis(INPUT_LOOK_VERTICAL,   &input_states.rightStick.y, 1.0 / 255.0, 0.3);
@@ -395,6 +395,8 @@ void input_update()
                 pinput->value += val;
             }
         }
+
+        pinput->value *= pinput->sensitivity;
 
         if(pinput->positiveValue)
         {
