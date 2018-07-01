@@ -222,12 +222,13 @@ void input_init()
     strcpy(input[INPUT_WEAPON_UP].cinfo,"WEAPON_UP");
     strcpy(input[INPUT_WEAPON_DOWN].cinfo,"WEAPON_DOWN");
     strcpy(input[INPUT_NAVBACK].cinfo,"NAVBACK");
-	 strcpy(input[INPUT_CROUCH].cinfo,"CROUCH");
+    strcpy(input[INPUT_CROUCH].cinfo,"CROUCH");
     strcpy(input[INPUT_MORPHBALL].cinfo,"ENTMORPHBALL");
 
     //////////////////////////////
     // configurable stuff
 
+    // Keyboard Mapping
     input_add(INPUT_UP,         INPUT_TYPE_KEYBOARD, key_for_str("w") );
     input_add(INPUT_UP,         INPUT_TYPE_KEYBOARD, 72);
     input_add(INPUT_DOWN,       INPUT_TYPE_KEYBOARD, key_for_str("s"));
@@ -238,11 +239,28 @@ void input_init()
     input_add(INPUT_ATTACK,     INPUT_TYPE_KEYBOARD, 280);
     input_add(INPUT_BLOCK,      INPUT_TYPE_KEYBOARD, 281);
     input_add(INPUT_NAVBACK,    INPUT_TYPE_KEYBOARD, key_for_str("esc"));
-    input_add(INPUT_CROUCH,    INPUT_TYPE_KEYBOARD, key_for_str("ctrl"));
-    input_add(INPUT_MORPHBALL,    INPUT_TYPE_KEYBOARD, key_for_str("shiftl"));
+    input_add(INPUT_CROUCH,     INPUT_TYPE_KEYBOARD, key_for_str("ctrl"));
+    input_add(INPUT_MORPHBALL,  INPUT_TYPE_KEYBOARD, key_for_str("shiftl"));
 
     input_add(INPUT_WEAPON_UP,  INPUT_TYPE_KEYBOARD, key_for_str("q"));  // mickey.z
     input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_KEYBOARD, key_for_str("e"));
+
+    // Controller Mapping:
+    input_add(INPUT_UP,         INPUT_TYPE_GAMEPAD, 0  ); //! dpad up
+    input_add(INPUT_DOWN,       INPUT_TYPE_GAMEPAD, 1  ); //! dpad down
+    input_add(INPUT_LEFT,       INPUT_TYPE_GAMEPAD, 2  ); //! dpad left
+    input_add(INPUT_RIGHT,      INPUT_TYPE_GAMEPAD, 3  ); //! dpad right
+    input_add(INPUT_USE,        INPUT_TYPE_GAMEPAD, 14 ); //! X
+    input_add(INPUT_ATTACK,     INPUT_TYPE_GAMEPAD, 13 ); //! B
+    input_add(INPUT_BLOCK,      INPUT_TYPE_GAMEPAD, 15 ); //! Y
+    input_add(INPUT_JUMP,       INPUT_TYPE_GAMEPAD, 12 ); //! A
+    input_add(INPUT_NAVBACK,    INPUT_TYPE_GAMEPAD, 4  ); //! start
+    input_add(INPUT_NAVBACK,    INPUT_TYPE_GAMEPAD, 5  ); //! select
+    input_add(INPUT_CROUCH,     INPUT_TYPE_GAMEPAD, 6  ); //! left stick
+    input_add(INPUT_MORPHBALL,  INPUT_TYPE_GAMEPAD, 7  ); //! right stick
+
+    input_add(INPUT_WEAPON_UP,  INPUT_TYPE_GAMEPAD, 9); //! right shoulder
+    input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_GAMEPAD, 8); //! left shoulder
 
     int slot = ackXInputGetGamepadNum();
     if(slot >= 0)
