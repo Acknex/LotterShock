@@ -72,9 +72,7 @@ void EYE_Update()
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENEMY_EYE)
 	{
 		if (player)
-		{
-
-    		DEBUG_VAR(ptr->EYE_STATE, 50);
+        {
 			ptr->EYE_ZOFFSET = 0;
 
 			/*it's broken and I don't know.*/

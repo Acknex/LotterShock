@@ -265,9 +265,6 @@ void playerEntMorphBallDo()
 		}
 	}
 
-	DEBUG_VAR(player.min_z,500);
-	DEBUG_VAR(player.max_z,520);
-
 	///////////////////////
 	// camera
 

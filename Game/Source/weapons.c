@@ -856,7 +856,6 @@ ang_to_matrix(angle,rotateMatrix);
 			//trident_sphere_mat.skill2 = floatv(temp.z);
 			//trident_sphere_mat.skill3 = floatv(temp.y);
 weapons_wp_cellgun.skill41 = floatd(weapons.spearpower,100);
-DEBUG_VAR(weapons.spearpower,500);
 
 			if((weapons.attacking || weapons.attackstate != 0) && WEAPONS_CURRENT.ammo > 0)
 			{
