@@ -641,6 +641,17 @@ void playerAddSpeed(VECTOR* v)
 	player.PLAYER_SPEED_Y += v.y;
 }
 
+#ifdef DEBUG_CHEATHP
+void playerCheatHp_startup()
+{
+	while (1)
+	{
+		playerHealth = 999;
+		wait(1);
+	}
+}
+#endif
+
 //////////////////////////////
 // movement.c
 //////////////////////////////

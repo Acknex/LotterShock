@@ -391,13 +391,13 @@ void SKULL__shootEffect(PARTICLE *p)
 
 void spawnskull()
 {
-	/*
+	
 	wait(-1);
 	//while(1)
 	{
-		//ENTITY* ptr = ent_create("whiskas.mdl", vector(5800,-6050,250), Skull); // biodome
+		ENTITY* ptr = ent_create("whiskas.mdl", vector(5800,-6050,250), Skull); // biodome
 		ENTITY* ptr = ent_create("whiskas.mdl", vector(1288,0,250), Skull);
 		wait(-30);
 	}
-	*/
+	
 }
