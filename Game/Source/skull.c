@@ -43,14 +43,17 @@ action Skull()
 	set(my, SHADOW);
 	SKULL__toFloor(me);
 	c_setminmax(me);
+	my->material = matSkull;
 }
 
 void SKULL_GlobalInit()
 {
 }
 
+void spawnskull();
 void SKULL_Init()
 {
+	spawnskull();
 }
 
 void SKULL_Update()
@@ -63,11 +66,12 @@ void SKULL_Update()
     		DEBUG_VAR(ptr->SKL_STATE, 50);
 			if (ptr->DAMAGE_HIT > 0)
 			{
+				ptr->roll = 0;
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
 				ptr->event = NULL;
 				ptr->SKL_STATE = SKL_STATE_HIT;
-				SPLATTER_splat(&ptr->x, vector(0,0.4,0.8));
+				SPLATTER_splat(&ptr->x, vector(0.8,0.0,0.2));
 				set(ptr, TRANSLUCENT);
 			}
 			
@@ -123,10 +127,27 @@ void SKULL_Update()
 				}
 
 			}	
-			
+
 			if (ptr->SKL_STATE != SKL_STATE_DIE && ptr->SKL_STATE != SKL_STATE_DEAD)
 			{
 				SKULL__toFloor(ptr);
+				int vertices[] = {73, 200, 67, 201, 68};
+				CONTACT contact;
+				int i;
+				for(i = 0; i < 5; i++)
+				{
+					ent_getvertex(ptr, &contact, vertices[i]);
+					vec_scale(contact.x, ptr->scale_x);
+					vec_rotate(contact.x, ptr->pan);
+					vec_add(contact.x, ptr->x);
+					
+					VECTOR velocity;
+					vec_set(velocity, nullvector);
+					velocity.x = -20 - random(20);
+					velocity.z = 20 + random(30);
+					vec_rotate(velocity, ptr->pan);
+					effect(SKULL__fireEffect, 1, contact.x, velocity);
+				}
 			}
 		}
 	
@@ -138,7 +159,7 @@ var SKULL__toFloor(ENTITY* ptr)
 	VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 10);
 	VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
 	me = ptr;
-	var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON | USE_BOX;
+	var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;// | USE_BOX;
 	c_trace(from, to, mode);
 	if(HIT_TARGET)
 		ptr->z = hit.z + 150 + ptr->SKL_ZOFFSET;
@@ -294,7 +315,30 @@ void SKULL__retreat(ENTITY* ptr)
 	}
 }
 
-void spawnskull_startup()
+void SKULL__fireParticle(PARTICLE *p)
+{
+	p.size -= time_step;
+	p.alpha -= p.skill_a*time_step;
+	if(p.alpha <= 0) p.lifespan = 0;
+}
+
+void SKULL__fireEffect(PARTICLE *p)
+{
+	set(p, MOVE | BRIGHT | TRANSLUCENT);
+	p.red = 255;
+	p.green = 0;
+	p.blue = 0;
+	p.alpha = 100;
+	p.lifespan = 100;
+	p.size = 50;
+	p.vel_z = 20 + random(30);
+	p.gravity = -20.0;
+	p.skill_a = 20.0; // fade factor
+	p.event = SKULL__fireParticle;
+}
+
+
+void spawnskull()
 {
 	
 	wait(-5);

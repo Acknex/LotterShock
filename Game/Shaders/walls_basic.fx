@@ -17,13 +17,15 @@ struct out_ps // Output to the pixelshader fragment
 	float2 uv1 : TEXCOORD1;
 	float3 worldPos : TEXCOORD2;
 	float3 normal : TEXCOORD3;
+	float3 vcolor : TEXCOORD4;
 };
 
 out_ps vs(
 	float4 inPos : POSITION,
 	float3 inNormal : NORMAL
 	float2 inTexCoord0 : TEXCOORD0
-	float2 inTexCoord1 : TEXCOORD1)
+	float2 inTexCoord1 : TEXCOORD1,
+	float3 inTexCoord2 : TEXCOORD2)
 {
 	out_ps Out;
 	
@@ -32,6 +34,7 @@ out_ps vs(
 	Out.uv1 = inTexCoord1;
 	Out.worldPos = mul(matWorld, float4(inPos.xyz, 1.0));
 	Out.normal = mul(matWorld, float4(inNormal, 1.0));
+	Out.vcolor = inTexCoord2;
 	
 	return Out;
 }
@@ -58,7 +61,7 @@ float4 ps(out_ps In): COLOR
 	}
 	
 	color.rgb *= light;
-	
+	color.rgb *= In.vcolor/128.0;
 	float fogAttenuation = max(viewDistance - vecFog.x, 0.0) * vecFog.z;
 	
 	color = lerp(color, vecFogColor, fogAttenuation);

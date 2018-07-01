@@ -2,8 +2,6 @@ action keycard() {
 	framework_setup(my, SUBSYSTEM_KEYCARDS);
 }
 
-int keycard_lvl = 0;
-
 void keycard_update() {
 	ENTITY *ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_KEYCARDS) {
@@ -78,10 +76,12 @@ void keypad_update() {
 
 // skill1: KEY_ID
 // skill21: DOOR_STATE (0 = NONE, 1 = OPENING, 2 = CLOSING, 3 = WAITING)
-// skill22: MOVEMENT_STAGE
+// skill22: WAIT_TIME
+// skill23: DOOR_Z_START
 action door() {
 	my.DOOR_STATE = 0;
-	my.MOVEMENT_STAGE = 0;
+	my.DOOR_Z_START = my.z;
+	my.WAIT_TIME = 50;
 	framework_setup(my, SUBSYSTEM_DOORS);
 }
 
@@ -97,7 +97,6 @@ void doors_update() {
 						if (keys[ptr.DOOR_REQUIRED_KEY_ID] == 1) {
 							ent_playsound(ptr, snd_gate, 100);
 							ptr.DOOR_STATE = 1;
-							ptr.MOVEMENT_STAGE = 400;
 						} else {
 							ent_playsound(ptr, snd_keypad_no, 100);
 						}
@@ -105,34 +104,33 @@ void doors_update() {
 				}
 			break;
 			case 1:
-				if (ptr.MOVEMENT_STAGE > 0) {
-					ptr.MOVEMENT_STAGE -=10 * time_step;
+				if (ptr.z < ptr.DOOR_Z_START + DOOR_Z_MAX) {
 					ptr.z +=10 * time_step;
-					
-					if (ptr.MOVEMENT_STAGE <= 0) {
+	
+					if (ptr.z >= ptr.DOOR_Z_START + DOOR_Z_MAX) {
 						ptr.DOOR_STATE = 3;
-						ptr.MOVEMENT_STAGE = 50;
+						ptr.z = ptr.DOOR_Z_START + DOOR_Z_MAX;
+						ptr.WAIT_TIME = 50;
 					}
 				}
 			break;
 			case 2:
-				if (ptr.MOVEMENT_STAGE > 0) {
-					ptr.MOVEMENT_STAGE -=10 * time_step;
+				if (ptr.z > ptr.DOOR_Z_START) {
 					ptr.z -=10 * time_step;
 					
-					if (ptr.MOVEMENT_STAGE <= 0) {
+					if (ptr.z <= ptr.DOOR_Z_START) {
 						ptr.DOOR_STATE = 0;
-						ptr.MOVEMENT_STAGE = 0;
+						ptr.DOOR_Z_START = ptr.DOOR_Z_START;
 					}
 				}			
 			break;
 			case 3:
-				if (ptr.MOVEMENT_STAGE > 0) {
-					ptr.MOVEMENT_STAGE -=1 * time_step;
+				if (ptr.WAIT_TIME > 0) {
+					ptr.WAIT_TIME -=1 * time_step;
 					
-					if (ptr.MOVEMENT_STAGE <= 0) {
+					if (ptr.WAIT_TIME <= 0) {
 						ptr.DOOR_STATE = 2;
-						ptr.MOVEMENT_STAGE = 400;
+						ptr.WAIT_TIME = 400;
 					}
 				}
 			break;

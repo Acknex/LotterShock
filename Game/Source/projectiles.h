@@ -105,7 +105,7 @@
 		set(p,BRIGHT);
 		//set(p,BRIGHT);
 		p.alpha = 200;
-		vec_set(p.blue,vector(255,100,10));
+		vec_set(p.blue,vector(255,230,10));
 		p.size = 90+random(8);
 		p.lifespan = 0.01;
 		p.event = NULL;

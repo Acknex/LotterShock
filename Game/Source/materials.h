@@ -15,6 +15,16 @@ MATERIAL *matTree =
 	effect = "Shaders/tree.fx";
 }
 
+MATERIAL *matIce =
+{
+	effect = "Shaders/ice.fx";
+}
+
+MATERIAL *matSkull =
+{
+	effect = "Shaders/enemy_skull.fx";
+}
+
 MATERIAL *matWeaponBasic =
 {
 	effect = "Shaders/weapon_basic.fx";
@@ -23,6 +33,11 @@ MATERIAL *matWeaponBasic =
 MATERIAL *matFlesh =
 {
 	effect = "Shaders/flesh_basic.fx";
+}
+
+MATERIAL *matIce =
+{
+	effect = "Shaders/ice.fx";
 }
 
 MATERIAL *matDecalBlood =

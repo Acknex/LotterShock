@@ -23,3 +23,22 @@ void PARTICLE__explode_init(PARTICLE* p)
 	p->event = PARTICLE__explode_fade;
 }
 
+void PARTICLE_laser(VECTOR* pos, VECTOR* dist)
+{
+	effect(PARTICLE__laser_init, 1, pos, dist);	
+}
+
+void PARTICLE__laser_init(PARTICLE* p)
+{
+	vec_set(&p->blue,vector(0,0,255));
+	set(p, STREAK);
+	p->lifespan = 20;
+	p->alpha = 100;
+	p->size = 10;
+	p->event = PARTICLE__explode_fade;
+}
+
+void PARTICLE__laser_fade(PARTICLE* p)
+{
+	p->alpha = maxv(p->alpha - 5* time_step, 0);
+}
