@@ -56,7 +56,7 @@ in float3 InPos: TEXCOORD2): COLOR
 	float noise = tex2D(ColorMapSampler,InTex+float2(time,time*0.3));
 	noise += tex2D(ColorMapSampler,InTex+float2(time*0.17,time*0.57));
 	noise = noise*0.5;
-	float4 tint =float4(0.1,1,1,1);
+	float4 tint =float4(0.0,1.1,0.65,1);
 	float4 sky = texCUBE(skyMapSampler,InPos);
 	float borderFac = (1+InNormal.x);
 	float4 Color = tint*borderFac*borderFac*2*noise+sky;
