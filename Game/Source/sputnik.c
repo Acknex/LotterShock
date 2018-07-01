@@ -67,6 +67,7 @@ action Sputnik()
 	vec_scale(&my->scale_x, 1.2);
 	set(my, SHADOW);
 	c_setminmax(me);
+	my->min_z += 30;
 }
 
 void SPUTNIK_GlobalInit()
@@ -157,8 +158,8 @@ void SPUTNIK_Update()
 			//var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON | USE_BOX;
 			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;
 			c_trace(from, to, mode);
-			if(HIT_TARGET)
-				ptr->z = hit.z - ptr->min_z;
+			if (HIT_TARGET)
+				ptr->z = hit.z - ptr->min_z + 30;
 		}
 		
 		if (ptr->HEALTH <= 0)
