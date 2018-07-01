@@ -12,6 +12,7 @@
 #define SKL_COUNTER skill22
 #define SKL_STATE skill23
 #define SKL_RUNSPEEDCUR skill24
+#define SKL_COUNTER2 skill28
 #define SKL_HITDIR skill30
 #define SK_LASTPOS skill32
 //#define SK_LASTPOS skill33
@@ -27,6 +28,8 @@
 #define SKL_STATE_DEAD 5
 #define SKL_STATE_HIT 6
 #define SKL_STATE_RETREAT 7
+
+SOUND* skull_snd_shoot = "skull_shoot.wav";
 
 // uses: SKL_RUNSPEED, SKL_TURNSPEED, SKL_ATTACKDIST, SKL_ACTIVEDIST
 action Skull()
@@ -227,7 +230,11 @@ void SKULL__run(ENTITY* ptr)
 	/* transitions */
 	if (SCAN_IsPlayerInSight(ptr, ptr->SKL_ATTACKDIST, 75))
 	{
+		ptr->SKL_COUNTER = 0;
+		ptr->SKL_COUNTER2 = 0;
 		ptr->SKL_STATE = SKL_STATE_ATTACK;
+		playerAddHealth(-20-random(5));
+		snd_play(skull_snd_shoot, 100, 0);
 	}
 	else if (!SCAN_IsPlayerInSight(ptr, ptr->SKL_ATTACKDIST, 75) && SCAN_IsPlayerBehind(ptr, 1200))
 	{
@@ -242,9 +249,32 @@ void SKULL__run(ENTITY* ptr)
 
 void SKULL__attack(ENTITY* ptr)
 {
+	ptr->SKL_COUNTER += time_step/16;
+	if(ptr->SKL_COUNTER > 0.05)
+	{
+		int i;
+		for(i = 0; i < 5; i++)
+		{	
+			VECTOR velocity;
+			vec_set(velocity, &player->x);
+			vec_sub(velocity, &ptr->x);
+			velocity.z = 5;
+			vec_normalize(velocity, 80);
+			 vec_rotate(velocity, vector(random(10)-5, random(10)-5, 0));
+			effect(SKULL__shootEffect, 1, &ptr->x, velocity);
+		}
+		ptr->SKL_COUNTER2 += 1;
+		ptr->SKL_COUNTER -= 0.05;
+		if(ptr->SKL_COUNTER2 > 5)
+		{
+			ptr->SKL_STATE = SKL_STATE_RETREAT;	
+		}
+	}
+	
+	/*
 	ptr->roll = minv(ptr->roll + 60*time_step, 360);
 
-	/* transitions */
+	// transitions
 	if (ptr->roll >= 360)
 	{
 		ptr->roll = 0;
@@ -253,6 +283,7 @@ void SKULL__attack(ENTITY* ptr)
 
 		ptr->SKL_STATE = SKL_STATE_RETREAT;	
 	}
+	*/
 	
 }
 
@@ -337,14 +368,35 @@ void SKULL__fireEffect(PARTICLE *p)
 	p.event = SKULL__fireParticle;
 }
 
+void SKULL__shootParticle(PARTICLE *p)
+{
+	p.size += 50*time_step;
+	p.alpha -= p.skill_a*time_step;
+	if(p.alpha <= 0) p.lifespan = 0;
+}
+
+void SKULL__shootEffect(PARTICLE *p)
+{
+	set(p, MOVE | BRIGHT | TRANSLUCENT);
+	p.red = 255;
+	p.green = 0;
+	p.blue = 0;
+	p.alpha = 100;
+	p.lifespan = 100;
+	p.size = 100;
+	p.skill_a = 20.0; // fade factor
+	p.event = SKULL__fireParticle;
+}
+
 
 void spawnskull()
 {
 	
-	wait(-5);
+	wait(-1);
 	//while(1)
 	{
-		ENTITY* ptr = ent_create("whiskas.mdl", vector(5800,-6050,250), Skull);
+		//ENTITY* ptr = ent_create("whiskas.mdl", vector(5800,-6050,250), Skull); // biodome
+		ENTITY* ptr = ent_create("whiskas.mdl", vector(1288,0,250), Skull);
 		wait(-30);
 	}
 }
