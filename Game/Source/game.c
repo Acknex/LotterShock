@@ -70,8 +70,9 @@ void game_update()
 
 void game_close()
 {
-movement_close();
-projectiles_close();
+	pp_desync(0);
+	movement_close();
+	projectiles_close();
     hud_hide();
     weapons_close();
     mouse_pointer = 1;

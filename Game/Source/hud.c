@@ -16,9 +16,6 @@
 BMAP * hud_bar_background_bmap = "hud_bar_background.png";
 
 BMAP * hud_health_label_bmap = "health_label.png";
-BMAP * hud_healthbar_bmap = "healthbar.png";
-
-//BMAP * hud_ammo_label_bmap = "ammo_label.png";
 BMAP * hud_ammobar_bmap = "ammobar.png";
 
 FONT *HUD_font = "HUD_font.png";
@@ -53,20 +50,6 @@ PANEL* HUD_HP_label =
 	flags = TRANSLUCENT;
 	layer = 3;
 }
-/*
-PANEL* HUD_HP_bars =
-{
-	bmap = hud_bar_background_bmap;
-	flags = TRANSLUCENT | LIGHT;
-	layer = 2;
-}
-
-PANEL* HUD_Ammo_label =
-{
-	bmap = hud_ammo_label_bmap;
-	flags = TRANSLUCENT;
-	layer = 2;
-}*/
 PANEL* HUD_Ammo_bars =
 {
 	bmap = hud_bar_background_bmap;
@@ -121,13 +104,6 @@ void hud_init()
 	hud_weapon_icon[WEAPON_SHOTGUN-1] = pan_create("bmap = label_shotgun.png",2);
 	hud_weapon_icon[WEAPON_CELLGUN-1] = pan_create("bmap = label_cellgun.png",2);
 	hud_weapon_icon[WEAPON_FLAMETHROWER-1] = pan_create("bmap = label_flamethrower.png",2);
-	
-	int i;
-	for(i=0; i<4; ++i)
-	{
-		hud_weapon_icon[i].scale_x = 0.8;
-		hud_weapon_icon[i].scale_y = 0.8;
-	}
 }
 
 
@@ -139,15 +115,6 @@ var hud_sizex(PANEL *p)
 var hud_sizey(PANEL *p)
 {
 	return p->size_y*p->scale_y;
-}
-
-void hud_place_label(PANEL *label, var offsetY)
-{
-	label->pos_x = HUD_BORDER_PADDING;
-	label->pos_y = screen_size.y - label.size_y*label.scale_y - HUD_BORDER_PADDING - offsetY;
-	label->alpha = HUD_BARS_MAX_ALPHA;
-	
-	set(label, SHOW);
 }
 
 void hud_place_bar(PANEL *bar, var offsetX) 
@@ -179,8 +146,8 @@ void hud_update_bar(PANEL *bar, BMAP *source, var current_value, var max_value)
 void hud_show()
 {
 	
-	HUD_Head->pos_x = (screen_size.x- HUD_Head->size_x*HUD_Head->scale_x)/2;
-	HUD_Head->pos_y = screen_size.y - HUD_Head->size_y*HUD_Head->scale_y - HUD_BORDER_PADDING;
+	HUD_Head->pos_x = (screen_size.x- hud_sizex(HUD_Head))/2;
+	HUD_Head->pos_y = screen_size.y - hud_sizey(HUD_Head) - HUD_BORDER_PADDING;
 	//set(HUD_Head, SHOW);
 	
 	var SEGMENT_DISTANCE = 20;
@@ -224,14 +191,14 @@ void hud_show()
 		hud_weapon_icon[i]->scale_x = scale_right;
 		hud_weapon_icon[i]->scale_y = scale_right;
 		
-	 	hud_weapon_icon[i]->pos_x = center_rightElement - hud_weapon_icon[i].size_x*hud_weapon_icon[i].scale_x/2;
+	 	hud_weapon_icon[i]->pos_x = center_rightElement - hud_sizex(hud_weapon_icon[i])/2;
 	 	hud_weapon_icon[i]->pos_y = center_all - height_right*scale_right/2;
 	}
 	
 	HUD_Ammo_bars->scale_x = scale_right*1.5;
 	HUD_Ammo_bars->scale_y = scale_right*1.3;
 	
-	hud_place_bar(HUD_Ammo_bars, center_rightElement - HUD_Ammo_bars.size_x*HUD_Ammo_bars.scale_x/2);
+	hud_place_bar(HUD_Ammo_bars, center_rightElement - hud_sizex(HUD_Ammo_bars)/2);
 	HUD_Ammo_bars->pos_y = center_all + height_right/2 - hud_sizey(HUD_Ammo_bars);
 	
 	
@@ -245,7 +212,7 @@ void hud_show()
 	
 	
 	
-	HUD_HP_text->pos_x = cc_right - HUD_HP_text->size_x*HUD_HP_text->scale_x/2;
+	HUD_HP_text->pos_x = cc_right - hud_sizex(HUD_HP_text)/2;
 	HUD_HP_text->pos_y = center_all - hud_sizey(HUD_HP_text)/2;
 	set(HUD_HP_text, SHOW);
 	
@@ -269,13 +236,13 @@ void hud_show()
 	set(HUD_background, SHOW);
 	
 	
-	HUD_crosshair->pos_x = (screen_size.x - HUD_crosshair.size_x*HUD_crosshair.scale_x) /2;
-	HUD_crosshair->pos_y = (screen_size.y - HUD_crosshair.size_y*HUD_crosshair.scale_x) /2;
+	HUD_crosshair->pos_x = (screen_size.x - hud_sizex(HUD_crosshair)) /2;
+	HUD_crosshair->pos_y = (screen_size.y - hud_sizey(HUD_crosshair)) /2;
 	HUD_crosshair->alpha = 10;
 	set(HUD_crosshair, SHOW);
 	
-	HUD_Ammo_infotext->pos_x = HUD_Ammo_bars->pos_x + HUD_Ammo_bars->size_x*HUD_Ammo_bars->scale_x/2;
-	HUD_Ammo_infotext->pos_y = HUD_Ammo_bars->pos_y + HUD_Ammo_bars->size_y*HUD_Ammo_bars->scale_y/2;
+	HUD_Ammo_infotext->pos_x = HUD_Ammo_bars->pos_x + hud_sizex(HUD_Ammo_bars)/2;
+	HUD_Ammo_infotext->pos_y = HUD_Ammo_bars->pos_y + hud_sizey(HUD_Ammo_bars)/2;
 }
 
 void hud_hide()
@@ -334,11 +301,11 @@ void hud_update()
 	//hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, player_health, player_maxhealth);
 	
 	var player_healthratio = player_health/player_maxhealth;
-	//if(player_healthratio < 0.6)
+	if(player_healthratio < 0.8)
 	{
 		var hp_flicker_frequency = 50/(1.+player_healthratio);
 	   
-		var hp_flicker_brightness = 60*(player_healthratio);
+		var hp_flicker_brightness = 30*(player_healthratio);
 		
 		var minalpha = 50*player_healthratio;
 		var varalpha = 50-minalpha;
@@ -349,6 +316,14 @@ void hud_update()
 		HUD_HP_infotext.green = (255-hp_flicker_brightness)*hud_flicker_coefficient(hp_flicker_frequency) + hp_flicker_brightness;
 		HUD_HP_infotext.blue = (255-hp_flicker_brightness)*hud_flicker_coefficient(hp_flicker_frequency) + hp_flicker_brightness;
 		
+		vec_set(HUD_HP_text.blue, HUD_HP_infotext.blue);
+	}
+	else
+	{
+		HUD_HP_infotext.alpha = 50;
+		HUD_HP_text.alpha = 50;
+		
+		vec_set(HUD_HP_infotext.blue, vector(255,255,255));
 		vec_set(HUD_HP_text.blue, HUD_HP_infotext.blue);
 	}
 	
