@@ -58,14 +58,15 @@ void game_update()
     keypad_update();
     doors_update();
     journals_update();
+    environmentals_update();
     
     
-	 hud_update();
-	 ESELSLERCHE_Update();
-	 SPUTNIK_Update();
-	 SKULL_Update();
-	 EYE_Update();
-	 GIB_Update();
+    hud_update();
+    ESELSLERCHE_Update();
+    SPUTNIK_Update();
+    SKULL_Update();
+    EYE_Update();
+    GIB_Update();
 
     if(input_hit(INPUT_NAVBACK))
         game_done = true;
