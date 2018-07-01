@@ -388,10 +388,10 @@ void SKULL__shootEffect(PARTICLE *p)
 	p.event = SKULL__fireParticle;
 }
 
-/*
+
 void spawnskull()
 {
-	
+	/*
 	wait(-1);
 	//while(1)
 	{
@@ -399,5 +399,5 @@ void spawnskull()
 		ENTITY* ptr = ent_create("whiskas.mdl", vector(1288,0,250), Skull);
 		wait(-30);
 	}
+	*/
 }
-*/
