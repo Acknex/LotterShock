@@ -140,20 +140,38 @@ void weapons_erect_sword()
 	weapons.swordLength += 1;
 }
 
+int weapons_get_max_ammo(int id)
+{
+	if(id > 0 && id < WEAPONS_COUNT)
+	return (int)(weapons.weapon[id].max_ammo);
+	else
+	return 0;
+}
 int weapons_get_max_ammo()
 {
 	if(weapons.current > 0)
-	return (int)(WEAPONS_CURRENT.max_ammo);
+	return weapons_get_max_ammo(weapons.current);
 	else
 	return 0;
 }
 
+int weapons_get_ammo(int id)
+{
+	if(id > 0 && id < WEAPONS_COUNT)
+	return (int)(weapons.weapon[id].ammo);
+	else
+	return 0;
+}
 int weapons_get_ammo()
 {
 	if(weapons.current > 0)
-	return (int)(WEAPONS_CURRENT.ammo);
+	return weapons_get_ammo(weapons.current);
 	else
 	return 0;
+}
+void weapons_add_ammo(int weaponType, var amount)
+{
+	weapons.weapon[weaponType].ammo = clamp(weapons.weapon[weaponType].ammo + amount, 0, weapons_get_max_ammo(weaponType));
 }
 
 int weapons_get_current()
@@ -161,12 +179,18 @@ int weapons_get_current()
 	return weapons.current;
 }
 
+BMAP* skyCute_cubemap = "skyCute+6.tga";
+
+MATERIAL* trident_sphere_mat =
+{
+	effect = "Shaders/tridentSphere.fx";
+	flags = AUTORELOAD;
+}
+VECTOR vRotatedDirection;
+float rotateMatrix[16];
+
 void weapons_init()
 {
-	int i;
-	for(i = 1; i <= WEAPONS_COUNT; i++)
-	weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
-
 	on_o = weapons_erect_sword;
 
 	memset(&weapons, 0, sizeof(weapons_t));
@@ -186,9 +210,13 @@ void weapons_init()
 	weapons.weapon[WEAPON_CELLGUN].max_ammo      = 150;
 	weapons.weapon[WEAPON_FLAMETHROWER].max_ammo = 300;
 
-	int i;
-	for(i = 1; i <= WEAPONS_COUNT; i++)
-	weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
+
+	//weapons_wp_cellgun.material = mtl_model;
+	//ent_mtlset(weapons_wp_cellgun,trident_sphere_mat,2);
+	weapons_wp_cellgun.material = trident_sphere_mat;
+ 	ent_mtlset(weapons_wp_cellgun,mtl_model,1);
+	bmap_to_cubemap(skyCute_cubemap); 
+	trident_sphere_mat.skin1 = skyCute_cubemap;
 
 	on_o = weapons_erect_sword;
 }
@@ -196,6 +224,13 @@ void weapons_init()
 void weapons_open()
 {
 	weapons.current = 0;
+	
+	int id;
+	for(id = 1; id <= WEAPONS_COUNT; id++)
+	{
+		weapons.weapon[id].unlocked = false;
+		weapons.weapon[id].ammo = weapons.weapon[id].max_ammo;
+	}
 }
 
 //! search next unlocked weapon in the given direction.
@@ -568,7 +603,7 @@ var weaponGetKickbackFac(var progress, var kickPoint)
 
 var weaponGetAttackProgress()
 {
-	if(weapons.current == WEAPON_CELLGUN) return weapons.speartimer;
+	if(weapons.current == WEAPON_CELLGUN) return weapons.spearpower;
 	return weapons.attackprogress;
 }
 
@@ -800,6 +835,18 @@ void weapons_update()
 
 			vec_set(targetPosePos, sourcePosePos);
 			vec_set(targetPoseAng, sourcePoseAng);
+			
+			//weapons_wp_cellgun.
+			vec_set(vRotatedDirection,vector(1,0,0));
+			vec_rotate(vRotatedDirection,vector(total_ticks*3,total_ticks*5.1,total_ticks*3.7));
+			ANGLE angle;
+			vec_to_angle(angle,vRotatedDirection);
+ang_to_matrix(angle,rotateMatrix);
+			//trident_sphere_mat.skill1 = floatv(temp.x);
+			//trident_sphere_mat.skill2 = floatv(temp.z);
+			//trident_sphere_mat.skill3 = floatv(temp.y);
+weapons_wp_cellgun.skill41 = floatd(weapons.spearpower,100);
+DEBUG_VAR(weapons.spearpower,500);
 
 			if((weapons.attacking || weapons.attackstate != 0) && WEAPONS_CURRENT.ammo > 0)
 			{
@@ -865,12 +912,6 @@ void weapons_update()
 			ang_rotate(targetPoseAng,playerGetWeaponSway());
 
 
-			DEBUG_VAR(weapons.spearpower, 16);
-			DEBUG_VAR(weapons.speartimer, 32);
-			DEBUG_VAR(weapons.electro, 48);
-
-			DEBUG_VAR(weapons.attacking, 64);
-			DEBUG_VAR(weapons.attackstate, 72);
 
 			break;
 		}

@@ -29,6 +29,8 @@ action Eye()
 	if(my->EYE_TURNSPEED == 0) my->EYE_TURNSPEED = 10;
 	if(my->EYE_ACTIVEDIST == 0) my->EYE_ACTIVEDIST = 3000;
 	vec_scale(me.scale_x, 10);
+	
+	my->material = matObject;
 }	
 
 

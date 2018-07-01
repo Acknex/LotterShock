@@ -23,6 +23,11 @@ typedef int bool;
 //#define DAMAGE_VEC skill53
 //#define DAMAGE_VEC skill54
 
+#define SUBSYSTEM_PARAMETER skill55
+#define SUBSYSTEM_skill_a skill56
+#define SUBSYSTEM_skill_b skill57
+#define SUBSYSTEM_skill_c skill58
+
 
 #define SUBSYSTEM_FRAMEWORK     1
 #define SUBSYSTEM_USABLES       2
@@ -34,11 +39,9 @@ typedef int bool;
 #define SUBSYSTEM_MUSIC         8
 #define SUBSYSTEM_WEAPONS       9
 #define SUBSYSTEM_PROJECTILE    10
-#define SUBSYSTEM_MEDIPACK      11
-#define SUBSYSTEM_DOORS         12
-#define SUBSYSTEM_KEYPADS       13
-#define SUBSYSTEM_JOURNALS      14
-#define SUBSYSTEM_KEYCARDS      15
+#define SUBSYSTEM_DOORS         11
+#define SUBSYSTEM_KEYPADS       12
+#define SUBSYSTEM_JOURNALS      13
 #define SUBSYSTEM_ENEMY_GIB     105
 
 #define SUBSYSTEM_ENEMY_LERCHE  1000

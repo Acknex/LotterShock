@@ -21,8 +21,12 @@ void weapons_add(int id);
 void weapons_erect_sword();
 
 int weapons_get_max_ammo();
+int weapons_get_max_ammo(int weaponType);
 
 int weapons_get_ammo();
+int weapons_get_ammo(int weaponType);
+
+void weapons_add_ammo(int weaponType, var amount);
 
 int weapons_get_current();
 

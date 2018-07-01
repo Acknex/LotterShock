@@ -44,6 +44,14 @@ PANEL * mainmenu_selection_pan =
 
 PANEL * mainmenu_items[MAINMENU_ITEM_COUNT];
 
+
+PANEL* mainmenue_title =
+{
+	bmap = "Menuetitle.png";
+	flags = TRANSLUCENT;
+	layer = 2;
+}
+
 int mainmenu_selection;
 
 int mainmenu_response;
@@ -75,11 +83,18 @@ void mainmenu_open()
     mouse_mode = 4;
     mainmenu_selection = 0;
     mainmenu_response = MAINMENU_RESPONSE_STILLACTIVE;
-    level_load(NULL);
+    
+    mainmenue_title->pos_x = (screen_size.x-mainmenue_title.size_x) /2;
+´   mainmenue_title->pos_y = 40;
+    set(mainmenue_title, SHOW);
+    
+    level_load("menue.wmb");
+    wait_for(level_load);
+    wait(3);
 }
 
 void mainmenu_update()
-{
+{	
     int i;
 
     if(input_hit(INPUT_DOWN) && mainmenu_selection < (MAINMENU_ITEM_COUNT-1))
@@ -137,4 +152,71 @@ void mainmenu_close()
         reset(mainmenu_items[i], SHOW);
     }
     reset(mainmenu_selection_pan, SHOW);
+    reset(mainmenue_title, SHOW);
+}
+
+action menuelevel_anchor()
+{
+	var camera_distance = vec_dist(&my->x, camera.x);
+	while(1)
+	{
+		if(str_cmp(level_name, "menue.wmb"))
+		{
+			camera->x = sin(total_ticks)*camera_distance;
+			camera->y = cos(total_ticks)*camera_distance;
+			
+			VECTOR diff;
+			vec_set(&diff, &my.x);
+			vec_sub(&diff, camera->x);
+			vec_to_angle(camera->pan, &diff);
+		}
+		wait(1);
+	}
+}
+
+action act_rotator()
+{
+	my->alpha = 100;
+	if(my->skill[0] == 0)
+		my->skill[0] = 10;
+
+	while(1)
+	{
+		my->pan -= my->skill[0]*time_step;
+		wait(1);
+	}
+}
+
+action act_lightflares()
+{
+	my->alpha = 100;
+
+	my->flags |= (BRIGHT|TRANSLUCENT|NOFOG);
+	set(my, FLAG1);
+   
+	my.emask &= ~DYNAMIC;
+}
+
+action act_animation()
+{
+	if(my->string1 == NULL)
+	{
+		error("an animationobject has no animation set");
+		return;
+	}
+
+	if(str_cmpi(my->string1, ""))
+	{
+		error("an animationobject has no animation set");
+		return;
+	}
+	if(my->skill[0] == 0)
+		my->skill[0] = 1;
+
+	while(1)
+	{
+		my->skill[1] = (my->skill[1] +my->skill[0]*time_step) %100;
+		ent_animate(my, my->string1, my->skill[1], ANM_CYCLE);
+		wait(1);
+	}
 }
