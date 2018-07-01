@@ -163,9 +163,9 @@ void EYE__inactive(ENTITY* ptr)
 void EYE__patrol(ENTITY* ptr)
 {
 	ptr->EYE_ZOFFSET = 20 * sinv(total_ticks * 20);
-
+	path_spline (ptr,&ptr->x,ptr->EYE_PATROLSPEED*time_step);
 	/* transitions */
-	if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ATTACKDIST, 75))
+	/*if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ATTACKDIST, 75))
 	{
 		ptr->EYE_STATE = EYE_STATE_ATTACK;
 	}
@@ -176,7 +176,7 @@ void EYE__patrol(ENTITY* ptr)
 	else
 	{
 		
-	}
+	}*/
 }
 
 void EYE__attack(ENTITY* ptr)
