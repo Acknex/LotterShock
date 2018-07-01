@@ -35,7 +35,7 @@ out_ps vs(
 	Out.Pos = DoTransform(inPos);
 	Out.fog = (Out.Pos.z - vecFog.x) * vecFog.z;
 	Out.uv0 = inTexCoord0;
-	Out.worldPos = mul(matWorld, float4(inPos.xyz, 1.0));
+	Out.worldPos = mul(inPos, matWorld);
 	
 	return Out;
 }

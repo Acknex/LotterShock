@@ -10,9 +10,19 @@ MATERIAL *matLevel =
 	effect = "Shaders/walls_unlit.fx";
 }
 
+MATERIAL *matObject =
+{
+	effect = "Shaders/object_basic.fx";
+}
+
 MATERIAL *matTree =
 {
 	effect = "Shaders/tree.fx";
+}
+
+MATERIAL *matIce =
+{
+	effect = "Shaders/ice.fx";
 }
 
 MATERIAL *matSkull =
@@ -28,6 +38,11 @@ MATERIAL *matWeaponBasic =
 MATERIAL *matFlesh =
 {
 	effect = "Shaders/flesh_basic.fx";
+}
+
+MATERIAL *matIce =
+{
+	effect = "Shaders/ice.fx";
 }
 
 MATERIAL *matDecalBlood =

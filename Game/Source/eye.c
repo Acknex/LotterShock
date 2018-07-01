@@ -2,12 +2,21 @@
 #include "framework.h"
 #include "eye.h"
 #include "particle.h"
+#include "scan.h"
 
 #include "splatter.h" //temp
 
 #define EYE_TURNSPEED skill2
 
 #define EYE_COUNTER skill22
+#define EYE_STATE skill23
+#define EYE_LASERDIST skill24
+//#define EYE_LASERDIST skill25
+//#define EYE_LASERDIST skill26
+#define EYE_ACTIVEDIST skill27
+
+#define EYE_STATE_INACTIVE 0
+#define EYE_STATE_ATTACK 3
 
 BMAP* EYE_BmapDecal = "bulletHoleCool.tga";
 
@@ -18,7 +27,10 @@ action Eye()
    framework_setup(my, SUBSYSTEM_ENEMY_EYE);
 
 	if(my->EYE_TURNSPEED == 0) my->EYE_TURNSPEED = 10;
+	if(my->EYE_ACTIVEDIST == 0) my->EYE_ACTIVEDIST = 3000;
 	vec_scale(me.scale_x, 10);
+	
+	my->material = matObject;
 }	
 
 
@@ -39,6 +51,27 @@ void EYE_Update()
 	{
 		if (player)
 		{
+			//it's broken and I don't know.
+			/*switch(ptr->EYE_STATE)    	
+			{
+				case EYE_STATE_INACTIVE:
+				{
+					SKULL__inactive(ptr);
+					break;
+				}
+
+				case EYE_STATE_ATTACK:
+				{
+					SKULL__attack(ptr);
+					break;
+				}
+
+				default:
+				{
+					break;
+				}
+
+			}*/	
 			EYE__turnToPlayer(ptr);
 			EYE__attack(ptr);
 		}
@@ -67,6 +100,16 @@ var EYE__turnToPlayer(ENTITY* ptr)
 		return 1;
 }
 
+void EYE__inactive(ENTITY* ptr)
+{
+EYE__turnToPlayer(ptr);
+		if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ACTIVEDIST, 100) || SCAN_IsPlayerNear(ptr, ptr->EYE_ACTIVEDIST * 0.3))
+		{
+			ptr->EYE_STATE = EYE_STATE_ATTACK;
+		}
+}
+
+
 void EYE__attack(ENTITY* ptr)
 {
 	ptr->EYE_COUNTER += 1*time_step;
@@ -80,18 +123,17 @@ void EYE__attack(ENTITY* ptr)
 	vec_to_angle(&dir, &to);
 	//ptr->pan = dir.pan;
 	dir.pan = ptr->pan;
-	VECTOR dist;
-	vec_set(&dist, vector(3000, 0, 0));
-	vec_rotate(&dist, &dir);
+	vec_set(&ptr->EYE_LASERDIST, vector(3000, 0, 0));
+	vec_rotate(&ptr->EYE_LASERDIST, &dir);
 	//vec_set(&to, &player->x);
-	vec_set(&to, &dist);
+	vec_set(&to, &ptr->EYE_LASERDIST);
 	vec_add(&to, &from);
 //draw_line3d(from, vector(255,255,255), 100);
 //draw_line3d(to, vector(255,255,255), 100);
 	if (ptr->EYE_COUNTER > 1)
 	{
 		ptr->EYE_COUNTER = cycle(ptr->EYE_COUNTER,0,1);
-		PARTICLE_laser(from, dist);
+		PARTICLE_laser(from, ptr);
 		ptr->EYE_COUNTER -= 1;
 		me = ptr;
 		var mode = IGNORE_ME | IGNORE_WORLD | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | SCAN_TEXTURE | USE_POLYGON;
@@ -107,6 +149,10 @@ void EYE__attack(ENTITY* ptr)
 		}
 	}
 	
+		if (!SCAN_IsPlayerInSight(ptr, ptr->EYE_ACTIVEDIST, 100) && !SCAN_IsPlayerNear(ptr, ptr->EYE_ACTIVEDIST * 0.3))
+		{
+			ptr->EYE_STATE = EYE_STATE_INACTIVE;
+		}
 }
 
 void spawneye()

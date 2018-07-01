@@ -56,8 +56,8 @@ out_frag ps(out_ps In)
 	float4 color = tex2D(sTexture, In.uv0);
 	
 	In.vcolor += 1;
-	float glowFactor = saturate(color.b - color.r) * 5.0;
-	Out.glow.rgb = glowFactor * color.rgb*In.vcolor;
+	float glowFactor = length(color.rgb) > 0.9? 1.0 : 0.0;
+	Out.glow.rgb = glowFactor * color.rgb * In.vcolor;
 	Out.glow.a = 1.0;
 	
 	//float3 light = In.worldPos/512.0; //vecAmbient.rgb; cool!
@@ -70,20 +70,17 @@ out_frag ps(out_ps In)
 			float3 lightDir = vecLightPos[i].xyz - In.worldPos;
 			float lightDistance = length(lightDir);
 			float lightFactor = saturate(dot(In.normal, lightDir/lightDistance))*0.5+0.5;
-			float lightAttenuation = saturate(1-lightDistance/vecLightPos[i].w);// / (lightDistance * lightDistance);
+			float lightAttenuation = saturate(1-lightDistance/vecLightPos[i].w);
 			light += 1.5*lightFactor * lightAttenuation*lightAttenuation * vecLightColor[i].rgb;
 		}
 	}
 	
+	if(glowFactor > 0.5) light = 1.0;
+	
 	color.rgb *= light;
-	//In.vcolor = lerp(float3(128,128,128),In.vcolor,saturate(glowFactor));
-	//color.rgb *= In.vcolor/128.0;
-	color.rgb = lerp(color.rgb,In.vcolor,saturate(glowFactor));
 	In.vcolor = lerp(In.vcolor,1,0.667);
 	color.rgb *= In.vcolor;
 	Out.color = lerp(color, vecFogColor, saturate(In.fog));
-	//Out.color.rgb = In.vcolor/255.0;
-	//Out.color *= glowFactor;
 	
 	return Out;
 }
