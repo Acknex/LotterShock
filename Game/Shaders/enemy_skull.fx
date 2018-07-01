@@ -52,8 +52,8 @@ out_frag ps(out_ps In)
 	color.rgb = tex2D(sTexture, In.uv0);
 	color.a = 1.0f;
 	
-	float glowFactor = saturate(color.b - color.r) * 5.0;
-	Out.glow.rgb = glowFactor * color.rgb;
+	float redGlow = (color.r > 0.5)? color.r : 0.0;
+	Out.glow.rgb = float3(redGlow * 5.0, 0.0, 0.0);
 	Out.glow.a = 1.0;
 	
 	float3 light = vecAmbient.rgb;
@@ -81,7 +81,5 @@ technique object
 	{
 		VertexShader = compile vs_3_0 vs();
 		PixelShader = compile ps_3_0 ps();
-		AlphaBlendEnable = false;
-		ZWriteEnable = true;
 	}
 }
