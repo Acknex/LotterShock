@@ -67,6 +67,7 @@ action Eselslerche()
 	vec_scale(&my->scale_x, 2);
 	set(my, SHADOW);
 	c_setminmax(me);
+	my->min_z += 30;
 }
 
 void ESELSLERCHE_GlobalInit()
@@ -162,10 +163,10 @@ void ESELSLERCHE_Update()
 			VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 100);
 			VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
 			me = ptr;
-			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON | USE_BOX;
+			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;// | USE_BOX;
 			c_trace(from, to, mode);
 			if(HIT_TARGET)
-				ptr->z = hit.z - ptr->min_z;
+				ptr->z = hit.z - ptr->min_z +30;
 		}
 	}	
 }

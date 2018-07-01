@@ -270,6 +270,7 @@ void p_shotgun_muzzle_fire(PARTICLE* p)
 void weapons_shoot_shotgun()
 {
 	int i;
+	playerSetLight(vector(50,190,255), 3000, 2);
 	for(i = 0; i < 10; i++)
 	{
 		VECTOR dir;
@@ -486,6 +487,7 @@ void weapons_shoot_flamethrower()
 	vec_add(weapons.flamedir, playerGetSpeedVec());
 
 	effect (weapons_flame_effect, maxv(1, time_frame * WEAPONS_FLAME_COUNT), pos, dir);
+	playerSetLight(vector(30,180,255), 3000, 16);
 	
 }
 
@@ -550,6 +552,9 @@ void weapons_shoot_cellgun()
 	PROJECTILE * pr0 = projectileCreate(PROJECTILE_TYPE_CELL, 1, pos, speed);
 	pr0->source = player;
 	pr0->dmg = WEAPONS_CELLGUN_DAMAGE;
+	
+	playerSetLight(vector(255,255,30), 3000, 2);
+	
 }
 
 var weaponGetKickbackFac(var progress, var kickPoint)
