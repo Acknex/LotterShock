@@ -3,7 +3,7 @@
 
 #define ITEM_MEDIPACK 0
 #define ITEM_KEYCARD 1
-
+#define ITEM_AMMUNITION 2
 
 #define MEDIPACK_HEALTH_PLUS 10
 

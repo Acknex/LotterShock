@@ -22,7 +22,11 @@ typedef int bool;
 #define DAMAGE_VEC skill52
 //#define DAMAGE_VEC skill53
 //#define DAMAGE_VEC skill54
+
 #define SUBSYSTEM_PARAMETER skill55
+#define SUBSYSTEM_skill_a skill56
+#define SUBSYSTEM_skill_b skill57
+#define SUBSYSTEM_skill_c skill58
 
 
 #define SUBSYSTEM_FRAMEWORK     1

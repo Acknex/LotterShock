@@ -140,20 +140,38 @@ void weapons_erect_sword()
 	weapons.swordLength += 1;
 }
 
+int weapons_get_max_ammo(int id)
+{
+	if(id > 0 && id < WEAPONS_COUNT)
+	return (int)(weapons.weapon[id].max_ammo);
+	else
+	return 0;
+}
 int weapons_get_max_ammo()
 {
 	if(weapons.current > 0)
-	return (int)(WEAPONS_CURRENT.max_ammo);
+	return weapons_get_max_ammo(weapons.current);
 	else
 	return 0;
 }
 
+int weapons_get_ammo(int id)
+{
+	if(id > 0 && id < WEAPONS_COUNT)
+	return (int)(weapons.weapon[id].ammo);
+	else
+	return 0;
+}
 int weapons_get_ammo()
 {
 	if(weapons.current > 0)
-	return (int)(WEAPONS_CURRENT.ammo);
+	return weapons_get_ammo(weapons.current);
 	else
 	return 0;
+}
+void weapons_add_ammo(int weaponType, var amount)
+{
+	weapons.weapon[weaponType].ammo = clamp(weapons.weapon[weaponType].ammo + amount, 0, weapons_get_max_ammo(weaponType));
 }
 
 int weapons_get_current()

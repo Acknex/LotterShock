@@ -1,4 +1,7 @@
+//keycards
 #include "doors.h"
+//ammo
+#include "weapons.h"
 
 bool itemCollectible_condition(ENTITY *item)
 {
@@ -6,6 +9,9 @@ bool itemCollectible_condition(ENTITY *item)
 	{
 		case ITEM_MEDIPACK:
 			return playerGetHealth() < playerGetMaxHealth();
+		case ITEM_AMMUNITION:
+			int id = item->SUBSYSTEM_skill_a;
+			return weapons_get_ammo(id) < weapons_get_max_ammo(id);
 	}
 	return true;
 }
@@ -24,6 +30,12 @@ void itemCollectible_effect(ENTITY *item)
 		case ITEM_KEYCARD:
 			// add to inventory
 			keys[item.KEYCARD_KEY_ID] = 1;
+			ent_playsound(player, snd_beep, 100);
+			break;
+			
+		case ITEM_AMMUNITION:
+			// add to inventory
+			weapons_add_ammo(item->SUBSYSTEM_skill_a, item->SUBSYSTEM_skill_b);
 			ent_playsound(player, snd_beep, 100);
 			break;
 	}
@@ -63,4 +75,26 @@ void medipack_init() {
 action keycard() {
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_KEYCARD;
+}
+
+void item_ammo(int ammoType, var amount)
+{
+	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
+	my->SUBSYSTEM_PARAMETER = ITEM_AMMUNITION;
+	my->SUBSYSTEM_skill_a = ammoType;
+	my->SUBSYSTEM_skill_b = amount;
+}
+
+action shotgun_ammo()
+{
+	item_ammo(WEAPON_SHOTGUN, 6);
+	
+}
+action cellgun_ammo()
+{
+	item_ammo(WEAPON_CELLGUN, 30);
+}
+action flamethrower_ammo()
+{
+	item_ammo(WEAPON_FLAMETHROWER, 75);
 }
