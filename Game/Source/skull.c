@@ -315,7 +315,31 @@ void SKULL__retreat(ENTITY* ptr)
 	}
 }
 
-void spawnskull(){
+void SKULL__fireParticle(PARTICLE *p)
+{
+	p.size -= time_step;
+	p.alpha -= p.skill_a*time_step;
+	if(p.alpha <= 0) p.lifespan = 0;
+}
+
+void SKULL__fireEffect(PARTICLE *p)
+{
+	set(p, MOVE | BRIGHT | TRANSLUCENT);
+	p.red = 255;
+	p.green = 0;
+	p.blue = 0;
+	p.alpha = 100;
+	p.lifespan = 100;
+	p.size = 50;
+	p.vel_z = 20 + random(30);
+	p.gravity = -20.0;
+	p.skill_a = 20.0; // fade factor
+	p.event = SKULL__fireParticle;
+}
+
+
+void spawnskull()
+{
 	
 	wait(-5);
 	//while(1)

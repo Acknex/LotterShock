@@ -40,5 +40,5 @@ void PARTICLE__laser_init(PARTICLE* p)
 
 void PARTICLE__laser_fade(PARTICLE* p)
 {
-	//p->alpha = maxv(p->alpha - 5* time_step, 0);
+	p->alpha = maxv(p->alpha - 5* time_step, 0);
 }
