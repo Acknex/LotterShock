@@ -21,6 +21,15 @@ BMAP * hud_healthbar_bmap = "healthbar.png";
 //BMAP * hud_ammo_label_bmap = "ammo_label.png";
 BMAP * hud_ammobar_bmap = "ammobar.png";
 
+FONT *HUD_font = "HUD_font.png";
+BMAP *HUD_font_bmap = "HUD_font.png";
+
+PANEL *HUD_background =
+{
+	bmap = "interfache_bg.png";
+	flags = TRANSLUCENT;
+	layer = 1;
+}
 
 PANEL* HUD_crosshair =
 {
@@ -78,10 +87,12 @@ PANEL* HUD_HP_text =
 TEXT* HUD_HP_infotext =	
 {
 	layer = 3;
-	font = "Console#50b";
-	blue = 0;
-	green = 0;
-	red = 0;
+	font = HUD_font;//"Console#50b";
+	blue = 255;
+	green = 255;
+	red = 255;
+	size_x = 10000;
+	
 	string ("100");
 	flags = CENTER_X | CENTER_Y ;
 } 
@@ -108,11 +119,23 @@ void hud_init()
 		hud_weapon_icon[i].scale_x = 0.8;
 		hud_weapon_icon[i].scale_y = 0.8;
 	}
+	
+	
+	//HUD_font = font_create(HUD_font_bmap);
+	//HUD_HP_infotext->font = HUD_font;
 }
 
 
-//var true_size(PANEL *)
+var hud_sizex(PANEL *p)
+{
+	return p->size_x*p->scale_x;
+}
  
+var hud_sizey(PANEL *p)
+{
+	return p->size_y*p->scale_y;
+}
+
 void hud_place_label(PANEL *label, var offsetY)
 {
 	label->pos_x = HUD_BORDER_PADDING;
@@ -172,22 +195,44 @@ void hud_show()
 	
 	var element_width = space_left - HUD_BARS_XPADDING;
 	
+	var height_right = hud_sizey(hud_weapon_icon[0]) + hud_sizey(HUD_Ammo_bars);
+	var height_left = hud_sizey(HUD_HP_text);
+	var height_total = maxv(height_right, height_left);
+	
+	var center_all = screen_size.y - height_total/2 - HUD_BORDER_PADDING;
 	
 	int i;
 	for(i=0; i<4; ++i)
 	{
 	 	hud_weapon_icon[i]->pos_x = center_rightElement - hud_weapon_icon[i].size_x*hud_weapon_icon[i].scale_x/2;
-	 	hud_weapon_icon[i]->pos_y = screen_size.y - HUD_BORDER_PADDING - hud_weapon_icon[i].size_y*hud_weapon_icon[i].scale_y;
+	 	hud_weapon_icon[i]->pos_y = center_all - height_right/2;
 	}
 	hud_place_bar(HUD_Ammo_bars, center_rightElement - HUD_Ammo_bars.size_x*HUD_Ammo_bars.scale_x/2);
+	HUD_Ammo_bars->pos_y = center_all + height_right/2 - hud_sizey(HUD_Ammo_bars);
 	
 	HUD_HP_text->pos_x = cc_right - HUD_HP_text->size_x*HUD_HP_text->scale_x/2;
-	HUD_HP_text->pos_y = screen_size.y - HUD_BORDER_PADDING - HUD_HP_text.size_y*HUD_HP_text.scale_y ;
+	HUD_HP_text->pos_y = center_all - hud_sizey(HUD_HP_text)/2;
 	set(HUD_HP_text, SHOW);
 	
+	
 	HUD_HP_infotext->pos_x = cc_left;
-	HUD_HP_infotext->pos_y = HUD_HP_text->pos_y + HUD_HP_text->size_x*HUD_HP_text->scale_x/2;
+	HUD_HP_infotext->pos_y = center_all;
 	set(HUD_HP_infotext, SHOW);
+	
+	
+	
+	
+	var desired_background_height = height_total+2*HUD_BORDER_PADDING;
+	HUD_background->scale_y = desired_background_height/HUD_background->size_y;
+	HUD_background->scale_x = HUD_background->scale_y;
+	
+	
+	var background_ub = (screen_size.x+hud_sizex(HUD_Head))/2 +HUD_BORDER_PADDING;
+	var background_overshoot = hud_sizex(HUD_background) - background_ub;
+	
+	HUD_background->pos_x = -background_overshoot;
+	HUD_background->pos_y = screen_size.y-hud_sizey(HUD_background);
+	set(HUD_background, SHOW);
 	
 	
 	HUD_crosshair->pos_x = (screen_size.x - HUD_crosshair.size_x*HUD_crosshair.scale_x) /2;
