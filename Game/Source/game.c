@@ -31,6 +31,7 @@ void game_open()
     SKULL_Init();
     EYE_Init();
     hud_show();
+    player_initSpawn();
 }
 
 void game_capture_mouse()

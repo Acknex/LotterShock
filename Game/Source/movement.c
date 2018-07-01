@@ -23,7 +23,7 @@ var playerJumpHangtime = 6;
 ANGLE playerPanSmoothed; // for weapon sway
 ANGLE playerWeaponSway;
 ANGLE playerAngle;
-var playerHealth = 100;
+var playerHealth;
 var playerHealthMax = 100;
 var playerHealthOld = 100;
 var playerHealthKnockbackEffect = 100;
@@ -46,6 +46,12 @@ var playerEntMorphBallTilt = 0;
 var playerEntMorphBallSpeedAdaptFac = 1;
 VECTOR playerEntMorphBallPinkFlarePos;
 var playerChromaticAbbTime = 0;
+
+void player_initSpawn()
+{
+	playerHealthMax = 100;
+	playerHealth = playerHealthMax;
+}
 
 void movement_close()
 {

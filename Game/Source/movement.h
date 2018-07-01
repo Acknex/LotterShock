@@ -9,6 +9,8 @@
 
 	var playerGetSpeed();
 
+	void player_initSpawn();
+	
 	VECTOR* playerGetSpeedVec();
 
 	void playerAddSpeed(VECTOR* v);
