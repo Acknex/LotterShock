@@ -21,6 +21,11 @@ bool input_hit(int id)
     return input[id].justPressed;
 }
 
+var input_axis(int id)
+{
+    return input[id].value;
+}
+
 void input_add(int inputID, int inputType, int value)
 {
     int k;
@@ -52,6 +57,23 @@ void input_add(int inputID, int inputType, int value)
 
             default:
             error("inputAdd: wow! error!");
+        }
+    }
+}
+
+void input_add_axis(int inputID, var * value, float scale, float deadZone)
+{
+    int k;
+
+    INPUT *pinput = &input[inputID]; // no error checks!
+    for(k = 0; k < 4; k++)
+    {
+        if(pinput->axes[k].value == NULL)
+        {
+            pinput->axes[k].value = value;
+            pinput->axes[k].deadZone = deadZone;
+            pinput->axes[k].scale = scale;
+            return;
         }
     }
 }
@@ -171,6 +193,16 @@ void input_cheat_clipmode()
     movement_cheat_clipmode = !movement_cheat_clipmode;
 }
 
+typedef struct inputstate_t
+{
+    VECTOR leftStick;
+    VECTOR rightStick;
+    var leftTrigger;
+    var rightTrigger;
+} inputstate_t;
+
+inputstate_t input_states;
+
 void input_init()
 {
     memset(cheatcodes, 0, sizeof(cheatcode_t) * INPUT_CHEAT_COUNT);
@@ -208,9 +240,25 @@ void input_init()
         for(k = 0; k < 4; k++) (pinput->gamepadKeys)[k] = -1;
         pinput->useAxis = -1;
         pinput->factor = 0;
+
+        for(k = 0; k < 4; k++)
+        {
+            pinput->axes[k].value = NULL;
+            pinput->axes[k].deadZone = 0;
+        }
+        pinput->deadZone = 0.1;
+        pinput->positiveValue = true;
+        pinput->value = 0.0;
+        pinput->sensitivity = 1.0;
     }
     //*/
 
+    input[INPUT_DOWN].positiveValue = false;
+    input[INPUT_LEFT].positiveValue = false;
+
+    // TODO: Controller + Mouse Sensitivity
+    input[INPUT_LOOK_HORIZONTAL].sensitivity = 2.0;
+    input[INPUT_LOOK_VERTICAL].sensitivity   = 2.0;
 
     strcpy(input[INPUT_UP].cinfo,"UP");
     strcpy(input[INPUT_DOWN].cinfo,"DOWN");
@@ -224,6 +272,7 @@ void input_init()
     strcpy(input[INPUT_NAVBACK].cinfo,"NAVBACK");
     strcpy(input[INPUT_CROUCH].cinfo,"CROUCH");
     strcpy(input[INPUT_MORPHBALL].cinfo,"ENTMORPHBALL");
+
 
     //////////////////////////////
     // configurable stuff
@@ -262,6 +311,22 @@ void input_init()
     input_add(INPUT_WEAPON_UP,  INPUT_TYPE_GAMEPAD, 9); //! right shoulder
     input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_GAMEPAD, 8); //! left shoulder
 
+
+    input_add_axis(INPUT_LOOK_HORIZONTAL, &mouse_force.x, 3.0, 0.0);
+    input_add_axis(INPUT_LOOK_VERTICAL,   &mouse_force.y, 3.0, 0.0);
+
+    input_add_axis(INPUT_LOOK_HORIZONTAL, &input_states.rightStick.x, 1.0 / 255.0, 0.3);
+    input_add_axis(INPUT_LOOK_VERTICAL,   &input_states.rightStick.y, 1.0 / 255.0, 0.3);
+
+    input_add_axis(INPUT_LEFT,  &input_states.leftStick.x, 1.0 / 255.0, 0.3);
+    input_add_axis(INPUT_RIGHT, &input_states.leftStick.x, 1.0 / 255.0, 0.3);
+
+    input_add_axis(INPUT_UP,    &input_states.leftStick.y, 1.0 / 255.0, 0.3);
+    input_add_axis(INPUT_DOWN,  &input_states.leftStick.y, 1.0 / 255.0, 0.3);
+
+    input_add_axis(INPUT_ATTACK, &input_states.rightTrigger, 1.0 / 255.0, 0.3);
+    input_add_axis(INPUT_BLOCK,  &input_states.leftTrigger,  1.0 / 255.0, 0.3);
+
     int slot = ackXInputGetGamepadNum();
     if(slot >= 0)
     {
@@ -277,7 +342,23 @@ void input_update()
     int i,k;
 
     if(ackXInputGamepadUse)
+    {
         ackXInputGetState3();
+
+        input_states.leftStick.x = ackXInputGetThumbState3(0, 0);
+        input_states.leftStick.y = ackXInputGetThumbState3(0, 1);
+        input_states.rightStick.x = ackXInputGetThumbState3(1, 0);
+        input_states.rightStick.y = ackXInputGetThumbState3(1, 1);
+        input_states.leftTrigger = ackXInputGetTriggerState3(0);
+        input_states.rightTrigger = ackXInputGetTriggerState3(1);
+    }
+    else
+    {
+        vec_zero(input_states.leftStick);
+        vec_zero(input_states.rightStick);
+        input_states.leftTrigger = 0;
+        input_states.rightTrigger = 0;
+    }
 
     for(i = 0; i < INPUT_MAX; i++)
     {
@@ -286,6 +367,7 @@ void input_update()
         char prevDown = pinput->down;
 
         pinput->down = 0;
+        pinput->value = 0;
 
         for(k = 0; k < 4; k++)
         {
@@ -303,15 +385,26 @@ void input_update()
                         pinput->down = 1;
                 }
             }
-            if(pinput->useAxis != -1)
+            if(pinput->axes[k].value != NULL)
             {
-                /*if(pinput->useAxis == 0)
-                {
-                    if(i == INPUT_LEFT) // fucking shit this is hacknex!
-                    pinput->factor = 1;
-                }*/
+                var val = (*(pinput->axes[k].value)) * pinput->axes[k].scale;
+                var ded = pinput->axes[k].deadZone;
+
+                val = sign(val) * clamp(maxv(0, (abs(val) - ded)) / (1.0 - ded), 0.0, 1.0);
+
+                pinput->value += val;
             }
         }
+
+        if(pinput->positiveValue)
+        {
+            pinput->down |= (pinput->value > 0.3);
+        }
+        else
+        {
+            pinput->down |= (pinput->value < -0.3);
+        }
+
         if(pinput->down && !prevDown)
             pinput->justPressed = 1;
         else
