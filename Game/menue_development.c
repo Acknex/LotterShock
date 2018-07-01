@@ -87,3 +87,49 @@ action act_lightflares()
 	my.emask &= ~DYNAMIC;
 	//setSsaoSurface(my, SSAO_TYPE_BINARY);
 }
+
+action act_animation()
+
+{
+
+
+
+	if(my->string1 == NULL)
+
+	{
+
+		error("an animationobject has no animation set");
+
+		return;
+
+	}
+
+	if(str_cmpi(my->string1, ""))
+
+	{
+
+		error("an animationobject has no animation set");
+
+		return;
+
+	}
+
+	
+
+	if(my->skill[0] == 0)
+
+	my->skill[0] = 1;
+
+	while(1)
+
+	{
+
+		my->skill[1] = (my->skill[1] +my->skill[0]*time_step) %100;
+
+		ent_animate(my, my->string1, my->skill[1], ANM_CYCLE);
+
+		wait(1);
+
+	}
+
+}
