@@ -30,6 +30,7 @@
 #define SKL_STATE_RETREAT 7
 
 SOUND* skull_snd_shoot = "skull_shoot.wav";
+SOUND* skull_snd_death = "skull_death.wav";
 
 // uses: SKL_RUNSPEED, SKL_TURNSPEED, SKL_ATTACKDIST, SKL_ACTIVEDIST
 action Skull()
@@ -316,6 +317,7 @@ void SKULL__hit(ENTITY* ptr)
 	if (ptr->HEALTH <= 0)
 	{
 		reset(ptr, TRANSLUCENT);
+		snd_play(skull_snd_death, 100, 0);
 		ptr->SKL_STATE = SKL_STATE_DIE;
 	}
 	else if (ptr->SKL_COUNTER >= 40)
