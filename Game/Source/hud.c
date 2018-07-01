@@ -76,7 +76,7 @@ PANEL* HUD_Ammo_bars =
 
 TEXT* HUD_Ammo_infotext =	
 {
-	layer = 3;
+	layer = 5;
 	font = "Console#20b";
 	blue = 0;
 	green = 0;
