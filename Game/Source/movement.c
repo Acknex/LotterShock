@@ -23,7 +23,7 @@ var playerJumpHangtime = 6;
 ANGLE playerPanSmoothed; // for weapon sway
 ANGLE playerWeaponSway;
 ANGLE playerAngle;
-var playerHealth = 100;
+var playerHealth;
 var playerHealthMax = 100;
 var playerHealthOld = 100;
 var playerHealthKnockbackEffect = 100;
@@ -47,6 +47,14 @@ var playerEntMorphBallSpeedAdaptFac = 1;
 VECTOR playerEntMorphBallPinkFlarePos;
 var playerChromaticAbbTime = 0;
 
+void player_initSpawn()
+{
+	playerHealthMax = 100;
+	playerHealth = playerHealthMax;
+    movement_cheat_invincibility = false;
+    movement_cheat_clipmode = false;
+}
+
 void movement_close()
 {
 	player = NULL;
@@ -67,8 +75,12 @@ var playerGetMaxHealth()
 	return playerHealthMax;
 }
 
+
+
 void playerAddHealth(var amount)
 {
+    if((amount < 0) && movement_cheat_invincibility)
+        return; // haha
 	playerHealth = clamp(playerHealth+amount,0,playerHealthMax);
 	if(amount < 0) 
 	{
@@ -328,7 +340,11 @@ void movement_update()
 		pp_desync(sinv(15*total_ticks)*15);
 		return;
 	}
-	if(key_t)
+#ifdef DEBUG
+    if(key_t || movement_cheat_clipmode)
+#else
+    if(movement_cheat_clipmode)
+#endif
 	{
 		camera.pan += -mouse_force.x*10*time_step;
 		camera.pan %= 360;
@@ -634,6 +650,17 @@ void playerAddSpeed(VECTOR* v)
 	player.PLAYER_SPEED_X += v.x;
 	player.PLAYER_SPEED_Y += v.y;
 }
+
+#ifdef DEBUG_CHEATHP
+void playerCheatHp_startup()
+{
+	while (1)
+	{
+		playerHealth = 999;
+		wait(1);
+	}
+}
+#endif
 
 //////////////////////////////
 // movement.c

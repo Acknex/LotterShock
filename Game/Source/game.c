@@ -18,6 +18,7 @@ void game_init()
     weapons_init();
     GIB_GlobalInit();
     ESELSLERCHE_GlobalInit();
+    SPUTNIK_GlobalInit();
     SKULL_GlobalInit();
     EYE_GlobalInit();
 }
@@ -28,9 +29,12 @@ void game_open()
     mouse_pointer = 0;
     weapons_open();
     ESELSLERCHE_Init();
+    SPUTNIK_Init();
     SKULL_Init();
     EYE_Init();
     hud_show();
+    player_initSpawn();
+    input_cheats_enabled = 1;
 }
 
 void game_capture_mouse()
@@ -50,10 +54,8 @@ void game_update()
     movement_update();
     if(!weapons_disabled) weapons_update();
     projectiles_update();
-    keycard_update();
-    medipack_update();
+    collectibles_update();
     keypad_update();
-    medipack_update();
     doors_update();
     journals_update();
     
@@ -71,11 +73,13 @@ void game_update()
 
 void game_close()
 {
-movement_close();
-projectiles_close();
+	pp_desync(0);
+	movement_close();
+	projectiles_close();
     hud_hide();
     weapons_close();
     mouse_pointer = 1;
+    input_cheats_enabled = 0;
 }
 
 bool game_is_done()

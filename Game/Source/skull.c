@@ -30,6 +30,7 @@
 #define SKL_STATE_RETREAT 7
 
 SOUND* skull_snd_shoot = "skull_shoot.wav";
+SOUND* skull_snd_death = "skull_death.wav";
 
 // uses: SKL_RUNSPEED, SKL_TURNSPEED, SKL_ATTACKDIST, SKL_ACTIVEDIST
 action Skull()
@@ -66,7 +67,7 @@ void SKULL_Update()
 	{
 		if (player != NULL)
     	{
-    		DEBUG_VAR(ptr->SKL_STATE, 50);
+    		//DEBUG_VAR(ptr->SKL_STATE, 50);
 			if (ptr->DAMAGE_HIT > 0)
 			{
 				ptr->roll = 0;
@@ -316,6 +317,7 @@ void SKULL__hit(ENTITY* ptr)
 	if (ptr->HEALTH <= 0)
 	{
 		reset(ptr, TRANSLUCENT);
+		snd_play(skull_snd_death, 100, 0);
 		ptr->SKL_STATE = SKL_STATE_DIE;
 	}
 	else if (ptr->SKL_COUNTER >= 40)
@@ -395,8 +397,9 @@ void spawnskull()
 	wait(-1);
 	//while(1)
 	{
-		//ENTITY* ptr = ent_create("whiskas.mdl", vector(5800,-6050,250), Skull); // biodome
+		ENTITY* ptr = ent_create("whiskas.mdl", vector(5800,-6050,250), Skull); // biodome
 		ENTITY* ptr = ent_create("whiskas.mdl", vector(1288,0,250), Skull);
 		wait(-30);
 	}
+	
 }

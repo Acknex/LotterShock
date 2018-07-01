@@ -132,7 +132,15 @@ SOUND * weapons_snd_flamethrower_end = "flamethrower_end_snd.wav";
 
 void weapons_add(int id)
 {
+    int i, len = 0;
+    for(i = 1; i < WEAPONS_COUNT; i++)
+    {
+        if(weapons.weapon[i].unlocked)
+            len += 1;
+    }
 	weapons.weapon[id].unlocked = true;
+    if(len == 0)
+        weapons.current = id;
 }
 
 void weapons_erect_sword()
@@ -140,20 +148,38 @@ void weapons_erect_sword()
 	weapons.swordLength += 1;
 }
 
+int weapons_get_max_ammo(int id)
+{
+	if(id > 0 && id < WEAPONS_COUNT)
+	return (int)(weapons.weapon[id].max_ammo);
+	else
+	return 0;
+}
 int weapons_get_max_ammo()
 {
 	if(weapons.current > 0)
-	return (int)(WEAPONS_CURRENT.max_ammo);
+	return weapons_get_max_ammo(weapons.current);
 	else
 	return 0;
 }
 
+int weapons_get_ammo(int id)
+{
+	if(id > 0 && id < WEAPONS_COUNT)
+	return (int)(weapons.weapon[id].ammo);
+	else
+	return 0;
+}
 int weapons_get_ammo()
 {
 	if(weapons.current > 0)
-	return (int)(WEAPONS_CURRENT.ammo);
+	return weapons_get_ammo(weapons.current);
 	else
 	return 0;
+}
+void weapons_add_ammo(int weaponType, var amount)
+{
+	weapons.weapon[weaponType].ammo = clamp(weapons.weapon[weaponType].ammo + amount, 0, weapons_get_max_ammo(weaponType));
 }
 
 int weapons_get_current()
@@ -173,10 +199,6 @@ float rotateMatrix[16];
 
 void weapons_init()
 {
-	int i;
-	for(i = 1; i <= WEAPONS_COUNT; i++)
-	weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
-
 	on_o = weapons_erect_sword;
 
 	memset(&weapons, 0, sizeof(weapons_t));
@@ -196,9 +218,6 @@ void weapons_init()
 	weapons.weapon[WEAPON_CELLGUN].max_ammo      = 150;
 	weapons.weapon[WEAPON_FLAMETHROWER].max_ammo = 300;
 
-	int i;
-	for(i = 1; i <= WEAPONS_COUNT; i++)
-	weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
 
 	//weapons_wp_cellgun.material = mtl_model;
 	//ent_mtlset(weapons_wp_cellgun,trident_sphere_mat,2);
@@ -213,6 +232,13 @@ void weapons_init()
 void weapons_open()
 {
 	weapons.current = 0;
+	
+	int id;
+	for(id = 1; id <= WEAPONS_COUNT; id++)
+	{
+		weapons.weapon[id].unlocked = false;
+		weapons.weapon[id].ammo = weapons.weapon[id].max_ammo;
+	}
 }
 
 //! search next unlocked weapon in the given direction.
@@ -611,6 +637,7 @@ VECTOR* weapons_shotgun_get_muzzle_pos(ENTITY* ent, VECTOR* v, VECTOR* vdir)
 void weapons_update()
 {
 	int i;
+#ifdef DEBUG
 	if(key_1) weapons_add(WEAPON_SWORD);
 	if(key_2) weapons_add(WEAPON_SHOTGUN);
 	if(key_3) weapons_add(WEAPON_CELLGUN);
@@ -620,6 +647,7 @@ void weapons_update()
 		for(i = 1; i <= WEAPONS_COUNT; i++)
 		weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
 	}
+#endif
 
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_UP))
 	weapons_select_next(1);

@@ -1,6 +1,10 @@
 #ifndef MOVEMENT_H
 	#define MOVEMENT_H
 
+    bool movement_cheat_clipmode = false;
+
+    bool movement_cheat_invincibility = false;
+
 	void movement_close();
 
 	void movement_update();
@@ -9,6 +13,8 @@
 
 	var playerGetSpeed();
 
+	void player_initSpawn();
+	
 	VECTOR* playerGetSpeedVec();
 
 	void playerAddSpeed(VECTOR* v);
