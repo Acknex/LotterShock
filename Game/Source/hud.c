@@ -289,6 +289,8 @@ void hud_hide()
 	//reset(HUD_Ammo_label, SHOW);
 	reset(HUD_Ammo_bars, SHOW);
 	reset(HUD_Ammo_infotext, SHOW);
+	reset(HUD_background, SHOW);
+	reset(HUD_gunframe, SHOW);
 	
 	int i;
 	for(i = 0; i<4; ++i)
