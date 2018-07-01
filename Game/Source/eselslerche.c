@@ -61,7 +61,7 @@ action Eselslerche()
 	if(my->EL_TURNSPEED == 0) my->EL_TURNSPEED = 10;
 	if(my->EL_ANIMSPEED == 0) my->EL_ANIMSPEED = 5;
 	if(my->EL_EXPLODEDIST == 0) my->EL_EXPLODEDIST = 300;
-	if(my->EL_ACTIVEDIST == 0) my->EL_ACTIVEDIST = 5000;
+	if(my->EL_ACTIVEDIST == 0) my->EL_ACTIVEDIST = 3000;
 	my->HEALTH = 50;
 	ENEMY_HIT_init(my);
 	vec_scale(&my->scale_x, 2);
