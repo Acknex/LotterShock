@@ -56,7 +56,7 @@ out_frag ps(out_ps In)
 	float4 color = tex2D(sTexture, In.uv0);
 	
 	In.vcolor += 1;
-	float glowFactor = saturate(color.b - color.r) * 5.0;
+	float glowFactor = saturate(max(abs(color.b - color.r), abs(color.b - color.r))) * 5.0;
 	Out.glow.rgb = glowFactor * color.rgb*In.vcolor;
 	Out.glow.a = 1.0;
 	

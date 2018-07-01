@@ -5,6 +5,9 @@
 #include <fog>
 #include <normal>
 
+float4 vecAmbient;
+float4 vecFogColor;
+
 Texture entSkin1;
 sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Linear; MagFilter = Linear; MinFilter = Linear; };
 
@@ -19,7 +22,7 @@ struct out_ps // Output to the pixelshader fragment
 
 out_ps vs(
 	float4 inPos : POSITION,
-	float3 inNormal : NORMAL
+	float3 inNormal : NORMAL,
 	float2 inTexCoord0 : TEXCOORD0)
 {
 	out_ps Out;
@@ -27,8 +30,8 @@ out_ps vs(
 	Out.Pos = DoTransform(inPos);
 	Out.fog = (Out.Pos.z - vecFog.x) * vecFog.z;
 	Out.uv0 = inTexCoord0;
-	Out.worldPos = mul(matWorld, float4(inPos.xyz, 1.0));
-	Out.normal = mul(matWorld, float4(inNormal, 1.0));
+	Out.worldPos = mul(inPos, matWorld);
+	Out.normal = mul(inNormal, matWorld);
 	
 	return Out;
 }
@@ -36,22 +39,23 @@ out_ps vs(
 float4 ps(out_ps In): COLOR
 {
 	In.normal = normalize(In.normal);
-	float viewDistance = distance(vecViewPos.xyz - In.worldPos);
 	
 	float4 color;
 	color.rgb = tex2D(sTexture, In.uv0);
 	color.a = 1.0;
 	
-	float3 light = vecAmbient.rgb;
+	float3 light = vecAmbient.rgb*0.25;
 	
 	for(int i = 0; i < 8; i++)
 	{
-		float3 lightDir = vecLightPos[i].xyz - In.worldPos;
-		float lightDistance = length(lightDir);
-		float lightFactor = saturate(dot(In.normal, lightDir/lightDistance));
-		float lightAttenuation = vecLightPos[i].w / (lightDistance * lightDistance);
-		
-		light += lightFactor * lightAttenuation * vecLightColor[i].rgb;
+		if(vecLightPos[i].w > 0)
+		{
+			float3 lightDir = vecLightPos[i].xyz - In.worldPos;
+			float lightDistance = length(lightDir);
+			float lightFactor = saturate(dot(In.normal, lightDir/lightDistance))*0.5+0.5;
+			float lightAttenuation = saturate(1-lightDistance/vecLightPos[i].w);// / (lightDistance * lightDistance);
+			light += 1.5*lightFactor * lightAttenuation*lightAttenuation * vecLightColor[i].rgb;
+		}
 	}
 	
 	color.rgb *= light;

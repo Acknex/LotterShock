@@ -51,3 +51,39 @@ void main()
 {
 	level_load("menue.wmb");
 }
+
+action act_rotator()
+{
+
+	my->alpha = 100;
+	//setSsaoSurface(my, SSAO_TYPE_BINARY);
+
+
+	if(my->skill[0] == 0)
+
+	my->skill[0] = 10;
+
+	while(1)
+
+	{
+
+		my->pan -= my->skill[0]*time_step;
+
+		wait(1);
+
+	}
+
+}
+
+action act_lightflares()
+
+{
+	
+	my->alpha = 100;
+
+	my->flags |= (BRIGHT|TRANSLUCENT|NOFOG);
+   set(my, FLAG1);
+   
+	my.emask &= ~DYNAMIC;
+	//setSsaoSurface(my, SSAO_TYPE_BINARY);
+}
