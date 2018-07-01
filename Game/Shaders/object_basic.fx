@@ -20,6 +20,12 @@ struct out_ps // Output to the pixelshader fragment
 	float3 normal : TEXCOORD3;
 };
 
+struct out_frag // fragment color output
+{
+	float4 glow : COLOR0;
+	float4 color : COLOR1;
+};
+
 out_ps vs(
 	float4 inPos : POSITION,
 	float3 inNormal : NORMAL,
@@ -36,7 +42,7 @@ out_ps vs(
 	return Out;
 }
 
-float4 ps(out_ps In): COLOR
+out_frag ps(out_ps In)
 {
 	In.normal = normalize(In.normal);
 	
@@ -59,11 +65,13 @@ float4 ps(out_ps In): COLOR
 	}
 	
 	color.rgb *= light;
-	
 	color = lerp(color, vecFogColor, saturate(In.fog));
 	
+	out_frag Out;
+	Out.color = color;
+	Out.glow = 0.0;
 	
-	return color;
+	return Out;
 }
 
 

@@ -7,6 +7,7 @@
 
 float4 vecAmbient;
 float4 vecFogColor;
+float fAlpha;
 
 Texture entSkin1;
 sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Linear; MagFilter = Linear; MinFilter = Linear; };
@@ -18,6 +19,12 @@ struct out_ps // Output to the pixelshader fragment
 	float fog : TEXCOORD1;
 	float3 worldPos : TEXCOORD2;
 	float3 normal : TEXCOORD3;
+};
+
+struct out_frag // fragment color output
+{
+	float4 glow : COLOR0;
+	float4 color : COLOR1;
 };
 
 out_ps vs(
@@ -36,14 +43,19 @@ out_ps vs(
 	return Out;
 }
 
-float4 ps(out_ps In): COLOR
+out_frag ps(out_ps In)
 {
+	out_frag Out;
+	
 	In.normal = normalize(In.normal);
+	float3 viewDirection = vecViewPos.xyz - In.worldPos;
+	float viewDistance = length(viewDirection);
+	viewDirection = normalize(viewDirection);
 	
 	float4 color;
-	color.rgb = tex2D(sTexture, In.uv0);
-	color.a = 1.0;
+	color = tex2D(sTexture, In.uv0);
 	
+	float3 specular = 0.0;
 	float3 light = vecAmbient.rgb*0.25;
 	
 	for(int i = 0; i < 8; i++)
@@ -55,15 +67,24 @@ float4 ps(out_ps In): COLOR
 			float lightFactor = saturate(dot(In.normal, lightDir/lightDistance))*0.5+0.5;
 			float lightAttenuation = saturate(1-lightDistance/vecLightPos[i].w);// / (lightDistance * lightDistance);
 			light += 1.5*lightFactor * lightAttenuation*lightAttenuation * vecLightColor[i].rgb;
+			
+			float3 lightHalf = normalize(viewDirection + lightDir/lightDistance);
+			float lightSpecularFactor = saturate(dot(lightHalf, In.normal));
+			lightSpecularFactor = pow(lightSpecularFactor, 30.0);
+			specular += lightSpecularFactor * vecLightColor[i].rgb * color.r;
 		}
 	}
 	
 	color.rgb *= light;
+	color.rgb += specular;
 	
-	color = lerp(color, vecFogColor, saturate(In.fog));
+	color.rgb = lerp(color.rgb, vecFogColor.rgb, saturate(In.fog));
 	
+	Out.color = color;
+	Out.color.a *= fAlpha;
+	Out.glow = 0.0;
 	
-	return color;
+	return Out;
 }
 
 
@@ -73,7 +94,5 @@ technique object
 	{
 		VertexShader = compile vs_3_0 vs();
 		PixelShader = compile ps_3_0 ps();
-		AlphaBlendEnable = false;
-		ZWriteEnable = true;
 	}
 }

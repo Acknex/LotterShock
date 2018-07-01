@@ -68,6 +68,7 @@ action Eselslerche()
 	set(my, SHADOW);
 	c_setminmax(me);
 	my->min_z += 30;
+	my->material = matObject;
 }
 
 void ESELSLERCHE_GlobalInit()
