@@ -88,7 +88,10 @@ TEXT* HUD_Ammo_infotext =
 PANEL* HUD_HP_text =
 {
 	bmap = "HP.png";
-	flags = TRANSLUCENT;
+	blue = 255;
+	green = 255;
+	red = 255;
+	flags = TRANSLUCENT | LIGHT;
 	layer = 3;
 }
 TEXT* HUD_HP_infotext =	
@@ -98,10 +101,9 @@ TEXT* HUD_HP_infotext =
 	blue = 255;
 	green = 255;
 	red = 255;
-	size_x = 10000;
 	
 	string ("100");
-	flags = CENTER_X | CENTER_Y ;
+	flags = CENTER_X | CENTER_Y | LIGHT;
 } 
 
 PANEL* HUD_Head =
@@ -327,19 +329,26 @@ void hud_update()
 	STRING *infostring = str_printf(NULL, "%d", (int)player_health);
 	str_cpy((HUD_HP_infotext->pstring)[0], infostring);
 	//
-   /*hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, player_health, player_maxhealth);
-   
-   var player_healthratio = player_health/player_maxhealth;
-   if(player_healthratio < 0.3)
-   {
-	   var hp_flicker_frequency = 50/(1.+2*player_healthratio);
+	//hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, player_health, player_maxhealth);
+	
+	var player_healthratio = player_health/player_maxhealth;
+	//if(player_healthratio < 0.6)
+	{
+		var hp_flicker_frequency = 50/(1.+player_healthratio);
 	   
-	   var hp_flicker_brightness = 60;
-	   
-		HUD_HP_bars.red = (255-2*hp_flicker_brightness)*hud_flicker_coefficient(hp_flicker_frequency)+ 2*hp_flicker_brightness;
-		HUD_HP_bars.green = (255-hp_flicker_brightness)*hud_flicker_coefficient(hp_flicker_frequency) + hp_flicker_brightness;
-		HUD_HP_bars.blue = (255-hp_flicker_brightness)*hud_flicker_coefficient(hp_flicker_frequency) + hp_flicker_brightness;
-	}*/
+		var hp_flicker_brightness = 60*(player_healthratio);
+		
+		var minalpha = 50*player_healthratio;
+		var varalpha = 50-minalpha;
+		HUD_HP_infotext.alpha = minalpha + varalpha*(1-hud_flicker_coefficient(hp_flicker_frequency));
+		HUD_HP_text.alpha = HUD_HP_infotext.alpha;
+		
+		HUD_HP_infotext.red = (255-2*hp_flicker_brightness)*hud_flicker_coefficient(hp_flicker_frequency)+ 2*hp_flicker_brightness;
+		HUD_HP_infotext.green = (255-hp_flicker_brightness)*hud_flicker_coefficient(hp_flicker_frequency) + hp_flicker_brightness;
+		HUD_HP_infotext.blue = (255-hp_flicker_brightness)*hud_flicker_coefficient(hp_flicker_frequency) + hp_flicker_brightness;
+		
+		vec_set(HUD_HP_text.blue, HUD_HP_infotext.blue);
+	}
 	
 	
 	int weaponID = weapons_get_current();
