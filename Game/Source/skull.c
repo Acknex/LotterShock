@@ -388,7 +388,7 @@ void SKULL__shootEffect(PARTICLE *p)
 	p.event = SKULL__fireParticle;
 }
 
-
+/*
 void spawnskull()
 {
 	
@@ -400,3 +400,4 @@ void spawnskull()
 		wait(-30);
 	}
 }
+*/
