@@ -34,6 +34,8 @@
 #define SPUTNIK_STATE_DIE 4
 #define SPUTNIK_STATE_DEAD 5
 
+#define SPUTNIK_FEET 15
+
 
 BMAP* SPUTNIK_bmapSplatter[5];
 
@@ -67,16 +69,16 @@ action Sputnik()
 	vec_scale(&my->scale_x, 1.2);
 	set(my, SHADOW);
 	c_setminmax(me);
-	my->min_z += 30;
+	my->min_z += SPUTNIK_FEET;
 }
 
 void SPUTNIK_GlobalInit()
 {
-	SPUTNIK_bmapSplatter[0] = bmap_create("splatter_green_01.png");
-	SPUTNIK_bmapSplatter[1] = bmap_create("splatter_green_02.png");
-	SPUTNIK_bmapSplatter[2] = bmap_create("splatter_green_03.png");
-	SPUTNIK_bmapSplatter[3] = bmap_create("splatter_green_04.png");
-	SPUTNIK_bmapSplatter[4] = bmap_create("splatter_green_05.png");
+	SPUTNIK_bmapSplatter[0] = bmap_create("splatter_purple_01.png");
+	SPUTNIK_bmapSplatter[1] = bmap_create("splatter_purple_02.png");
+	SPUTNIK_bmapSplatter[2] = bmap_create("splatter_purple_03.png");
+	SPUTNIK_bmapSplatter[3] = bmap_create("splatter_purple_04.png");
+	SPUTNIK_bmapSplatter[4] = bmap_create("splatter_purple_05.png");
 }
 
 void SPUTNIK_Init()
@@ -104,8 +106,9 @@ void SPUTNIK_Update()
 						case 1: ptr->SPUTNIK_SOUNDHANDLE = snd_play(sputnik_snd_hit2, 100, 0); break;
 					}
 				}
-				SPLATTER_splat(&ptr->x, vector(73.0/255.0,159.0/255.0,0.0));
-				SPLATTER_explode(10, &ptr->x, 200, SPUTNIK_bmapSplatter, 5);
+				ptr->push = -100;
+				SPLATTER_splat(&ptr->x, vector(100.0/255.0, 67.0/255.0, 192.0/255.0));
+				SPLATTER_explode(10, &ptr->x, 500, SPUTNIK_bmapSplatter, 5);
 			}
 			
 			if (ptr->SPUTNIK_SOUNDHANDLE && (snd_playing(ptr->SPUTNIK_SOUNDHANDLE) == 0))
@@ -159,16 +162,20 @@ void SPUTNIK_Update()
 			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;
 			c_trace(from, to, mode);
 			if (HIT_TARGET)
-				ptr->z = hit.z - ptr->min_z + 30;
+				ptr->z = hit.z - ptr->min_z + SPUTNIK_FEET;
 		}
 		
 		if (ptr->HEALTH <= 0)
 		{
-			ptr->EL_STATE = EL_STATE_DIE;
-			switch(integer(random(2)))
+			if ((ptr->SPUTNIK_STATE != SPUTNIK_STATE_DIE) && (ptr->SPUTNIK_STATE != SPUTNIK_STATE_DEAD))
 			{
-				case 0: snd_play(sputnik_snd_death1, 100, 0); break;
-				case 1: snd_play(sputnik_snd_death2, 100, 0); break;
+				ptr->SPUTNIK_STATE = SPUTNIK_STATE_DIE;
+				ptr->SPUTNIK_ANIMSTATE = 0;
+				switch(integer(random(2)))
+				{
+					case 0: snd_play(sputnik_snd_death1, 100, 0); break;
+					case 1: snd_play(sputnik_snd_death2, 100, 0); break;
+				}
 			}
 		}
 	}	
@@ -250,7 +257,7 @@ void SPUTNIK__follow(ENTITY* ptr)
 		{
 			if (ptr->SPUTNIK_DIDATTACK == 0)
 			{
-				// Spieler Angreifen
+				playerAddHealth(-10-random(10));
 			}
 			ptr->SPUTNIK_DIDATTACK = 1;
 		}
@@ -259,7 +266,7 @@ void SPUTNIK__follow(ENTITY* ptr)
 			ptr->SPUTNIK_DIDATTACK = 0;
 		}
 	}
-	else if ( !SCAN_IsPlayerInSight(ptr, ptr->SPUTNIK_ACTIVEDIST, 90) && !SCAN_IsPlayerNear(ptr, ptr->SPUTNIK_ACTIVEDIST + 100) ) // Player is to far away
+	else if ( !SCAN_IsPlayerInSight(ptr, ptr->SPUTNIK_ATTACKRANGE, 75) && SCAN_IsPlayerBehind(ptr, 1200) ) // Player is to far away
 	{
 		ptr->SPUTNIK_STATE = SPUTNIK_STATE_WAIT;
 	}
@@ -275,11 +282,10 @@ void SPUTNIK__follow(ENTITY* ptr)
 
 void SPUTNIK__die(ENTITY* ptr)
 {
-	var animState;
-	animState = clamp(ptr->SPUTNIK_ANIMSTATE, 0, 50);
+	ptr->SPUTNIK_ANIMSTATE += 5 * time_step;
 	ent_animate(ptr, SPUTNIK_DIEANIM, ptr->SPUTNIK_ANIMSTATE, 0);
 	/* transitions */
-	if(animState >= 50)
+	if(ptr->SPUTNIK_ANIMSTATE >= 90)
 	{
 		ptr->SPUTNIK_STATE = SPUTNIK_STATE_DEAD;
 		set(ptr, PASSABLE);
@@ -292,9 +298,9 @@ void sputnik_spawn_startup()
 {
 	
 	wait(-10);
-	while(0)
+	while(1)
 	{
-		ENTITY* ptr = ent_create("sputnik.mdl", vector(5920,-6050,250), Sputnik);
+		ENTITY* ptr = ent_create("sputnik.mdl", vector(5920 - 500 + random(1000), -6050 - 500 + random(1000), 250), Sputnik);
 		wait(-10);
 	}
 	ENTITY* ptr = ent_create("sputnik.mdl", vector(6500,-6050,250), Sputnik);
