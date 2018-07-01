@@ -38,6 +38,12 @@ void itemCollectible_effect(ENTITY *item)
 			weapons_add_ammo(item->SUBSYSTEM_skill_a, item->SUBSYSTEM_skill_b);
 			ent_playsound(player, snd_beep, 100);
 			break;
+			
+		case ITEM_WEAPON:
+			// unlock
+			weapons_add(item->SUBSYSTEM_skill_a);
+			ent_playsound(player, snd_beep, 100);
+			break;
 	}
 	// remove me
 	item->SK_ENTITY_DEAD = 1;
@@ -63,6 +69,11 @@ void collectibles_update() {
 	}
 }
 
+/**********
+MEDIPACK
+
+	condition: player hurt
+**********/
 action Medipack() {
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_MEDIPACK;
@@ -72,10 +83,19 @@ void medipack_init() {
 	ent_create("medipack.mdl", vector(0,0,0), Medipack);
 }
 
+/**********
+KEY
+	condition: none
+**********/
 action keycard() {
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_KEYCARD;
 }
+
+/**********
+AMMO
+	condition: ammo not full
+**********/
 
 void item_ammo(int ammoType, var amount)
 {
@@ -84,17 +104,45 @@ void item_ammo(int ammoType, var amount)
 	my->SUBSYSTEM_skill_a = ammoType;
 	my->SUBSYSTEM_skill_b = amount;
 }
-
-action shotgun_ammo()
+action ammo_shotgun()
 {
 	item_ammo(WEAPON_SHOTGUN, 6);
 	
 }
-action cellgun_ammo()
+action ammo_cellgun()
 {
 	item_ammo(WEAPON_CELLGUN, 30);
 }
-action flamethrower_ammo()
+action ammo_flamethrower()
 {
 	item_ammo(WEAPON_FLAMETHROWER, 75);
+}
+
+/**********
+WEAPONS
+	condition: none
+**********/
+
+void item_weapon(int weaponType)
+{
+	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
+	my->SUBSYSTEM_PARAMETER = ITEM_WEAPON;
+	my->SUBSYSTEM_skill_a = weaponType;
+}
+
+action weapon_sword()
+{
+	item_weapon(WEAPON_SWORD);
+}
+action weapon_shotgun()
+{
+	item_weapon(WEAPON_SHOTGUN);
+}
+action weapon_cellgun()
+{
+	item_weapon(WEAPON_CELLGUN);
+}
+action weapon_flamethrower()
+{
+	item_weapon(WEAPON_FLAMETHROWER);
 }
