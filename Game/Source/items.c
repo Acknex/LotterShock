@@ -3,6 +3,8 @@
 //ammo
 #include "weapons.h"
 
+SOUND* snd_catch = "catch.wav";
+
 bool itemCollectible_condition(ENTITY *item)
 {
 	switch(item->SUBSYSTEM_PARAMETER)
@@ -24,25 +26,25 @@ void itemCollectible_effect(ENTITY *item)
 		case ITEM_MEDIPACK:
 			// increase player health
 			playerAddHealth(MEDIPACK_HEALTH_PLUS);
-			ent_playsound(item, medipack_snd, 100);
+			snd_play(medipack_snd, 100, 0);
 			break;
 			
 		case ITEM_KEYCARD:
 			// add to inventory
 			keys[item.KEYCARD_KEY_ID] = 1;
-			ent_playsound(player, snd_beep, 100);
+			snd_play(snd_catch, 100, 0);
 			break;
 			
 		case ITEM_AMMUNITION:
 			// add to inventory
 			weapons_add_ammo(item->SUBSYSTEM_skill_a, item->SUBSYSTEM_skill_b);
-			ent_playsound(player, snd_beep, 100);
+			snd_play(snd_catch, 100, 0);
 			break;
 			
 		case ITEM_WEAPON:
 			// unlock
 			weapons_add(item->SUBSYSTEM_skill_a);
-			ent_playsound(player, snd_beep, 100);
+			snd_play(snd_catch, 100, 0);
 			break;
 	}
 	// remove me
