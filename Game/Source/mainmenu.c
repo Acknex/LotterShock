@@ -191,8 +191,8 @@ action act_lightflares()
 {
 	my->alpha = 100;
 
-	my->flags |= (BRIGHT|TRANSLUCENT|NOFOG);
-	set(my, FLAG1);
+	my->flags |= (BRIGHT|TRANSLUCENT);
+
    
 	my.emask &= ~DYNAMIC;
 }
