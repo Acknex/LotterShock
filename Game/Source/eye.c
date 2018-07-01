@@ -17,8 +17,8 @@
 #define EYE_ZOFFSET skill35
 
 #define EYE_STATE_INACTIVE 0
-#define SKL_STATE_WAIT 1
-#define SKL_STATE_RUN 2
+#define EYE_STATE_WAIT 1
+#define EYE_STATE_RUN 2
 #define EYE_STATE_ATTACK 3
 
 BMAP* EYE_BmapDecal = "bulletHoleCool.tga";
