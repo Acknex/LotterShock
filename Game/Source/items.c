@@ -12,18 +12,20 @@ void medipack_update() {
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_MEDIPACK) {
 		ptr->pan += time_step * 10;
 		
-		var trace = c_trace(ptr.x, player.x, IGNORE_ME);
-		if ((trace > 0) && (trace < 100)) {
-			if (you == player) {
-				
-				if (player) {
-					// increase player health
-					//player->health +=MEDIPACK_HEALTH_PLUS;
-					playerAddHealth(MEDIPACK_HEALTH_PLUS);
-					ent_playsound(ptr, medipack_snd, 100);
+		if (playerGetHealth() < playerGetMaxHealth()) {
+			var trace = c_trace(ptr.x, player.x, IGNORE_ME);
+			if ((trace > 0) && (trace < 100)) {
+				if (you == player) {
 					
-					// remove me
-					ptr->SK_ENTITY_DEAD = 1;
+					if (player) {
+						// increase player health
+	
+						playerAddHealth(MEDIPACK_HEALTH_PLUS);
+						ent_playsound(ptr, medipack_snd, 100);
+						
+						// remove me
+						ptr->SK_ENTITY_DEAD = 1;
+					}
 				}
 			}
 		}
