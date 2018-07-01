@@ -43,6 +43,7 @@ action Skull()
 	set(my, SHADOW);
 	SKULL__toFloor(me);
 	c_setminmax(me);
+	my->material = matSkull;
 }
 
 void SKULL_GlobalInit()
@@ -126,10 +127,27 @@ void SKULL_Update()
 				}
 
 			}	
-			
+
 			if (ptr->SKL_STATE != SKL_STATE_DIE && ptr->SKL_STATE != SKL_STATE_DEAD)
 			{
 				SKULL__toFloor(ptr);
+				int vertices[] = {73, 200, 67, 201, 68};
+				CONTACT contact;
+				int i;
+				for(i = 0; i < 5; i++)
+				{
+					ent_getvertex(ptr, &contact, vertices[i]);
+					vec_scale(contact.x, ptr->scale_x);
+					vec_rotate(contact.x, ptr->pan);
+					vec_add(contact.x, ptr->x);
+					
+					VECTOR velocity;
+					vec_set(velocity, nullvector);
+					velocity.x = -20 - random(20);
+					velocity.z = 20 + random(30);
+					vec_rotate(velocity, ptr->pan);
+					effect(SKULL__fireEffect, 1, contact.x, velocity);
+				}
 			}
 		}
 	
@@ -297,8 +315,7 @@ void SKULL__retreat(ENTITY* ptr)
 	}
 }
 
-void spawnskull()
-{
+void spawnskull(){
 	
 	wait(-5);
 	//while(1)
