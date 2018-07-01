@@ -37,7 +37,7 @@ out_ps vs(
 	Out.fog = (Out.Pos.z - vecFog.x) * vecFog.z;
 	Out.uv0 = inTexCoord0;
 	Out.worldPos = mul(inPos, matWorld);
-	Out.normal = mul(matWorld, float4(inNormal, 0.0));
+	Out.normal = mul(inNormal, matWorld);
 	
 	return Out;
 }
@@ -56,16 +56,18 @@ out_frag ps(out_ps In)
 	Out.glow.rgb = float3(redGlow * 5.0, 0.0, 0.0);
 	Out.glow.a = 1.0;
 	
-	float3 light = vecAmbient.rgb;
+	float3 light = vecAmbient.rgb*0.25;
 	
 	for(int i = 0; i < 8; i++)
 	{
-		float3 lightDir = vecLightPos[i].xyz - In.worldPos;
-		float lightDistance = length(lightDir);
-		float lightFactor = saturate(dot(In.normal, lightDir/lightDistance));
-		float lightAttenuation = vecLightPos[i].w / (lightDistance * lightDistance);
-		
-		light += lightFactor * lightAttenuation * vecLightColor[i].rgb;
+		if(vecLightPos[i].w > 0)
+		{
+			float3 lightDir = vecLightPos[i].xyz - In.worldPos;
+			float lightDistance = length(lightDir);
+			float lightFactor = saturate(dot(In.normal, lightDir/lightDistance))*0.5+0.5;
+			float lightAttenuation = saturate(1-lightDistance/vecLightPos[i].w);// / (lightDistance * lightDistance);
+			light += 1.5*lightFactor * lightAttenuation*lightAttenuation * vecLightColor[i].rgb;
+		}
 	}
 	
 	color.rgb *= light;
