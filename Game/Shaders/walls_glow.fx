@@ -32,8 +32,8 @@ out_ps vs(
 	Out.Pos = DoTransform(inPos);
 	Out.uv0 = inTexCoord0;
 	Out.uv1 = inTexCoord1;
-	Out.worldPos = mul(matWorld, float4(inPos.xyz, 1.0));
-	Out.normal = mul(matWorld, float4(inNormal, 1.0));
+	Out.worldPos = mul(inPos, matWorld);
+	Out.normal = mul(inNormal, matWorld);
 	Out.vcolor = inTexCoord2;
 	
 	return Out;
@@ -51,14 +51,18 @@ float4 ps(out_ps In): COLOR
 	
 	float3 light = tex2D(sLightmap, In.uv1).rgb;
 	
+	float3 light = vecAmbient.rgb*0.25;
+	
 	for(int i = 0; i < 8; i++)
 	{
-		float3 lightDir = vecLightPos[i].xyz - In.worldPos;
-		float lightDistance = length(lightDir);
-		float lightFactor = saturate(dot(In.normal, lightDir/lightDistance));
-		float lightAttenuation = vecLightPos[i].w / (lightDistance * lightDistance);
-		
-		light += lightFactor * lightAttenuation * vecLightColor[i].rgb;
+		if(vecLightPos[i].w > 0)
+		{
+			float3 lightDir = vecLightPos[i].xyz - In.worldPos;
+			float lightDistance = length(lightDir);
+			float lightFactor = saturate(dot(In.normal, lightDir/lightDistance))*0.5+0.5;
+			float lightAttenuation = saturate(1-lightDistance/vecLightPos[i].w);// / (lightDistance * lightDistance);
+			light += 1.5*lightFactor * lightAttenuation*lightAttenuation * vecLightColor[i].rgb;
+		}
 	}
 	
 	color.rgb *= lerp(light, float3(1.0), glow);
