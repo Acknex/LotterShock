@@ -36,6 +36,8 @@ typedef struct
 
 INPUT input[INPUT_MAX];
 
+bool input_cheats_enabled = false;
+
 void input_update();
 
 void input_add(int inputID, int inputType, int value);

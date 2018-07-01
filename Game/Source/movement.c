@@ -51,6 +51,8 @@ void player_initSpawn()
 {
 	playerHealthMax = 100;
 	playerHealth = playerHealthMax;
+    movement_cheat_invincibility = false;
+    movement_cheat_clipmode = false;
 }
 
 void movement_close()
@@ -73,8 +75,12 @@ var playerGetMaxHealth()
 	return playerHealthMax;
 }
 
+
+
 void playerAddHealth(var amount)
 {
+    if((amount < 0) && movement_cheat_invincibility)
+        return; // haha
 	playerHealth = clamp(playerHealth+amount,0,playerHealthMax);
 	if(amount < 0) 
 	{
@@ -334,7 +340,11 @@ void movement_update()
 		pp_desync(sinv(15*total_ticks)*15);
 		return;
 	}
-	if(key_t)
+#ifdef DEBUG
+    if(key_t || movement_cheat_clipmode)
+#else
+    if(movement_cheat_clipmode)
+#endif
 	{
 		camera.pan += -mouse_force.x*10*time_step;
 		camera.pan %= 360;

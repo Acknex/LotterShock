@@ -91,8 +91,6 @@ void ESELSLERCHE_Update()
 	{
 		if (player != NULL)
     	{
-    		DEBUG_VAR(ptr->EL_STATE, 50);
-    		//DEBUG_VAR(ptr->EL_ACTIVEDIST, 95);
 
 			ptr->EL_ANIMSTATE += ptr->EL_ANIMSPEED * time_step;
 			ptr->EL_ANIMSTATELIM = clamp(ptr->EL_ANIMSTATE, 0, 100);
@@ -252,8 +250,9 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	}
 	else if (
 		!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90) 
-		&& (!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100))
-		&& !ptr->EL_RAMPAGE
+		//&& (!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100))
+ 		&& SCAN_IsPlayerBehind(ptr, 1200)
+ 		&& !ptr->EL_RAMPAGE
 	)
 	{
 		ptr->EL_STATE = EL_STATE_WAIT;

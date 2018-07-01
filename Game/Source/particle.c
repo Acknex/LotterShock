@@ -49,6 +49,7 @@ void PARTICLE__laser_init(PARTICLE* p)
 void PARTICLE__laser_fade(PARTICLE* p)
 {
 	ENTITY* ent = ptr_for_handle(p->skill_a);
-	vec_lerp(&p->vel_x,&p->vel_x,&ent->EYE_LASERDIST,0.5);
+	if (ent)
+		vec_lerp(&p->vel_x,&p->vel_x,&ent->EYE_LASERDIST,0.5);
 	p->alpha = maxv(p->alpha - 5* time_step, 0);
 }

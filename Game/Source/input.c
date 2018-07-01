@@ -1,7 +1,15 @@
 #include "input.h"
 #include "ackXinput.h"
+#include "weapons.h"
+#include "dmgsys.h"
+#include "movement.h"
+
+#include <windows.h>
 
 //////////////////////////////
+
+SOUND * input_snd_cheat_unlocked = "snd_jingle.ogg";
+SOUND * input_snd_cheat_tap = "snd_button_tap.wav";
 
 bool input_down(int id)
 {
@@ -11,53 +19,6 @@ bool input_down(int id)
 bool input_hit(int id)
 {
     return input[id].justPressed;
-}
-
-void input_update()
-{
-    int i,k;
-
-    if(ackXInputGamepadUse)
-        ackXInputGetState3();
-
-    for(i = 0; i < INPUT_MAX; i++)
-    {
-        INPUT *pinput = &input[i];
-
-        char prevDown = pinput->down;
-
-        pinput->down = 0;
-
-        for(k = 0; k < 4; k++)
-        {
-            pinput->factor = 1;
-            if(pinput->scanCodes[k] != -1)
-            {
-                if(key_pressed(pinput->scanCodes[k]))
-                    pinput->down = 1;
-            }
-            if(ackXInputGamepadUse)
-            {
-                if(pinput->gamepadKeys[k] != -1)
-                {
-                    if(ackXInputGetButtonState3(pinput->gamepadKeys[k]))
-                        pinput->down = 1;
-                }
-            }
-            if(pinput->useAxis != -1)
-            {
-                /*if(pinput->useAxis == 0)
-                {
-                    if(i == INPUT_LEFT) // fucking shit this is hacknex!
-                    pinput->factor = 1;
-                }*/
-            }
-        }
-        if(pinput->down && !prevDown)
-            pinput->justPressed = 1;
-        else
-            pinput->justPressed = 0;
-    }
 }
 
 void input_add(int inputID, int inputType, int value)
@@ -95,8 +56,146 @@ void input_add(int inputID, int inputType, int value)
     }
 }
 
+#define INPUT_CHEAT_COUNT 5
+
+typedef struct cheatcode_t
+{
+    int position;
+    char const * text;
+    void * trigger;
+} cheatcode_t;
+
+cheatcode_t cheatcodes[INPUT_CHEAT_COUNT];
+
+void input_reset_cheats()
+{
+    int i;
+    for(i = 0; i < INPUT_CHEAT_COUNT; i++)
+    {
+        cheatcodes[i].position = 0;
+    }
+}
+
+void input_put_cheat_char(char c)
+{
+    if(!input_cheats_enabled)
+    {
+        input_reset_cheats();
+        return;
+    }
+
+    int i;
+    bool any = false;
+    for(i = 0; i < INPUT_CHEAT_COUNT; i++)
+    {
+        if((cheatcodes[i].text)[cheatcodes[i].position] == c)
+        {
+            cheatcodes[i].position += 1;
+            if((cheatcodes[i].text)[cheatcodes[i].position] == '\0')
+            {
+                void (*trigger)();
+                trigger = cheatcodes[i].trigger;
+                if(trigger == NULL)
+                    error("input(cheats): cheat code does not have a trigger!");
+                trigger();
+
+                // cheat war erfolgreich: alle cheateingaben zurücksetzen
+                input_reset_cheats();
+                snd_play(input_snd_cheat_unlocked, 100, 0);
+                break;
+            }
+            else
+            {
+                any = true;
+            }
+        }
+        else
+        {
+            cheatcodes[i].position = 0;
+        }
+    }
+    if(any)
+        snd_play(input_snd_cheat_tap, 20, random(200) - 100);
+}
+
+LRESULT CALLBACK input_original_proc_message(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+LRESULT CALLBACK input_proc_message(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+   if (WM_CHAR == message)
+   {
+       input_put_cheat_char((char)wParam);
+   }
+   return input_original_proc_message(hwnd,message,wParam,lParam);
+}
+
+void input_cheat_indestructible()
+{
+    movement_cheat_invincibility = !movement_cheat_invincibility;
+}
+
+void input_cheat_all_weapons()
+{
+    weapons_add(WEAPON_SWORD);
+    weapons_add(WEAPON_SHOTGUN);
+    weapons_add(WEAPON_CELLGUN);
+    weapons_add(WEAPON_FLAMETHROWER);
+}
+
+void input_cheat_all_die()
+{
+    ENTITY * it;
+    for(it = ent_next(NULL); it != NULL; it = ent_next(it))
+    {
+        if(it->SK_SUBSYSTEM < 1000)
+            continue;
+
+        it->DAMAGE_HIT += 25000;
+    }
+}
+
+void input_cheat_wallhack()
+{
+    ENTITY * it;
+    for(it = ent_next(NULL); it != NULL; it = ent_next(it))
+    {
+        if(it->SK_SUBSYSTEM < 1000)
+            continue;
+
+        toggle(it, ZNEAR);
+    }
+}
+
+void input_cheat_clipmode()
+{
+    movement_cheat_clipmode = !movement_cheat_clipmode;
+}
+
 void input_init()
 {
+    memset(cheatcodes, 0, sizeof(cheatcode_t) * INPUT_CHEAT_COUNT);
+
+    if(on_message != input_proc_message)
+    {
+        input_original_proc_message = on_message;	// store the original message loop
+        on_message = input_proc_message; // and replace it by your own
+    }
+
+    cheatcodes[0].text = "iddqd";
+    cheatcodes[0].trigger = input_cheat_indestructible;
+
+    cheatcodes[1].text = "idkfa";
+    cheatcodes[1].trigger = input_cheat_all_weapons;
+
+    cheatcodes[2].text = "idfa";
+    cheatcodes[2].trigger = input_cheat_all_die;
+
+    cheatcodes[3].text = "idspispopd";
+    cheatcodes[3].trigger = input_cheat_clipmode;
+
+    cheatcodes[4].text = "idnoclip";
+    cheatcodes[4].trigger = input_cheat_wallhack;
+
     int i,k;
 
     memset(input, 0, sizeof(INPUT) * INPUT_MAX);
@@ -152,4 +251,52 @@ void input_init()
         ackXInputGamepadUse = 1;
     }
     else ackXInputGamepadUse = 0;
+}
+
+
+void input_update()
+{
+    int i,k;
+
+    if(ackXInputGamepadUse)
+        ackXInputGetState3();
+
+    for(i = 0; i < INPUT_MAX; i++)
+    {
+        INPUT *pinput = &input[i];
+
+        char prevDown = pinput->down;
+
+        pinput->down = 0;
+
+        for(k = 0; k < 4; k++)
+        {
+            pinput->factor = 1;
+            if(pinput->scanCodes[k] != -1)
+            {
+                if(key_pressed(pinput->scanCodes[k]))
+                    pinput->down = 1;
+            }
+            if(ackXInputGamepadUse)
+            {
+                if(pinput->gamepadKeys[k] != -1)
+                {
+                    if(ackXInputGetButtonState3(pinput->gamepadKeys[k]))
+                        pinput->down = 1;
+                }
+            }
+            if(pinput->useAxis != -1)
+            {
+                /*if(pinput->useAxis == 0)
+                {
+                    if(i == INPUT_LEFT) // fucking shit this is hacknex!
+                    pinput->factor = 1;
+                }*/
+            }
+        }
+        if(pinput->down && !prevDown)
+            pinput->justPressed = 1;
+        else
+            pinput->justPressed = 0;
+    }
 }
