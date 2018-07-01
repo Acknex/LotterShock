@@ -982,15 +982,15 @@ weapons_wp_cellgun.skill41 = floatd(weapons.spearpower,100);
 
 }
 
-void weapons_obscure_fix(char * ptr)
+void weapons_obscure_fix(int i)
 {
     /* this fixes the loop in weapons_close() which would not execute when the function was not called */
 }
 
 void weapons_close()
 {
-    weapons_obscure_fix("close!");
-	int i;
+    weapons_obscure_fix(0);
+    int i;
 	for(i = 1; i < WEAPONS_COUNT; i++)
     {
         weapons.weapon[i].ent.flags2 &= ~SHOW;
