@@ -6,7 +6,11 @@
 
 #include "splatter.h" //temp
 
+#define EYE_PATROLSPEED skill1
 #define EYE_TURNSPEED skill2
+#define EYE_PATHID skill3
+#define EYE_ATTACKDIST skill4
+#define EYE_ACTIVEDIST skill5
 
 #define EYE_COUNTER skill22
 #define EYE_STATE skill23
@@ -17,28 +21,43 @@
 #define EYE_ZOFFSET skill35
 
 #define EYE_STATE_INACTIVE 0
-#define EYE_STATE_WAIT 1
+#define EYE_STATE_PATROL 1
 #define EYE_STATE_RUN 2
 #define EYE_STATE_ATTACK 3
+#define EYE_STATE_DIE 4
+#define EYE_STATE_DEAD 5
 
 BMAP* EYE_BmapDecal = "bulletHoleCool.tga";
+BMAP* EYE_bmapSplatter[5];
 
 void EYE__attack(ENTITY* ptr);
 
+// uses: EYE_PATROLSPEED, EYE_TURNSPEED, EYE_ATTACKDIST, EYE_ACTIVEDIST, EYE_PATHID
 action Eye()
 {
    framework_setup(my, SUBSYSTEM_ENEMY_EYE);
 
 	if(my->EYE_TURNSPEED == 0) my->EYE_TURNSPEED = 10;
-	if(my->EYE_ACTIVEDIST == 0) my->EYE_ACTIVEDIST = 3000;
+	if(my->EYE_PATROLSPEED == 0) my->EYE_PATROLSPEED = 5;
+	if(my->EYE_ACTIVEDIST == 0) my->EYE_ACTIVEDIST = 4000;
+	if(my->EYE_ATTACKDIST == 0) my->EYE_ATTACKDIST = 2000;
 	vec_scale(me.scale_x, 10);
 	
 	my->material = matObject;
+	if (path_set(my, str_for_num(NULL, my->EYE_PATHID)) == 0)
+	{
+		path_set(my, str_for_num(NULL, 0));
+	}
 }	
 
 
 void EYE_GlobalInit()
 {
+	EYE_bmapSplatter[0] = bmap_create("splatter_red_01.png");
+	EYE_bmapSplatter[1] = bmap_create("splatter_red_02.png");
+	EYE_bmapSplatter[2] = bmap_create("splatter_red_03.png");
+	EYE_bmapSplatter[3] = bmap_create("splatter_red_04.png");
+	EYE_bmapSplatter[4] = bmap_create("splatter_red_05.png");
 }
 
 void spawneye();
@@ -67,9 +86,9 @@ void EYE_Update()
 					break;
 				}
 
-				case EYE_STATE_WAIT:
+				case EYE_STATE_PATROL:
 				{
-					EYE__wait(ptr);
+					EYE__patrol(ptr);
 					break;
 				}
 
@@ -79,14 +98,18 @@ void EYE_Update()
 					break;
 				}
 
+				case EYE_STATE_DIE:
+				{
+					EYE__die(ptr);
+					break;
+				}
+
 				default:
 				{
 					break;
 				}
 
 			}
-			//EYE__turnToPlayer(ptr);
-			//EYE__attack(ptr);
 		}
 		
 	}
@@ -126,29 +149,33 @@ var EYE__turnToPlayer(ENTITY* ptr)
 
 void EYE__inactive(ENTITY* ptr)
 {
-EYE__turnToPlayer(ptr);
-		if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ACTIVEDIST, 100) || SCAN_IsPlayerNear(ptr, ptr->EYE_ACTIVEDIST * 0.3))
+	/* transitions */
+	if(SCAN_IsPlayerNear(ptr, ptr->EYE_ACTIVEDIST))
+	{
+		ptr->EYE_ZOFFSET = 20 * sinv(total_ticks * 20);
+		if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ACTIVEDIST, 360) || SCAN_IsPlayerNear(ptr, ptr->EYE_ACTIVEDIST * 0.3))
 		{
-			ptr->EYE_STATE = EYE_STATE_ATTACK;
+			ptr->EYE_STATE = EYE_STATE_PATROL;
 		}
+	}
 }
 
-void EYE__wait(ENTITY* ptr)
+void EYE__patrol(ENTITY* ptr)
 {
 	ptr->EYE_ZOFFSET = 20 * sinv(total_ticks * 20);
 
 	/* transitions */
-	if (SKULL__turnToPlayer(ptr) != 0)
+	if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ATTACKDIST, 75))
 	{
-		ptr->SKL_RUNSPEEDCUR = 0;
-		ptr->SKL_STATE = SKL_STATE_RUN;
+		ptr->EYE_STATE = EYE_STATE_ATTACK;
 	}
-	else if(!SCAN_IsPlayerNear(ptr, ptr->SKL_ACTIVEDIST + 2000))
+	else if (!SCAN_IsPlayerNear(ptr, ptr->EYE_ACTIVEDIST * 1.1))
 	{
-		ptr->SKL_STATE = SKL_STATE_INACTIVE;
+		ptr->EYE_STATE = EYE_STATE_INACTIVE;
 	}
 	else
 	{
+		
 	}
 }
 
