@@ -143,6 +143,9 @@ var EYE__toFloor(ENTITY* ptr)
 
 void EYE__inactive(ENTITY* ptr)
 {
+	//adjust eye position but do not do anything else
+	ptr->EYE_PATROLDIST = cycle(ptr->EYE_PATROLDIST + ptr->EYE_PATROLSPEED*time_step,0,ptr->EYE_PATROLLEN);
+	
 	/* transitions */
 	if(SCAN_IsPlayerNear(ptr, ptr->EYE_ACTIVEDIST))
 	{

@@ -277,14 +277,13 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 void ESELSLERCHE__die(ENTITY* ptr)
 {
 	var animState;
-	animState = clamp(ptr->EL_ANIMSTATE, 0, 50);
+	animState = clamp(ptr->EL_ANIMSTATE, 0, 35);
 	ent_animate(ptr, EL_DIEANIM, ptr->EL_ANIMSTATE, 0);
 	/* transitions */
-	if(animState >= 50)
+	if(animState >= 35)
 	{
 		ptr->EL_STATE = EL_STATE_DEAD;
 		set(ptr, PASSABLE);
-		c_updatehull(ptr, ptr->frame);
 	}
 }
 
@@ -308,6 +307,7 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 	/* transitions */
 	if (ptr->HEALTH <= 0)
 	{
+		ptr->EL_ANIMSTATE = 0;
 		ptr->EL_STATE = EL_STATE_DIE;
 		switch(integer(random(2)))
 		{
