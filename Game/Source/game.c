@@ -32,6 +32,7 @@ void game_open()
     EYE_Init();
     hud_show();
     player_initSpawn();
+    input_cheats_enabled = 1;
 }
 
 void game_capture_mouse()
@@ -76,6 +77,7 @@ void game_close()
     hud_hide();
     weapons_close();
     mouse_pointer = 1;
+    input_cheats_enabled = 0;
 }
 
 bool game_is_done()
