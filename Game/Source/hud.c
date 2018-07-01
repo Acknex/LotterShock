@@ -14,8 +14,8 @@
 #define HUD_AMMO_COLOR vector(32,200,255)
 
 BMAP * hud_bar_background_bmap = "hud_bar_background.png";
-
 BMAP * hud_health_label_bmap = "health_label.png";
+
 BMAP * hud_ammobar_bmap = "ammobar.png";
 
 FONT *HUD_font = "HUD_font.png";
@@ -123,7 +123,7 @@ void hud_place_bar(PANEL *bar, var offsetX)
 	bar->pos_y = screen_size.y - bar->size_y*bar->scale_y - HUD_BORDER_PADDING;
 	bar->alpha = HUD_BARS_MAX_ALPHA;
 	
-	pan_setwindow  (bar, 0, 0,0, 0, bmap_height(hud_healthbar_bmap), hud_healthbar_bmap, 0,0);
+	pan_setwindow  (bar, 0, 0,0, 0, bmap_height(hud_ammobar_bmap), hud_ammobar_bmap, 0,0);
 	
 	set(bar, SHOW);
 }
