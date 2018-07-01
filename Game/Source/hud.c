@@ -126,10 +126,6 @@ void hud_init()
 		hud_weapon_icon[i].scale_x = 0.8;
 		hud_weapon_icon[i].scale_y = 0.8;
 	}
-	
-	
-	//HUD_font = font_create(HUD_font_bmap);
-	//HUD_HP_infotext->font = HUD_font;
 }
 
 
@@ -214,9 +210,11 @@ void hud_show()
 	var height_total = maxv(height_right, height_left);
 	
 	var center_all = screen_size.y - height_total/2 - HUD_BORDER_PADDING;
-	center_all += 10;
 	
-	var scale_right = element_width / hud_weapon_icon[0].size_x;
+	var desired_background_height = height_total+2*HUD_BORDER_PADDING;
+	var scale_rightx = element_width / hud_weapon_icon[0].size_x;
+	var scale_righty = (desired_background_height-2*HUD_BORDER_PADDING) / hud_weapon_icon[0].size_x;
+	var scale_right = minv(scale_rightx, scale_righty);
 	
 	int i;
 	for(i=0; i<4; ++i)
@@ -225,7 +223,7 @@ void hud_show()
 		hud_weapon_icon[i]->scale_y = scale_right;
 		
 	 	hud_weapon_icon[i]->pos_x = center_rightElement - hud_weapon_icon[i].size_x*hud_weapon_icon[i].scale_x/2;
-	 	hud_weapon_icon[i]->pos_y = center_all - height_right/2;
+	 	hud_weapon_icon[i]->pos_y = center_all - height_right*scale_right/2;
 	}
 	
 	HUD_Ammo_bars->scale_x = scale_right*1.5;
@@ -239,7 +237,7 @@ void hud_show()
 	HUD_gunframe->scale_y = scale_right;
 	
 	HUD_gunframe->pos_x = center_rightElement - hud_sizex(HUD_gunframe)/2;
-	HUD_gunframe->pos_y = center_all - hud_sizey(HUD_gunframe)/2;
+	HUD_gunframe->pos_y = center_all - hud_sizey(HUD_gunframe)/2 + 10;
 	set(HUD_gunframe, SHOW);
 	
 	
@@ -257,7 +255,6 @@ void hud_show()
 	
 	
 	
-	var desired_background_height = height_total+2*HUD_BORDER_PADDING;
 	HUD_background->scale_y = desired_background_height/HUD_background->size_y;
 	HUD_background->scale_x = HUD_background->scale_y;
 	
