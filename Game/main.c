@@ -50,6 +50,7 @@
 #include "eye.c"
 #include "ini.c"
 #include "settings.c"
+#include "ang.c"
 
 void main()
 {

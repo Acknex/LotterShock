@@ -3,6 +3,7 @@
 #include "eye.h"
 #include "particle.h"
 #include "scan.h"
+#include "ang.h"
 
 #include "splatter.h" //temp
 
@@ -18,6 +19,11 @@
 //#define EYE_LASERDIST skill25
 //#define EYE_LASERDIST skill26
 #define EYE_ACTIVEDIST skill27
+#define EYE_LASTPOS skill28
+//#define EYE_LASTPOS skill29
+//#define EYE_LASTPOS skill30
+#define EYE_PATROLLEN skill33
+#define EYE_PATROLDIST skill34
 #define EYE_ZOFFSET skill35
 
 #define EYE_STATE_INACTIVE 0
@@ -38,16 +44,22 @@ action Eye()
    framework_setup(my, SUBSYSTEM_ENEMY_EYE);
 
 	if(my->EYE_TURNSPEED == 0) my->EYE_TURNSPEED = 10;
-	if(my->EYE_PATROLSPEED == 0) my->EYE_PATROLSPEED = 5;
+	if(my->EYE_PATROLSPEED == 0) my->EYE_PATROLSPEED = 15;
 	if(my->EYE_ACTIVEDIST == 0) my->EYE_ACTIVEDIST = 4000;
 	if(my->EYE_ATTACKDIST == 0) my->EYE_ATTACKDIST = 2000;
 	vec_scale(me.scale_x, 10);
-	
+	my->EYE_PATHID = 1;//temp
 	my->material = matObject;
+//	error(str_for_num(NULL,path_set(my, str_for_num(NULL, my->EYE_PATHID))));
+//	error(str_for_num(NULL,path_set(my, str_for_num(NULL, 0))));
 	if (path_set(my, str_for_num(NULL, my->EYE_PATHID)) == 0)
 	{
 		path_set(my, str_for_num(NULL, 0));
 	}
+	my->EYE_PATROLLEN = path_length(me);
+	path_spline (my,&my->x,0);
+	vec_set(&my->EYE_LASTPOS, &my->x);
+	set(my, PASSABLE);
 }	
 
 
@@ -72,8 +84,13 @@ void EYE_Update()
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENEMY_EYE)
 	{
 		if (player)
-        {
-			ptr->EYE_ZOFFSET = 0;
+		{
+
+    		/*DEBUG_VAR(ptr->EYE_STATE, 50);
+    		DEBUG_VAR(ptr->x, 70);
+    		DEBUG_VAR(ptr->y, 90);
+    		DEBUG_VAR(ptr->z, 110);*/			
+    		ptr->EYE_ZOFFSET = 0;
 
 			/*it's broken and I don't know.*/
 			switch(ptr->EYE_STATE)    	
@@ -124,27 +141,6 @@ var EYE__toFloor(ENTITY* ptr)
 		ptr->z = hit.z + 150 + ptr->EYE_ZOFFSET;
 }
 
-var EYE__turnToPlayer(ENTITY* ptr)
-{
-	ANGLE vecAngle;
-	VECTOR vecTemp;
-	vec_set(&vecTemp, &player->x);
-	vec_sub(&vecTemp, &ptr->x);
-	vec_to_angle(&vecAngle, &vecTemp);
-
-	if (ang(ptr->pan) < vecAngle.pan - 1)
-	{
-		ptr->pan = minv(vecAngle.pan, ang(ptr->pan + ptr->EYE_TURNSPEED * time_step));
-		return 0;
-	}	
-	if (ang(ptr->pan) > vecAngle.pan + 1)
-	{
-		ptr->pan = maxv(vecAngle.pan, ang(ptr->pan - ptr->EYE_TURNSPEED * time_step));
-		return 0;
-	}	
-		return 1;
-}
-
 void EYE__inactive(ENTITY* ptr)
 {
 	/* transitions */
@@ -161,9 +157,17 @@ void EYE__inactive(ENTITY* ptr)
 void EYE__patrol(ENTITY* ptr)
 {
 	ptr->EYE_ZOFFSET = 20 * sinv(total_ticks * 20);
-
+	ptr->EYE_PATROLDIST = cycle(ptr->EYE_PATROLDIST + ptr->EYE_PATROLSPEED*time_step,0,ptr->EYE_PATROLLEN);
+	path_spline (ptr,&ptr->x,ptr->EYE_PATROLDIST );
+	ANGLE vecAngle;
+	VECTOR vecDir;
+	vec_diff(&vecDir,&ptr->x,ptr->EYE_LASTPOS);
+	vec_to_angle(&vecAngle,&vecDir);
+	vec_set(ptr->EYE_LASTPOS,&ptr->x);
+	ANG_turnToAngle(ptr, vecAngle.pan, ptr->EYE_TURNSPEED, 1);
+	
 	/* transitions */
-	if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ATTACKDIST, 75))
+	/*if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ATTACKDIST, 75))
 	{
 		ptr->EYE_STATE = EYE_STATE_ATTACK;
 	}
@@ -174,7 +178,7 @@ void EYE__patrol(ENTITY* ptr)
 	else
 	{
 		
-	}
+	}*/
 }
 
 void EYE__attack(ENTITY* ptr)
@@ -228,7 +232,8 @@ void spawneye()
 	wait(-5);
 	//while(1)
 	{
-		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(5900,-6050,250), Eye);
+		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(400,1600,200), Eye);
+		//ENTITY* ptr = ent_create("enemy_eye.mdl", vector(5900,-6050,250), Eye);		
 		wait(-30);
 	}
 }

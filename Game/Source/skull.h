@@ -8,7 +8,7 @@ void SKULL_Destroy();
 
 // local
 void SKULL__toFloor(ENTITY* ptr);
-var SKULL__turnToPlayer(ENTITY* ptr);
+//var SKULL__turnToPlayer(ENTITY* ptr);
 void SKULL__inactive(ENTITY* ptr);
 void SKULL__wait(ENTITY* ptr);
 void SKULL__run(ENTITY* ptr);
