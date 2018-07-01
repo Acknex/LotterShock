@@ -70,11 +70,9 @@ out_frag ps(out_ps In)
 	
 	color.rgb = lerp(color.rgb, vecFogColor.rgb, saturate(In.fog));
 	
-	color.a *= fAlpha;
-	Out.color = smoothstep(color, 0.5, 1.0);
-	
-	
-	Out.glow = 0.0;
+	//color.a = 1.0;//smoothstep(color.a, 0.5, 1.0);
+	Out.color = color;
+	Out.glow = float4(0.0, 0.0, 0.0, color.a);
 	
 	return Out;
 }
@@ -87,7 +85,8 @@ technique object
 		VertexShader = compile vs_3_0 vs();
 		PixelShader = compile ps_3_0 ps();
 		
-		CullMode = None;
+		AlphaBlendEnable = false;
 		AlphaTestEnable = true;
+		ZWriteEnable = true;
 	}
 }

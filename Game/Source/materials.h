@@ -15,6 +15,11 @@ MATERIAL *matTree =
 	effect = "Shaders/tree.fx";
 }
 
+MATERIAL *matSkull =
+{
+	effect = "Shaders/enemy_skull.fx";
+}
+
 MATERIAL *matWeaponBasic =
 {
 	effect = "Shaders/weapon_basic.fx";

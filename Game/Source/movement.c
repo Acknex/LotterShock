@@ -317,7 +317,15 @@ void movement_update()
 	{
 		playerHealth = 0;
 		// draw_quad(NULL,vector(0,0,0),NULL,vector(screen_size.x+1,screen_size.y+1,0),NULL,COLOR_RED,50,0);
-		pp_desync(40);
+		if(camera.tilt < 80)
+		{
+			camera.tilt = minv(camera.tilt+ 120*time_step/16, 80);
+		}
+		if(camera.roll < 30)
+		{
+			camera.roll = minv(camera.roll + 120*time_step/16, 80);
+		}
+		pp_desync(sinv(15*total_ticks)*15);
 		return;
 	}
 	if(key_t)

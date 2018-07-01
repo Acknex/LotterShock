@@ -4,6 +4,7 @@
 #include "input.h"
 #include "eselslerche.h"
 #include "skull.h"
+#include "eye.h"
 #include "projectiles.h"
 #include "gib.h"
 
@@ -17,6 +18,7 @@ void game_init()
     GIB_GlobalInit();
     ESELSLERCHE_GlobalInit();
     SKULL_GlobalInit();
+    EYE_GlobalInit();
 }
 
 void game_open()
@@ -26,6 +28,7 @@ void game_open()
     weapons_open();
     ESELSLERCHE_Init();
     SKULL_Init();
+    EYE_Init();
     hud_show();
 }
 
@@ -46,7 +49,7 @@ void game_update()
     movement_update();
     if(!weapons_disabled) weapons_update();
     projectiles_update();
-    //keycard_update();
+    keycard_update();
     medipack_update();
     keypad_update();
     medipack_update();
@@ -57,6 +60,7 @@ void game_update()
 	 hud_update();
 	 ESELSLERCHE_Update();
 	 SKULL_Update();
+	 EYE_Update();
 	 GIB_Update();
 
     if(input_hit(INPUT_NAVBACK))

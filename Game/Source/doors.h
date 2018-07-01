@@ -13,7 +13,9 @@
 // doors
 #define DOOR_REQUIRED_KEY_ID skill1
 #define DOOR_STATE skill21
-#define MOVEMENT_STAGE skill22
+#define WAIT_TIME skill22
+#define DOOR_Z_START skill23
+#define DOOR_Z_MAX 342
 
 // keys
 #define KEYS_MAX 5
@@ -33,10 +35,10 @@ int current_keypad_id = 0;
 
 int keys[KEYS_MAX] = {0, 0, 0, 0, 0};
 
-/*void Keycard();
-void keycard_update();*/
+void keycard();
+void keycard_update();
 
-void Door();
+void door();
 void doors_update();
 
 void keypad();

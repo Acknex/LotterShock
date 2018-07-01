@@ -162,7 +162,7 @@ void ESELSLERCHE_Update()
 			VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 100);
 			VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
 			me = ptr;
-			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON | USE_BOX;
+			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;// | USE_BOX;
 			c_trace(from, to, mode);
 			if(HIT_TARGET)
 				ptr->z = hit.z - ptr->min_z;
@@ -280,6 +280,8 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 	/* transitions */
 	if(ptr->EL_EXPLODESTATE >= 2.5)
 	{
+		me = ptr;
+		var dist = c_trace(&ptr->x, &player->x, IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
 		set(ptr, PASSABLE|INVISIBLE);
 		var i;
 		for ( i = 0; i < 5; i++)
@@ -304,6 +306,7 @@ void ESELSLERCHE__die(ENTITY* ptr)
 	{
 		ptr->EL_STATE = EL_STATE_DEAD;
 		set(ptr, PASSABLE);
+		c_updatehull(ptr, ptr->frame);
 	}
 }
 
