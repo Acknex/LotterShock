@@ -49,8 +49,10 @@ void SKULL_GlobalInit()
 {
 }
 
+void spawnskull();
 void SKULL_Init()
 {
+	spawnskull();
 }
 
 void SKULL_Update()
@@ -63,6 +65,7 @@ void SKULL_Update()
     		DEBUG_VAR(ptr->SKL_STATE, 50);
 			if (ptr->DAMAGE_HIT > 0)
 			{
+				ptr->roll = 0;
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
 				ptr->event = NULL;
@@ -138,7 +141,7 @@ var SKULL__toFloor(ENTITY* ptr)
 	VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 10);
 	VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
 	me = ptr;
-	var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON | USE_BOX;
+	var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;// | USE_BOX;
 	c_trace(from, to, mode);
 	if(HIT_TARGET)
 		ptr->z = hit.z + 150 + ptr->SKL_ZOFFSET;
@@ -294,7 +297,7 @@ void SKULL__retreat(ENTITY* ptr)
 	}
 }
 
-void spawnskull_startup()
+void spawnskull()
 {
 	
 	wait(-5);

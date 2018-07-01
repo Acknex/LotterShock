@@ -5,6 +5,8 @@
 
 #include "splatter.h" //temp
 
+#define EYE_TURNSPEED skill2
+
 #define EYE_COUNTER skill22
 
 BMAP* EYE_BmapDecal = "bulletHoleCool.tga";
@@ -15,6 +17,7 @@ action Eye()
 {
    framework_setup(my, SUBSYSTEM_ENEMY_EYE);
 
+	if(my->EYE_TURNSPEED == 0) my->EYE_TURNSPEED = 10;
 	vec_scale(me.scale_x, 10);
 }	
 
@@ -36,15 +39,37 @@ void EYE_Update()
 	{
 		if (player)
 		{
+			EYE__turnToPlayer(ptr);
 			EYE__attack(ptr);
 		}
 		
 	}
 }
 
+var EYE__turnToPlayer(ENTITY* ptr)
+{
+	ANGLE vecAngle;
+	VECTOR vecTemp;
+	vec_set(&vecTemp, &player->x);
+	vec_sub(&vecTemp, &ptr->x);
+	vec_to_angle(&vecAngle, &vecTemp);
+
+	if (ang(ptr->pan) < vecAngle.pan - 1)
+	{
+		ptr->pan = minv(vecAngle.pan, ang(ptr->pan + ptr->EYE_TURNSPEED * time_step));
+		return 0;
+	}	
+	if (ang(ptr->pan) > vecAngle.pan + 1)
+	{
+		ptr->pan = maxv(vecAngle.pan, ang(ptr->pan - ptr->EYE_TURNSPEED * time_step));
+		return 0;
+	}	
+		return 1;
+}
+
 void EYE__attack(ENTITY* ptr)
 {
-	ptr->EYE_COUNTER += 4*time_step;
+	ptr->EYE_COUNTER += 1*time_step;
 
 	VECTOR from;
 	vec_for_vertex(from, ptr, 195);
@@ -53,18 +78,19 @@ void EYE__attack(ENTITY* ptr)
 	vec_sub(&to, &ptr->x);
 	ANGLE dir;
 	vec_to_angle(&dir, &to);
-	dir.pan -= 2;
-	ptr->pan = dir.pan + 90;
+	//ptr->pan = dir.pan;
+	dir.pan = ptr->pan;
 	VECTOR dist;
 	vec_set(&dist, vector(3000, 0, 0));
 	vec_rotate(&dist, &dir);
 	//vec_set(&to, &player->x);
 	vec_set(&to, &dist);
 	vec_add(&to, &from);
-draw_line3d(from, vector(255,255,255), 100);
-draw_line3d(to, vector(255,255,255), 100);
+//draw_line3d(from, vector(255,255,255), 100);
+//draw_line3d(to, vector(255,255,255), 100);
 	if (ptr->EYE_COUNTER > 1)
 	{
+		ptr->EYE_COUNTER = cycle(ptr->EYE_COUNTER,0,1);
 		PARTICLE_laser(from, dist);
 		ptr->EYE_COUNTER -= 1;
 		me = ptr;
