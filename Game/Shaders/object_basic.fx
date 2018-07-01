@@ -5,6 +5,9 @@
 #include <fog>
 #include <normal>
 
+float4 vecAmbient;
+float4 vecFogColor;
+
 Texture entSkin1;
 sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Linear; MagFilter = Linear; MinFilter = Linear; };
 
@@ -36,7 +39,6 @@ out_ps vs(
 float4 ps(out_ps In): COLOR
 {
 	In.normal = normalize(In.normal);
-	float viewDistance = distance(vecViewPos.xyz - In.worldPos);
 	
 	float4 color;
 	color.rgb = tex2D(sTexture, In.uv0);
