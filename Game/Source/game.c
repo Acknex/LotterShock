@@ -18,6 +18,7 @@ void game_init()
     weapons_init();
     GIB_GlobalInit();
     ESELSLERCHE_GlobalInit();
+    SPUTNIK_GlobalInit();
     SKULL_GlobalInit();
     EYE_GlobalInit();
 }
@@ -28,6 +29,7 @@ void game_open()
     mouse_pointer = 0;
     weapons_open();
     ESELSLERCHE_Init();
+    SPUTNIK_Init();
     SKULL_Init();
     EYE_Init();
     hud_show();
