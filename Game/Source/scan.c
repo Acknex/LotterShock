@@ -13,7 +13,6 @@ var SCAN_IsPlayerNear(ENTITY* ent, var distance)
 
 var SCAN_IsPlayerInSight(ENTITY* ent, var distance, var fov)
 {
-//	return 0;
 	if (player == NULL)
 		return 0;
 		

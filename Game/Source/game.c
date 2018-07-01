@@ -58,14 +58,15 @@ void game_update()
     keypad_update();
     doors_update();
     journals_update();
-    
-    
-	 hud_update();
-	 ESELSLERCHE_Update();
-	 SPUTNIK_Update();
-	 SKULL_Update();
-	 EYE_Update();
-	 GIB_Update();
+
+
+    ESELSLERCHE_Update();
+    SPUTNIK_Update();
+    SKULL_Update();
+    EYE_Update();
+    GIB_Update();
+
+    hud_update();
 
     if(input_hit(INPUT_NAVBACK))
         game_done = true;
@@ -74,7 +75,7 @@ void game_update()
 void game_close()
 {
 	pp_desync(0);
-	movement_close();
+    movement_close();
 	projectiles_close();
     hud_hide();
     weapons_close();

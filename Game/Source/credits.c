@@ -70,6 +70,11 @@ PANEL* credits_pnl_ff =
 //	flags = SHOW;
 }
 
+#define CREDITS_BACKGROUNDS_MAX 100
+
+BMAP * credits_backgrounds[CREDITS_BACKGROUNDS_MAX];
+VECTOR credits_background_dirs[CREDITS_BACKGROUNDS_MAX];
+int credits_background_count;
 
 var credits_timer;
 
@@ -227,6 +232,27 @@ void credits_init()
     }
 
     file_close(f);
+
+    // Load all credits backgrounds
+    for(credits_background_count = 0; credits_background_count < CREDITS_BACKGROUNDS_MAX; credits_background_count ++)
+    {
+        STRING * fname = str_printf(NULL, "screen_%d.jpg", (credits_background_count + 1));
+
+        credits_background_dirs[credits_background_count].x = random(2) - 1;
+        credits_background_dirs[credits_background_count].y = random(2) - 1;
+        credits_background_dirs[credits_background_count].z = random(2) - 1;
+
+        if(credits_background_count > 0)
+        {
+            // Flip image direction if direction would be roughly the same
+            if(vec_dot(credits_background_dirs[credits_background_count], credits_background_dirs[credits_background_count- 1]) > 0)
+                vec_scale(credits_background_dirs[credits_background_count], -1);
+        }
+
+        credits_backgrounds[credits_background_count] = bmap_create(fname);
+        if(credits_backgrounds[credits_background_count] == NULL)
+            break;
+    }
 }
 
 void credits_open()
@@ -262,13 +288,63 @@ void credits_close()
     credits_pnl_ff.flags &= ~SHOW;
 }
 
+void credits_draw_bg(int id, var fOffset, var alpha)
+{
+    BMAP * bmp = credits_backgrounds[id];
+
+    var scrollLen = 0.15 * maxv(screen_size.x, screen_size.y);
+
+    var scale_x = (screen_size.x + 2.0 * scrollLen) / bmap_width(bmp);
+    var scale_y = (screen_size.y + 2.0 * scrollLen) / bmap_height(bmp);
+    var scale = maxv(scale_x, scale_y);
+
+    VECTOR offset;
+    vec_set(offset, credits_background_dirs[id]);
+    vec_normalize(offset, scrollLen);
+
+    draw_quad(
+        bmp,
+        vector(
+            fOffset * offset.x - scrollLen,
+            fOffset * offset.y - scrollLen,
+            0),
+        NULL,
+        vector(bmap_width(bmp), bmap_height(bmp), 0),
+        vector(scale, scale, 0),
+        NULL,
+        alpha,
+        0);
+
+}
+
 void credits_update()
 {
     if(input_hit(INPUT_ATTACK) || input_hit(INPUT_BLOCK) || input_hit(INPUT_NAVBACK) || input_hit(INPUT_USE))
 	{
         credits_done = 1;
         return;
-	}
+    }
+
+    if(credits_background_count > 0)
+    {
+        var bg_id = (total_ticks / 256);
+
+        // clamp to [0 ... credits_background_count+0.99999]
+        bg_id -= credits_background_count * integer(bg_id / credits_background_count);
+
+        var fOffset = fraction(bg_id);
+
+        credits_draw_bg(integer(bg_id), fOffset, 100);
+
+        var altemp = 100.0 * (10.0 * (fraction(bg_id) - 0.9)); // , 0.0, 1.0);
+        var alnext = 100 - clamp(-altemp, 0, 100);
+        if(alnext >= 0)
+        {
+            credits_draw_bg(integer(bg_id + 1) % credits_background_count, fOffset - 1.0, alnext);
+        }
+    }
+
+
 
     CreditsNode * it;
     var h = 0;

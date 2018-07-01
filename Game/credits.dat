@@ -20,7 +20,7 @@ r;Music
 r;Effects
 s;2
 l;Robert "firoball" Jäger
-r;Enemy-AI
+r;Enemy AI
 r;Effects
 s;2
 l;Nils "slin" Daumann
@@ -44,6 +44,7 @@ s;2
 l;Andreas "lemming" Holm
 r;Props
 r;Credits
+r;Enemy AI
 s;2
 l;Kitsune "Kitsu" Schwarzfeuer
 r;Weapons
