@@ -7,11 +7,11 @@ void keycard_update() {
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_KEYCARDS) {
 		ptr->pan += time_step * 10;
 		
-		var trace = c_trace(ptr.x, player.x, IGNORE_ME);
-		if ((trace > 0) && (trace < 100)) {
-			if (you == player) {
 				
-				if (player) {
+		if (player) {
+			var trace = c_trace(ptr.x, player.x, IGNORE_ME);
+			if ((trace > 0) && (trace < 100)) {
+				if (you == player) {
 					
 					ent_playsound(player, snd_beep, 100);
 					
