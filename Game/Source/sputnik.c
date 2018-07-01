@@ -96,7 +96,7 @@ void SPUTNIK_Update()
 	{
 		if (player != NULL)
     	{
-    		DEBUG_VAR(1, 240);
+    		//DEBUG_VAR(1, 240);
 			if (ptr->DAMAGE_HIT > 0)
 			{
 				//DEBUG_VAR(ptr->DAMAGE_HIT, 260);
@@ -123,7 +123,7 @@ void SPUTNIK_Update()
 				ptr->SPUTNIK_SOUNDHANDLE = 0;
 			}
 			
-			DEBUG_VAR(ptr->SPUTNIK_STATE, 220);
+			//DEBUG_VAR(ptr->SPUTNIK_STATE, 220);
 			
 			switch(ptr->SPUTNIK_STATE)    	
 			{
@@ -158,7 +158,7 @@ void SPUTNIK_Update()
 			}	
 		}
 	
-		DEBUG_VAR(2, 280);
+		//DEBUG_VAR(2, 280);
 		if (ptr->SPUTNIK_STATE != SPUTNIK_STATE_DIE && ptr->SPUTNIK_STATE != SPUTNIK_STATE_DEAD)
 		{
 			VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 100);
@@ -252,7 +252,7 @@ void SPUTNIK__follow(ENTITY* ptr)
 	// Player is near enough to attack
 	if (SCAN_IsPlayerInSight(ptr, ptr->SPUTNIK_ATTACKRANGE, 360))
 	{
-		if ((ptr->SPUTNIK_ANIMSTATEATK == 0) << (ptr->SPUTNIK_ANIMSTATEATK >= 100))
+		if ((ptr->SPUTNIK_ANIMSTATEATK == 0) || (ptr->SPUTNIK_ANIMSTATEATK >= 100))
 		{
 			ptr->SPUTNIK_ANIMSTATEATK = 0;
 			switch(integer(random(2)))
@@ -267,7 +267,7 @@ void SPUTNIK__follow(ENTITY* ptr)
 		ptr->SPUTNIK_ANIMSTATE = 0;
 		ent_animate(ptr, SPUTNIK_ATTACKANIM, ptr->SPUTNIK_ANIMSTATEATK, 0);
 		
-		DEBUG_VAR(ptr->SPUTNIK_ANIMSTATEATK,300);
+		//DEBUG_VAR(ptr->SPUTNIK_ANIMSTATEATK,300);
 		if (ptr->SPUTNIK_ANIMSTATEATK > 50)
 		{
 			if (ptr->SPUTNIK_DIDATTACK == 0)
@@ -313,7 +313,7 @@ void sputnik_spawn_startup()
 {
 	
 	wait(-10);
-	while(1)
+	while(0)
 	{
 		ENTITY* ptr = ent_create("sputnik.mdl", vector(5920 - 500 + random(1000), -6050 - 500 + random(1000), 250), Sputnik);
 		wait(-10);
