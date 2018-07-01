@@ -132,7 +132,15 @@ SOUND * weapons_snd_flamethrower_end = "flamethrower_end_snd.wav";
 
 void weapons_add(int id)
 {
+    int i, len = 0;
+    for(i = 1; i < WEAPONS_COUNT; i++)
+    {
+        if(weapons.weapon[i].unlocked)
+            len += 1;
+    }
 	weapons.weapon[id].unlocked = true;
+    if(len == 0)
+        weapons.current = id;
 }
 
 void weapons_erect_sword()
@@ -629,6 +637,7 @@ VECTOR* weapons_shotgun_get_muzzle_pos(ENTITY* ent, VECTOR* v, VECTOR* vdir)
 void weapons_update()
 {
 	int i;
+#ifdef DEBUG
 	if(key_1) weapons_add(WEAPON_SWORD);
 	if(key_2) weapons_add(WEAPON_SHOTGUN);
 	if(key_3) weapons_add(WEAPON_CELLGUN);
@@ -638,6 +647,7 @@ void weapons_update()
 		for(i = 1; i <= WEAPONS_COUNT; i++)
 		weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
 	}
+#endif
 
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_UP))
 	weapons_select_next(1);
