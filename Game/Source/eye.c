@@ -14,8 +14,11 @@
 //#define EYE_LASERDIST skill25
 //#define EYE_LASERDIST skill26
 #define EYE_ACTIVEDIST skill27
+#define EYE_ZOFFSET skill35
 
 #define EYE_STATE_INACTIVE 0
+#define SKL_STATE_WAIT 1
+#define SKL_STATE_RUN 2
 #define EYE_STATE_ATTACK 3
 
 BMAP* EYE_BmapDecal = "bulletHoleCool.tga";
@@ -51,18 +54,28 @@ void EYE_Update()
 	{
 		if (player)
 		{
-			//it's broken and I don't know.
-			/*switch(ptr->EYE_STATE)    	
+
+    		DEBUG_VAR(ptr->EYE_STATE, 50);
+			ptr->EYE_ZOFFSET = 0;
+
+			/*it's broken and I don't know.*/
+			switch(ptr->EYE_STATE)    	
 			{
 				case EYE_STATE_INACTIVE:
 				{
-					SKULL__inactive(ptr);
+					EYE__inactive(ptr);
+					break;
+				}
+
+				case EYE_STATE_WAIT:
+				{
+					EYE__wait(ptr);
 					break;
 				}
 
 				case EYE_STATE_ATTACK:
 				{
-					SKULL__attack(ptr);
+					EYE__attack(ptr);
 					break;
 				}
 
@@ -71,12 +84,23 @@ void EYE_Update()
 					break;
 				}
 
-			}*/	
-			EYE__turnToPlayer(ptr);
-			EYE__attack(ptr);
+			}
+			//EYE__turnToPlayer(ptr);
+			//EYE__attack(ptr);
 		}
 		
 	}
+}
+
+var EYE__toFloor(ENTITY* ptr)
+{
+	VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 10);
+	VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
+	me = ptr;
+	var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;// | USE_BOX;
+	c_trace(from, to, mode);
+	if(HIT_TARGET)
+		ptr->z = hit.z + 150 + ptr->EYE_ZOFFSET;
 }
 
 var EYE__turnToPlayer(ENTITY* ptr)
@@ -109,6 +133,24 @@ EYE__turnToPlayer(ptr);
 		}
 }
 
+void EYE__wait(ENTITY* ptr)
+{
+	ptr->EYE_ZOFFSET = 20 * sinv(total_ticks * 20);
+
+	/* transitions */
+	if (SKULL__turnToPlayer(ptr) != 0)
+	{
+		ptr->SKL_RUNSPEEDCUR = 0;
+		ptr->SKL_STATE = SKL_STATE_RUN;
+	}
+	else if(!SCAN_IsPlayerNear(ptr, ptr->SKL_ACTIVEDIST + 2000))
+	{
+		ptr->SKL_STATE = SKL_STATE_INACTIVE;
+	}
+	else
+	{
+	}
+}
 
 void EYE__attack(ENTITY* ptr)
 {
