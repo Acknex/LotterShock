@@ -35,8 +35,7 @@ int current_keypad_id = 0;
 
 int keys[KEYS_MAX] = {0, 0, 0, 0, 0};
 
-void keycard();
-void keycard_update();
+//keycards are in items.h
 
 void door();
 void doors_update();

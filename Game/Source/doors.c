@@ -1,31 +1,3 @@
-action keycard() {
-	framework_setup(my, SUBSYSTEM_KEYCARDS);
-}
-
-void keycard_update() {
-	ENTITY *ptr;
-	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_KEYCARDS) {
-		ptr->pan += time_step * 10;
-		
-				
-		if (player) {
-			var trace = c_trace(ptr.x, player.x, IGNORE_ME);
-			if ((trace > 0) && (trace < 100)) {
-				if (you == player) {
-					
-					ent_playsound(player, snd_beep, 100);
-					
-					// add to inventory
-					keys[ptr.KEYCARD_KEY_ID] = 1;
-					
-					// remove me
-					ptr->SK_ENTITY_DEAD = 1;
-				}
-			}
-		}
-	}
-}
-
 // skill1: KEY_ID
 // skill2: KEYPAD_ID
 // skill3: EXPECTED_KEY
