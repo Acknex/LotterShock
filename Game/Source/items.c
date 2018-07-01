@@ -10,7 +10,7 @@ void medipack_init() {
 void medipack_update() {
 	ENTITY *ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_MEDIPACK) {
-		ptr->pan += time_step;
+		ptr->pan += time_step * 10;
 		
 		var trace = c_trace(ptr.x, player.x, IGNORE_ME);
 		if ((trace > 0) && (trace < 100)) {
@@ -19,6 +19,8 @@ void medipack_update() {
 				if (player) {
 					// increase player health
 					//player->health +=MEDIPACK_HEALTH_PLUS;
+					playerAddHealth(MEDIPACK_HEALTH_PLUS);
+					ent_playsound(ptr, medipack_snd, 100);
 					
 					// remove me
 					ptr->SK_ENTITY_DEAD = 1;
