@@ -24,7 +24,7 @@
 #define SPUTNIK_WALKANIM "walk"
 #define SPUTNIK_WAITANIM "stand"
 #define SPUTNIK_ATTACKANIM "AttackA"
-#define SPUTNIK_DIEANIM "die"
+#define SPUTNIK_DIEANIM "Die"
 
 
 #define SPUTNIK_STATE_INACTIVE 0
@@ -60,11 +60,11 @@ action Sputnik()
 	if(my->SPUTNIK_RUNSPEED == 0) my->SPUTNIK_RUNSPEED = 12;
 	if(my->SPUTNIK_TURNSPEED == 0) my->SPUTNIK_TURNSPEED = 20;
 	if(my->SPUTNIK_ATTACKSPEED == 0) my->SPUTNIK_ATTACKSPEED = 5;
-	if(my->SPUTNIK_ATTACKRANGE == 0) my->SPUTNIK_ATTACKRANGE = 20;
-	if(my->SPUTNIK_ACTIVEDIST == 0) my->SPUTNIK_ACTIVEDIST = 5000;
+	if(my->SPUTNIK_ATTACKRANGE == 0) my->SPUTNIK_ATTACKRANGE = 300;
+	if(my->SPUTNIK_ACTIVEDIST == 0) my->SPUTNIK_ACTIVEDIST = 6000;
 	my->HEALTH = 80;
 	ENEMY_HIT_init(my);
-	vec_scale(&my->scale_x, 2);
+	vec_scale(&my->scale_x, 1.2);
 	set(my, SHADOW);
 	c_setminmax(me);
 }
@@ -89,26 +89,31 @@ void SPUTNIK_Update()
 	{
 		if (player != NULL)
     	{
+    		DEBUG_VAR(1, 240);
 			if (ptr->DAMAGE_HIT > 0)
 			{
+				//DEBUG_VAR(ptr->DAMAGE_HIT, 260);
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
-				if (ptr->SPUTNIK_SOUNDHNDLE != 0)
+				if (ptr->SPUTNIK_SOUNDHANDLE != 0)
 				{
 					switch(integer(random(2)))
 					{
-						case 0: ptr->SPUTNIK_SOUNDHANDLE = snd_play(eselslerche_snd_hit1, 100, 0); break;
-						case 1: ptr->SPUTNIK_SOUNDHANDLE = snd_play(eselslerche_snd_hit2, 100, 0); break;
+						case 0: ptr->SPUTNIK_SOUNDHANDLE = snd_play(sputnik_snd_hit1, 100, 0); break;
+						case 1: ptr->SPUTNIK_SOUNDHANDLE = snd_play(sputnik_snd_hit2, 100, 0); break;
 					}
 				}
 				SPLATTER_splat(&ptr->x, vector(73.0/255.0,159.0/255.0,0.0));
 				SPLATTER_explode(10, &ptr->x, 200, SPUTNIK_bmapSplatter, 5);
 			}
 			
-			if (snd_playing(ptr->SPUTNIK_SOUNDHANDLE) == 0)
+			if (ptr->SPUTNIK_SOUNDHANDLE && (snd_playing(ptr->SPUTNIK_SOUNDHANDLE) == 0))
 			{
+				snd_remove(ptr->SPUTNIK_SOUNDHANDLE);
 				ptr->SPUTNIK_SOUNDHANDLE = 0;
 			}
+			
+			DEBUG_VAR(ptr->SPUTNIK_STATE, 220);
 			
 			switch(ptr->SPUTNIK_STATE)    	
 			{
@@ -126,7 +131,7 @@ void SPUTNIK_Update()
 
 				case SPUTNIK_STATE_FOLLOW:
 				{
-					sputnik__follow(ptr);
+					SPUTNIK__follow(ptr);
 					break;
 				}
 
@@ -143,15 +148,27 @@ void SPUTNIK_Update()
 			}	
 		}
 	
+		DEBUG_VAR(2, 280);
 		if (ptr->SPUTNIK_STATE != SPUTNIK_STATE_DIE && ptr->SPUTNIK_STATE != SPUTNIK_STATE_DEAD)
 		{
 			VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 100);
 			VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
 			me = ptr;
-			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON | USE_BOX;
+			//var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON | USE_BOX;
+			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;
 			c_trace(from, to, mode);
 			if(HIT_TARGET)
 				ptr->z = hit.z - ptr->min_z;
+		}
+		
+		if (ptr->HEALTH <= 0)
+		{
+			ptr->EL_STATE = EL_STATE_DIE;
+			switch(integer(random(2)))
+			{
+				case 0: snd_play(sputnik_snd_death1, 100, 0); break;
+				case 1: snd_play(sputnik_snd_death2, 100, 0); break;
+			}
 		}
 	}	
 }
@@ -200,7 +217,7 @@ void SPUTNIK__wait(ENTITY* ptr)
 	if (SPUTNIK__turnToPlayer(ptr) != 0)
 	{
 		ptr->SPUTNIK_RUNSPEEDCUR = 0;
-		ptr->SPUTNIK_STATE = SPUTNIK_STATE_RUN;
+		ptr->SPUTNIK_STATE = SPUTNIK_STATE_FOLLOW;
 		switch(integer(random(2)))
 		{
 			case 0: snd_play(sputnik_snd_spot1, 100, 0); break;
@@ -213,9 +230,9 @@ void SPUTNIK__wait(ENTITY* ptr)
 	}
 }
 
-void SPUTNIK__run(ENTITY* ptr)
+void SPUTNIK__follow(ENTITY* ptr)
 {
-	ptr->SPUTNIK_RUNSPEEDCUR = minv(ptr->SPUTNIK_RUNSPEEDCUR + ptr->SPUTNIK_RUNSPEED*0.25*time_step, ptr->SPUTNIK_RUNSPEED);
+	ptr->SPUTNIK_RUNSPEEDCUR = ptr->SPUTNIK_RUNSPEED; //minv(ptr->SPUTNIK_RUNSPEEDCUR + ptr->SPUTNIK_RUNSPEED*0.25*time_step, ptr->SPUTNIK_RUNSPEED);
 	SPUTNIK__turnToPlayer(ptr);
 	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
 	c_move(ptr, vector(ptr->SPUTNIK_RUNSPEEDCUR, 0, 0), nullvector, mode);
@@ -223,10 +240,11 @@ void SPUTNIK__run(ENTITY* ptr)
 	// Player is near enough to attack
 	if (SCAN_IsPlayerInSight(ptr, ptr->SPUTNIK_ATTACKRANGE, 360))
 	{
-		ptr->SPUTNIK_ANIMSTATEATK = (ptr->SPUTNIK_ATTACKSPEED * time_step) % 100;
+		ptr->SPUTNIK_ANIMSTATEATK = (ptr->SPUTNIK_ANIMSTATEATK + (ptr->SPUTNIK_ATTACKSPEED * time_step)) % 100;
 		ptr->SPUTNIK_ANIMSTATE = 0;
 		ent_animate(ptr, SPUTNIK_ATTACKANIM, ptr->SPUTNIK_ANIMSTATEATK, ANM_CYCLE);
 		
+		DEBUG_VAR(ptr->SPUTNIK_ANIMSTATEATK,300);
 		if (ptr->SPUTNIK_ANIMSTATEATK > 50)
 		{
 			if (ptr->SPUTNIK_DIDATTACK == 0)
@@ -241,7 +259,6 @@ void SPUTNIK__run(ENTITY* ptr)
 		}
 	}
 	else if ( !SCAN_IsPlayerInSight(ptr, ptr->SPUTNIK_ACTIVEDIST, 90) && !SCAN_IsPlayerNear(ptr, ptr->SPUTNIK_ACTIVEDIST + 100) ) // Player is to far away
-	)
 	{
 		ptr->SPUTNIK_STATE = SPUTNIK_STATE_WAIT;
 	}
@@ -249,7 +266,7 @@ void SPUTNIK__run(ENTITY* ptr)
 	{
 		ptr->SPUTNIK_DIDATTACK = 0;
 		ptr->SPUTNIK_ANIMSTATEATK = 0;
-		ptr->SPUTNIK_ANIMSTATE *= ptr->SPUTNIK_RUNSPEED * time_step;
+		ptr->SPUTNIK_ANIMSTATE += ptr->SPUTNIK_RUNSPEED * time_step;
 		ent_animate(ptr, SPUTNIK_WALKANIM, ptr->SPUTNIK_ANIMSTATE, ANM_CYCLE);		
 	}
 
@@ -274,10 +291,12 @@ void sputnik_spawn_startup()
 {
 	
 	wait(-10);
-	while(1)
+	while(0)
 	{
-		ENTITY* ptr = ent_create("sputnik.mdl", vector(5910,-6050,250), Sputnik);
+		ENTITY* ptr = ent_create("sputnik.mdl", vector(5920,-6050,250), Sputnik);
 		wait(-10);
 	}
+	ENTITY* ptr = ent_create("sputnik.mdl", vector(5900,-6050,250), Sputnik);
+	
 }
 #endif

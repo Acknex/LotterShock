@@ -3,6 +3,7 @@
 #include "movement.h"
 #include "input.h"
 #include "eselslerche.h"
+#include "sputnik.h"
 #include "skull.h"
 #include "eye.h"
 #include "projectiles.h"
@@ -59,6 +60,7 @@ void game_update()
     
 	 hud_update();
 	 ESELSLERCHE_Update();
+	 SPUTNIK_Update();
 	 SKULL_Update();
 	 EYE_Update();
 	 GIB_Update();
