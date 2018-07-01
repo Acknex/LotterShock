@@ -19,7 +19,7 @@ struct out_ps // Output to the pixelshader fragment
 
 out_ps vs(
 	float4 inPos : POSITION,
-	float3 inNormal : NORMAL
+	float3 inNormal : NORMAL,
 	float2 inTexCoord0 : TEXCOORD0)
 {
 	out_ps Out;
