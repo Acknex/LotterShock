@@ -16,5 +16,7 @@ void SKULL__attack(ENTITY* ptr);
 void SKULL__die(ENTITY* ptr);
 void SKULL__hit(ENTITY* ptr);
 void SKULL__retreat(ENTITY* ptr);
+void SKULL__fireParticle(PARTICLE *p);
+void SKULL__fireEffect(PARTICLE *p);
 
 #endif

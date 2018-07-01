@@ -2,8 +2,6 @@ action keycard() {
 	framework_setup(my, SUBSYSTEM_KEYCARDS);
 }
 
-int keycard_lvl = 0;
-
 void keycard_update() {
 	ENTITY *ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_KEYCARDS) {
