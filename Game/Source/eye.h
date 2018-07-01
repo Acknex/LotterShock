@@ -7,5 +7,6 @@ void EYE_Update();
 
 //local
 void EYE__attack(ENTITY* ptr);
+var EYE__turnToPlayer(ENTITY* ptr);
 
 #endif
