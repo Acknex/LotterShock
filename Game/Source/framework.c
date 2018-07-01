@@ -187,11 +187,12 @@ void framework_update()
 
     case FRAMEWORK_STATE_GAME:
         game_update();
-        if(game_is_done())
+        if(game_is_done())	
             framework_transfer(FRAMEWORK_STATE_UNLOAD);
         break;
     case FRAMEWORK_STATE_UNLOAD:
         level_load(NULL);
+		music_start("Media/intro.mp3", 1.0, false);
         framework_transfer(FRAMEWORK_STATE_MAINMENU);
         break;
 
