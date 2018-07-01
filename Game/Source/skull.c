@@ -66,7 +66,7 @@ void SKULL_Update()
 	{
 		if (player != NULL)
     	{
-    		DEBUG_VAR(ptr->SKL_STATE, 50);
+    		//DEBUG_VAR(ptr->SKL_STATE, 50);
 			if (ptr->DAMAGE_HIT > 0)
 			{
 				ptr->roll = 0;
