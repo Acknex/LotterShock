@@ -2,6 +2,8 @@
 // movement.c
 //////////////////////////////
 
+#include "input.h"
+
 //VECTOR playerSpeed;
 #define PLAYER_SPEED_X skill70
 #define PLAYER_SPEED_Y skill71
@@ -346,9 +348,9 @@ void movement_update()
     if(movement_cheat_clipmode)
 #endif
 	{
-		camera.pan += -mouse_force.x*10*time_step;
+        camera.pan += -input_axis(INPUT_LOOK_HORIZONTAL)*10*time_step;
 		camera.pan %= 360;
-		camera.tilt = clamp(camera.tilt+mouse_force.y*10*time_step,-85,85);
+        camera.tilt = clamp(camera.tilt+input_axis(INPUT_LOOK_VERTICAL)*10*time_step,-85,85);
 		player.pan = camera.pan;
 		VECTOR temp;
 		vec_set(temp,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
@@ -410,10 +412,10 @@ void movement_update()
 	
 	vec_set(camera.pan,playerAngle);
 	VECTOR temp;
-	if(playerSlideCounter > 0) camera.pan = clamp(camera.pan-mouse_force.x*10*time_step,playerSlidePan-90,playerSlidePan+90);
+    if(playerSlideCounter > 0) camera.pan = clamp(camera.pan-input_axis(INPUT_LOOK_HORIZONTAL)*10*time_step,playerSlidePan-90,playerSlidePan+90);
 	else
 	{
-		camera.pan += -mouse_force.x*10*time_step;
+        camera.pan += -input_axis(INPUT_LOOK_HORIZONTAL)*10*time_step;
 		camera.pan %= 360;
 	}
 	/*if(playerSlideCounter > 0)
@@ -422,7 +424,7 @@ void movement_update()
 		camera.pan = ;
 	}*/
 	
-	camera.tilt = clamp(camera.tilt+mouse_force.y*10*time_step,-85,85);
+    camera.tilt = clamp(camera.tilt+input_axis(INPUT_LOOK_VERTICAL)*10*time_step,-85,85);
 	player.pan = camera.pan;
 	move_min_z = 0.75;
 	disable_z_glide = 1;
