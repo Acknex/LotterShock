@@ -173,10 +173,6 @@ float rotateMatrix[16];
 
 void weapons_init()
 {
-	int i;
-	for(i = 1; i <= WEAPONS_COUNT; i++)
-	weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
-
 	on_o = weapons_erect_sword;
 
 	memset(&weapons, 0, sizeof(weapons_t));
@@ -196,9 +192,6 @@ void weapons_init()
 	weapons.weapon[WEAPON_CELLGUN].max_ammo      = 150;
 	weapons.weapon[WEAPON_FLAMETHROWER].max_ammo = 300;
 
-	int i;
-	for(i = 1; i <= WEAPONS_COUNT; i++)
-	weapons.weapon[i].ammo = weapons.weapon[i].max_ammo;
 
 	//weapons_wp_cellgun.material = mtl_model;
 	//ent_mtlset(weapons_wp_cellgun,trident_sphere_mat,2);
@@ -213,6 +206,13 @@ void weapons_init()
 void weapons_open()
 {
 	weapons.current = 0;
+	
+	int id;
+	for(id = 1; id <= WEAPONS_COUNT; id++)
+	{
+		weapons.weapon[id].unlocked = false;
+		weapons.weapon[id].ammo = weapons.weapon[id].max_ammo;
+	}
 }
 
 //! search next unlocked weapon in the given direction.
