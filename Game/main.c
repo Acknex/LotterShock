@@ -48,9 +48,10 @@
 #include "particle.c"
 #include "journals.c"
 #include "eye.c"
+#include "ini.c"
+#include "settings.c"
 
 void main()
 {
-	collision_mode = 2;
 	framework_init();
 }
