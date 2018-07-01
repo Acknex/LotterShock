@@ -39,17 +39,20 @@
 
 BMAP* SPUTNIK_bmapSplatter[5];
 
-SOUND* sputnik_snd_hit1 = "eselslerche_hit1.wav";
-SOUND* sputnik_snd_hit2 = "eselslerche_hit2.wav";
+//SOUND* sputnik_snd_hit1 = "eselslerche_hit1.wav";
+//SOUND* sputnik_snd_hit2 = "eselslerche_hit2.wav";
 
-SOUND* sputnik_snd_death1 = "eselslerche_death1.wav";
-SOUND* sputnik_snd_death2 = "eselslerche_death2.wav";
+SOUND* sputnik_snd_death = "sputnik_death.wav";
 
-SOUND* sputnik_snd_idle1 = "eselslerche_idle1.wav";
-SOUND* sputnik_snd_idle2 = "eselslerche_idle2.wav";
+//SOUND* sputnik_snd_idle1 = "eselslerche_idle1.wav";
+//SOUND* sputnik_snd_idle2 = "eselslerche_idle2.wav";
 
-SOUND* sputnik_snd_spot1 = "eselslerche_spot1.wav";
-SOUND* sputnik_snd_spot2 = "eselslerche_spot2.wav";
+//SOUND* sputnik_snd_spot1 = "eselslerche_spot1.wav";
+//SOUND* sputnik_snd_spot2 = "eselslerche_spot2.wav";
+
+SOUND* sputnik_snd_attack1 = "sputnik_attack1.wav";
+SOUND* sputnik_snd_attack2 = "sputnik_attack2.wav";
+SOUND* sputnik_snd_attack3 = "sputnik_attack3.wav";
 
 
 #define SPUTNIK_RUNSPEED skill1
@@ -64,6 +67,7 @@ action Sputnik()
 	if(my->SPUTNIK_ATTACKSPEED == 0) my->SPUTNIK_ATTACKSPEED = 5;
 	if(my->SPUTNIK_ATTACKRANGE == 0) my->SPUTNIK_ATTACKRANGE = 300;
 	if(my->SPUTNIK_ACTIVEDIST == 0) my->SPUTNIK_ACTIVEDIST = 6000;
+	my->SPUTNIK_ANIMSTATEATK = 100;
 	my->HEALTH = 80;
 	ENEMY_HIT_init(my);
 	vec_scale(&my->scale_x, 1.2);
@@ -98,6 +102,7 @@ void SPUTNIK_Update()
 				//DEBUG_VAR(ptr->DAMAGE_HIT, 260);
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
+				/* SPUTNIK has no hit sounds
 				if (ptr->SPUTNIK_SOUNDHANDLE != 0)
 				{
 					switch(integer(random(2)))
@@ -106,6 +111,7 @@ void SPUTNIK_Update()
 						case 1: ptr->SPUTNIK_SOUNDHANDLE = snd_play(sputnik_snd_hit2, 100, 0); break;
 					}
 				}
+				*/
 				ptr->push = -100;
 				SPLATTER_splat(&ptr->x, vector(100.0/255.0, 67.0/255.0, 192.0/255.0));
 				SPLATTER_explode(10, &ptr->x, 500, SPUTNIK_bmapSplatter, 5);
@@ -171,11 +177,7 @@ void SPUTNIK_Update()
 			{
 				ptr->SPUTNIK_STATE = SPUTNIK_STATE_DIE;
 				ptr->SPUTNIK_ANIMSTATE = 0;
-				switch(integer(random(2)))
-				{
-					case 0: snd_play(sputnik_snd_death1, 100, 0); break;
-					case 1: snd_play(sputnik_snd_death2, 100, 0); break;
-				}
+				snd_play(sputnik_snd_death, 100, 0);
 			}
 		}
 	}	
@@ -226,11 +228,13 @@ void SPUTNIK__wait(ENTITY* ptr)
 	{
 		ptr->SPUTNIK_RUNSPEEDCUR = 0;
 		ptr->SPUTNIK_STATE = SPUTNIK_STATE_FOLLOW;
+		/* SPUTNIK has no spot sounds
 		switch(integer(random(2)))
 		{
 			case 0: snd_play(sputnik_snd_spot1, 100, 0); break;
 			case 1: snd_play(sputnik_snd_spot2, 100, 0); break;
 		}
+		*/
 	}
 	else if(!SCAN_IsPlayerNear(ptr, ptr->SPUTNIK_ACTIVEDIST + 100))
 	{
@@ -248,9 +252,20 @@ void SPUTNIK__follow(ENTITY* ptr)
 	// Player is near enough to attack
 	if (SCAN_IsPlayerInSight(ptr, ptr->SPUTNIK_ATTACKRANGE, 360))
 	{
-		ptr->SPUTNIK_ANIMSTATEATK = (ptr->SPUTNIK_ANIMSTATEATK + (ptr->SPUTNIK_ATTACKSPEED * time_step)) % 100;
+		if ((ptr->SPUTNIK_ANIMSTATEATK == 0) << (ptr->SPUTNIK_ANIMSTATEATK >= 100))
+		{
+			ptr->SPUTNIK_ANIMSTATEATK = 0;
+			switch(integer(random(2)))
+			{
+				case 0: snd_play(sputnik_snd_attack1, 100, 0); break;
+				case 1: snd_play(sputnik_snd_attack2, 100, 0); break;
+				case 2: snd_play(sputnik_snd_attack3, 100, 0); break;
+			}
+		}
+		ptr->SPUTNIK_ANIMSTATEATK += ptr->SPUTNIK_ATTACKSPEED * time_step;
+		ptr->SPUTNIK_ANIMSTATEATK = minv(ptr->SPUTNIK_ANIMSTATEATK, 100);
 		ptr->SPUTNIK_ANIMSTATE = 0;
-		ent_animate(ptr, SPUTNIK_ATTACKANIM, ptr->SPUTNIK_ANIMSTATEATK, ANM_CYCLE);
+		ent_animate(ptr, SPUTNIK_ATTACKANIM, ptr->SPUTNIK_ANIMSTATEATK, 0);
 		
 		DEBUG_VAR(ptr->SPUTNIK_ANIMSTATEATK,300);
 		if (ptr->SPUTNIK_ANIMSTATEATK > 50)
