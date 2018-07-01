@@ -5,6 +5,9 @@
 #include <fog>
 #include <normal>
 
+float4 vecAmbient;
+float4 vecFogColor;
+
 Texture entSkin1;
 sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Linear; MagFilter = Linear; MinFilter = Linear; };
 
@@ -19,7 +22,7 @@ struct out_ps // Output to the pixelshader fragment
 
 out_ps vs(
 	float4 inPos : POSITION,
-	float3 inNormal : NORMAL
+	float3 inNormal : NORMAL,
 	float2 inTexCoord0 : TEXCOORD0)
 {
 	out_ps Out;
@@ -36,7 +39,6 @@ out_ps vs(
 float4 ps(out_ps In): COLOR
 {
 	In.normal = normalize(In.normal);
-	float viewDistance = distance(vecViewPos.xyz - In.worldPos);
 	
 	float4 color;
 	color.rgb = tex2D(sTexture, In.uv0);
