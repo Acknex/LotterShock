@@ -5,6 +5,7 @@
 #define PRAGMA_PATH "Source"
 #define PRAGMA_PATH "Assets"
 #define PRAGMA_PATH "Media"
+#define PRAGMA_PATH "Screenshots"
 
 #include "global.h"
 #include "framework.h"
@@ -47,10 +48,11 @@
 #include "particle.c"
 #include "journals.c"
 #include "eye.c"
+#include "ini.c"
+#include "settings.c"
 #include "ang.c"
 
 void main()
 {
-	collision_mode = 2;
-	framework_init();
+    framework_init();
 }

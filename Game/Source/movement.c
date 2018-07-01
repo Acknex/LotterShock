@@ -265,9 +265,6 @@ void playerEntMorphBallDo()
 		}
 	}
 
-	DEBUG_VAR(player.min_z,500);
-	DEBUG_VAR(player.max_z,520);
-
 	///////////////////////
 	// camera
 
@@ -393,9 +390,9 @@ void movement_update()
 		playerEntMorphBallActive = 1;
 		playerEntMorphBallPan = player.pan;
 		weaponsCurrentPrev = weapons.current;
-		weapons.current = 0;
-		weapons_disabled = 1;
-		weapons_update();
+        weapons.current = 0;
+        weapons_disabled = 1;
+        weapons_update();
 	}
 	if(playerEntMorphBallActive)
 	{

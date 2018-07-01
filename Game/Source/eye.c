@@ -89,8 +89,8 @@ void EYE_Update()
     		/*DEBUG_VAR(ptr->EYE_STATE, 50);
     		DEBUG_VAR(ptr->x, 70);
     		DEBUG_VAR(ptr->y, 90);
-    		DEBUG_VAR(ptr->z, 110);*/
-			ptr->EYE_ZOFFSET = 0;
+    		DEBUG_VAR(ptr->z, 110);*/			
+    		ptr->EYE_ZOFFSET = 0;
 
 			/*it's broken and I don't know.*/
 			switch(ptr->EYE_STATE)    	
