@@ -50,8 +50,10 @@ void SKULL_GlobalInit()
 {
 }
 
+void spawnskull();
 void SKULL_Init()
 {
+	spawnskull();
 }
 
 void SKULL_Update()
@@ -64,6 +66,7 @@ void SKULL_Update()
     		DEBUG_VAR(ptr->SKL_STATE, 50);
 			if (ptr->DAMAGE_HIT > 0)
 			{
+				ptr->roll = 0;
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
 				ptr->event = NULL;
@@ -156,7 +159,7 @@ var SKULL__toFloor(ENTITY* ptr)
 	VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 10);
 	VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
 	me = ptr;
-	var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON | USE_BOX;
+	var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;// | USE_BOX;
 	c_trace(from, to, mode);
 	if(HIT_TARGET)
 		ptr->z = hit.z + 150 + ptr->SKL_ZOFFSET;
@@ -312,31 +315,7 @@ void SKULL__retreat(ENTITY* ptr)
 	}
 }
 
-void SKULL__fireParticle(PARTICLE *p)
-{
-	p.size -= time_step;
-	p.alpha -= p.skill_a*time_step;
-	if(p.alpha <= 0) p.lifespan = 0;
-}
-
-void SKULL__fireEffect(PARTICLE *p)
-{
-	set(p, MOVE | BRIGHT | TRANSLUCENT);
-	p.red = 255;
-	p.green = 0;
-	p.blue = 0;
-	p.alpha = 100;
-	p.lifespan = 100;
-	p.size = 50;
-	p.vel_z = 20 + random(30);
-	p.gravity = -20.0;
-	p.skill_a = 20.0; // fade factor
-	p.event = SKULL__fireParticle;
-}
-
-
-void spawnskull_startup()
-{
+void spawnskull(){
 	
 	wait(-5);
 	//while(1)
