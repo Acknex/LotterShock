@@ -11,6 +11,13 @@ float4 vecFogColor;
 Texture entSkin1;
 sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Linear; MagFilter = Linear; MinFilter = Linear; };
 
+float4x4 matTexture;
+
+float2 DoTexture(float2 Tex)
+{
+   return mul(float3(Tex.x,Tex.y,1),matTexture).xy;
+}
+
 struct out_ps // Output to the pixelshader fragment
 {
 	float4 Pos : POSITION;
@@ -35,7 +42,7 @@ out_ps vs(
 	
 	Out.Pos = DoTransform(inPos);
 	Out.fog = (Out.Pos.z - vecFog.x) * vecFog.z;
-	Out.uv0 = inTexCoord0;
+        Out.uv0 = DoTexture(inTexCoord0);
 	Out.worldPos = mul(inPos, matWorld);
 	Out.normal = mul(inNormal, matWorld);
 	
