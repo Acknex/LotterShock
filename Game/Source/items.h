@@ -17,6 +17,8 @@ void collectibles_update();
 void Medipack();
 void medipack_init();
 void keycard();
+void dobulejump();
+void hazmat();
 
 void ammo_shotgun();
 void ammo_cellgun();
