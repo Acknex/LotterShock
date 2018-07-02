@@ -54,6 +54,7 @@ void framework_init()
 
     particle_mode = 8;
     collision_mode = 2;
+    preload_mode = 3; // preload a lot
 
     video_set(
         settings.resolution_x,

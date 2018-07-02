@@ -15,6 +15,9 @@ typedef struct settings_t
 
     // Audio
     int game_volume;
+
+    // Input
+    var input_sensitivity;
 } settings_t;
 
 settings_t settings;

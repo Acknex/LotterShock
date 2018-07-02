@@ -27,6 +27,8 @@ void settings_init()
 
     settings.game_volume = 100;
 
+    settings.input_sensitivity = 20;
+
     if(ini_write("settings.ini", "Dummy", "dummy", "dummy"))
     {
         ini_write("settings.ini", "Dummy", NULL, NULL);
@@ -49,17 +51,25 @@ void settings_init()
     }
 }
 
+void settings_load_from(STRING * fileName)
+{
+    settings.fps_limit    = ini_read_int(fileName, "Game", "fps_limit", settings.fps_limit);
+    settings.anisotropy   = ini_read_int(fileName, "Game", "anisotropy", settings.anisotropy);
+    settings.vsync        = ini_read_int(fileName, "Game", "vsync", settings.vsync);
+
+    settings.resolution_x = ini_read_int(fileName, "Resolution", "width", settings.resolution_x);
+    settings.resolution_y = ini_read_int(fileName, "Resolution", "height", settings.resolution_y);
+    settings.fullscreen   = ini_read_int(fileName, "Resolution", "fullscreen", settings.fullscreen);
+
+    settings.game_volume  = ini_read_int(fileName, "Audio", "volume", settings.game_volume);
+
+    settings.input_sensitivity = ini_read_var(fileName, "Input", "sensitivity", settings.input_sensitivity);
+}
+
+
 void settings_load()
 {
-    settings.fps_limit    = ini_read_int(settings_file, "Game", "fps_limit", settings.fps_limit);
-    settings.anisotropy   = ini_read_int(settings_file, "Game", "anisotropy", settings.anisotropy);
-    settings.vsync        = ini_read_int(settings_file, "Game", "vsync", settings.vsync);
-
-    settings.resolution_x = ini_read_int(settings_file, "Resolution", "width", settings.resolution_x);
-    settings.resolution_y = ini_read_int(settings_file, "Resolution", "height", settings.resolution_y);
-    settings.fullscreen   = ini_read_int(settings_file, "Resolution", "fullscreen", settings.fullscreen);
-
-    settings.game_volume  = ini_read_int(settings_file, "Audio", "volume", settings.game_volume);
+    settings_load_from(settings_file);
 }
 
 void settings_save()
@@ -73,4 +83,6 @@ void settings_save()
     ini_write_int(settings_file, "Resolution", "fullscreen", settings.fullscreen);
 
     ini_write_int(settings_file, "Audio", "volume", settings.game_volume);
+
+    ini_write_var(settings_file, "Input", "sensitivity", settings.input_sensitivity);
 }
