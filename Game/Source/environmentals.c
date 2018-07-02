@@ -1,3 +1,5 @@
+#include "environmentals.h"
+
 // skill1: SPEED
 action environ_fake_cloud()
 {	
@@ -56,6 +58,13 @@ action environ_engterm()
 {	
     my->ENVIRONMENTALS_TEMP = 0;
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_ENGINE_TERMINAL;
+    framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+}
+
+action environ_ice()
+{
+    my->ENVIRONMENTALS_TEMP = 0;
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_ICE;
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
 
@@ -169,6 +178,10 @@ void environmentals_update()
                 {
                     ptr.skin = 4;
                 }
+                break;
+
+            case ENVIRONMENTAL_ICE:
+                // TODO: i can haz logic?!
                 break;
         }
     }	
