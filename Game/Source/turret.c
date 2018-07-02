@@ -82,6 +82,7 @@ void TURRET__init()
 	set(my, PASSABLE | POLYGON | FLAG1);
 	ent_animate(my, "closed", 0, 0);
 	vec_scale(&my->scale_x, 1.5);
+	my->material = matObject;
 }
 
 void TURRET_Init()
@@ -102,7 +103,7 @@ void TURRET_Update()
 			{
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
-				SPLATTER_splat(&ptr->x, vector(0.0, 1.0, 1.0));				
+				SPLATTER_splat(&ptr->x, vector(1.0, 1.0, 0.0));				
 				if (ptr->HEALTH <= 0)
 				{
 					ptr->event = NULL;

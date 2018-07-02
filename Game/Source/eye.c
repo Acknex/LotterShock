@@ -7,11 +7,12 @@
 
 #include "splatter.h" //temp
 
-#define EYE_PATROLSPEED skill1
-#define EYE_TURNSPEED skill2
-#define EYE_PATHID skill3
-#define EYE_ATTACKDIST skill4
-#define EYE_ACTIVEDIST skill5
+#define EYE_PATHID skill1
+#define EYE_PATHPROGRESS skill2
+#define EYE_PATROLSPEED skill3
+#define EYE_TURNSPEED skill4
+#define EYE_ATTACKDIST skill5
+#define EYE_ACTIVEDIST skill6
 
 #define EYE_COUNTER skill22
 #define EYE_STATE skill23
@@ -38,7 +39,7 @@ BMAP* EYE_bmapSplatter[5];
 
 void EYE__attack(ENTITY* ptr);
 
-// uses: EYE_PATROLSPEED, EYE_TURNSPEED, EYE_ATTACKDIST, EYE_ACTIVEDIST, EYE_PATHID
+// uses: EYE_PATROLSPEED, EYE_TURNSPEED, EYE_ATTACKDIST, EYE_ACTIVEDIST, EYE_PATHID, EYE_PATHPROGRESS
 action Eye()
 {
    framework_setup(my, SUBSYSTEM_ENEMY_EYE);
@@ -48,16 +49,15 @@ action Eye()
 	if(my->EYE_ACTIVEDIST == 0) my->EYE_ACTIVEDIST = 4000;
 	if(my->EYE_ATTACKDIST == 0) my->EYE_ATTACKDIST = 2000;
 	vec_scale(me.scale_x, 10);
-	my->EYE_PATHID = 2;//temp
+//	my->EYE_PATHID = 2;//temp
 	my->material = matObject;
-//	error(str_for_num(NULL,path_set(my, str_for_num(NULL, my->EYE_PATHID))));
-//	error(str_for_num(NULL,path_set(my, str_for_num(NULL, 0))));
 	if (path_set(my, str_for_num(NULL, my->EYE_PATHID)) == 0)
 	{
 		path_set(my, str_for_num(NULL, 0));
 	}
 	my->EYE_PATROLLEN = path_length(me);
-	path_spline (my,&my->x,0);
+	my->EYE_PATHPROGRESS = clamp(my->EYE_PATROLSPEED,0,100) / 100;
+	path_spline (my,&my->x,my->EYE_PATROLLEN * my->EYE_PATHPROGRESS);
 	vec_set(&my->EYE_LASTPOS, &my->x);
 	set(my, PASSABLE);
 }	
