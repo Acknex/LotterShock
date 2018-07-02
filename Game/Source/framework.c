@@ -9,6 +9,7 @@
 #include "materials.h"
 #include "meshFun.h"
 #include "settings.h"
+#include "bestiary.h"
 
 #define FRAMEWORK_ALPHA_BLENDSPEED  25
 
@@ -20,6 +21,7 @@
 #define FRAMEWORK_STATE_GAME         4
 #define FRAMEWORK_STATE_SPLASHSCREEN 5
 #define FRAMEWORK_STATE_UNLOAD       6
+#define FRAMEWORK_STATE_BESTIARY     7
 
 typedef struct
 {
@@ -122,6 +124,7 @@ void framework_update()
             game_init();
             credits_init();
             hud_init();
+            bestiary_init();
 
             music_set_master_volume(settings.game_volume);
 
@@ -163,6 +166,9 @@ void framework_update()
             case MAINMENU_RESPONSE_EXIT:
                 framework_transfer(FRAMEWORK_STATE_SHUTDOWN);
                 break;
+            case MAINMENU_RESPONSE_BESTIARY:
+                framework_transfer(FRAMEWORK_STATE_BESTIARY);
+                break;
             default:
                 error("framework: unknown response from main menu.");
             }
@@ -184,6 +190,8 @@ void framework_update()
 #else
             level_load(LEVEL_FILE);
 #endif
+			fog_color = 1;
+			camera.fog_end = 6000.0;
 			wait_for(level_load);
 			meshFunDo();
 			ENTITY *sky = ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
@@ -215,6 +223,12 @@ void framework_update()
         break;
 
     case FRAMEWORK_STATE_UNLOAD:
+        break;
+
+    case FRAMEWORK_STATE_BESTIARY:
+        bestiary_update();
+        if(bestiary_is_done())
+            framework_transfer(FRAMEWORK_STATE_MAINMENU);
         break;
 
     default:
@@ -258,6 +272,10 @@ void framework_update()
         case FRAMEWORK_STATE_UNLOAD:
             break;
 
+        case FRAMEWORK_STATE_BESTIARY:
+            bestiary_close();
+            break;
+
         default:
             error(str_printf(NULL, "framework: unsupported state %d!", framework.state));
         }
@@ -297,6 +315,10 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_UNLOAD:
+            break;
+
+        case FRAMEWORK_STATE_BESTIARY:
+            bestiary_open();
             break;
 
         default:

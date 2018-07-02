@@ -175,6 +175,8 @@ void environmentals_update()
 
                     if(ptr.ENVIRONMENTALS_TIMER >= 30)
                     {
+						fog_color = 2;
+						camera.fog_end = 20000.0;
                         ptr.ENVIRONMENTALS_TEMP = 2;
                         story_enginesEnabled = 1;
                     }

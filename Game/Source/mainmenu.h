@@ -1,10 +1,14 @@
 #ifndef MAINMENU_H
 #define MAINMENU_H
 
+SOUND * mainmenu_swap_snd = "mainmenu_click.wav";
+SOUND * mainmenu_accept_snd = "mainmenu_accept.wav";
+
 #define MAINMENU_RESPONSE_STILLACTIVE 0
 #define MAINMENU_RESPONSE_START       1
 #define MAINMENU_RESPONSE_CREDITS     2
 #define MAINMENU_RESPONSE_EXIT        3
+#define MAINMENU_RESPONSE_BESTIARY    4
 
 void mainmenu_init();
 
