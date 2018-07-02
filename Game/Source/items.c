@@ -46,6 +46,18 @@ void itemCollectible_effect(ENTITY *item)
 			weapons_add(item->SUBSYSTEM_skill_a);
 			snd_play(snd_catch, 100, 0);
 			break;
+			
+		case ITEM_DOUBLEJUMP:
+			// unlock
+			playerHasDoubleJump += 1;
+			snd_play(snd_catch, 100, 0);
+			break;
+			
+		case ITEM_HAZMAT:
+			// unlock
+			playerHasHazmat = 1;
+			snd_play(snd_catch, 100, 0);
+			break;
 	}
 	// remove me
 	item->SK_ENTITY_DEAD = 1;
@@ -92,6 +104,22 @@ KEY
 action keycard() {
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_KEYCARD;
+}
+/**********
+DOUBLEJUMP
+	condition: none
+**********/
+action doublejump() {
+	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
+	my->SUBSYSTEM_PARAMETER = ITEM_DOUBLEJUMP;
+}
+/**********
+HAZMAT SUIT
+	condition: none
+**********/
+action hazmat() {
+	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
+	my->SUBSYSTEM_PARAMETER = ITEM_HAZMAT;
 }
 
 /**********

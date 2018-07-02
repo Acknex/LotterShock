@@ -6,6 +6,7 @@
 #include "settings.h"
 
 #include <windows.h>
+#include <acknex.h>
 
 //////////////////////////////
 
@@ -207,6 +208,12 @@ inputstate_t input_states;
 
 void input_init()
 {
+#ifdef DEBUG
+    // Remap debug console
+    on_grave = on_tab;
+    on_tab = NULL;
+#endif
+
     memset(cheatcodes, 0, sizeof(cheatcode_t) * INPUT_CHEAT_COUNT);
 
     if(on_message != input_proc_message)
@@ -285,6 +292,7 @@ void input_init()
     input_add(INPUT_NAVBACK,    INPUT_TYPE_KEYBOARD, key_for_str("esc"));
     input_add(INPUT_CROUCH,     INPUT_TYPE_KEYBOARD, key_for_str("ctrl"));
     input_add(INPUT_MORPHBALL,  INPUT_TYPE_KEYBOARD, key_for_str("shiftl"));
+    input_add(INPUT_SHOW_MAP,   INPUT_TYPE_KEYBOARD, 15); // TAB
 
     input_add(INPUT_WEAPON_UP,  INPUT_TYPE_KEYBOARD, key_for_str("q"));  // mickey.z
     input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_KEYBOARD, key_for_str("e"));
@@ -299,13 +307,15 @@ void input_init()
     input_add(INPUT_BLOCK,      INPUT_TYPE_GAMEPAD, 15 ); //! Y
     input_add(INPUT_JUMP,       INPUT_TYPE_GAMEPAD, 12 ); //! A
     input_add(INPUT_NAVBACK,    INPUT_TYPE_GAMEPAD, 4  ); //! start
-    input_add(INPUT_NAVBACK,    INPUT_TYPE_GAMEPAD, 5  ); //! select
+    input_add(INPUT_SHOW_MAP,   INPUT_TYPE_GAMEPAD, 5  ); //! select
     input_add(INPUT_CROUCH,     INPUT_TYPE_GAMEPAD, 6  ); //! left stick
     input_add(INPUT_MORPHBALL,  INPUT_TYPE_GAMEPAD, 7  ); //! right stick
 
     input_add(INPUT_WEAPON_UP,  INPUT_TYPE_GAMEPAD, 9); //! right shoulder
     input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_GAMEPAD, 8); //! left shoulder
 
+    input_add_axis(INPUT_WEAPON_UP,  &mickey.z, 1.0, 0.0, false);
+    input_add_axis(INPUT_WEAPON_DOWN,&mickey.z, 1.0, 0.0, false);
 
     input_add_axis(INPUT_LOOK_HORIZONTAL, &mouse_force.x, 1.0, 0.0, true);
     input_add_axis(INPUT_LOOK_VERTICAL,   &mouse_force.y, 1.0, 0.0, true);
@@ -325,6 +335,9 @@ void input_init()
     // axis configuration
     input[INPUT_DOWN].positiveValue = false;
     input[INPUT_LEFT].positiveValue = false;
+
+    input[INPUT_WEAPON_UP].positiveValue   = true;
+    input[INPUT_WEAPON_DOWN].positiveValue = false;
 
     // TODO: Controller + Mouse Sensitivity
     input[INPUT_LOOK_HORIZONTAL].sensitivity = settings.input_sensitivity;

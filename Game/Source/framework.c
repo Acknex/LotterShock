@@ -47,6 +47,7 @@ void framework_init()
     settings_init();
     settings_load();
 
+    fps_min = 25; // overshoot vermeiden, v.a. wenn's ruckelt
     fps_max = settings.fps_limit;
 
     d3d_anisotropy = settings.anisotropy;

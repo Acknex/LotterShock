@@ -3,6 +3,7 @@
 #include "config.h"
 
 #define PRAGMA_PATH "Source"
+#define PRAGMA_PATH "Shaders"
 #define PRAGMA_PATH "Assets"
 #define PRAGMA_PATH "Media"
 #define PRAGMA_PATH "Screenshots"
@@ -51,6 +52,7 @@
 #include "ini.c"
 #include "settings.c"
 #include "ang.c"
+#include "map.c"
 
 void main()
 {
