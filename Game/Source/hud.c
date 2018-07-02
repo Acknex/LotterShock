@@ -94,9 +94,12 @@ TEXT* HUD_HP_infotext =
 	flags = CENTER_X | CENTER_Y | LIGHT;
 } 
 
+BMAP *hud_lotterhead_bmap = "emohealthsmall.png";
+var hud_lotterhead_shift = 0;
 PANEL* HUD_Head =
 {
-	bmap = "lotterindahouse.png";
+	//bmap = "lotterindahouse.png";
+	window(0,0, 0,0, hud_lotterhead_bmap, NULL, NULL);
 	flags = TRANSLUCENT | LIGHT;
 	layer = 3;
 }
@@ -150,6 +153,10 @@ void hud_update_bar(PANEL *bar, BMAP *source, var current_value, var max_value)
 
 void hud_show()
 {
+	pan_setwindow(HUD_Head,1, 0,0,bmap_width(hud_lotterhead_bmap)/4, bmap_height(hud_lotterhead_bmap),hud_lotterhead_bmap, hud_lotterhead_shift, NULL);
+	HUD_Head->pos_x = (screen_size.x- bmap_width(hud_lotterhead_bmap)/4)/2;
+	HUD_Head->pos_y = screen_size.y - bmap_height(hud_lotterhead_bmap) - HUD_BORDER_PADDING;
+	set(HUD_Head, SHOW);
 	
 	
 	HUD_background->pos_x = (screen_size.x-hud_sizex(HUD_background))/2;
@@ -403,6 +410,9 @@ void hud_update()
 		vec_set(HUD_HP_infotext.blue, vector(255,255,255));
 		vec_set(HUD_HP_text.blue, HUD_HP_infotext.blue);
 	}
+	
+	int mode = player_healthratio*4;
+	hud_lotterhead_shift = (bmap_width(hud_lotterhead_bmap)/4)*mode;
 	
 	
 	int weaponID = weapons_get_current();
