@@ -10,6 +10,8 @@
 #include "gib.h"
 #include "hud.h"
 #include "map.h"
+#include "turret.h"
+#include "enemy.h"
 
 #include <windows.h>
 
@@ -35,6 +37,7 @@ void game_open()
     SPUTNIK_Init();
     SKULL_Init();
     EYE_Init();
+    TURRET_Init();
     hud_show();
     player_initSpawn();
     map_open();
@@ -84,8 +87,10 @@ void game_update()
     SPUTNIK_Update();
     SKULL_Update();
     EYE_Update();
+    TURRET_Update();
     GIB_Update();
-
+	ENEMY_UpdateProjectile();
+	
     hud_update();
 
     map_update();
