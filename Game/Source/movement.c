@@ -369,7 +369,7 @@ void movement_update()
 	if(playerDamageCooldownTime > 0)
 		playerDamageCooldownTime -= 1 * time_step;
 	
-	DEBUG_VAR(playerDamageCooldownTime, 0);
+	// DEBUG_VAR(playerDamageCooldownTime, 0);
 
 	if(!player)
 	{
