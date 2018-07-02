@@ -191,6 +191,12 @@ void bestiary_update()
     {
         you->pan += speed * time_step;
     }
+
+    SUBSYSTEM_LOOP(you, SUBSYSTEM_BESTIARYTURRET)
+    {
+		ent_bonerotate(you, "Bone1", vector(speed * time_step, 0, 0));
+    }
+
 }
 
 void bestiary_close()
@@ -212,4 +218,10 @@ action BeastiaryEntry()
 {
     // didn't to nothing
     framework_setup(me, SUBSYSTEM_BESTIARY);
+}
+
+action BeastiaryTEntry()
+{
+    // didn't to nothing
+    framework_setup(me, SUBSYSTEM_BESTIARYTURRET);
 }
