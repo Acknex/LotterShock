@@ -20,7 +20,7 @@ void environ_fake_cloud();
 void environ_toxic_cloud();
 void environ_ice_cloud();
 void environ_engine_beam();
-void environ_engine_terminal();
+void environ_engterm();
 
 void environmentals_update();
 

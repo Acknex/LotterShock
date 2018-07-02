@@ -52,7 +52,7 @@ action environ_engine_beam()
 }
 
 
-action environ_engine_terminal()
+action environ_engterm()
 {	
     my->ENVIRONMENTALS_TEMP = 0;
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_ENGINE_TERMINAL;
