@@ -30,7 +30,6 @@ void game_init()
 void game_open()
 {
     game_done = false;
-    mouse_pointer = 0;
     weapons_open();
     ESELSLERCHE_Init();
     SPUTNIK_Init();
@@ -39,6 +38,14 @@ void game_open()
     hud_show();
     player_initSpawn();
     map_open();
+
+    // Setup mouse
+    mouse_mode = 1;
+    mouse_range = 500;
+    mouse_pointer = 0;
+    vec_set(mouse_pos, screen_size);
+    vec_scale(mouse_pos, 0.5);
+
     input_cheats_enabled = 1;
 }
 

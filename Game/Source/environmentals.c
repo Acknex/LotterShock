@@ -60,6 +60,7 @@ action environ_engterm()
 {	
     my->ENVIRONMENTALS_TEMP = 0;
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_ENGINE_TERMINAL;
+    my->INTERACTIBLE = 1;
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
 
