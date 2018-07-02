@@ -95,6 +95,8 @@ void mainmenu_open()
 ´   mainmenue_title->pos_y = 40;
     set(mainmenue_title, SHOW);
     
+	fog_color = 2;
+	camera.fog_end = 20000.0;
     level_load("menue.wmb");
     wait_for(level_load);
     wait(3);

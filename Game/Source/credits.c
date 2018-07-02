@@ -272,6 +272,8 @@ void credits_open()
     //credits_pnl_ff.scale_y = 10;
 
     // Kill all evil in this world!
+	fog_color = 2;
+	camera.fog_end = 20000.0;
     level_load(NULL);
 
     music_start("media\\credits.mp3", 0.5, 0);
@@ -284,6 +286,8 @@ void credits_close()
 {
     music_speedup(100);
     music_start("media\\intro.mp3", 0.5, 0);
+	fog_color = 2;
+	camera.fog_end = 20000.0;
     level_load(NULL);
     credits_pnl_ff.flags &= ~SHOW;
 }
