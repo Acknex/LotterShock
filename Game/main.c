@@ -53,6 +53,8 @@
 #include "settings.c"
 #include "ang.c"
 #include "map.c"
+#include "turret.c"
+#include "enemy.c"
 
 void main()
 {
