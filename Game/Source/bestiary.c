@@ -7,7 +7,7 @@
 
 #include <acknex.h>
 
-#define BESTIARY_COUNT 6
+#define BESTIARY_COUNT 7
 
 typedef struct beast_t
 {
@@ -56,10 +56,10 @@ void bestiary_init()
     bestiary.beasts[0].flavour = "A mysterious adventurer from space. Follower of the Great Acknex.";
 
     bestiary.beasts[1].name    = "Acktana";
-    bestiary.beasts[1].flavour = "Star Lottis faithful companion AI.\nCreates by the Great Acknex itself, it was written in Lite-C\nto fully unleash its mighty intellect upon the unity union.";
+    bestiary.beasts[1].flavour = "Star Lottis faithful companion AI.\nCreated by the Great Acknex itself, it was written in Lite-C\nto fully unleash its mighty intellect upon the unity union.";
 
     bestiary.beasts[2].name    = "Donkey-Lark";
-    bestiary.beasts[2].flavour = "A small animal from the far lands of Bielefeld.\nLikes to graze fresh mushrooms, but has to puke afterwards.\nBe careful, as eselslerchen might explode when beeing startled!";
+    bestiary.beasts[2].flavour = "A small animal from the far lands of Bielefeld.\nLikes to graze fresh flowers, but has to puke afterwards.\nBe careful, as donkey-larks might explode when beeing startled!";
 
     bestiary.beasts[3].name    = "Sputnik";
     bestiary.beasts[3].flavour = "A machine embedded with a human brain and a TV as a head.\nIt was meant to be a super soldier, but it is just super mad.";
@@ -69,6 +69,9 @@ void bestiary_init()
 
     bestiary.beasts[5].name    = "Eye of the Acknex";
     bestiary.beasts[5].flavour = "It's a floating, ever watching eye.\nIf it crosses your way you have been blessed by the Great Acknex itself.";
+
+    bestiary.beasts[6].name    = "Turret";
+    bestiary.beasts[6].flavour = "Your very personal bullet hell.";
 }
 
 void bestiary_open()
