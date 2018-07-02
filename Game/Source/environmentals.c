@@ -10,8 +10,9 @@ action environ_fake_cloud()
 action environ_ice_cloud()
 {	
     set(me, PASSABLE);
+    set(me, TRANSLUCENT);
 
-    my.alpha = 10 + random(90);    
+    my.alpha = 20 + random(80);    
     my->ENVIRONMENTALS_TEMP = integer(random(1));
 
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_ICECLOUD;
@@ -48,13 +49,13 @@ void environmentals_update()
                 ptr.roll += ptr.ENVIRONMENTALS_FAKECLOUD_ROTATESPEED * time_step;
                 if(ptr.ENVIRONMENTALS_TEMP == 0)
                 {
-                    ptr.alpha -= ptr.ENVIRONMENTALS_FAKECLOUD_ROTATESPEED * 3 * time_step;
-                    if(ptr.alpha <= 10)
+                    ptr.alpha -= ptr.ENVIRONMENTALS_FAKECLOUD_ROTATESPEED * 5 * time_step;
+                    if(ptr.alpha <= 20)
                         ptr.ENVIRONMENTALS_TEMP = 1;
                 }
                 else
                 {
-                    ptr.alpha += ptr.ENVIRONMENTALS_FAKECLOUD_ROTATESPEED * 3 * time_step;
+                    ptr.alpha += ptr.ENVIRONMENTALS_FAKECLOUD_ROTATESPEED * 5 * time_step;
                     if(ptr.alpha >= 100)
                         ptr.ENVIRONMENTALS_TEMP = 0;
                 }
