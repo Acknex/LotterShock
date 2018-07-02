@@ -57,6 +57,9 @@ var playerDamageCooldownTime = 0;
 SOUND* player_snd_step1 = "steps_1.wav";
 SOUND* player_snd_step2 = "steps_2.wav";
 SOUND* player_snd_step3 = "steps_3.wav";
+SOUND* player_snd_jump1 = "jump_1.wav";
+SOUND* player_snd_jump2 = "jump_2.wav";
+SOUND* player_snd_jump3 = "jump_3.wav";
 
 void player_initSpawn()
 {
@@ -497,16 +500,23 @@ void movement_update()
 		vec_set(targetSpeed,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
 		if(targetSpeed.x || targetSpeed.y)
 		{
-			playerStepDelay += time_step;
-			if(playerStepDelay > PLAYER_STEP_DELAY_TIME)
+			if(player.PLAYER_GROUND_CONTACT != 0)
 			{
-				playerStepDelay -= PLAYER_STEP_DELAY_TIME;
-				switch(integer(random(3)))
+				
+				playerStepDelay += time_step;
+				if(playerStepDelay > PLAYER_STEP_DELAY_TIME)
 				{
-					case 0: snd_play(player_snd_step1, 100, 0); break;
-					case 1: snd_play(player_snd_step2, 100, 0); break;
-					case 2: snd_play(player_snd_step3, 100, 0); break;
+					playerStepDelay -= PLAYER_STEP_DELAY_TIME;
+					switch(integer(random(3)))
+					{
+						case 0: snd_play(player_snd_step1, 100, 0); break;
+						case 1: snd_play(player_snd_step2, 100, 0); break;
+						case 2: snd_play(player_snd_step3, 100, 0); break;
+					}
 				}
+			}
+			else {
+				playerStepDelay = PLAYER_STEP_DELAY_TIME;
 			}
 			playerAccelerationFac = 0.5;
 			vec_normalize(targetSpeed,playerMaxSpeedFac*playerSpeedFac);
@@ -602,6 +612,12 @@ void movement_update()
 			player.PLAYER_GROUND_CONTACT = 0;
 			playerJumpHangtime = 6;
 			player.PLAYER_SPEED_Z = 80;
+			switch(integer(random(3)))
+			{
+				case 0: snd_play(player_snd_jump1, 100, 0); break;
+				case 1: snd_play(player_snd_jump2, 100, 0); break;
+				case 2: snd_play(player_snd_jump3, 100, 0); break;
+			}
 		}
 	}
 	

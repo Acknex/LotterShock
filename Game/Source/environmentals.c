@@ -1,6 +1,7 @@
 #include "environmentals.h"
 #include <acknex.h>
 
+SOUND* snd_terminal = "keys_engine_room.wav";
 // skill1: SPEED
 action environ_fake_cloud()
 {	
@@ -158,7 +159,7 @@ void environmentals_update()
                         ptr.skin = 2;
                         if(input_hit(INPUT_USE)) 
                         {
-                            ent_playsound(ptr, snd_beep, 100);
+                            snd_play(snd_terminal, 100, 0);
                             ptr.ENVIRONMENTALS_TEMP = 1;
                         }
                     }

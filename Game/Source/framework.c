@@ -129,7 +129,7 @@ void framework_update()
             music_set_master_volume(settings.game_volume);
 
             // TODO: Fix relative link?
-            music_start("Media/intro.mp3", 1.0, false);
+            music_start("Media/intro.mp3", 0.2, false);
 
             // Ladebildschirm passend skalieren
             framework_load_screen.scale_x = screen_size.x / framework_load_screen.size_x;
