@@ -53,6 +53,7 @@
 #include "settings.c"
 #include "ang.c"
 #include "map.c"
+#include "bestiary.c"
 
 void main()
 {
