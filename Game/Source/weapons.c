@@ -304,7 +304,7 @@ void p_shotgun_muzzle_fire(PARTICLE* p)
 	//set(p,BRIGHT);
 	p.alpha = 10+random(10);
 	vec_set(p.blue,vector(20,190,255));
-	p.skill_a = p.size = 4*(48+random(32));
+	p.skill_a = p.size = 2*(48+random(32));
 	p.lifespan = 1;
 	p.event = p_shotgun_muzzle_fire_fade;
 }
