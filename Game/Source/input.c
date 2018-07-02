@@ -314,6 +314,8 @@ void input_init()
     input_add(INPUT_WEAPON_UP,  INPUT_TYPE_GAMEPAD, 9); //! right shoulder
     input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_GAMEPAD, 8); //! left shoulder
 
+    input_add_axis(INPUT_WEAPON_UP,  &mickey.z, 1.0, 0.0, false);
+    input_add_axis(INPUT_WEAPON_DOWN,&mickey.z, 1.0, 0.0, false);
 
     input_add_axis(INPUT_LOOK_HORIZONTAL, &mouse_force.x, 1.0, 0.0, true);
     input_add_axis(INPUT_LOOK_VERTICAL,   &mouse_force.y, 1.0, 0.0, true);
@@ -333,6 +335,9 @@ void input_init()
     // axis configuration
     input[INPUT_DOWN].positiveValue = false;
     input[INPUT_LEFT].positiveValue = false;
+
+    input[INPUT_WEAPON_UP].positiveValue   = true;
+    input[INPUT_WEAPON_DOWN].positiveValue = false;
 
     // TODO: Controller + Mouse Sensitivity
     input[INPUT_LOOK_HORIZONTAL].sensitivity = settings.input_sensitivity;

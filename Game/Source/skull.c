@@ -306,7 +306,7 @@ void SKULL__hit(ENTITY* ptr)
 		reset(ptr, TRANSLUCENT);
 		ptr->SKL_STATE = SKL_STATE_WAIT;			
 		ptr->event = ENEMY_HIT_event;
-		ptr->DAMAGE_VEC = nullvector;
+        vec_zero(ptr->DAMAGE_VEC);
 		ptr->SKL_COUNTER = 0;
 	}
 	else
