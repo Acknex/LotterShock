@@ -14,6 +14,7 @@
 #include <windows.h>
 
 bool game_done;
+var story_enginesEnabled = 0;
 
 void game_init()
 {
