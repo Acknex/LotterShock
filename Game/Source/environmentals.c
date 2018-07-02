@@ -51,6 +51,14 @@ action environ_engine_beam()
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
 
+
+action environ_engine_terminal()
+{	
+    my->ENVIRONMENTALS_TEMP = 0;
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_ENGINE_TERMINAL;
+    framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+}
+
 void environmentals_update()
 {
     ENTITY *ptr;
@@ -125,6 +133,41 @@ void environmentals_update()
                     {
                         ptr.ENVIRONMENTALS_TEMP += 2 * time_step;
                     }
+                }
+                break;
+            
+            case ENVIRONMENTAL_ENGINE_TERMINAL:
+                draw_text("test", 0, 10, vector(0,0,255));
+                if(ptr.ENVIRONMENTALS_TEMP == 0)
+                {
+                    if(mouse_ent == ptr) 
+                    {
+                        ptr.skin = 2;
+                        if(input_hit(INPUT_USE)) 
+                        {
+                            ent_playsound(ptr, snd_beep, 100);
+                            ptr.ENVIRONMENTALS_TEMP = 1;
+                        }
+                    }
+                    else
+                    {
+                        ptr.skin = 1;
+                    }
+                }
+                else if(ptr.ENVIRONMENTALS_TEMP == 1)
+                {
+                    ptr.skin = 3;
+                    ptr.ENVIRONMENTALS_TIMER += 1 * time_step;
+
+                    if(ptr.ENVIRONMENTALS_TIMER >= 30)
+                    {
+                        ptr.ENVIRONMENTALS_TEMP = 2;
+                        story_enginesEnabled = 1;
+                    }
+                }
+                else
+                {
+                    ptr.skin = 4;
                 }
                 break;
         }
