@@ -71,12 +71,12 @@ void doors_update() {
 						
 						if (keys[ptr.DOOR_REQUIRED_KEY_ID] == 1 || (ptr.DOOR_REQUIRED_KEY_ID == 42 && story_enginesEnabled == 1))  
 						{
-							ent_playsound(ptr, snd_gate, 100);
+                            ent_playsound(ptr, snd_gate, 800);
 							ptr.DOOR_STATE = 1;
 						} 
 						else 
 						{
-							ent_playsound(ptr, snd_keypad_no, 100);
+                            ent_playsound(ptr, snd_keypad_no, 800);
 						}
 					}
 				}

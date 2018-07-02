@@ -2,6 +2,8 @@
 #include "input.h"
 #include "music_player.h"
 #include "mainmenu.h"
+#include "global.h"
+#include "framework.h"
 
 #include <acknex.h>
 
@@ -146,6 +148,15 @@ void bestiary_update()
         16,
         32,
         vector(200, 200, 200));
+
+    var speed = 1;
+    if(input_down(INPUT_JUMP))
+        speed = 10;
+
+    SUBSYSTEM_LOOP(you, SUBSYSTEM_BESTIARY)
+    {
+        you->pan += speed * time_step;
+    }
 }
 
 void bestiary_close()
@@ -165,5 +176,5 @@ bool bestiary_is_done()
 action BeastiaryEntry()
 {
     // didn't to nothing
-
+    framework_setup(me, SUBSYSTEM_BESTIARY);
 }
