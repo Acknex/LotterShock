@@ -59,7 +59,7 @@ PANEL* HUD_Ammo_bars =
 {
 	bmap = hud_bar_background_bmap;
 	flags = TRANSLUCENT;
-	layer = 4;
+	layer = 0;
 }
 
 TEXT* HUD_Ammo_infotext =	
@@ -102,6 +102,8 @@ PANEL* HUD_Head =
 	window(0,0, 0,0, hud_lotterhead_bmap, NULL, NULL);
 	flags = TRANSLUCENT | LIGHT;
 	layer = 3;
+	scale_x = 1.1;
+	scale_y = 1.1;
 }
 
 PANEL *hud_weapon_icon[4];
@@ -154,8 +156,8 @@ void hud_update_bar(PANEL *bar, BMAP *source, var current_value, var max_value)
 void hud_show()
 {
 	pan_setwindow(HUD_Head,1, 0,0,bmap_width(hud_lotterhead_bmap)/4, bmap_height(hud_lotterhead_bmap),hud_lotterhead_bmap, hud_lotterhead_shift, NULL);
-	HUD_Head->pos_x = (screen_size.x- bmap_width(hud_lotterhead_bmap)/4)/2;
-	HUD_Head->pos_y = screen_size.y - bmap_height(hud_lotterhead_bmap) - HUD_BORDER_PADDING;
+	HUD_Head->pos_x = (screen_size.x- bmap_width(hud_lotterhead_bmap)*HUD_Head.scale_x/4)/2;
+	HUD_Head->pos_y = screen_size.y - bmap_height(hud_lotterhead_bmap)*HUD_Head.scale_y - HUD_BORDER_PADDING;
 	set(HUD_Head, SHOW);
 	
 	

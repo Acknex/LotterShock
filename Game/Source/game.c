@@ -49,6 +49,12 @@ void game_open()
     vec_set(mouse_pos, screen_size);
     vec_scale(mouse_pos, 0.5);
 
+    // reset story stuff
+    story_enginesEnabled = 0;
+    playerHasHazmat = 0;
+    playerHasDoubleJump = 0;
+
+    // activates cheats ingame
     input_cheats_enabled = 1;
 }
 

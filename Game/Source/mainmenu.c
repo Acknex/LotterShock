@@ -11,7 +11,6 @@ BMAP * mainmenu_start_bmap = "mainmenu_start.png";
 BMAP * mainmenu_credits_bmap = "mainmenu_credits.png";
 BMAP * mainmenu_exit_bmap = "mainmenu_exit.png";
 BMAP * mainmenu_bestiary_bmap = "mainmenu_bestiary.png";
-BMAP * mainmenu_selection_bmap = "mainmenu_selection.png";
 
 PANEL * mainmenu_start_pan =
 {

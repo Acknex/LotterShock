@@ -1,6 +1,9 @@
 #ifndef MOVEMENT_H
 	#define MOVEMENT_H
 
+    var playerHasHazmat = 0;
+    var playerHasDoubleJump = 0;
+
     bool movement_cheat_clipmode = false;
 
     bool movement_cheat_invincibility = false;
