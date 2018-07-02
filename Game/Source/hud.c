@@ -1,5 +1,7 @@
 #include "weapons.h"
 #include "movement.h"
+#include "global.h"
+#include "environmentals.h"
 
 #define HUD_ELEMENT_COUNT 1
 
@@ -38,10 +40,13 @@ PANEL *HUD_gunframe =
 PANEL* HUD_crosshair =
 {
 	bmap = "fadenkreuz.png";
-	flags = TRANSLUCENT;
+    flags = TRANSLUCENT;
 	layer = 2;
 	scale_x = 0.5;
 	scale_y = 0.5;
+    red = 0;
+    green = 255;
+    blue = 0;
 }
 
 PANEL* HUD_HP_label =
@@ -292,6 +297,28 @@ void hud_hide_ammobar()
 
 void hud_update()
 {
+    bool highlightCrosshair = false;
+    if(mouse_ent != NULL)
+    {
+        if(mouse_ent.SK_SUBSYSTEM == SUBSYSTEM_DOORS)
+            highlightCrosshair = true;
+        if(mouse_ent.SK_SUBSYSTEM == SUBSYSTEM_ENVIRONMENT && mouse_ent.ENVIRONMENTALS_TYPE == ENVIRONMENTAL_ENGINE_TERMINAL)
+            highlightCrosshair = true;
+
+#ifdef DEBUG
+        draw_text(
+            str_printf(NULL, "[%s]", mouse_ent.type),
+            screen_size.x / 2 + 10,
+            screen_size.y / 2 + 10,
+            COLOR_GREEN);
+#endif
+    }
+
+    if(highlightCrosshair)
+        set(HUD_crosshair, LIGHT);
+    else
+        reset(HUD_crosshair, LIGHT);
+
 	var player_maxhealth = playerGetMaxHealth();
 	var player_health = playerGetHealth();
 	
