@@ -4,6 +4,7 @@
 action keypad() {	
 	framework_setup(my, SUBSYSTEM_KEYPADS);
 	set(me, PASSABLE);
+    my.INTERACTIBLE = 1;
 }
 
 void keypad_update() {
@@ -54,6 +55,7 @@ action door() {
 	my.DOOR_STATE = 0;
 	my.DOOR_Z_START = my.z;
 	my.WAIT_TIME = 50;
+    my.INTERACTIBLE = 1;
 	my.skin = my.DOOR_REQUIRED_KEY_ID + 1;
 	framework_setup(my, SUBSYSTEM_DOORS);
 }
