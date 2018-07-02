@@ -8,6 +8,7 @@ typedef struct
     var * value;
     float deadZone;
     float scale;
+    bool time_sensitive;
 } input_axis_t;
 
 typedef struct
@@ -19,7 +20,7 @@ typedef struct
     int useAxis;
 	float factor;
 	char cinfo[32];
-	EVENT fnc;
+    EVENT fnc;
 
     // analog input
     var value;
@@ -60,7 +61,7 @@ void input_update();
 
 void input_add(int inputID, int inputType, int value);
 
-void input_add_axis(int inputID, var * value, float scale, float deadZone);
+void input_add_axis(int inputID, var * value, float scale, float deadZone, bool time_sensitive);
 
 void input_init();
 
