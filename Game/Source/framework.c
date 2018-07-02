@@ -191,7 +191,7 @@ void framework_update()
             level_load(LEVEL_FILE);
 #endif
 			fog_color = 1;
-			camera.fog_end = 10000.0;
+			camera.fog_end = 6000.0;
 			wait_for(level_load);
 			meshFunDo();
 			ENTITY *sky = ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);

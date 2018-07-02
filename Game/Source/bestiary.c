@@ -63,6 +63,8 @@ void bestiary_init()
 
 void bestiary_open()
 {
+	fog_color = 2;
+	camera.fog_end = 20000.0;
     level_load("bestiary.wmb");
 
     vec_set(camera->x, vector(0, 0, 180));
