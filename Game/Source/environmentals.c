@@ -38,6 +38,7 @@ action environ_toxic_cloud()
 void environmentals_update()
 {
     ENTITY *ptr;
+
     SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENVIRONMENT) 
     {
         switch(ptr.ENVIRONMENTALS_TYPE) 
@@ -73,6 +74,14 @@ void environmentals_update()
                     ptr.alpha += ptr.ENVIRONMENTALS_FAKECLOUD_ROTATESPEED * 3 * time_step;
                     if(ptr.alpha >= 100)
                         ptr.ENVIRONMENTALS_TEMP = 0;
+                }
+
+                // A bit overkill to do it here but I'm lazy
+                if(playerHasHazmat == 0)
+                {
+                    var dmgTest = region_check("region_toxic", vector(player.x + player.min_x, player.y + player.min_y, player.z + player.min_z), vector(player.x + player.max_x, player.y + player.max_y, player.z + player.max_z));
+                    if(dmgTest > 0)
+                        playerAddHealth(-ENVIRONMENTAL_DAMAGE_TOXIC);
                 }
                 break;			
         }

@@ -9,7 +9,7 @@
 #define ENVIRONMENTAL_ICECLOUD      2
 #define ENVIRONMENTAL_TOXICCLOUD    3
 
-#define ENVIRONMENTAL_DAMAGE_TOXIC  2
+#define ENVIRONMENTAL_DAMAGE_TOXIC  5
 
 
 void environ_fake_cloud();
