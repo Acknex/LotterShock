@@ -10,6 +10,8 @@
 #include "gib.h"
 #include "hud.h"
 #include "map.h"
+#include "turret.h"
+#include "enemy.h"
 
 #include <windows.h>
 
@@ -35,6 +37,7 @@ void game_open()
     SPUTNIK_Init();
     SKULL_Init();
     EYE_Init();
+    TURRET_Init();
     hud_show();
     player_initSpawn();
     map_open();
@@ -46,6 +49,12 @@ void game_open()
     vec_set(mouse_pos, screen_size);
     vec_scale(mouse_pos, 0.5);
 
+    // reset story stuff
+    story_enginesEnabled = 0;
+    playerHasHazmat = 0;
+    playerHasDoubleJump = 0;
+
+    // activates cheats ingame
     input_cheats_enabled = 1;
 }
 
@@ -78,8 +87,10 @@ void game_update()
     SPUTNIK_Update();
     SKULL_Update();
     EYE_Update();
+    TURRET_Update();
     GIB_Update();
-
+	ENEMY_UpdateProjectile();
+	
     hud_update();
 
     map_update();

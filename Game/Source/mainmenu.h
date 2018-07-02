@@ -3,6 +3,7 @@
 
 SOUND * mainmenu_swap_snd = "mainmenu_click.wav";
 SOUND * mainmenu_accept_snd = "mainmenu_accept.wav";
+BMAP * mainmenu_selection_bmap = "mainmenu_selection.png";
 
 #define MAINMENU_RESPONSE_STILLACTIVE 0
 #define MAINMENU_RESPONSE_START       1
