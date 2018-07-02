@@ -300,11 +300,7 @@ void hud_update()
     bool highlightCrosshair = false;
     if(mouse_ent != NULL)
     {
-        if(mouse_ent.SK_SUBSYSTEM == SUBSYSTEM_DOORS)
-            highlightCrosshair = true;
-        if(mouse_ent.SK_SUBSYSTEM == SUBSYSTEM_ENVIRONMENT && mouse_ent.ENVIRONMENTALS_TYPE == ENVIRONMENTAL_ENGINE_TERMINAL)
-            highlightCrosshair = true;
-
+        highlightCrosshair = mouse_ent.INTERACTIBLE;
 #ifdef DEBUG
         draw_text(
             str_printf(NULL, "[%s]", mouse_ent.type),
