@@ -38,8 +38,6 @@ var playerSlideCounter = 0;
 var playerSlidePerc = 0;
 VECTOR playerSlideDir;
 var playerSlidePan = 0;
-var playerHasHazmat = 0;
-var playerHasDoubleJump = 0;
 var playerHoverPossible = 0;
 var playerExtraJumpsLeft = 0;
 var playerHasEntMorphBall = 1;
