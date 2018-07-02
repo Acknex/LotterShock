@@ -48,7 +48,7 @@ action Eye()
 	if(my->EYE_ACTIVEDIST == 0) my->EYE_ACTIVEDIST = 4000;
 	if(my->EYE_ATTACKDIST == 0) my->EYE_ATTACKDIST = 2000;
 	vec_scale(me.scale_x, 10);
-	my->EYE_PATHID = 1;//temp
+	my->EYE_PATHID = 2;//temp
 	my->material = matObject;
 //	error(str_for_num(NULL,path_set(my, str_for_num(NULL, my->EYE_PATHID))));
 //	error(str_for_num(NULL,path_set(my, str_for_num(NULL, 0))));
@@ -70,6 +70,11 @@ void EYE_GlobalInit()
 	EYE_bmapSplatter[2] = bmap_create("splatter_red_03.png");
 	EYE_bmapSplatter[3] = bmap_create("splatter_red_04.png");
 	EYE_bmapSplatter[4] = bmap_create("splatter_red_05.png");
+	int i;
+	for (i= 0; i < 5; i++)
+	{
+		bmap_preload(EYE_bmapSplatter[i]);
+	}
 }
 
 void spawneye();

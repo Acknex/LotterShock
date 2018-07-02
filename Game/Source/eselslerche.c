@@ -79,6 +79,11 @@ void ESELSLERCHE_GlobalInit()
 	EL_bmapSplatter[2] = bmap_create("splatter_green_03.png");
 	EL_bmapSplatter[3] = bmap_create("splatter_green_04.png");
 	EL_bmapSplatter[4] = bmap_create("splatter_green_05.png");
+	int i;
+	for (i= 0; i < 5; i++)
+	{
+		bmap_preload(EL_bmapSplatter[i]);
+	}
 }
 
 void ESELSLERCHE_Init()

@@ -1,3 +1,7 @@
+#include "environmentals.h"
+#include <acknex.h>
+
+SOUND* snd_terminal = "keys_engine_room.wav";
 // skill1: SPEED
 action environ_fake_cloud()
 {	
@@ -48,6 +52,25 @@ action environ_engine_beam()
     my->ENVIRONMENTALS_TIMER = 60 + random(120);
 
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_ENGINE_BEAM;
+    framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+}
+
+
+action environ_engterm()
+{	
+    my->ENVIRONMENTALS_TEMP = 0;
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_ENGINE_TERMINAL;
+    my->INTERACTIBLE = 1;
+    framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+}
+
+action environ_ice()
+{
+    my->ENVIRONMENTALS_TEMP = 0;
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_ICE;
+    my->ENVIROMENTALS_ICE_DAMAGE = 100; // you can melt me!
+    my->ENVIROMENTALS_ICE_OFFSET = my->z;
+    set(my, POLYGON);
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
 
@@ -126,6 +149,55 @@ void environmentals_update()
                         ptr.ENVIRONMENTALS_TEMP += 2 * time_step;
                     }
                 }
+                break;
+            
+            case ENVIRONMENTAL_ENGINE_TERMINAL:
+                if(ptr.ENVIRONMENTALS_TEMP == 0)
+                {
+                    if(mouse_ent == ptr) 
+                    {
+                        ptr.skin = 2;
+                        if(input_hit(INPUT_USE)) 
+                        {
+                            snd_play(snd_terminal, 100, 0);
+                            ptr.ENVIRONMENTALS_TEMP = 1;
+                        }
+                    }
+                    else
+                    {
+                        ptr.skin = 1;
+                    }
+                }
+                else if(ptr.ENVIRONMENTALS_TEMP == 1)
+                {
+                    ptr.skin = 3;
+                    ptr.ENVIRONMENTALS_TIMER += 1 * time_step;
+
+                    if(ptr.ENVIRONMENTALS_TIMER >= 30)
+                    {
+                        ptr.ENVIRONMENTALS_TEMP = 2;
+                        story_enginesEnabled = 1;
+                    }
+                }
+                else
+                {
+                    ptr.skin = 4;
+                }
+                break;
+
+            case ENVIRONMENTAL_ICE:
+                if(ptr->ENVIROMENTALS_ICE_DAMAGE <= 0)
+                {
+                    ptr->SK_ENTITY_DEAD = 1;
+                }
+                else
+                {
+                    ptr->z = ptr->ENVIROMENTALS_ICE_OFFSET - 4 * (100 - ptr->ENVIROMENTALS_ICE_DAMAGE);
+                    ptr->scale_z = 0.75 + ptr->ENVIROMENTALS_ICE_DAMAGE / 400;
+                    ptr->scale_x = 1.0  - ptr->ENVIROMENTALS_ICE_DAMAGE / 400;
+                    ptr->v = -0.01 * ptr->ENVIROMENTALS_ICE_DAMAGE;
+                }
+                // TODO: i can haz logic?!
                 break;
         }
     }	

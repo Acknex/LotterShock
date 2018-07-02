@@ -283,7 +283,7 @@ void credits_open()
 void credits_close()
 {
     music_speedup(100);
-    music_start(NULL, 0.5, 0);
+    music_start("media\\intro.mp3", 0.5, 0);
     level_load(NULL);
     credits_pnl_ff.flags &= ~SHOW;
 }
