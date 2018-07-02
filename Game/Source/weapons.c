@@ -1,9 +1,11 @@
+#include "global.h"
 #include "weapons.h"
 #include "input.h"
 #include "math.h"
 #include "dmgsys.h"
 #include "movement.h"
 #include "projectiles.h"
+#include "environmentals.h"
 
 #define WEAPONS_COUNT 5
 
@@ -442,10 +444,7 @@ void weapons_flame_effect_event(PARTICLE *p)
 		// c_scan(p->x, vector(0,0,0), vector(360, 360, p->size), IGNORE_PASSABLE | IGNORE_PASSENTS | SCAN_ENTS);
 		ENTITY * it;
 		for(it = ent_next(NULL); it != NULL; it = ent_next(it))
-		{
-			if(it->SK_SUBSYSTEM < 1000)
-			continue;
-
+        {
 			VECTOR tmp;
 			vec_diff(tmp, p->x, it->x);
 			vec_rotateback(tmp, it->pan);
@@ -455,15 +454,23 @@ void weapons_flame_effect_event(PARTICLE *p)
             if((tmp.x - p->size) > it->max_x || (tmp.y - p->size) > it->max_y || (tmp.z - p->size) > it->max_z)
                 continue;
 
-			if((it->emask & ENABLE_SHOOT) && (it->event))
-			{
-				my = it;
-				event_type = EVENT_SHOOT;
-				function fo();
-				fo = it->event;
-				fo();
-				my = NULL;
-			}
+            if(it->SK_SUBSYSTEM == SUBSYSTEM_ENVIRONMENT && it->ENVIRONMENTALS_TYPE == ENVIRONMENTAL_ICE)
+            {
+                it->ENVIROMENTALS_ICE_DAMAGE -= 0.01;
+            }
+
+            if(it->SK_SUBSYSTEM >= 1000)
+            {
+                if((it->emask & ENABLE_SHOOT) && (it->event))
+                {
+                    my = it;
+                    event_type = EVENT_SHOOT;
+                    function fo();
+                    fo = it->event;
+                    fo();
+                    my = NULL;
+                }
+            }
 		}
 
 		p->skill_z = 1;
