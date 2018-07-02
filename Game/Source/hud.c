@@ -8,7 +8,7 @@
 #define HUD_BORDER_PADDING 6
 #define HUD_Z_LAYER 2
 
-#define HUD_BARS_XPADDING 4
+#define HUD_BARS_XPADDING 2
 #define HUD_DIST_BETWEEN_BARS 0
 
 #define HUD_BARS_MAX_ALPHA 50
@@ -16,6 +16,7 @@
 #define HUD_AMMO_COLOR vector(32,200,255)
 
 BMAP * hud_bar_background_bmap = "hud_bar_background.png";
+//BMAP * hud_bar_background_bmap = "gunbg.png";
 BMAP * hud_health_label_bmap = "health_label.png";
 
 BMAP * hud_ammobar_bmap = "ammobar.png";
@@ -147,7 +148,7 @@ void hud_update_bar(PANEL *bar, BMAP *source, var current_value, var max_value)
 	
 	pan_setwindow  (	bar, 1, 
 							HUD_BARS_XPADDING,HUD_BARS_YPADDING, 
-							bar_size ,bmap_height(source), 
+							bar_size ,bmap_height(source)*bar->scale_y, 
 							source, 
 							0,0);
 }
@@ -385,9 +386,9 @@ void hud_update()
 	//hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, player_health, player_maxhealth);
 	
 	var player_healthratio = player_health/player_maxhealth;
-	if(player_healthratio < 0.8)
+	if(player_healthratio < 0.5)
 	{
-		var hp_flicker_frequency = 50/(1.+player_healthratio);
+		var hp_flicker_frequency = 50/(1.+2*player_healthratio);
 	   
 		var hp_flicker_brightness = 60*(player_healthratio);
 		
