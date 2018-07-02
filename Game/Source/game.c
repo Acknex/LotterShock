@@ -9,6 +9,7 @@
 #include "projectiles.h"
 #include "gib.h"
 #include "hud.h"
+#include "map.h"
 
 #include <windows.h>
 
@@ -23,6 +24,7 @@ void game_init()
     SPUTNIK_GlobalInit();
     SKULL_GlobalInit();
     EYE_GlobalInit();
+    map_init();
 }
 
 void game_open()
@@ -36,6 +38,7 @@ void game_open()
     EYE_Init();
     hud_show();
     player_initSpawn();
+    map_open();
     input_cheats_enabled = 1;
 }
 
@@ -71,6 +74,8 @@ void game_update()
     GIB_Update();
 
     hud_update();
+
+    map_update();
 	
     if(input_hit(INPUT_NAVBACK))
         game_done = true;
@@ -83,6 +88,7 @@ void game_close()
 	projectiles_close();
     hud_hide();
     weapons_close();
+    map_close();
     mouse_pointer = 1;
     input_cheats_enabled = 0;
 }

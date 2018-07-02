@@ -304,7 +304,7 @@ void p_shotgun_muzzle_fire(PARTICLE* p)
 	//set(p,BRIGHT);
 	p.alpha = 10+random(10);
 	vec_set(p.blue,vector(20,190,255));
-	p.skill_a = p.size = 4*(48+random(32));
+	p.skill_a = p.size = 2*(48+random(32));
 	p.lifespan = 1;
 	p.event = p_shotgun_muzzle_fire_fade;
 }
@@ -399,7 +399,8 @@ void weapons_flame_effect_event(PARTICLE *p)
 		vec_add(src, p->x);
 		vec_add(dest, p->x);
 
-		if(c_trace(src, dest, USE_POLYGON | IGNORE_PASSENTS))
+        you = player;
+        if(c_trace(src, dest, IGNORE_YOU | IGNORE_PASSABLE | USE_POLYGON | IGNORE_PASSENTS))
 		{
 			vec_set(p->x, normal);
 			vec_normalize(p->x,10.1);
@@ -436,7 +437,8 @@ void weapons_flame_effect_event(PARTICLE *p)
 
 	if(p->skill_z <= 0)
 	{
-		dmgsys_set_src(DMGSYS_PLAYER, player, 2);
+        // no entity -> no pushback
+        dmgsys_set_src(DMGSYS_PLAYER, NULL, 0.5);
 		// c_scan(p->x, vector(0,0,0), vector(360, 360, p->size), IGNORE_PASSABLE | IGNORE_PASSENTS | SCAN_ENTS);
 		ENTITY * it;
 		for(it = ent_next(NULL); it != NULL; it = ent_next(it))
@@ -448,10 +450,10 @@ void weapons_flame_effect_event(PARTICLE *p)
 			vec_diff(tmp, p->x, it->x);
 			vec_rotateback(tmp, it->pan);
 
-			if(tmp.x < it->min_x || tmp.y < it->min_y || tmp.z < it->min_z)
-			continue;
-			if(tmp.x > it->max_x || tmp.y > it->max_y || tmp.z > it->max_z)
-			continue;
+            if((tmp.x + p->size) < it->min_x || (tmp.y + p->size) < it->min_y || (tmp.z + p->size) < it->min_z)
+                continue;
+            if((tmp.x - p->size) > it->max_x || (tmp.y - p->size) > it->max_y || (tmp.z - p->size) > it->max_z)
+                continue;
 
 			if((it->emask & ENABLE_SHOOT) && (it->event))
 			{
@@ -507,6 +509,7 @@ void weapons_flame_effect(PARTICLE *p)
 	p->event = weapons_flame_effect_event;
 	p->alpha = 80 + random(10);
 	p->skill[3] = (0.5 + random(1)/2) * WEAPONS_FLAME_DAMPING;
+    p->skill_z = random(1);
 }
 
 void weapons_shoot_flamethrower()

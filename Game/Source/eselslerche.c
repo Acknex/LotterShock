@@ -321,7 +321,7 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 		ptr->EL_RAMPAGE = 1;
 		ptr->event = ENEMY_HIT_event;
 		ptr->EL_ANIMSTATE = 0;
-		ptr->DAMAGE_VEC = nullvector;
+        vec_zero(ptr->DAMAGE_VEC);
 	}
 	else
 	{
