@@ -16,6 +16,8 @@
 
 #define GROUP_PLAYER 3
 
+#define PLAYER_STEP_DELAY_TIME 5
+
 var playerSpeedFac = 1;
 var playerMaxSpeedFac = 72; // "fac" shouldn't be there
 var playerWeaponBob = 0;
@@ -36,18 +38,28 @@ var playerSlideCounter = 0;
 var playerSlidePerc = 0;
 VECTOR playerSlideDir;
 var playerSlidePan = 0;
-var playerHasDoubleJump = 1;
+var playerHasHazmat = 0;
+var playerHasDoubleJump = 0;
 var playerHoverPossible = 0;
 var playerExtraJumpsLeft = 0;
 var playerHasEntMorphBall = 1;
 var playerEntMorphBallActive = 0;
 var playerEntMorphBallPerc = 0;
+var playerStepDelay = PLAYER_STEP_DELAY_TIME;
 
 var playerEntMorphBallPan = 0;
 var playerEntMorphBallTilt = 0;
 var playerEntMorphBallSpeedAdaptFac = 1;
 VECTOR playerEntMorphBallPinkFlarePos;
 var playerChromaticAbbTime = 0;
+var playerDamageCooldownTime = 0;
+
+SOUND* player_snd_step1 = "steps_1.wav";
+SOUND* player_snd_step2 = "steps_2.wav";
+SOUND* player_snd_step3 = "steps_3.wav";
+SOUND* player_snd_jump1 = "jump_1.wav";
+SOUND* player_snd_jump2 = "jump_2.wav";
+SOUND* player_snd_jump3 = "jump_3.wav";
 
 void player_initSpawn()
 {
@@ -83,10 +95,15 @@ void playerAddHealth(var amount)
 {
     if((amount < 0) && movement_cheat_invincibility)
         return; // haha
+
+	if(amount < 0 && playerDamageCooldownTime > 0)
+		return; // Prevent instagibbing
+	
 	playerHealth = clamp(playerHealth+amount,0,playerHealthMax);
 	if(amount < 0) 
 	{
 		playerChromaticAbbTime = 0.5;
+		playerDamageCooldownTime = 20;
 	}
 }
 
@@ -345,9 +362,9 @@ void movement_update()
     if(movement_cheat_clipmode)
 #endif
 	{
-        camera.pan += -input_axis(INPUT_LOOK_HORIZONTAL)*10*time_step;
+        camera.pan += -input_axis(INPUT_LOOK_HORIZONTAL);
 		camera.pan %= 360;
-        camera.tilt = clamp(camera.tilt+input_axis(INPUT_LOOK_VERTICAL)*10*time_step,-85,85);
+        camera.tilt = clamp(camera.tilt+input_axis(INPUT_LOOK_VERTICAL),-85,85);
 		player.pan = camera.pan;
 		VECTOR temp;
 		vec_set(temp,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
@@ -359,6 +376,11 @@ void movement_update()
 	}
 	playerChromaticAbbTime = maxv(0, playerChromaticAbbTime - time_step/16);
 	pp_desync(playerChromaticAbbTime/0.4*30);
+	if(playerDamageCooldownTime > 0)
+		playerDamageCooldownTime -= 1 * time_step;
+	
+	// DEBUG_VAR(playerDamageCooldownTime, 0);
+
 	if(!player)
 	{
 		VECTOR spawnPos,vMin,vMax;
@@ -390,9 +412,9 @@ void movement_update()
 		playerEntMorphBallActive = 1;
 		playerEntMorphBallPan = player.pan;
 		weaponsCurrentPrev = weapons.current;
-		weapons.current = 0;
-		weapons_disabled = 1;
-		weapons_update();
+        weapons.current = 0;
+        weapons_disabled = 1;
+        weapons_update();
 	}
 	if(playerEntMorphBallActive)
 	{
@@ -409,10 +431,10 @@ void movement_update()
 	
 	vec_set(camera.pan,playerAngle);
 	VECTOR temp;
-    if(playerSlideCounter > 0) camera.pan = clamp(camera.pan-input_axis(INPUT_LOOK_HORIZONTAL)*10*time_step,playerSlidePan-90,playerSlidePan+90);
+    if(playerSlideCounter > 0) camera.pan = clamp(camera.pan-input_axis(INPUT_LOOK_HORIZONTAL),playerSlidePan-90,playerSlidePan+90);
 	else
 	{
-        camera.pan += -input_axis(INPUT_LOOK_HORIZONTAL)*10*time_step;
+        camera.pan += -input_axis(INPUT_LOOK_HORIZONTAL);
 		camera.pan %= 360;
 	}
 	/*if(playerSlideCounter > 0)
@@ -421,7 +443,7 @@ void movement_update()
 		camera.pan = ;
 	}*/
 	
-    camera.tilt = clamp(camera.tilt+input_axis(INPUT_LOOK_VERTICAL)*10*time_step,-85,85);
+    camera.tilt = clamp(camera.tilt+input_axis(INPUT_LOOK_VERTICAL),-85,85);
 	player.pan = camera.pan;
 	move_min_z = 0.75;
 	disable_z_glide = 1;
@@ -478,9 +500,30 @@ void movement_update()
 		vec_set(targetSpeed,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
 		if(targetSpeed.x || targetSpeed.y)
 		{
+			if(player.PLAYER_GROUND_CONTACT != 0)
+			{
+				
+				playerStepDelay += time_step;
+				if(playerStepDelay > PLAYER_STEP_DELAY_TIME)
+				{
+					playerStepDelay -= PLAYER_STEP_DELAY_TIME;
+					switch(integer(random(3)))
+					{
+						case 0: snd_play(player_snd_step1, 100, 0); break;
+						case 1: snd_play(player_snd_step2, 100, 0); break;
+						case 2: snd_play(player_snd_step3, 100, 0); break;
+					}
+				}
+			}
+			else {
+				playerStepDelay = PLAYER_STEP_DELAY_TIME;
+			}
 			playerAccelerationFac = 0.5;
 			vec_normalize(targetSpeed,playerMaxSpeedFac*playerSpeedFac);
 			vec_rotate(targetSpeed,vector(camera.pan,0,0));
+		}
+		else {
+			playerStepDelay = PLAYER_STEP_DELAY_TIME;
 		}
 		if(playerCrouchPerc > 25) vec_scale(targetSpeed,0.25);
 	}
@@ -569,6 +612,12 @@ void movement_update()
 			player.PLAYER_GROUND_CONTACT = 0;
 			playerJumpHangtime = 6;
 			player.PLAYER_SPEED_Z = 80;
+			switch(integer(random(3)))
+			{
+				case 0: snd_play(player_snd_jump1, 100, 0); break;
+				case 1: snd_play(player_snd_jump2, 100, 0); break;
+				case 2: snd_play(player_snd_jump3, 100, 0); break;
+			}
 		}
 	}
 	

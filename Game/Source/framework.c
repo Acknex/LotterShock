@@ -8,6 +8,7 @@
 #include "hud.h"
 #include "materials.h"
 #include "meshFun.h"
+#include "settings.h"
 
 #define FRAMEWORK_ALPHA_BLENDSPEED  25
 
@@ -43,9 +44,24 @@ PANEL * framework_load_screen =
 //! Initialisiert das Spiel und so
 void framework_init()
 {
-    fps_max = 61;
+    settings_init();
+    settings_load();
+
+    fps_min = 25; // overshoot vermeiden, v.a. wenn's ruckelt
+    fps_max = settings.fps_limit;
+
+    d3d_anisotropy = settings.anisotropy;
+    d3d_triplebuffer = settings.vsync;
+
     particle_mode = 8;
-    video_set(1600, 900, 0, 2); // 1280x720, Window
+    collision_mode = 2;
+    preload_mode = 3; // preload a lot
+
+    video_set(
+        settings.resolution_x,
+        settings.resolution_y,
+        0,
+        2 - !!settings.fullscreen); // !! -> 0 oder 1
     
 #ifndef FRAMEWORK_NO_POSTPROCESS
     SetupDefaultMaterials();
@@ -105,10 +121,12 @@ void framework_update()
             music_init();
             game_init();
             credits_init();
-        		hud_init();
+            hud_init();
+
+            music_set_master_volume(settings.game_volume);
 
             // TODO: Fix relative link?
-            music_start("Media/intro.mp3", 1.0, false);
+            music_start("Media/intro.mp3", 0.2, false);
 
             // Ladebildschirm passend skalieren
             framework_load_screen.scale_x = screen_size.x / framework_load_screen.size_x;
@@ -268,7 +286,7 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_LOAD:
-        		music_start("Media/background.mp3", 3, true);
+            music_start("Media/background.mp3", 3, true);
             framework.loaderState = 0;
             set(framework_load_screen, SHOW);
             framework_load_screen->alpha = 100;

@@ -3,8 +3,10 @@
 #include "weapons.h"
 #include "dmgsys.h"
 #include "movement.h"
+#include "settings.h"
 
 #include <windows.h>
+#include <acknex.h>
 
 //////////////////////////////
 
@@ -61,7 +63,7 @@ void input_add(int inputID, int inputType, int value)
     }
 }
 
-void input_add_axis(int inputID, var * value, float scale, float deadZone)
+void input_add_axis(int inputID, var * value, float scale, float deadZone, bool time_sensitive)
 {
     int k;
 
@@ -73,6 +75,7 @@ void input_add_axis(int inputID, var * value, float scale, float deadZone)
             pinput->axes[k].value = value;
             pinput->axes[k].deadZone = deadZone;
             pinput->axes[k].scale = scale;
+            pinput->axes[k].time_sensitive = time_sensitive;
             return;
         }
     }
@@ -205,6 +208,12 @@ inputstate_t input_states;
 
 void input_init()
 {
+#ifdef DEBUG
+    // Remap debug console
+    on_grave = on_tab;
+    on_tab = NULL;
+#endif
+
     memset(cheatcodes, 0, sizeof(cheatcode_t) * INPUT_CHEAT_COUNT);
 
     if(on_message != input_proc_message)
@@ -253,13 +262,6 @@ void input_init()
     }
     //*/
 
-    input[INPUT_DOWN].positiveValue = false;
-    input[INPUT_LEFT].positiveValue = false;
-
-    // TODO: Controller + Mouse Sensitivity
-    input[INPUT_LOOK_HORIZONTAL].sensitivity = 1.0;
-    input[INPUT_LOOK_VERTICAL].sensitivity   = 1.0;
-
     strcpy(input[INPUT_UP].cinfo,"UP");
     strcpy(input[INPUT_DOWN].cinfo,"DOWN");
     strcpy(input[INPUT_LEFT].cinfo,"LEFT");
@@ -290,6 +292,7 @@ void input_init()
     input_add(INPUT_NAVBACK,    INPUT_TYPE_KEYBOARD, key_for_str("esc"));
     input_add(INPUT_CROUCH,     INPUT_TYPE_KEYBOARD, key_for_str("ctrl"));
     input_add(INPUT_MORPHBALL,  INPUT_TYPE_KEYBOARD, key_for_str("shiftl"));
+    input_add(INPUT_SHOW_MAP,   INPUT_TYPE_KEYBOARD, 15); // TAB
 
     input_add(INPUT_WEAPON_UP,  INPUT_TYPE_KEYBOARD, key_for_str("q"));  // mickey.z
     input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_KEYBOARD, key_for_str("e"));
@@ -304,28 +307,41 @@ void input_init()
     input_add(INPUT_BLOCK,      INPUT_TYPE_GAMEPAD, 15 ); //! Y
     input_add(INPUT_JUMP,       INPUT_TYPE_GAMEPAD, 12 ); //! A
     input_add(INPUT_NAVBACK,    INPUT_TYPE_GAMEPAD, 4  ); //! start
-    input_add(INPUT_NAVBACK,    INPUT_TYPE_GAMEPAD, 5  ); //! select
+    input_add(INPUT_SHOW_MAP,   INPUT_TYPE_GAMEPAD, 5  ); //! select
     input_add(INPUT_CROUCH,     INPUT_TYPE_GAMEPAD, 6  ); //! left stick
     input_add(INPUT_MORPHBALL,  INPUT_TYPE_GAMEPAD, 7  ); //! right stick
 
     input_add(INPUT_WEAPON_UP,  INPUT_TYPE_GAMEPAD, 9); //! right shoulder
     input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_GAMEPAD, 8); //! left shoulder
 
+    input_add_axis(INPUT_WEAPON_UP,  &mickey.z, 1.0, 0.0, false);
+    input_add_axis(INPUT_WEAPON_DOWN,&mickey.z, 1.0, 0.0, false);
 
-    input_add_axis(INPUT_LOOK_HORIZONTAL, &mouse_force.x, 1.0, 0.0);
-    input_add_axis(INPUT_LOOK_VERTICAL,   &mouse_force.y, 1.0, 0.0);
+    input_add_axis(INPUT_LOOK_HORIZONTAL, &mouse_force.x, 1.0, 0.0, true);
+    input_add_axis(INPUT_LOOK_VERTICAL,   &mouse_force.y, 1.0, 0.0, true);
 
-    input_add_axis(INPUT_LOOK_HORIZONTAL, &input_states.rightStick.x, 1.0 / 255.0, 0.3);
-    input_add_axis(INPUT_LOOK_VERTICAL,   &input_states.rightStick.y, 1.0 / 255.0, 0.3);
+    input_add_axis(INPUT_LOOK_HORIZONTAL, &input_states.rightStick.x, 1.0 / 255.0, 0.3, true);
+    input_add_axis(INPUT_LOOK_VERTICAL,   &input_states.rightStick.y, 1.0 / 255.0, 0.3, true);
 
-    input_add_axis(INPUT_LEFT,  &input_states.leftStick.x, 1.0 / 255.0, 0.3);
-    input_add_axis(INPUT_RIGHT, &input_states.leftStick.x, 1.0 / 255.0, 0.3);
+    input_add_axis(INPUT_LEFT,  &input_states.leftStick.x, 1.0 / 255.0, 0.3, false);
+    input_add_axis(INPUT_RIGHT, &input_states.leftStick.x, 1.0 / 255.0, 0.3, false);
 
-    input_add_axis(INPUT_UP,    &input_states.leftStick.y, 1.0 / 255.0, 0.3);
-    input_add_axis(INPUT_DOWN,  &input_states.leftStick.y, 1.0 / 255.0, 0.3);
+    input_add_axis(INPUT_UP,    &input_states.leftStick.y, 1.0 / 255.0, 0.3, false);
+    input_add_axis(INPUT_DOWN,  &input_states.leftStick.y, 1.0 / 255.0, 0.3, false);
 
-    input_add_axis(INPUT_ATTACK, &input_states.rightTrigger, 1.0 / 255.0, 0.3);
-    input_add_axis(INPUT_BLOCK,  &input_states.leftTrigger,  1.0 / 255.0, 0.3);
+    input_add_axis(INPUT_ATTACK, &input_states.rightTrigger, 1.0 / 255.0, 0.3, false);
+    input_add_axis(INPUT_BLOCK,  &input_states.leftTrigger,  1.0 / 255.0, 0.3, false);
+
+    // axis configuration
+    input[INPUT_DOWN].positiveValue = false;
+    input[INPUT_LEFT].positiveValue = false;
+
+    input[INPUT_WEAPON_UP].positiveValue   = true;
+    input[INPUT_WEAPON_DOWN].positiveValue = false;
+
+    // TODO: Controller + Mouse Sensitivity
+    input[INPUT_LOOK_HORIZONTAL].sensitivity = settings.input_sensitivity;
+    input[INPUT_LOOK_VERTICAL].sensitivity   = settings.input_sensitivity;
 
     int slot = ackXInputGetGamepadNum();
     if(slot >= 0)
@@ -392,7 +408,10 @@ void input_update()
 
                 val = sign(val) * clamp(maxv(0, (abs(val) - ded)) / (1.0 - ded), 0.0, 1.0);
 
-                pinput->value += val;
+                if(pinput->axes[k].time_sensitive)
+                    pinput->value += val * time_step;
+                else
+                    pinput->value += val;
             }
         }
 

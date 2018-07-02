@@ -8,10 +8,13 @@
 #include "eye.h"
 #include "projectiles.h"
 #include "gib.h"
+#include "hud.h"
+#include "map.h"
 
 #include <windows.h>
 
 bool game_done;
+var story_enginesEnabled = 0;
 
 void game_init()
 {
@@ -21,12 +24,12 @@ void game_init()
     SPUTNIK_GlobalInit();
     SKULL_GlobalInit();
     EYE_GlobalInit();
+    map_init();
 }
 
 void game_open()
 {
     game_done = false;
-    mouse_pointer = 0;
     weapons_open();
     ESELSLERCHE_Init();
     SPUTNIK_Init();
@@ -34,6 +37,15 @@ void game_open()
     EYE_Init();
     hud_show();
     player_initSpawn();
+    map_open();
+
+    // Setup mouse
+    mouse_mode = 1;
+    mouse_range = 500;
+    mouse_pointer = 0;
+    vec_set(mouse_pos, screen_size);
+    vec_scale(mouse_pos, 0.5);
+
     input_cheats_enabled = 1;
 }
 
@@ -52,7 +64,8 @@ void game_update()
 #endif
 
     movement_update();
-    if(!weapons_disabled) weapons_update();
+    if(!weapons_disabled)
+        weapons_update();
     projectiles_update();
     collectibles_update();
     keypad_update();
@@ -68,6 +81,8 @@ void game_update()
     GIB_Update();
 
     hud_update();
+
+    map_update();
 	
     if(input_hit(INPUT_NAVBACK))
         game_done = true;
@@ -80,6 +95,7 @@ void game_close()
 	projectiles_close();
     hud_hide();
     weapons_close();
+    map_close();
     mouse_pointer = 1;
     input_cheats_enabled = 0;
 }

@@ -3,6 +3,7 @@
 #include "skull.h"
 #include "scan.h"
 #include "enemy_hit.h"
+#include "ang.h"
 
 #define SKL_RUNSPEED skill1
 #define SKL_TURNSPEED skill2
@@ -169,27 +170,6 @@ var SKULL__toFloor(ENTITY* ptr)
 		ptr->z = hit.z + 150 + ptr->SKL_ZOFFSET;
 }
 
-var SKULL__turnToPlayer(ENTITY* ptr)
-{
-	ANGLE vecAngle;
-	VECTOR vecTemp;
-	vec_set(&vecTemp, &player->x);
-	vec_sub(&vecTemp, &ptr->x);
-	vec_to_angle(&vecAngle, &vecTemp);
-
-	if (ang(ptr->pan) < vecAngle.pan - 5)
-	{
-		ptr->pan = minv(vecAngle.pan, ang(ptr->pan + ptr->SKL_TURNSPEED * time_step));
-		return 0;
-	}	
-	if (ang(ptr->pan) > vecAngle.pan + 5)
-	{
-		ptr->pan = maxv(vecAngle.pan, ang(ptr->pan - ptr->SKL_TURNSPEED * time_step));
-		return 0;
-	}	
-	return 1;
-}
-
 void SKULL__inactive(ENTITY* ptr)
 {
 	/* transitions */
@@ -208,18 +188,19 @@ void SKULL__wait(ENTITY* ptr)
 	ptr->SKL_ZOFFSET = 30 * sinv(total_ticks * 20);
 
 	/* transitions */
-	if (SKULL__turnToPlayer(ptr) != 0)
+	if(ANG_turnToPlayer(ptr, ptr->SKL_TURNSPEED, 5) != 0)
 	{
 		ptr->SKL_RUNSPEEDCUR = 0;
 		ptr->SKL_STATE = SKL_STATE_RUN;
 	}
-	else if(!SCAN_IsPlayerNear(ptr, ptr->SKL_ACTIVEDIST + 2000))
+	else if(!SCAN_IsPlayerNear(ptr, ptr->SKL_ACTIVEDIST + 100))
 	{
 		ptr->SKL_STATE = SKL_STATE_INACTIVE;
 	}
 	else
 	{
 	}
+	
 }
 
 void SKULL__run(ENTITY* ptr)
@@ -237,7 +218,7 @@ void SKULL__run(ENTITY* ptr)
 		playerAddHealth(-20-random(5));
 		snd_play(skull_snd_shoot, 100, 0);
 	}
-	else if (!SCAN_IsPlayerInSight(ptr, ptr->SKL_ATTACKDIST, 75) && SCAN_IsPlayerBehind(ptr, 1200))
+	else if (/*!SCAN_IsPlayerInSight(ptr, ptr->SKL_ATTACKDIST, 75) && */SCAN_IsPlayerBehind(ptr, 1200))
 	{
 		ptr->SKL_STATE = SKL_STATE_WAIT;
 	}
@@ -325,7 +306,7 @@ void SKULL__hit(ENTITY* ptr)
 		reset(ptr, TRANSLUCENT);
 		ptr->SKL_STATE = SKL_STATE_WAIT;			
 		ptr->event = ENEMY_HIT_event;
-		ptr->DAMAGE_VEC = nullvector;
+        vec_zero(ptr->DAMAGE_VEC);
 		ptr->SKL_COUNTER = 0;
 	}
 	else
@@ -398,7 +379,7 @@ void spawnskull()
 	//while(1)
 	{
 		ENTITY* ptr = ent_create("whiskas.mdl", vector(5800,-6050,250), Skull); // biodome
-		ENTITY* ptr = ent_create("whiskas.mdl", vector(1288,0,250), Skull);
+		//ENTITY* ptr = ent_create("whiskas.mdl", vector(1288,0,250), Skull);
 		wait(-30);
 	}
 	

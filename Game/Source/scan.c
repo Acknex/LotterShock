@@ -22,9 +22,9 @@ var SCAN_IsPlayerInSight(ENTITY* ent, var distance, var fov)
 	me = ent;
 	you = NULL;
 	var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS;
-	var dist = c_trace(&ent->x, &player->x, mode);
+	var vdist = c_trace(&ent->x, &player->x, mode);
 	
-	if ((dist >= 0) && (dist <= distance) && (you != NULL))
+	if ((vdist >= 0) && (vdist <= distance) && (you != NULL))
 	{
 		if (you == player)	
 		{
@@ -34,8 +34,10 @@ var SCAN_IsPlayerInSight(ENTITY* ent, var distance, var fov)
 			
 			ANGLE vecAng;
 			vec_to_angle(&vecAng, &vecDir);
+			ANGLE diffAng;
+			vec_diff(&diffAng, &vecAng, &ent->pan);
 			
-			if (absv(vecAng.pan - ent->pan) <= fov)
+			if (absv(ang(diffAng.pan)) <= fov)
 				return 1;
 		}
 	}
@@ -55,8 +57,9 @@ var SCAN_IsPlayerBehind(ENTITY* ent, var distance)
 			
 			ANGLE vecAng;
 			vec_to_angle(&vecAng, &vecDir);
-			
-			if ((absv(vecAng.pan - ent->pan) >= 100) && (vec_dist(&player->x, ent->x) > distance))
+			ANGLE diffAng;
+			vec_diff(&diffAng, &vecAng, &ent->pan);
+			if ((absv(ang(diffAng.pan)) >= 90) && (vec_dist(&player->x, ent->x) > distance))
 				return 1;
 			else	
 				return 0;

@@ -1,9 +1,11 @@
+#include "global.h"
 #include "weapons.h"
 #include "input.h"
 #include "math.h"
 #include "dmgsys.h"
 #include "movement.h"
 #include "projectiles.h"
+#include "environmentals.h"
 
 #define WEAPONS_COUNT 5
 
@@ -304,7 +306,7 @@ void p_shotgun_muzzle_fire(PARTICLE* p)
 	//set(p,BRIGHT);
 	p.alpha = 10+random(10);
 	vec_set(p.blue,vector(20,190,255));
-	p.skill_a = p.size = 4*(48+random(32));
+	p.skill_a = p.size = 2*(48+random(32));
 	p.lifespan = 1;
 	p.event = p_shotgun_muzzle_fire_fade;
 }
@@ -399,7 +401,8 @@ void weapons_flame_effect_event(PARTICLE *p)
 		vec_add(src, p->x);
 		vec_add(dest, p->x);
 
-		if(c_trace(src, dest, USE_POLYGON))
+        you = player;
+        if(c_trace(src, dest, IGNORE_YOU | IGNORE_PASSABLE | USE_POLYGON | IGNORE_PASSENTS))
 		{
 			vec_set(p->x, normal);
 			vec_normalize(p->x,10.1);
@@ -436,32 +439,38 @@ void weapons_flame_effect_event(PARTICLE *p)
 
 	if(p->skill_z <= 0)
 	{
-		dmgsys_set_src(DMGSYS_PLAYER, player, 2);
+        // no entity -> no pushback
+        dmgsys_set_src(DMGSYS_PLAYER, NULL, 0.5);
 		// c_scan(p->x, vector(0,0,0), vector(360, 360, p->size), IGNORE_PASSABLE | IGNORE_PASSENTS | SCAN_ENTS);
 		ENTITY * it;
 		for(it = ent_next(NULL); it != NULL; it = ent_next(it))
-		{
-			if(it->SK_SUBSYSTEM < 1000)
-			continue;
-
+        {
 			VECTOR tmp;
 			vec_diff(tmp, p->x, it->x);
 			vec_rotateback(tmp, it->pan);
 
-			if(tmp.x < it->min_x || tmp.y < it->min_y || tmp.z < it->min_z)
-			continue;
-			if(tmp.x > it->max_x || tmp.y > it->max_y || tmp.z > it->max_z)
-			continue;
+            if((tmp.x + p->size) < it->min_x || (tmp.y + p->size) < it->min_y || (tmp.z + p->size) < it->min_z)
+                continue;
+            if((tmp.x - p->size) > it->max_x || (tmp.y - p->size) > it->max_y || (tmp.z - p->size) > it->max_z)
+                continue;
 
-			if((it->emask & ENABLE_SHOOT) && (it->event))
-			{
-				my = it;
-				event_type = EVENT_SHOOT;
-				function fo();
-				fo = it->event;
-				fo();
-				my = NULL;
-			}
+            if(it->SK_SUBSYSTEM == SUBSYSTEM_ENVIRONMENT && it->ENVIRONMENTALS_TYPE == ENVIRONMENTAL_ICE)
+            {
+                it->ENVIROMENTALS_ICE_DAMAGE -= 0.01;
+            }
+
+            if(it->SK_SUBSYSTEM >= 1000)
+            {
+                if((it->emask & ENABLE_SHOOT) && (it->event))
+                {
+                    my = it;
+                    event_type = EVENT_SHOOT;
+                    function fo();
+                    fo = it->event;
+                    fo();
+                    my = NULL;
+                }
+            }
 		}
 
 		p->skill_z = 1;
@@ -507,6 +516,7 @@ void weapons_flame_effect(PARTICLE *p)
 	p->event = weapons_flame_effect_event;
 	p->alpha = 80 + random(10);
 	p->skill[3] = (0.5 + random(1)/2) * WEAPONS_FLAME_DAMPING;
+    p->skill_z = random(1);
 }
 
 void weapons_shoot_flamethrower()
@@ -649,20 +659,25 @@ void weapons_update()
 	}
 #endif
 
+    // Keine Leben, keine Waffen.
+    if(playerGetHealth() <= 0)
+        return;
+
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_UP))
-	weapons_select_next(1);
+        weapons_select_next(1);
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_DOWN))
-	weapons_select_next(-1);
+        weapons_select_next(-1);
 
 	ent_animate(weapons_wp_sword, "Erect", 10 * clamp(weapons.swordLength, 0, 10), ANM_SKIP);
 
 	// ignore dummy weapon for visuals
 	for(i = 1; i < WEAPONS_COUNT; i++)
 	{
-		if(i == weapons.current)
-		weapons.weapon[i].ent.flags2 |= SHOW;
+        if(i == weapons.current) {
+            weapons.weapon[i].ent.flags2 |= SHOW;
+        }
 		else
-		weapons.weapon[i].ent.flags2 &= ~SHOW;
+            weapons.weapon[i].ent.flags2 &= ~SHOW;
 	}
 
 	if(weapons.current > 0)
@@ -981,18 +996,24 @@ weapons_wp_cellgun.skill41 = floatd(weapons.spearpower,100);
 
 }
 
+void weapons_obscure_fix(int i)
+{
+    /* this fixes the loop in weapons_close() which would not execute when the function was not called */
+}
+
 void weapons_close()
 {
-	int i;
+    weapons_obscure_fix(0);
+    int i;
 	for(i = 1; i < WEAPONS_COUNT; i++)
-	{
-		weapons.weapon[i].ent.flags2 &= ~SHOW;
-	}
+    {
+        weapons.weapon[i].ent.flags2 &= ~SHOW;
+    }
 	weapons.attackprogress = 0; // no more head swaying
 	on_o = NULL;
 	if(weapons.electro != 0)
 	{
 		snd_stop(weapons.electro);
 		weapons.electro = 0;
-	}
+    }
 }

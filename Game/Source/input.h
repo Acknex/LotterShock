@@ -8,6 +8,7 @@ typedef struct
     var * value;
     float deadZone;
     float scale;
+    bool time_sensitive;
 } input_axis_t;
 
 typedef struct
@@ -19,7 +20,7 @@ typedef struct
     int useAxis;
 	float factor;
 	char cinfo[32];
-	EVENT fnc;
+    EVENT fnc;
 
     // analog input
     var value;
@@ -46,7 +47,9 @@ typedef struct
 #define INPUT_LOOK_HORIZONTAL 13
 #define INPUT_LOOK_VERTICAL 14
 
-#define INPUT_MAX 15
+#define INPUT_SHOW_MAP 15
+
+#define INPUT_MAX 16
 
 #define INPUT_TYPE_KEYBOARD 0
 #define INPUT_TYPE_GAMEPAD 1
@@ -60,7 +63,7 @@ void input_update();
 
 void input_add(int inputID, int inputType, int value);
 
-void input_add_axis(int inputID, var * value, float scale, float deadZone);
+void input_add_axis(int inputID, var * value, float scale, float deadZone, bool time_sensitive);
 
 void input_init();
 

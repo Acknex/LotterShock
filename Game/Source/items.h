@@ -5,6 +5,8 @@
 #define ITEM_KEYCARD 1
 #define ITEM_AMMUNITION 2
 #define ITEM_WEAPON 3
+#define ITEM_DOUBLEJUMP 4
+#define ITEM_HAZMAT 5
 
 #define MEDIPACK_HEALTH_PLUS 10
 
@@ -15,6 +17,8 @@ void collectibles_update();
 void Medipack();
 void medipack_init();
 void keycard();
+void dobulejump();
+void hazmat();
 
 void ammo_shotgun();
 void ammo_cellgun();

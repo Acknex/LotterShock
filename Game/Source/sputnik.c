@@ -83,6 +83,11 @@ void SPUTNIK_GlobalInit()
 	SPUTNIK_bmapSplatter[2] = bmap_create("splatter_purple_03.png");
 	SPUTNIK_bmapSplatter[3] = bmap_create("splatter_purple_04.png");
 	SPUTNIK_bmapSplatter[4] = bmap_create("splatter_purple_05.png");
+	int i;
+	for (i= 0; i < 5; i++)
+	{
+		bmap_preload(SPUTNIK_bmapSplatter[i]);
+	}
 }
 
 void SPUTNIK_Init()
@@ -114,7 +119,7 @@ void SPUTNIK_Update()
 				*/
 				ptr->push = -100;
 				SPLATTER_splat(&ptr->x, vector(100.0/255.0, 67.0/255.0, 192.0/255.0));
-				SPLATTER_explode(10, &ptr->x, 500, SPUTNIK_bmapSplatter, 5);
+				SPLATTER_explode(10, ptr, 500, SPUTNIK_bmapSplatter, 5);
 			}
 			
 			if (ptr->SPUTNIK_SOUNDHANDLE && (snd_playing(ptr->SPUTNIK_SOUNDHANDLE) == 0))
