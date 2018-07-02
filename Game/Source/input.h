@@ -47,7 +47,9 @@ typedef struct
 #define INPUT_LOOK_HORIZONTAL 13
 #define INPUT_LOOK_VERTICAL 14
 
-#define INPUT_MAX 15
+#define INPUT_SHOW_MAP 15
+
+#define INPUT_MAX 16
 
 #define INPUT_TYPE_KEYBOARD 0
 #define INPUT_TYPE_GAMEPAD 1
