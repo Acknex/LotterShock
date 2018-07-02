@@ -16,6 +16,8 @@
 
 #define GROUP_PLAYER 3
 
+#define PLAYER_STEP_DELAY_TIME 5
+
 var playerSpeedFac = 1;
 var playerMaxSpeedFac = 72; // "fac" shouldn't be there
 var playerWeaponBob = 0;
@@ -43,6 +45,7 @@ var playerExtraJumpsLeft = 0;
 var playerHasEntMorphBall = 1;
 var playerEntMorphBallActive = 0;
 var playerEntMorphBallPerc = 0;
+var playerStepDelay = PLAYER_STEP_DELAY_TIME;
 
 var playerEntMorphBallPan = 0;
 var playerEntMorphBallTilt = 0;
@@ -50,6 +53,10 @@ var playerEntMorphBallSpeedAdaptFac = 1;
 VECTOR playerEntMorphBallPinkFlarePos;
 var playerChromaticAbbTime = 0;
 var playerDamageCooldownTime = 0;
+
+SOUND* player_snd_step1 = "steps_1.wav";
+SOUND* player_snd_step2 = "steps_2.wav";
+SOUND* player_snd_step3 = "steps_3.wav";
 
 void player_initSpawn()
 {
@@ -490,9 +497,23 @@ void movement_update()
 		vec_set(targetSpeed,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
 		if(targetSpeed.x || targetSpeed.y)
 		{
+			playerStepDelay += time_step;
+			if(playerStepDelay > PLAYER_STEP_DELAY_TIME)
+			{
+				playerStepDelay -= PLAYER_STEP_DELAY_TIME;
+				switch(integer(random(3)))
+				{
+					case 0: snd_play(player_snd_step1, 100, 0); break;
+					case 1: snd_play(player_snd_step2, 100, 0); break;
+					case 2: snd_play(player_snd_step3, 100, 0); break;
+				}
+			}
 			playerAccelerationFac = 0.5;
 			vec_normalize(targetSpeed,playerMaxSpeedFac*playerSpeedFac);
 			vec_rotate(targetSpeed,vector(camera.pan,0,0));
+		}
+		else {
+			playerStepDelay = PLAYER_STEP_DELAY_TIME;
 		}
 		if(playerCrouchPerc > 25) vec_scale(targetSpeed,0.25);
 	}
