@@ -399,7 +399,7 @@ void weapons_flame_effect_event(PARTICLE *p)
 		vec_add(src, p->x);
 		vec_add(dest, p->x);
 
-		if(c_trace(src, dest, USE_POLYGON))
+		if(c_trace(src, dest, USE_POLYGON | IGNORE_PASSENTS))
 		{
 			vec_set(p->x, normal);
 			vec_normalize(p->x,10.1);
