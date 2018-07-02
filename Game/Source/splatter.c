@@ -1,7 +1,7 @@
 #include "splatter.h"
 
 
-void SPLATTER_explode(var count, VECTOR* pos, var distance, BMAP** decal, var bmapCount)
+void SPLATTER_explode(var count, ENTITY* ent, var distance, BMAP** decal, var bmapCount)
 {
 	var i;
 	VECTOR targetPos;
@@ -10,9 +10,10 @@ void SPLATTER_explode(var count, VECTOR* pos, var distance, BMAP** decal, var bm
 	{
 		vec_for_angle(&targetPos, vector(random(360), random(150)-60, 0));
 		vec_scale(&targetPos, distance);
-		vec_add(&targetPos, pos);
-		var mode = IGNORE_WORLD | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | SCAN_TEXTURE | USE_POLYGON;
-		var dist = c_trace(pos, &targetPos, mode);
+		vec_add(&targetPos, &ent->x);
+		me = ent;
+		var mode = IGNORE_ME | IGNORE_WORLD | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | SCAN_TEXTURE | USE_POLYGON;
+		var dist = c_trace(&ent->x, &targetPos, mode);
 		if(HIT_TARGET)
 		{
 			var rnd = integer(random(bmapCount));

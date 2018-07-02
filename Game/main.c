@@ -3,8 +3,10 @@
 #include "config.h"
 
 #define PRAGMA_PATH "Source"
+#define PRAGMA_PATH "Shaders"
 #define PRAGMA_PATH "Assets"
 #define PRAGMA_PATH "Media"
+#define PRAGMA_PATH "Screenshots"
 
 #include "global.h"
 #include "framework.h"
@@ -12,6 +14,7 @@
 #include "mainmenu.h"
 #include "input.h"
 #include "doors.h"
+#include "environmentals.h"
 #include "projectiles.h"
 #include "materials.h"
 #include "items.h"
@@ -40,14 +43,18 @@
 #include "sputnik.c"
 #include "skull.c"
 #include "doors.c"
+#include "environmentals.c"
 #include "gib.c"
 #include "items.c"
 #include "particle.c"
 #include "journals.c"
 #include "eye.c"
+#include "ini.c"
+#include "settings.c"
+#include "ang.c"
+#include "map.c"
 
 void main()
 {
-	collision_mode = 2;
-	framework_init();
+    framework_init();
 }

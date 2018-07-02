@@ -2,6 +2,8 @@
 // movement.c
 //////////////////////////////
 
+#include "input.h"
+
 //VECTOR playerSpeed;
 #define PLAYER_SPEED_X skill70
 #define PLAYER_SPEED_Y skill71
@@ -34,26 +36,27 @@ var playerSlideCounter = 0;
 var playerSlidePerc = 0;
 VECTOR playerSlideDir;
 var playerSlidePan = 0;
-var playerHasDoubleJump = 1;
+var playerHasHazmat = 0;
+var playerHasDoubleJump = 0;
 var playerHoverPossible = 0;
 var playerExtraJumpsLeft = 0;
 var playerHasEntMorphBall = 1;
 var playerEntMorphBallActive = 0;
 var playerEntMorphBallPerc = 0;
-var playerEntMorphBallCameraPan = 0;
 
 var playerEntMorphBallPan = 0;
 var playerEntMorphBallTilt = 0;
 var playerEntMorphBallSpeedAdaptFac = 1;
 VECTOR playerEntMorphBallPinkFlarePos;
 var playerChromaticAbbTime = 0;
+var playerDamageCooldownTime = 0;
 
 void player_initSpawn()
 {
 	playerHealthMax = 100;
 	playerHealth = playerHealthMax;
-	movement_cheat_invincibility = false;
-	movement_cheat_clipmode = false;
+    movement_cheat_invincibility = false;
+    movement_cheat_clipmode = false;
 }
 
 void movement_close()
@@ -80,12 +83,17 @@ var playerGetMaxHealth()
 
 void playerAddHealth(var amount)
 {
-	if((amount < 0) && movement_cheat_invincibility)
-	return; // haha
+    if((amount < 0) && movement_cheat_invincibility)
+        return; // haha
+
+	if(amount < 0 && playerDamageCooldownTime > 0)
+		return; // Prevent instagibbing
+	
 	playerHealth = clamp(playerHealth+amount,0,playerHealthMax);
 	if(amount < 0) 
 	{
 		playerChromaticAbbTime = 0.5;
+		playerDamageCooldownTime = 20;
 	}
 }
 
@@ -266,33 +274,18 @@ void playerEntMorphBallDo()
 
 	///////////////////////
 	// camera
-	//vec_set(temp,vector(player.x-player.PLAYER_SPEED_X-128*0,player.y-player.PLAYER_SPEED_Y-256,player.z+420));
-	vec_set(temp,vector(-400,0,player.z+260));
-	vec_rotate(temp,vector(playerEntMorphBallCameraPan,0,0));
-	vec_add(temp,player.x);
 
-	var fac = vec_length(vector(player.PLAYER_SPEED_X,player.PLAYER_SPEED_Y,0));
-	fac = pow(fac/80.0,0.5);
-	
+	vec_set(temp,vector(player.x-player.PLAYER_SPEED_X-128*0,player.y-player.PLAYER_SPEED_Y-256,player.z+420));
 	if(playerEntMorphBallActive != 1) vec_for_bone(temp2,player,"Bone19");
 	else vec_set(temp2,player.x);
 	c_ignore(GROUP_PLAYER,0);
 	me = player;
-	var dist = c_trace(vector(player.x,player.y,player.z+64),temp,PLAYER_C_TRACE_MODE_DEFAULT | USE_BOX);
+	var dist = c_trace(player.x,temp,PLAYER_C_TRACE_MODE_DEFAULT | USE_BOX);
 	me = NULL;
-	if(trace_hit)
-	{
-		VECTOR temp3;
-		vec_diff(temp,target,player.x);
-		vec_set(temp3,temp);
-		vec_normalize(temp3,1);
-		vec_normalize(temp,maxv(32,vec_length(temp)-16));
-		vec_add(temp,player.x);
-		
-		if(vec_dot(camera.x,temp3) > vec_dot(temp,temp3)+8) vec_lerp(camera.x,camera.x,temp,0.25*time_step);
-	}
+	if(trace_hit) vec_set(temp,target);
+	
 	vec_lerp(temp,temp2,temp,playerEntMorphBallPerc*0.01);
-	vec_lerp(camera.x,camera.x,temp,time_step*(1-playerEntMorphBallPerc*0.0065));
+	vec_lerp(camera.x,camera.x,temp,time_step*(1-playerEntMorphBallPerc*0.00875));
 	vec_diff(temp,player.x,camera.x);
 	vec_to_angle(temp2,temp);
 	temp2.z = 0;
@@ -302,13 +295,10 @@ void playerEntMorphBallDo()
 		ang_diff(temp3,vector(playerEntMorphBallPan,0,0),temp2);
 		vec_scale(temp3,(100-playerEntMorphBallPerc)*0.005);
 		ang_add(temp2,temp3);
-	playerEntMorphBallCameraPan += ang(playerEntMorphBallPan-playerEntMorphBallCameraPan)*(1-playerEntMorphBallPerc*0.01)*0.25*time_step;
 	}
 	ang_diff(temp,temp2,camera.pan);
 	vec_scale(temp,time_step); // minv(1,2*time_step)
 	ang_add(camera.pan,temp);
-	playerEntMorphBallCameraPan += clamp(ang(playerEntMorphBallPan-playerEntMorphBallCameraPan)*0.1,-7,7)*fac*time_step;
-	camera.pan = playerEntMorphBallCameraPan;
 	
 	vec_diff(temp,player.x,playerEntMorphBallPinkFlarePos);
 	vec_normalize(temp,1);
@@ -322,9 +312,6 @@ void playerEntMorphBallDo()
 	{
 		weapons_disabled = 0;
 		weapons.current = weaponsCurrentPrev;
-		camera.pan = player.pan = playerEntMorphBallPan;
-		player.tilt = 0;
-		player.roll = 0;
 	}
 }
 
@@ -359,15 +346,15 @@ void movement_update()
 		pp_desync(sinv(15*total_ticks)*15);
 		return;
 	}
-	#ifdef DEBUG
-		if(key_t || movement_cheat_clipmode)
-		#else
-		if(movement_cheat_clipmode)
-	#endif
+#ifdef DEBUG
+    if(key_t || movement_cheat_clipmode)
+#else
+    if(movement_cheat_clipmode)
+#endif
 	{
-		camera.pan += -mouse_force.x*10*time_step;
+        camera.pan += -input_axis(INPUT_LOOK_HORIZONTAL);
 		camera.pan %= 360;
-		camera.tilt = clamp(camera.tilt+mouse_force.y*10*time_step,-85,85);
+        camera.tilt = clamp(camera.tilt+input_axis(INPUT_LOOK_VERTICAL),-85,85);
 		player.pan = camera.pan;
 		VECTOR temp;
 		vec_set(temp,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
@@ -379,6 +366,11 @@ void movement_update()
 	}
 	playerChromaticAbbTime = maxv(0, playerChromaticAbbTime - time_step/16);
 	pp_desync(playerChromaticAbbTime/0.4*30);
+	if(playerDamageCooldownTime > 0)
+		playerDamageCooldownTime -= 1 * time_step;
+	
+	// DEBUG_VAR(playerDamageCooldownTime, 0);
+
 	if(!player)
 	{
 		VECTOR spawnPos,vMin,vMax;
@@ -408,11 +400,11 @@ void movement_update()
 	{
 		vec_set(playerEntMorphBallPinkFlarePos,player.x);
 		playerEntMorphBallActive = 1;
-		playerEntMorphBallCameraPan = playerEntMorphBallPan = player.pan;
+		playerEntMorphBallPan = player.pan;
 		weaponsCurrentPrev = weapons.current;
-		weapons.current = 0;
-		weapons_disabled = 1;
-		weapons_update();
+        weapons.current = 0;
+        weapons_disabled = 1;
+        weapons_update();
 	}
 	if(playerEntMorphBallActive)
 	{
@@ -429,10 +421,10 @@ void movement_update()
 	
 	vec_set(camera.pan,playerAngle);
 	VECTOR temp;
-	if(playerSlideCounter > 0) camera.pan = clamp(camera.pan-mouse_force.x*10*time_step,playerSlidePan-90,playerSlidePan+90);
+    if(playerSlideCounter > 0) camera.pan = clamp(camera.pan-input_axis(INPUT_LOOK_HORIZONTAL),playerSlidePan-90,playerSlidePan+90);
 	else
 	{
-		camera.pan += -mouse_force.x*10*time_step;
+        camera.pan += -input_axis(INPUT_LOOK_HORIZONTAL);
 		camera.pan %= 360;
 	}
 	/*if(playerSlideCounter > 0)
@@ -441,7 +433,7 @@ void movement_update()
 		camera.pan = ;
 	}*/
 	
-	camera.tilt = clamp(camera.tilt+mouse_force.y*10*time_step,-85,85);
+    camera.tilt = clamp(camera.tilt+input_axis(INPUT_LOOK_VERTICAL),-85,85);
 	player.pan = camera.pan;
 	move_min_z = 0.75;
 	disable_z_glide = 1;
@@ -671,14 +663,14 @@ void playerAddSpeed(VECTOR* v)
 }
 
 #ifdef DEBUG_CHEATHP
-	void playerCheatHp_startup()
+void playerCheatHp_startup()
+{
+	while (1)
 	{
-		while (1)
-		{
-			playerHealth = 999;
-			wait(1);
-		}
+		playerHealth = 999;
+		wait(1);
 	}
+}
 #endif
 
 //////////////////////////////

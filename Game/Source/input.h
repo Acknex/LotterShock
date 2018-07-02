@@ -5,14 +5,29 @@
 
 typedef struct
 {
+    var * value;
+    float deadZone;
+    float scale;
+    bool time_sensitive;
+} input_axis_t;
+
+typedef struct
+{
 	int down;
-	int justPressed;
+    int justPressed;
 	int scanCodes[4];
 	int gamepadKeys[4];
-	int useAxis;
+    int useAxis;
 	float factor;
 	char cinfo[32];
-	EVENT fnc;
+    EVENT fnc;
+
+    // analog input
+    var value;
+    input_axis_t axes[4];
+    bool positiveValue;
+    float deadZone;
+    float sensitivity;
 } INPUT;
 
 #define INPUT_UP 0
@@ -28,7 +43,13 @@ typedef struct
 #define INPUT_BLOCK 10
 #define INPUT_CROUCH 11
 #define INPUT_MORPHBALL 12
-#define INPUT_MAX 13
+
+#define INPUT_LOOK_HORIZONTAL 13
+#define INPUT_LOOK_VERTICAL 14
+
+#define INPUT_SHOW_MAP 15
+
+#define INPUT_MAX 16
 
 #define INPUT_TYPE_KEYBOARD 0
 #define INPUT_TYPE_GAMEPAD 1
@@ -42,10 +63,14 @@ void input_update();
 
 void input_add(int inputID, int inputType, int value);
 
+void input_add_axis(int inputID, var * value, float scale, float deadZone, bool time_sensitive);
+
 void input_init();
 
 bool input_down(int id);
 
 bool input_hit(int id);
+
+var input_axis(int id);
 
 #endif // INPUT_H

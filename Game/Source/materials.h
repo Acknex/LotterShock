@@ -15,6 +15,11 @@ MATERIAL *matObject =
 	effect = "Shaders/object_basic.fx";
 }
 
+MATERIAL *matSprite =
+{
+	effect = "Shaders/object_sprite.fx";
+}
+
 MATERIAL *matTree =
 {
 	effect = "Shaders/tree.fx";

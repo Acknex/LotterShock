@@ -132,7 +132,8 @@ void mainmenu_update()
     mainmenu_selection_pan->pos_x = mainmenu_items[mainmenu_selection]->pos_x;
     mainmenu_selection_pan->pos_y = mainmenu_items[mainmenu_selection]->pos_y;
 
-    if(input_hit(INPUT_USE) || input_hit(INPUT_ATTACK) || input_hit(INPUT_JUMP))
+    var attack = input_hit(INPUT_ATTACK) && (!mouse_left || (mouse_left && (mouse_panel != NULL)));
+    if(input_hit(INPUT_USE) || attack || input_hit(INPUT_JUMP))
     {
         snd_play(mainmenu_accept_snd, 100, 0);
         switch(mainmenu_selection)
