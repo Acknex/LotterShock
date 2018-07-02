@@ -137,7 +137,6 @@ void environmentals_update()
                 break;
             
             case ENVIRONMENTAL_ENGINE_TERMINAL:
-                draw_text("test", 0, 10, vector(0,0,255));
                 if(ptr.ENVIRONMENTALS_TEMP == 0)
                 {
                     if(mouse_ent == ptr) 
