@@ -19,6 +19,8 @@ BMAP * bestiary_bmp_next = "best_next.png";
 BMAP * bestiary_bmp_prev = "best_prev.png";
 BMAP * bestiary_bmp_back = "best_back.png";
 
+BMAP * bestiary_selection_bmap = "best_sel.png";
+
 PANEL * bestiary_pan_back =
 {
     bmap = bestiary_bmp_back;
@@ -32,6 +34,12 @@ PANEL * bestiary_pan_next =
 PANEL * bestiary_pan_prev =
 {
     bmap = bestiary_bmp_prev;
+}
+
+PANEL * bestiary_pan_sel =
+{
+    bmap = mainmenu_selection_bmap;
+    flags = UNTOUCHABLE;
 }
 
 struct
@@ -97,6 +105,29 @@ void bestiary_update()
             bestiary.position -= 1;
     }
 
+    if(mouse_panel != NULL)
+    {
+        set(bestiary_pan_sel, SHOW);
+        bestiary_pan_sel->pos_x = mouse_panel->pos_x;
+        bestiary_pan_sel->pos_y = mouse_panel->pos_y;
+
+        if(mouse_panel == bestiary_pan_back)
+        {
+            bestiary_pan_sel->bmap = mainmenu_selection_bmap;
+        }
+        else
+        {
+            bestiary_pan_sel->bmap = bestiary_selection_bmap;
+        }
+
+        bestiary_pan_sel->size_x = bmap_width(bestiary_pan_sel->bmap);
+        bestiary_pan_sel->size_y = bmap_height(bestiary_pan_sel->bmap);
+    }
+    else
+    {
+        reset(bestiary_pan_sel, SHOW);
+    }
+
     // Pure input
     if(input_hit(INPUT_LEFT))
         bestiary.position -= 1;
@@ -122,9 +153,9 @@ void bestiary_update()
         reset(bestiary_bmp_prev, SHOW);
 
     if(bestiary.position < (BESTIARY_COUNT - 1))
-        set(bestiary_bmp_prev, SHOW);
+        set(bestiary_bmp_next, SHOW);
     else
-        reset(bestiary_bmp_prev, SHOW);
+        reset(bestiary_bmp_next, SHOW);
 
     if(mouse_panel != bestiary.lastPan)
         snd_play(mainmenu_swap_snd, 100, 0);
@@ -166,6 +197,7 @@ void bestiary_close()
     reset(bestiary_pan_back, SHOW);
     reset(bestiary_pan_prev, SHOW);
     reset(bestiary_pan_next, SHOW);
+    reset(bestiary_pan_sel, SHOW);
 }
 
 bool bestiary_is_done()
