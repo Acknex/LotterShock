@@ -317,8 +317,11 @@ void input_init()
     input_add_axis(INPUT_WEAPON_UP,  &mickey.z, 1.0, 0.0, false);
     input_add_axis(INPUT_WEAPON_DOWN,&mickey.z, 1.0, 0.0, false);
 
-    input_add_axis(INPUT_LOOK_HORIZONTAL, &mouse_force.x, 1.0, 0.0, true);
-    input_add_axis(INPUT_LOOK_VERTICAL,   &mouse_force.y, 1.0, 0.0, true);
+    // input_add_axis(INPUT_LOOK_HORIZONTAL, &mouse_force.x, 1.0, 0.0, true);
+    // input_add_axis(INPUT_LOOK_VERTICAL,   &mouse_force.y, 1.0, 0.0, true);
+
+    input_add_axis(INPUT_LOOK_HORIZONTAL, &mickey.x,  1.0 / 40.0, 0.0, false);
+    input_add_axis(INPUT_LOOK_VERTICAL,   &mickey.y, -1.0 / 40.0, 0.0, false);
 
     input_add_axis(INPUT_LOOK_HORIZONTAL, &input_states.rightStick.x, 1.0 / 255.0, 0.3, true);
     input_add_axis(INPUT_LOOK_VERTICAL,   &input_states.rightStick.y, 1.0 / 255.0, 0.3, true);
