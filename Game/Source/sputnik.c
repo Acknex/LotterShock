@@ -83,6 +83,11 @@ void SPUTNIK_GlobalInit()
 	SPUTNIK_bmapSplatter[2] = bmap_create("splatter_purple_03.png");
 	SPUTNIK_bmapSplatter[3] = bmap_create("splatter_purple_04.png");
 	SPUTNIK_bmapSplatter[4] = bmap_create("splatter_purple_05.png");
+	int i;
+	for (i= 0; i < 5; i++)
+	{
+		bmap_preload(SPUTNIK_bmapSplatter[i]);
+	}
 }
 
 void SPUTNIK_Init()
