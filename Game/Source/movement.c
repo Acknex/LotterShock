@@ -49,6 +49,7 @@ var playerEntMorphBallTilt = 0;
 var playerEntMorphBallSpeedAdaptFac = 1;
 VECTOR playerEntMorphBallPinkFlarePos;
 var playerChromaticAbbTime = 0;
+var playerDamageCooldownTime = 0;
 
 void player_initSpawn()
 {
@@ -84,10 +85,15 @@ void playerAddHealth(var amount)
 {
     if((amount < 0) && movement_cheat_invincibility)
         return; // haha
+
+	if(amount < 0 && playerDamageCooldownTime > 0)
+		return; // Prevent instagibbing
+	
 	playerHealth = clamp(playerHealth+amount,0,playerHealthMax);
 	if(amount < 0) 
 	{
 		playerChromaticAbbTime = 0.5;
+		playerDamageCooldownTime = 20;
 	}
 }
 
@@ -360,6 +366,11 @@ void movement_update()
 	}
 	playerChromaticAbbTime = maxv(0, playerChromaticAbbTime - time_step/16);
 	pp_desync(playerChromaticAbbTime/0.4*30);
+	if(playerDamageCooldownTime > 0)
+		playerDamageCooldownTime -= 1 * time_step;
+	
+	DEBUG_VAR(playerDamageCooldownTime, 0);
+
 	if(!player)
 	{
 		VECTOR spawnPos,vMin,vMax;
