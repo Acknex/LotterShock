@@ -649,6 +649,10 @@ void weapons_update()
 	}
 #endif
 
+    // Keine Leben, keine Waffen.
+    if(playerGetHealth() <= 0)
+        return;
+
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_UP))
         weapons_select_next(1);
 	if(!weapons.attacking && input_hit(INPUT_WEAPON_DOWN))
