@@ -114,7 +114,7 @@ void SPUTNIK_Update()
 				*/
 				ptr->push = -100;
 				SPLATTER_splat(&ptr->x, vector(100.0/255.0, 67.0/255.0, 192.0/255.0));
-				SPLATTER_explode(10, &ptr->x, 500, SPUTNIK_bmapSplatter, 5);
+				SPLATTER_explode(10, ptr, 500, SPUTNIK_bmapSplatter, 5);
 			}
 			
 			if (ptr->SPUTNIK_SOUNDHANDLE && (snd_playing(ptr->SPUTNIK_SOUNDHANDLE) == 0))

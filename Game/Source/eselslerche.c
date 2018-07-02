@@ -7,6 +7,7 @@
 #include "gib.h"
 #include "particle.h"
 #include "movement.h"
+#include "ang.h"
 
 #define EL_RUNSPEED skill1
 #define EL_TURNSPEED skill2
@@ -57,10 +58,10 @@ SOUND* eselslerche_snd_explo = "eselslerche_explo.wav";
 action Eselslerche()
 {
    framework_setup(my, SUBSYSTEM_ENEMY_LERCHE);
-	if(my->EL_RUNSPEED == 0) my->EL_RUNSPEED = 12;
-	if(my->EL_TURNSPEED == 0) my->EL_TURNSPEED = 10;
+	if(my->EL_RUNSPEED == 0) my->EL_RUNSPEED = 10;
+	if(my->EL_TURNSPEED == 0) my->EL_TURNSPEED = 5;
 	if(my->EL_ANIMSPEED == 0) my->EL_ANIMSPEED = 5;
-	if(my->EL_EXPLODEDIST == 0) my->EL_EXPLODEDIST = 300;
+	if(my->EL_EXPLODEDIST == 0) my->EL_EXPLODEDIST = 200;
 	if(my->EL_ACTIVEDIST == 0) my->EL_ACTIVEDIST = 3000;
 	my->HEALTH = 50;
 	ENEMY_HIT_init(my);
@@ -108,7 +109,7 @@ void ESELSLERCHE_Update()
 					case 1: snd_play(eselslerche_snd_hit2, 100, 0); break;
 				}
 				SPLATTER_splat(&ptr->x, vector(73.0/255.0,159.0/255.0,0.0));
-				SPLATTER_explode(10, &ptr->x, 200, EL_bmapSplatter, 5);
+				SPLATTER_explode(20, ptr, 200, EL_bmapSplatter, 5);
 			}
 			
 			switch(ptr->EL_STATE)    	
@@ -170,30 +171,6 @@ void ESELSLERCHE_Update()
 	}	
 }
 
-var ESELSLERCHE__turnToPlayer(ENTITY* ptr)
-{
-	ANGLE vecAngle;
-	VECTOR vecTemp;
-	vec_set(&vecTemp, &player->x);
-	vec_sub(&vecTemp, &ptr->x);
-	vec_to_angle(&vecAngle, &vecTemp);
-
-	if (ang(ptr->pan) < vecAngle.pan - 5)
-	{
-		ptr->pan = minv(vecAngle.pan, ang(ptr->pan + ptr->EL_TURNSPEED * time_step));
-		return 0;
-	}	
-	if (ang(ptr->pan) > vecAngle.pan + 5)
-	{
-		ptr->pan = maxv(vecAngle.pan, ang(ptr->pan - ptr->EL_TURNSPEED * time_step));
-		return 0;
-	}	
-//	if (integer(ang(ptr->pan)) == integer(vecAngle.pan))
-		return 1;
-//	else
-//		return 0;
-}
-
 void ESELSLERCHE__inactive(ENTITY* ptr)
 {
 	/* transitions */
@@ -212,7 +189,7 @@ void ESELSLERCHE__wait(ENTITY* ptr)
 	ent_animate(ptr, EL_TURNANIM, ptr->EL_ANIMSTATE, ANM_CYCLE);
 
 	/* transitions */
-	if (ESELSLERCHE__turnToPlayer(ptr) != 0)
+	if(ANG_turnToPlayer(ptr, ptr->EL_TURNSPEED, 5) != 0)
 	{
 		ptr->EL_ANIMSTATE = 0;
 		ptr->EL_RUNSPEEDCUR = 0;
@@ -235,7 +212,7 @@ void ESELSLERCHE__wait(ENTITY* ptr)
 void ESELSLERCHE__run(ENTITY* ptr)
 {
 	ptr->EL_RUNSPEEDCUR = minv(ptr->EL_RUNSPEEDCUR + 4*time_step, ptr->EL_RUNSPEED);
-	ESELSLERCHE__turnToPlayer(ptr);
+	ANG_turnToPlayer(ptr, ptr->EL_TURNSPEED, 5);
 	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
 	c_move(ptr, vector(ptr->EL_RUNSPEEDCUR, 0, 0), nullvector, mode);
 	ent_animate(ptr, EL_WALKANIM, ptr->EL_ANIMSTATE, ANM_CYCLE);
@@ -249,9 +226,9 @@ void ESELSLERCHE__run(ENTITY* ptr)
 		set(ptr, PASSABLE);
 	}
 	else if (
-		!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90) 
+		//!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90) 
 		//&& (!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100))
- 		&& SCAN_IsPlayerBehind(ptr, 1200)
+ 		/*&&*/ SCAN_IsPlayerBehind(ptr, 1200)
  		&& !ptr->EL_RAMPAGE
 	)
 	{
@@ -289,7 +266,7 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 		{
 			GIB_Spawn(&ptr->x);
 		}
-		SPLATTER_explode(40, &ptr->x, 600, EL_bmapSplatter, 5);
+		SPLATTER_explode(30, ptr, 600, EL_bmapSplatter, 5);
 		//PARTICLE_explode(50, &ptr->x);
 		SPLATTER_splat(&ptr->x, vector(0,0.8,0));
 		ptr->EL_STATE = EL_STATE_DEAD;
@@ -300,14 +277,13 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 void ESELSLERCHE__die(ENTITY* ptr)
 {
 	var animState;
-	animState = clamp(ptr->EL_ANIMSTATE, 0, 50);
+	animState = clamp(ptr->EL_ANIMSTATE, 0, 35);
 	ent_animate(ptr, EL_DIEANIM, ptr->EL_ANIMSTATE, 0);
 	/* transitions */
-	if(animState >= 50)
+	if(animState >= 35)
 	{
 		ptr->EL_STATE = EL_STATE_DEAD;
 		set(ptr, PASSABLE);
-		c_updatehull(ptr, ptr->frame);
 	}
 }
 
@@ -331,6 +307,7 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 	/* transitions */
 	if (ptr->HEALTH <= 0)
 	{
+		ptr->EL_ANIMSTATE = 0;
 		ptr->EL_STATE = EL_STATE_DIE;
 		switch(integer(random(2)))
 		{
