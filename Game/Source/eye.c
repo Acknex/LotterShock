@@ -216,15 +216,19 @@ void EYE__attack(ENTITY* ptr)
 		ptr->EYE_COUNTER -= 1;
 		me = ptr;
 		var mode = IGNORE_ME | IGNORE_WORLD | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | SCAN_TEXTURE | USE_POLYGON;
+		c_ignore(GROUP_PLAYER,0);
 		c_trace(&from, &to, mode);
 		if(HIT_TARGET)
 		{
 	     	PARTICLE* p = ent_decal(you, EYE_BmapDecal, 30, random(360));
-	     	p->material = matDecalBlood;
+			if(p) // ent_decal can fail!!
+	     	{
+	     		p->material = matDecalBlood;
 	     	p->lifespan = 64;
 	     	p->event = SPLATTER__fade_effect;
 	     	p->flags |= TRANSLUCENT;
 	     	p->alpha = 100;
+     	}
 		}
 	}
 	

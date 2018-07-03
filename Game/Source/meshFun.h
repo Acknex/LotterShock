@@ -28,15 +28,14 @@ var meshFunGetDistanceToRegion(VECTOR* vpos, STRING* str_region, int regionNum, 
 
 TEXT *meshFunRegionNames_txt =
 {
-	string("ice","red");
+	string("blue","red","region_toxic","green","yellow");
 }
-COLOR meshFunRegionColors[2];
+COLOR meshFunRegionColors[5];
 
 
 void meshFunDoForEnt(ENTITY* ent)
 {
 	ent_clone(ent);
-	//printf("meshFunDoForEnt: ent: %s",_chr(str_for_entfile(NULL,ent)));
 	D3DVERTEX* vbuffer;
 	short* ibuffer;
 	if(!ent_buffers(ent,0,0,&vbuffer,&ibuffer,NULL)) { error("error"); return; }
@@ -85,6 +84,10 @@ void meshFunDo()
 {
 	vec_set(meshFunRegionColors[0],vector(255,100,40));
 	vec_set(meshFunRegionColors[1],vector(5,32,255));
+	vec_set(meshFunRegionColors[2],vector(15,255,96));
+	vec_set(meshFunRegionColors[3],vector(80,255,80));
+	vec_set(meshFunRegionColors[4],vector(5,190,255));
+
 	ENTITY* ent;
 	for(ent = ent_next(NULL); ent; ent = ent_next(ent))
 	{

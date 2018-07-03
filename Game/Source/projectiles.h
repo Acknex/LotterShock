@@ -195,8 +195,8 @@
 					if(p)
 					{
 						p->material = matDecalGlow;
-					}
 					p_decal_setup_fade(p, 16+random(6), 12);
+					}
 					vec_add(proj->pos,normal);
 					vec_set(bounce,normal);
 					vec_scale(bounce,-2*vec_dot(proj->speed,normal));
@@ -217,8 +217,8 @@
 					{
 						matDecalBullethole.skin1 = bulletHoleCool_bmp;
 						p->material = matDecalBullethole;
-					}
 					p_decal_setup_fade(p, 120+random(10), 10);
+					}
 					effect(p_bullet_impact_smoke,1+(random(2) > 1),target,normal);
 				}
 			}

@@ -151,14 +151,14 @@ void bestiary_update()
     bestiary_pan_next->pos_y = (screen_size.y - bmap_height(bestiary_pan_next->bmap)) / 2;
 
     if(bestiary.position > 0)
-        set(bestiary_bmp_prev, SHOW);
+        set(bestiary_pan_prev, SHOW);
     else
-        reset(bestiary_bmp_prev, SHOW);
+        reset(bestiary_pan_prev, SHOW);
 
     if(bestiary.position < (BESTIARY_COUNT - 1))
-        set(bestiary_bmp_next, SHOW);
+        set(bestiary_pan_next, SHOW);
     else
-        reset(bestiary_bmp_next, SHOW);
+        reset(bestiary_pan_next, SHOW);
 
     if(mouse_panel != bestiary.lastPan)
         snd_play(mainmenu_swap_snd, 100, 0);

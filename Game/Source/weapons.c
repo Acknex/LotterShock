@@ -88,7 +88,7 @@ ENTITY * weapons_wp_flamethrower =
 BMAP * weapons_bullethole_decal = "bullet_hole.tga";
 
 BMAP * weapons_fire_01 = "fire.pcx";
-BMAP * weapons_fire_02 = "fire2.pcx";
+BMAP * weapons_fire_02 = "fire.pcx";
 
 SOUND * weapons_snd_sword1 = "sword_swing1.wav";
 SOUND * weapons_snd_sword2 = "sword_swing2.wav";
@@ -352,21 +352,31 @@ void weapons_secondary_flame_effect_event(PARTICLE *p)
 	p->skill_a += time_step;
 	
 	if(p->skill_a < 30)
-	p->alpha += time_step;
+		p->alpha += time_step;
 	else
-	if (p->skill_a > 60)
-	p->alpha -= 0.5*time_step;
-	p->alpha -= 0.3*time_step;
-	
-	vec_set(p->x, p->skill_x);
+	{
+		if (p->skill_a > 60)
+			p->alpha -= 0.5*time_step;
+		p->alpha -= 0.3*time_step;
+	}
 	
 	var r = 10;
 	var o = r/2;
+	/*
+	vec_set(p->x, p->skill_x);
+	
 	vec_add(p->x, vector(random(r)-o,random(r)-o,random(r)-o));
+	*/
+	
+	VECTOR tmp;
+	vec_set(&tmp, p->skill_x);
+	vec_add(&tmp, vector(random(r)-o,random(r)-o,random(r)-o));
+	vec_lerp(p->skill_x, p->x, &tmp, 0.1);
+	vec_set(p->x, p->skill_x);
 	
 	
 	if(p->alpha <= 0)
-	p->lifespan = 0;
+		p->lifespan = 0;
 }
 
 void weapons_secondary_flame_effect(PARTICLE *p)
@@ -376,9 +386,9 @@ void weapons_secondary_flame_effect(PARTICLE *p)
 	p->bmap = weapons_fire_02;
 	p->flags = LIGHT|TRANSLUCENT|BRIGHT;
 	p->alpha = 0;
-	vec_set(p->blue, vector(32, 70, 192));
+	vec_set(p->blue, vector(32, 70, 255));
 	p->lifespan = 100;
-	p->size = 45 + random(35);
+	p->size = 35 + random(35);
 	p->event = weapons_secondary_flame_effect_event;
 }
 
@@ -405,7 +415,7 @@ void weapons_flame_effect_event(PARTICLE *p)
         if(c_trace(src, dest, IGNORE_YOU | IGNORE_PASSABLE | USE_POLYGON | IGNORE_PASSENTS))
 		{
 			vec_set(p->x, normal);
-			vec_normalize(p->x,10.1);
+			vec_normalize(p->x,7.1 +random(5));
 			vec_add(p->x, target);
 			p->skill_x = 1;
 			p->flags &= ~STREAK;
@@ -414,7 +424,7 @@ void weapons_flame_effect_event(PARTICLE *p)
 			#ifdef WEAPONS_DOUBLE_FLAME_EFFECT     
 				VECTOR secondary_position;
 				vec_set(&secondary_position, &normal);
-				vec_normalize(&secondary_position,15.);
+				vec_normalize(&secondary_position,10 + random(10));
 				vec_add(&secondary_position, &p->x);      
 				effect (weapons_secondary_flame_effect, 1, &secondary_position, nullvector);
 			#endif
@@ -429,7 +439,7 @@ void weapons_flame_effect_event(PARTICLE *p)
 			vec_add(p->x, dist);
 		}
 		#ifdef WEAPONS_DOUBLE_FLAME_EFFECT     
-			p->size = clamp(p->size + 8 * time_step, 5, 80);
+			p->size = clamp(p->size + 8 * time_step, 5, 40);
 		#endif
 	}
 	else
@@ -478,11 +488,15 @@ void weapons_flame_effect_event(PARTICLE *p)
 	p->skill_z -= time_step;
 
 	if(p->skill_y > 40)
-	p->flags &= ~STREAK;
+		p->flags &= ~STREAK;
 	
+	
+	var r = 2;
+	var o = r/2;
+	vec_add(p->x, vector(random(r)-o,random(r)-o,random(r)-o));
 	
 	p->red   = maxv(128, 255 - p->skill_y);// - random(32);
-	p->green = maxv(90,  180 - p->skill_y*1.5);// + random(64);
+	p->green = maxv(110,  180 - p->skill_y*1.5);// + random(64);
 	p->blue  = maxv(64,  128 - p->skill_y*80);
 
 	p->skill_y += 10 * time_step;
@@ -501,16 +515,20 @@ void weapons_flame_effect_event(PARTICLE *p)
 
 void weapons_flame_effect(PARTICLE *p)
 {
-	p->bmap = weapons_fire_01;
+	p->bmap = weapons_fire_02;
 	p->flags = TRANSLUCENT | LIGHT | BRIGHT | STREAK;
 	vec_set(p->blue, vector(255, 192, 192));
 
 	vec_set(p->skill_a, weapons.flamedir);
-	vec_rotate(p->skill_a, vector(
-	random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
-	random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD,
-	random(2*WEAPONS_FLAME_SPREAD)-WEAPONS_FLAME_SPREAD ));
-
+	
+	VECTOR spread;
+	spread.x = random(1)-0.5;
+	spread.y = random(1)-0.5;
+	spread.z = random(1)-0.5;
+	vec_normalize(spread, random(WEAPONS_FLAME_SPREAD));
+	vec_rotate(p->skill_a, spread);
+	
+	
 	p->lifespan = 100;
 	p->size = 5 + random(5);
 	p->event = weapons_flame_effect_event;
