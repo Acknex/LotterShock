@@ -175,7 +175,7 @@ void bestiary_update()
         bestiary.beasts[bestiary.position].name,
         16,
         16,
-        vector(255, 200, 200));
+        vector(34, 61, 208));
 
     draw_text(
         bestiary.beasts[bestiary.position].flavour,
