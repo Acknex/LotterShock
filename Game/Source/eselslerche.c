@@ -102,7 +102,7 @@ void ESELSLERCHE_Update()
 			ptr->EL_ANIMSTATELIM = clamp(ptr->EL_ANIMSTATE, 0, 100);
 			ptr->EL_ANIMSTATE = cycle(ptr->EL_ANIMSTATE, 0, 100);
 
-			if (ptr->DAMAGE_HIT > 0 && ptr->EL_STATE != EL_STATE_EXPLODE)
+			if (ptr->DAMAGE_HIT > 0)
 			{
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
@@ -235,6 +235,7 @@ void ESELSLERCHE__run(ENTITY* ptr)
 		}
 		snd_play(eselslerche_snd_explo, 100, 0);
 		set(ptr, PASSABLE);
+		ptr->event = NULL;
 	}
 	else if (
 		//!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90) 
@@ -287,6 +288,7 @@ void ESELSLERCHE__die(ENTITY* ptr)
 	var animState;
 	animState = clamp(ptr->EL_ANIMSTATE, 0, 35);
 	ent_animate(ptr, EL_DIEANIM, ptr->EL_ANIMSTATE, 0);
+
 	/* transitions */
 	if(animState >= 35)
 	{
@@ -329,7 +331,7 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 		ptr->EL_RAMPAGE = 1;
 		ptr->event = ENEMY_HIT_event;
 		ptr->EL_ANIMSTATE = 0;
-        vec_zero(ptr->DAMAGE_VEC);
+		vec_zero(ptr->DAMAGE_VEC);
 	}
 	else
 	{

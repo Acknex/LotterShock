@@ -15,6 +15,7 @@
 #define TURRET_TOGGLE skill26
 #define TURRET_ROTMODE skill27
 #define TURRET_ROTTIMER skill28
+#define TURRET_HITLOCKCNT skill29
 
 #define TURRETOPEN 0
 #define TURRETCLOSE 1
@@ -35,6 +36,7 @@
 
 void TURRET__init();
 void TURRET__shoot(ENTITY* ptr);
+void TURRET__hitcheck(ENTITY* ptr);
 void TURRET__turnOn(ENTITY* ptr);
 void TURRET__turnOff(ENTITY* ptr);
 void TURRET__active(ENTITY* ptr);
@@ -99,14 +101,21 @@ void TURRET_Update()
 		if (player != NULL)
     	{
 
+			if (ptr->HEALTH > 0)
+			{
+				TURRET__hitcheck(ptr);
+			}
+			
 			if (ptr->DAMAGE_HIT > 0)
 			{
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
-				SPLATTER_splat(&ptr->x, vector(1.0, 1.0, 0.0));				
+				SPLATTER_splat(&ptr->x, vector(1.0, 1.0, 0.0));
+				ptr->TURRET_HITLOCKCNT = 7;
+				ptr->event = NULL;
+				
 				if (ptr->HEALTH <= 0)
 				{
-					ptr->event = NULL;
 					ptr->TURRET_STATE = TURRETDIE;
 					ptr.skill44 = floatv(0);
 					snd_play(sndTurretDestroyed, 100, 0);
@@ -144,6 +153,21 @@ void TURRET_Update()
 				default:
 					break;
 			}
+		}
+	}
+}
+
+void TURRET__hitcheck(ENTITY* ptr)
+{
+	if (ptr->TURRET_HITLOCKCNT > 0)
+	{
+		ptr->TURRET_HITLOCKCNT -= time_step;
+		
+		if (ptr->TURRET_HITLOCKCNT <= 0)
+		{
+			ptr->TURRET_HITLOCKCNT = 0;
+			ptr->event = ENEMY_HIT_event;
+			vec_zero(ptr->DAMAGE_VEC);
 		}
 	}
 }
