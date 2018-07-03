@@ -226,7 +226,13 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	if (SCAN_IsPlayerInSight(ptr, ptr->EL_EXPLODEDIST, 360))
 	{
 		ptr->EL_STATE = EL_STATE_EXPLODE;
-		playerAddHealth(-30-random(15));
+		set(ptr, PASSABLE|INVISIBLE);
+		me = ptr;
+		var dist = c_trace(&ptr->x, &player->x, IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
+		if (HIT_TARGET && you == player)
+		{
+			playerAddHealth(-30-random(15));
+		}
 		snd_play(eselslerche_snd_explo, 100, 0);
 		set(ptr, PASSABLE);
 	}
@@ -263,9 +269,6 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 	/* transitions */
 	if(ptr->EL_EXPLODESTATE >= 2.5)
 	{
-		me = ptr;
-		var dist = c_trace(&ptr->x, &player->x, IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
-		set(ptr, PASSABLE|INVISIBLE);
 		var i;
 		for ( i = 0; i < 5; i++)
 		{
