@@ -1,6 +1,7 @@
 // skill1: KEY_ID
 // skill2: KEYPAD_ID
 // skill3: EXPECTED_KEY
+// skill4: ENABLE_KEY
 action keypad() {	
 	framework_setup(my, SUBSYSTEM_KEYPADS);
 	set(me, PASSABLE);
@@ -70,9 +71,9 @@ void doors_update() {
 					if (input_hit(INPUT_USE)) {					
 						if (keys[ptr.DOOR_REQUIRED_KEY_ID%10] == 1 && (ptr.DOOR_REQUIRED_KEY_ID < 10 || story_enginesEnabled == 1))  
 						{
-                     ent_playsound(ptr, snd_gate, 800);
+                     		ent_playsound(ptr, snd_gate, 800);
 							ptr.DOOR_STATE = 1;
-							if(!ptr.DOOR_OPENED_ONCE != 1)
+							if(ptr.DOOR_OPENED_ONCE != 1)
 							{
 								snd_play(snd_granted, 100, 0);
 							}
