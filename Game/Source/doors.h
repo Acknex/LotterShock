@@ -12,6 +12,8 @@
 
 // doors
 #define DOOR_REQUIRED_KEY_ID skill1
+#define DOOR_OPENED_ONCE skill2
+#define DOOR_SND_HANDLE skill3
 #define DOOR_STATE skill21
 #define WAIT_TIME skill22
 #define DOOR_Z_START skill23
@@ -29,6 +31,13 @@ SOUND* snd_beep = "Beep.wav";
 SOUND* snd_keypad_yes = "keypadYes.wav";
 SOUND* snd_keypad_no = "keypadNo.wav";
 SOUND* snd_gate = "gate.wav";
+SOUND* snd_denied = "access_denied.wav";
+SOUND* snd_denied_red = "access_red.wav";
+SOUND* snd_denied_green = "access_green.wav";
+SOUND* snd_denied_blue = "access_blue.wav";
+SOUND* snd_denied_yellow = "access_yellow.wav";
+SOUND* snd_denied_lockdown = "access_lockdown.wav";
+SOUND* snd_granted = "access_granted.wav";
 
 STRING* keypad_input = "";
 int current_keypad_id = 0;

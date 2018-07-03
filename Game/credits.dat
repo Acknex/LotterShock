@@ -54,6 +54,14 @@ r;Effects
 s;2
 l;Steffen "sgpohl" Pohl
 r;HUD
+s;4
+h3;Voices
+s;2;
+x;Lisa Müller;Ship's AI
+s;2;
+x;Marius Kappes;Cpt. Kappes
+s;2;
+x;Ani (?);Dr. Horstmann
 s;8
 h3;Special Thanks To
 s;4;
@@ -66,9 +74,9 @@ x;real,-;Providing food staples and energy drinks
 s;8
 h3;Much Thanks To
 s;4;
-x;J. C. Lotter;Providing a monetary boost
+x;oP Group;Providing a monetary boost
 s;8
-c;No Eselslerchen were harmed during the production of this game.
+c;No Donkey-larks were harmed during the production of this game.
 c;(but they exploded...)
 c;(A LOT)
 s;8

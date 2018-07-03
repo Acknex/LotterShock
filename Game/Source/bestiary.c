@@ -4,6 +4,7 @@
 #include "mainmenu.h"
 #include "global.h"
 #include "framework.h"
+#include "music_player.h"
 
 #include <acknex.h>
 
@@ -175,7 +176,7 @@ void bestiary_update()
         bestiary.beasts[bestiary.position].name,
         16,
         16,
-        vector(255, 200, 200));
+        vector(34, 61, 208));
 
     draw_text(
         bestiary.beasts[bestiary.position].flavour,
@@ -202,6 +203,7 @@ void bestiary_update()
 void bestiary_close()
 {
     level_load(NULL);
+    music_start("Media/intro.mp3", 1, 0);
     camera->arc = 60;
     reset(bestiary_pan_back, SHOW);
     reset(bestiary_pan_prev, SHOW);

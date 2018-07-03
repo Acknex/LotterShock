@@ -184,6 +184,56 @@ action menuelevel_anchor()
 	}
 }
 
+//Henrik,s blöder code 
+action act_TFL1()
+
+{
+
+
+
+	{
+
+//	 set(my, FLAG1);
+   }
+	if(my->string1 == NULL)
+	{
+	error("an animationobject has no animation set");
+	return;
+
+	}
+
+	if(str_cmpi(my->string1, ""))
+
+	{
+	error("an animationobject has no animation set");
+	return;
+
+	}
+
+	
+
+	if(my->skill[0] == 0)
+
+	my->skill[0] = 1;
+
+	if(my->skill[1] == 0)
+
+	my->skill[1] = 10;
+
+	while(1)
+
+	{
+
+		my->skill[99] = (my->skill[99] +my->skill[0]*time_step) %100;
+   	ent_animate(my, my->string1, my->skill[99], ANM_CYCLE);
+		my->pan -= my->skill[0.5]*time_step;
+		wait(1);
+
+	}
+
+}
+
+
 action act_rotator()
 {
 	my->alpha = 100;
