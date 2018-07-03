@@ -6,6 +6,7 @@
 #include "enemy_hit.h"
 #include "gib.h"
 #include "particle.h"
+#include "ang.h"
 
 #define SPUTNIK_RUNSPEED skill1
 #define SPUTNIK_TURNSPEED skill2
@@ -34,6 +35,7 @@
 #define SPUTNIK_STATE_ATTACK 3
 #define SPUTNIK_STATE_DIE 4
 #define SPUTNIK_STATE_DEAD 5
+#define SPUTNIK_STATE_HIT 6
 
 #define SPUTNIK_FEET 15
 
@@ -102,14 +104,18 @@ void SPUTNIK_Update()
 	{
 		if (player != NULL)
     	{
-			ptr->SPUTNIK_SPLATTERTHRESHOLD = minv(ptr->SPUTNIK_SPLATTERTHRESHOLD + time_step, 10);
 			
-    		//DEBUG_VAR(1, 240);
+			if (ptr->HEALTH > 0)
+			{
+				SPUTNIK__hitcheck(ptr);
+			}
+			
+    		//DEBUG_VAR(ptr->DAMAGE_HIT, 240);
 			if (ptr->DAMAGE_HIT > 0)
 			{
+				ptr->event = NULL;
+				ptr->SPUTNIK_SPLATTERTHRESHOLD = 7;
 				//DEBUG_VAR(ptr->DAMAGE_HIT, 260);
-				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
-				ptr->DAMAGE_HIT = 0;
 				/* SPUTNIK has no hit sounds
 				if (ptr->SPUTNIK_SOUNDHANDLE != 0)
 				{
@@ -121,18 +127,18 @@ void SPUTNIK_Update()
 				}
 				*/
 				
-				var doSplatter = integer(ptr->SPUTNIK_SPLATTERTHRESHOLD);
-				ptr->SPUTNIK_SPLATTERTHRESHOLD -= doSplatter;
-				
 				ptr->push = -100;
 
-				if (doSplatter > 1)
+				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
+				ptr->DAMAGE_HIT = 0;
+				SPLATTER_explode(20, ptr, 500, SPUTNIK_bmapSplatter, 5);
+				SPLATTER_splat(&ptr->x, vector(100.0/255.0, 67.0/255.0, 192.0/255.0));
+
+				if (ptr->HEALTH <= 0)
 				{
-					SPLATTER_explode(doSplatter, ptr, 500, SPUTNIK_bmapSplatter, 5);
-					if (doSplatter > 5)
-					{
-						SPLATTER_splat(&ptr->x, vector(100.0/255.0, 67.0/255.0, 192.0/255.0));
-					}
+					ptr->SPUTNIK_STATE = SPUTNIK_STATE_DIE;
+					ptr->SPUTNIK_ANIMSTATE = 0;
+					snd_play(sputnik_snd_death, 100, 0);
 				}
 			}
 			
@@ -190,37 +196,22 @@ void SPUTNIK_Update()
 				ptr->z = hit.z - ptr->min_z + SPUTNIK_FEET;
 		}
 		
-		if (ptr->HEALTH <= 0)
-		{
-			if ((ptr->SPUTNIK_STATE != SPUTNIK_STATE_DIE) && (ptr->SPUTNIK_STATE != SPUTNIK_STATE_DEAD))
-			{
-				ptr->SPUTNIK_STATE = SPUTNIK_STATE_DIE;
-				ptr->SPUTNIK_ANIMSTATE = 0;
-				snd_play(sputnik_snd_death, 100, 0);
-			}
-		}
 	}	
 }
 
-var SPUTNIK__turnToPlayer(ENTITY* ptr)
+void SPUTNIK__hitcheck(ENTITY* ptr)
 {
-	ANGLE vecAngle;
-	VECTOR vecTemp;
-	vec_set(&vecTemp, &player->x);
-	vec_sub(&vecTemp, &ptr->x);
-	vec_to_angle(&vecAngle, &vecTemp);
-
-	if (ang(ptr->pan) < vecAngle.pan - 5)
+	if (ptr->SPUTNIK_SPLATTERTHRESHOLD > 0)
 	{
-		ptr->pan = minv(vecAngle.pan, ang(ptr->pan + ptr->SPUTNIK_TURNSPEED * time_step));
-		return 0;
-	}	
-	if (ang(ptr->pan) > vecAngle.pan + 5)
-	{
-		ptr->pan = maxv(vecAngle.pan, ang(ptr->pan - ptr->SPUTNIK_TURNSPEED * time_step));
-		return 0;
-	}	
-	return 1;
+		ptr->SPUTNIK_SPLATTERTHRESHOLD -= time_step;
+		
+		if (ptr->SPUTNIK_SPLATTERTHRESHOLD <= 0)
+		{
+			ptr->SPUTNIK_SPLATTERTHRESHOLD = 0;
+			ptr->event = ENEMY_HIT_event;
+			vec_zero(ptr->DAMAGE_VEC);
+		}
+	}
 }
 
 void SPUTNIK__inactive(ENTITY* ptr)
@@ -243,7 +234,7 @@ void SPUTNIK__wait(ENTITY* ptr)
 	ent_animate(ptr, SPUTNIK_WAITANIM, ptr->SPUTNIK_ANIMSTATE, ANM_CYCLE);
 		
 	/* transitions */
-	if (SPUTNIK__turnToPlayer(ptr) != 0)
+	if(ANG_turnToPlayer(ptr, ptr->SPUTNIK_TURNSPEED, 5) != 0)
 	{
 		ptr->SPUTNIK_RUNSPEEDCUR = 0;
 		ptr->SPUTNIK_STATE = SPUTNIK_STATE_FOLLOW;
@@ -264,7 +255,7 @@ void SPUTNIK__wait(ENTITY* ptr)
 void SPUTNIK__follow(ENTITY* ptr)
 {
 	ptr->SPUTNIK_RUNSPEEDCUR = ptr->SPUTNIK_RUNSPEED; //minv(ptr->SPUTNIK_RUNSPEEDCUR + ptr->SPUTNIK_RUNSPEED*0.25*time_step, ptr->SPUTNIK_RUNSPEED);
-	SPUTNIK__turnToPlayer(ptr);
+	ANG_turnToPlayer(ptr, ptr->SPUTNIK_TURNSPEED, 5);
 	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
 	c_move(ptr, vector(ptr->SPUTNIK_RUNSPEEDCUR, 0, 0), nullvector, mode);
 	
