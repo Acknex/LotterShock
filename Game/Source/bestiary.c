@@ -4,6 +4,7 @@
 #include "mainmenu.h"
 #include "global.h"
 #include "framework.h"
+#include "music_player.h"
 
 #include <acknex.h>
 
@@ -202,6 +203,7 @@ void bestiary_update()
 void bestiary_close()
 {
     level_load(NULL);
+    music_start("Media/intro.mp3", 1, 0);
     camera->arc = 60;
     reset(bestiary_pan_back, SHOW);
     reset(bestiary_pan_prev, SHOW);

@@ -56,7 +56,7 @@ action door() {
 	my.DOOR_Z_START = my.z;
 	my.WAIT_TIME = 50;
     my.INTERACTIBLE = 1;
-	my.skin = my.DOOR_REQUIRED_KEY_ID + 1;
+	my.skin = (my.DOOR_REQUIRED_KEY_ID%10) + 1;
 	framework_setup(my, SUBSYSTEM_DOORS);
 }
 
@@ -74,7 +74,7 @@ void doors_update() {
 							ptr.DOOR_STATE = 1;
 							if(!ptr.DOOR_OPENED_ONCE != 1)
 							{
-								ent_playsound(ptr, snd_granted, 800);
+								snd_play(snd_granted, 100, 0);
 							}
 							ptr.DOOR_OPENED_ONCE = 1;
 						} 
@@ -82,7 +82,7 @@ void doors_update() {
 						{
 							if(ptr.DOOR_REQUIRED_KEY_ID >= 10 && story_enginesEnabled == 0)
 							{
-								ent_playsound(ptr, snd_denied_lockdown, 800);
+								ptr.DOOR_SND_HANDLE = snd_play(snd_denied_lockdown, 100, 0);
 							}
 							else
 							{	
