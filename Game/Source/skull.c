@@ -47,7 +47,7 @@ action Skull()
 	if(my->SKL_ANIMSPEED == 0) my->SKL_ANIMSPEED = 8;
 	if(my->SKL_ATTACKDIST == 0) my->SKL_ATTACKDIST = 300;
 	if(my->SKL_ACTIVEDIST == 0) my->SKL_ACTIVEDIST = 3000;
-	my->HEALTH = 200;
+	my->HEALTH = HEALTH_SKULL;
 	ENEMY_HIT_init(my);
 	vec_scale(&my->scale_x, 1.5);
 	set(my, SHADOW);

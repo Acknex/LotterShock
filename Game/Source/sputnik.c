@@ -71,7 +71,7 @@ action Sputnik()
 	if(my->SPUTNIK_ATTACKRANGE == 0) my->SPUTNIK_ATTACKRANGE = 300;
 	if(my->SPUTNIK_ACTIVEDIST == 0) my->SPUTNIK_ACTIVEDIST = 6000;
 	my->SPUTNIK_ANIMSTATEATK = 100;
-	my->HEALTH = 80;
+	my->HEALTH = HEALTH_SPUTNIK;
 	ENEMY_HIT_init(my);
 	vec_scale(&my->scale_x, 1.2);
 	set(my, SHADOW);

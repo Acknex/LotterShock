@@ -50,25 +50,25 @@ SOUND* sndTurretDestroyed = "turret_destroyed.wav";
 SOUND* sndTurretShot = "turret_shot.wav";
 
 
-action enemy_turret_rotccw()
+action turret_rotccw()
 {
 	TURRET__init();
 	my->TURRET_ROTMODE = TURRETTURNCCW;
 }
 
-action enemy_turret_rotcw()
+action turret_rotcw()
 {
 	TURRET__init();
 	my->TURRET_ROTMODE = TURRETTURNCW;
 }
 
-action enemy_turret_alternate()
+action turret_alternate()
 {
 	TURRET__init();
 	my->TURRET_ROTMODE = TURRETTURNALT;
 }
 
-action enemy_turret_aim()
+action turret_aim()
 {
 	TURRET__init();
 	my->TURRET_ROTMODE = TURRETTURNAIM;
@@ -78,19 +78,18 @@ void TURRET__init()
 {
    framework_setup(my, SUBSYSTEM_ENEMY_TURRET);
 	ENEMY_HIT_init(my);
-	my->HEALTH = 100;
+	my->HEALTH = HEALTH_TURRET;
 	my->DELAY_COUNTER = 0;
 	my->TURRET_STATE = TURRETSLEEP;
 	set(my, PASSABLE | POLYGON | FLAG1);
 	ent_animate(my, "closed", 0, 0);
-	vec_scale(&my->scale_x, 1.5);
 	my->material = matObject;
 }
 
 void TURRET_Init()
 {
 	//DEBUG
-	ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,10), enemy_turret_rotccw);
+	ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,10), turret_rotccw);
 }
 
 void TURRET_Update()
