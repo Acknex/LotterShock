@@ -72,7 +72,7 @@ void doors_update() {
 						{
                      		ent_playsound(ptr, snd_gate, 800);
 							ptr.DOOR_STATE = 1;
-							if(!ptr.DOOR_OPENED_ONCE != 1)
+							if(ptr.DOOR_OPENED_ONCE != 1)
 							{
 								snd_play(snd_granted, 100, 0);
 							}
