@@ -13,6 +13,8 @@
 SOUND * input_snd_cheat_unlocked = "snd_jingle.ogg";
 SOUND * input_snd_cheat_tap = "snd_button_tap.wav";
 
+VECTOR mickey_smoothed;
+
 bool input_down(int id)
 {
     return input[id].down;
@@ -317,11 +319,11 @@ void input_init()
     input_add_axis(INPUT_WEAPON_UP,  &mickey.z, 1.0, 0.0, false);
     input_add_axis(INPUT_WEAPON_DOWN,&mickey.z, 1.0, 0.0, false);
 
-    input_add_axis(INPUT_LOOK_HORIZONTAL, &mouse_force.x, 1.0, 0.0, false);
-    input_add_axis(INPUT_LOOK_VERTICAL,   &mouse_force.y, 1.0, 0.0, false);
+    input_add_axis(INPUT_LOOK_HORIZONTAL, &mickey_smoothed.x, 1.0/40.0, 0.0, false);
+    input_add_axis(INPUT_LOOK_VERTICAL,   &mickey_smoothed.y, -1.0/40.0, 0.0, false);
 
-    input_add_axis(INPUT_LOOK_HORIZONTAL, &input_states.rightStick.x, 1.0 / 128.0, 0.3, false);
-    input_add_axis(INPUT_LOOK_VERTICAL,   &input_states.rightStick.y, 1.0 / 128.0, 0.3, false);
+	input_add_axis(INPUT_LOOK_HORIZONTAL, &input_states.rightStick.x, 1.0 / 255.0, 0.3, true);	
+	input_add_axis(INPUT_LOOK_VERTICAL,   &input_states.rightStick.y, 1.0 / 255.0, 0.3, true);
 
     input_add_axis(INPUT_LEFT,  &input_states.leftStick.x, 1.0 / 255.0, 0.3, false);
     input_add_axis(INPUT_RIGHT, &input_states.leftStick.x, 1.0 / 255.0, 0.3, false);
@@ -340,8 +342,8 @@ void input_init()
     input[INPUT_WEAPON_DOWN].positiveValue = false;
 
     // TODO: Controller + Mouse Sensitivity
-    input[INPUT_LOOK_HORIZONTAL].sensitivity = settings.input_sensitivity*0.5;
-    input[INPUT_LOOK_VERTICAL].sensitivity   = settings.input_sensitivity*0.5;
+    input[INPUT_LOOK_HORIZONTAL].sensitivity = settings.input_sensitivity;
+    input[INPUT_LOOK_VERTICAL].sensitivity   = settings.input_sensitivity;
 
     int slot = ackXInputGetGamepadNum();
     if(slot >= 0)
@@ -357,6 +359,11 @@ void input_update()
 {
     int i,k;
 
+	mickey_smoothed.x += (mickey.x-mickey_smoothed.x)*0.75;
+	mickey_smoothed.y += (mickey.y-mickey_smoothed.y)*0.75;
+	if(!mickey.x && abs(mickey_smoothed.x) < 0.01) mickey_smoothed.x = 0;
+	if(!mickey.y && abs(mickey_smoothed.y) < 0.01) mickey_smoothed.y = 0;
+  
     if(ackXInputGamepadUse)
     {
         ackXInputGetState3();
