@@ -14,7 +14,7 @@ void keypad_update() {
 		if (mouse_ent == ptr) {
 			ptr.skin = 2;
 			if (input_hit(INPUT_USE)) {
-				ent_playsound(ptr, snd_beep, 100);
+				ent_playsound(ptr, snd_beep, 800);
 				
 				if (ptr.KEYPAD_ID != current_keypad_id) {
 					str_cpy(keypad_input, "");
@@ -31,10 +31,10 @@ void keypad_update() {
 				
 				if (ptr.KEYPAD_KEY_ID == 11) {
 					if (str_cmp(keypad_input, str_for_num(NULL, ptr.KEYPAD_EXPECTED_KEY)) == 1) {
-						ent_playsound(ptr, snd_keypad_yes, 100);
+						ent_playsound(ptr, snd_keypad_yes, 800);
 						keys[ptr.KEYPAD_KEY_ID_TO_ENABLE] = 1;
 					} else {
-						ent_playsound(ptr, snd_keypad_no, 100);
+						ent_playsound(ptr, snd_keypad_no, 800);
 					}
 					str_cpy(keypad_input, "");
 				}
@@ -47,7 +47,7 @@ void keypad_update() {
 }
 
 
-// skill1: KEY_ID
+// skill1: KEY_ID (0: always opens, 1: red key, 2: yellow key, 3: green key, 4: blue key, +10: closed during emergency power lockdown)
 // skill21: DOOR_STATE (0 = NONE, 1 = OPENING, 2 = CLOSING, 3 = WAITING)
 // skill22: WAIT_TIME
 // skill23: DOOR_Z_START
@@ -56,7 +56,7 @@ action door() {
 	my.DOOR_Z_START = my.z;
 	my.WAIT_TIME = 50;
     my.INTERACTIBLE = 1;
-	my.skin = my.DOOR_REQUIRED_KEY_ID + 1;
+	my.skin = (my.DOOR_REQUIRED_KEY_ID%10) + 1;
 	framework_setup(my, SUBSYSTEM_DOORS);
 }
 
@@ -67,16 +67,40 @@ void doors_update() {
 		switch(ptr.DOOR_STATE) {
 			case 0:
 				if (mouse_ent == ptr) {
-					if (input_hit(INPUT_USE)) {
-						
-						if (keys[ptr.DOOR_REQUIRED_KEY_ID] == 1 || (ptr.DOOR_REQUIRED_KEY_ID == 42 && story_enginesEnabled == 1))  
+					if (input_hit(INPUT_USE)) {					
+						if (keys[ptr.DOOR_REQUIRED_KEY_ID%10] == 1 && (ptr.DOOR_REQUIRED_KEY_ID < 10 || story_enginesEnabled == 1))  
 						{
-                            ent_playsound(ptr, snd_gate, 800);
+                     ent_playsound(ptr, snd_gate, 800);
 							ptr.DOOR_STATE = 1;
+							if(!ptr.DOOR_OPENED_ONCE != 1)
+							{
+								snd_play(snd_granted, 100, 0);
+							}
+							ptr.DOOR_OPENED_ONCE = 1;
 						} 
 						else 
 						{
-                            ent_playsound(ptr, snd_keypad_no, 800);
+							if(ptr.DOOR_REQUIRED_KEY_ID >= 10 && story_enginesEnabled == 0)
+							{
+								ptr.DOOR_SND_HANDLE = snd_play(snd_denied_lockdown, 100, 0);
+							}
+							else
+							{	
+								if(ptr.DOOR_SND_HANDLE != 0 && snd_playing(ptr.DOOR_SND_HANDLE))
+								{
+									snd_stop(ptr.DOOR_SND_HANDLE);
+									ptr.DOOR_SND_HANDLE = 0;
+								}
+								switch(ptr.DOOR_REQUIRED_KEY_ID%10)
+								{
+									case 1: ptr.DOOR_SND_HANDLE = snd_play(snd_denied_green, 100, 0); break;
+									case 2: ptr.DOOR_SND_HANDLE = snd_play(snd_denied_red, 100, 0); break;
+									case 3: ptr.DOOR_SND_HANDLE = snd_play(snd_denied_yellow, 100, 0); break;
+									case 4: ptr.DOOR_SND_HANDLE = snd_play(snd_denied_blue, 100, 0); break;
+									default: ptr.DOOR_SND_HANDLE = snd_play(snd_denied, 100, 0); break;
+								}
+							}
+                  	
 						}
 					}
 				}

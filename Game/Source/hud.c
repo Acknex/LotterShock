@@ -28,7 +28,7 @@ PANEL *HUD_background =
 {
 	bmap = "interfache_bg.png";
 	flags = TRANSLUCENT;
-	layer = 1;
+	layer = 2;
 }
 
 PANEL *HUD_gunframe =
@@ -102,7 +102,7 @@ PANEL* HUD_Head =
 	//bmap = "lotterindahouse.png";
 	window(0,0, 0,0, hud_lotterhead_bmap, NULL, NULL);
 	flags = TRANSLUCENT | LIGHT;
-	layer = 3;
+	layer = 1;
 	scale_x = 1.1;
 	scale_y = 1.1;
 }

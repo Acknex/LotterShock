@@ -102,7 +102,7 @@ void ESELSLERCHE_Update()
 			ptr->EL_ANIMSTATELIM = clamp(ptr->EL_ANIMSTATE, 0, 100);
 			ptr->EL_ANIMSTATE = cycle(ptr->EL_ANIMSTATE, 0, 100);
 
-			if (ptr->DAMAGE_HIT > 0)
+			if (ptr->DAMAGE_HIT > 0 && ptr->EL_STATE != EL_STATE_EXPLODE)
 			{
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;

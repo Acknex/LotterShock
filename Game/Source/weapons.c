@@ -371,7 +371,7 @@ void weapons_secondary_flame_effect_event(PARTICLE *p)
 	VECTOR tmp;
 	vec_set(&tmp, p->skill_x);
 	vec_add(&tmp, vector(random(r)-o,random(r)-o,random(r)-o));
-	vec_lerp(p->skill_x, p->x, &tmp, 0.6);
+	vec_lerp(p->skill_x, p->x, &tmp, 0.1);
 	vec_set(p->x, p->skill_x);
 	
 	
