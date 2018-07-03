@@ -19,6 +19,7 @@
 #define SPUTNIK_RUNSPEEDCUR skill24
 #define SPUTNIK_SOUNDHANDLE skill25
 #define SPUTNIK_DIDATTACK skill26
+#define SPUTNIK_SPLATTERTHRESHOLD skill27
 
 
 #define SPUTNIK_WALKANIM "walk"
@@ -101,6 +102,8 @@ void SPUTNIK_Update()
 	{
 		if (player != NULL)
     	{
+			ptr->SPUTNIK_SPLATTERTHRESHOLD = minv(ptr->SPUTNIK_SPLATTERTHRESHOLD + time_step, 10);
+			
     		//DEBUG_VAR(1, 240);
 			if (ptr->DAMAGE_HIT > 0)
 			{
@@ -117,9 +120,20 @@ void SPUTNIK_Update()
 					}
 				}
 				*/
+				
+				var doSplatter = integer(ptr->SPUTNIK_SPLATTERTHRESHOLD);
+				ptr->SPUTNIK_SPLATTERTHRESHOLD -= doSplatter;
+				
 				ptr->push = -100;
-				SPLATTER_splat(&ptr->x, vector(100.0/255.0, 67.0/255.0, 192.0/255.0));
-				SPLATTER_explode(10, ptr, 500, SPUTNIK_bmapSplatter, 5);
+
+				if (doSplatter > 1)
+				{
+					SPLATTER_explode(doSplatter, ptr, 500, SPUTNIK_bmapSplatter, 5);
+					if (doSplatter > 5)
+					{
+						SPLATTER_splat(&ptr->x, vector(100.0/255.0, 67.0/255.0, 192.0/255.0));
+					}
+				}
 			}
 			
 			if (ptr->SPUTNIK_SOUNDHANDLE && (snd_playing(ptr->SPUTNIK_SOUNDHANDLE) == 0))
@@ -318,7 +332,7 @@ void sputnik_spawn_startup()
 {
 	
 	wait(-10);
-	while(0)
+	while(1)
 	{
 		ENTITY* ptr = ent_create("sputnik.mdl", vector(5920 - 500 + random(1000), -6050 - 500 + random(1000), 250), Sputnik);
 		wait(-10);
