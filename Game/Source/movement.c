@@ -44,6 +44,7 @@ var playerHasEntMorphBall = 1;
 var playerEntMorphBallActive = 0;
 var playerEntMorphBallPerc = 0;
 var playerEntMorphBallCameraPan = 0;
+var playerJumpNotOk = 0;
 
 var playerStepDelay = PLAYER_STEP_DELAY_TIME;
 
@@ -599,15 +600,22 @@ void movement_update()
 	player.max_x += 8;
 	player.max_y += 8;
 	
+		playerJumpNotOk = maxv(playerJumpNotOk-time_step,0);
 	if(!trace_hit) target.z = -99999;
 	else
 	{
+		if(normal.z < 0.5)
+		{
+			playerJumpNotOk = 2;
+			player.PLAYER_SPEED_X += normal.x*20*time_step;
+			player.PLAYER_SPEED_Y += normal.y*20*time_step;
+		}
 		if(playerSlideCounter > 0) effect(p_playerSlide_smoke,2,target,normal);
 	}
 	var heightWanted = target.z+playerHeightAboveGround;
 	var distToGround = player.z-heightWanted;
 	
-	if(distToGround > (1+2*player.PLAYER_GROUND_CONTACT)*time_step || player.PLAYER_SPEED_Z > 0)
+	if(distToGround > (1+2*player.PLAYER_GROUND_CONTACT)*time_step || player.PLAYER_SPEED_Z > 0 || playerJumpNotOk)
 	{
 		player.PLAYER_GROUND_CONTACT = 0;
 		playerJumpHangtime = maxv(playerJumpHangtime-time_step,0);
@@ -623,9 +631,9 @@ void movement_update()
 		player.PLAYER_SPEED_Z = maxv(player.PLAYER_SPEED_Z-fac*24*playerSpeedFac*time_step,-240);
 		c_move(player,nullvector,vector(0,0,player.PLAYER_SPEED_Z*time_step),PLAYER_C_MOVE_MODE_DEFAULT);
 		if(HIT_TARGET && normal.z < 0 && target.z > player.z) player.PLAYER_SPEED_Z = minv(player.PLAYER_SPEED_Z,0);
-		player.z = maxv(player.z,heightWanted);
+		if(!playerJumpNotOk) player.z = maxv(player.z,heightWanted);
 
-		if(input[INPUT_JUMP].justPressed && playerExtraJumpsLeft > 0)
+		if(input[INPUT_JUMP].justPressed && playerExtraJumpsLeft > 0 && !playerJumpNotOk)
 		{
 			playerExtraJumpsLeft--;
 			playerJumpHangtime = 6;
@@ -639,7 +647,7 @@ void movement_update()
 		player.z += (heightWanted-player.z)*0.5*time_step;
 		player.PLAYER_SPEED_Z = 0;
 		player.PLAYER_GROUND_CONTACT = 1;
-		if(input[INPUT_JUMP].justPressed)
+		if(input[INPUT_JUMP].justPressed && !playerJumpNotOk)
 		{
 			player.PLAYER_GROUND_CONTACT = 0;
 			playerJumpHangtime = 6;
