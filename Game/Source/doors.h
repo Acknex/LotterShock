@@ -42,7 +42,7 @@ SOUND* snd_granted = "access_granted.wav";
 STRING* keypad_input = "";
 int current_keypad_id = 0;
 
-int keys[KEYS_MAX] = {0, 0, 0, 0, 0};
+int keys[KEYS_MAX] = {1, 0, 0, 0, 0};
 
 //keycards are in items.h
 
