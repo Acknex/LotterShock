@@ -1,6 +1,7 @@
 // skill1: KEY_ID
 // skill2: KEYPAD_ID
 // skill3: EXPECTED_KEY
+// skill4: ENABLE_KEY
 action keypad() {	
 	framework_setup(my, SUBSYSTEM_KEYPADS);
 	set(me, PASSABLE);
