@@ -317,14 +317,11 @@ void input_init()
     input_add_axis(INPUT_WEAPON_UP,  &mickey.z, 1.0, 0.0, false);
     input_add_axis(INPUT_WEAPON_DOWN,&mickey.z, 1.0, 0.0, false);
 
-    // input_add_axis(INPUT_LOOK_HORIZONTAL, &mouse_force.x, 1.0, 0.0, true);
-    // input_add_axis(INPUT_LOOK_VERTICAL,   &mouse_force.y, 1.0, 0.0, true);
+    input_add_axis(INPUT_LOOK_HORIZONTAL, &mouse_force.x, 1.0, 0.0, false);
+    input_add_axis(INPUT_LOOK_VERTICAL,   &mouse_force.y, 1.0, 0.0, false);
 
-    input_add_axis(INPUT_LOOK_HORIZONTAL, &mickey.x,  1.0 / 40.0, 0.0, false);
-    input_add_axis(INPUT_LOOK_VERTICAL,   &mickey.y, -1.0 / 40.0, 0.0, false);
-
-    input_add_axis(INPUT_LOOK_HORIZONTAL, &input_states.rightStick.x, 1.0 / 255.0, 0.3, true);
-    input_add_axis(INPUT_LOOK_VERTICAL,   &input_states.rightStick.y, 1.0 / 255.0, 0.3, true);
+    input_add_axis(INPUT_LOOK_HORIZONTAL, &input_states.rightStick.x, 1.0 / 128.0, 0.3, false);
+    input_add_axis(INPUT_LOOK_VERTICAL,   &input_states.rightStick.y, 1.0 / 128.0, 0.3, false);
 
     input_add_axis(INPUT_LEFT,  &input_states.leftStick.x, 1.0 / 255.0, 0.3, false);
     input_add_axis(INPUT_RIGHT, &input_states.leftStick.x, 1.0 / 255.0, 0.3, false);
@@ -343,8 +340,8 @@ void input_init()
     input[INPUT_WEAPON_DOWN].positiveValue = false;
 
     // TODO: Controller + Mouse Sensitivity
-    input[INPUT_LOOK_HORIZONTAL].sensitivity = settings.input_sensitivity;
-    input[INPUT_LOOK_VERTICAL].sensitivity   = settings.input_sensitivity;
+    input[INPUT_LOOK_HORIZONTAL].sensitivity = settings.input_sensitivity*0.5;
+    input[INPUT_LOOK_VERTICAL].sensitivity   = settings.input_sensitivity*0.5;
 
     int slot = ackXInputGetGamepadNum();
     if(slot >= 0)
@@ -409,7 +406,7 @@ void input_update()
                 var val = (*(pinput->axes[k].value)) * pinput->axes[k].scale;
                 var ded = pinput->axes[k].deadZone;
 
-                val = sign(val) * clamp(maxv(0, (abs(val) - ded)) / (1.0 - ded), 0.0, 1.0);
+                if(abs(val) < ded) val = 0;
 
                 if(pinput->axes[k].time_sensitive)
                     pinput->value += val * time_step;
