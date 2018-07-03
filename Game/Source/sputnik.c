@@ -110,7 +110,7 @@ void SPUTNIK_Update()
 				SPUTNIK__hitcheck(ptr);
 			}
 			
-    		DEBUG_VAR(ptr->DAMAGE_HIT, 240);
+    		//DEBUG_VAR(ptr->DAMAGE_HIT, 240);
 			if (ptr->DAMAGE_HIT > 0)
 			{
 				ptr->event = NULL;
