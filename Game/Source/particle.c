@@ -53,3 +53,26 @@ void PARTICLE__laser_fade(PARTICLE* p)
 		vec_lerp(&p->vel_x,&p->vel_x,&ent->EYE_LASERDIST,0.5);
 	p->alpha = maxv(p->alpha - 5* time_step, 0);
 }
+
+void smoke_fade_p(PARTICLE* p)
+{
+	p.alpha -= p.skill_a*time_step;
+	if (p.alpha <= 0) p.lifespan = 0;
+	
+	p.size = minv(p.skill_b, p.size+time_step*3);
+}
+
+BMAP* bmp_smoke = "rauch2.tga";
+
+void PARTICLE_smoke(PARTICLE* p)
+{
+	p.skill_a = 3;
+	p.bmap = bmp_smoke;
+	p.lifespan = 1200+random(600);
+	p.skill_b = 100 + random(50);
+	p.size = 20;
+	p.alpha = 80;
+	vec_scale(p.vel_x, 0.4);
+	set(p, TRANSLUCENT | MOVE);
+	p.event = smoke_fade_p;
+}

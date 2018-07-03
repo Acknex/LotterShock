@@ -4,15 +4,18 @@
 #include "scan.h"
 #include "enemy_hit.h"
 #include "ang.h"
+#include "particle.h"
 
 #define SKL_RUNSPEED skill1
 #define SKL_TURNSPEED skill2
+#define SKL_ANIMSPEED skill3
 #define SKL_ATTACKDIST skill4
 #define SKL_ACTIVEDIST skill5
 
 #define SKL_COUNTER skill22
 #define SKL_STATE skill23
 #define SKL_RUNSPEEDCUR skill24
+#define SKL_ANIMSTATE skill25
 #define SKL_COUNTER2 skill28
 #define SKL_HITDIR skill30
 #define SK_LASTPOS skill32
@@ -20,6 +23,7 @@
 //#define SK_LASTPOS skill34
 #define SKL_ZOFFSET skill35
 
+#define SKL_RUNANIM "stand"
 
 #define SKL_STATE_INACTIVE 0
 #define SKL_STATE_WAIT 1
@@ -40,9 +44,10 @@ action Skull()
 	//TODO: useful default values
 	if(my->SKL_RUNSPEED == 0) my->SKL_RUNSPEED = 20;
 	if(my->SKL_TURNSPEED == 0) my->SKL_TURNSPEED = 40;
+	if(my->SKL_ANIMSPEED == 0) my->SKL_ANIMSPEED = 8;
 	if(my->SKL_ATTACKDIST == 0) my->SKL_ATTACKDIST = 300;
 	if(my->SKL_ACTIVEDIST == 0) my->SKL_ACTIVEDIST = 3000;
-	my->HEALTH = 90;
+	my->HEALTH = HEALTH_SKULL;
 	ENEMY_HIT_init(my);
 	vec_scale(&my->scale_x, 1.5);
 	set(my, SHADOW);
@@ -55,10 +60,9 @@ void SKULL_GlobalInit()
 {
 }
 
-void spawnskull();
 void SKULL_Init()
 {
-	spawnskull();
+	ENTITY* ptr = ent_create("whiskas.mdl", vector(5800,-6050,250), Skull); // biodome
 }
 
 void SKULL_Update()
@@ -68,6 +72,9 @@ void SKULL_Update()
 	{
 		if (player != NULL)
     	{
+			ptr->SKL_ANIMSTATE += ptr->SKL_ANIMSPEED * time_step;
+			ptr->SKL_ANIMSTATE = cycle(ptr->SKL_ANIMSTATE, 0, 100);
+			
     		//DEBUG_VAR(ptr->SKL_STATE, 50);
 			if (ptr->DAMAGE_HIT > 0)
 			{
@@ -151,7 +158,14 @@ void SKULL_Update()
 					velocity.x = -20 - random(20);
 					velocity.z = 20 + random(30);
 					vec_rotate(velocity, ptr->pan);
-					effect(SKULL__fireEffect, 1, contact.x, velocity);
+					if (ptr->SKL_STATE == SKL_STATE_HIT)
+					{
+						effect(SKULL__smokeEffect, 6*time_step, contact.x, velocity);
+					}
+					else
+					{
+						effect(SKULL__fireEffect, 6*time_step, contact.x, velocity);
+					}
 				}
 			}
 		}
@@ -205,6 +219,7 @@ void SKULL__wait(ENTITY* ptr)
 
 void SKULL__run(ENTITY* ptr)
 {
+	ent_animate(ptr, SKL_RUNANIM, ptr->SKL_ANIMSTATE, ANM_CYCLE);
 	ptr->SKL_RUNSPEEDCUR = minv(ptr->SKL_RUNSPEEDCUR + 6*time_step, ptr->SKL_RUNSPEED);
 	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
 	c_move(ptr, vector(ptr->SKL_RUNSPEEDCUR, 0, 0), nullvector, mode);
@@ -231,6 +246,7 @@ void SKULL__run(ENTITY* ptr)
 
 void SKULL__attack(ENTITY* ptr)
 {
+	ent_animate(ptr, SKL_RUNANIM, 0, 0);
 	ptr->SKL_COUNTER += time_step/16;
 	if(ptr->SKL_COUNTER > 0.05)
 	{
@@ -274,6 +290,9 @@ void SKULL__die(ENTITY* ptr)
 	ptr->SKL_COUNTER = minv(ptr->SKL_COUNTER + 4*time_step, 100);
 	var animState = (100 - ptr->SKL_COUNTER ) / 100;	
 	vec_set(&ptr->scale_x, vector(animState, animState, animState));
+	VECTOR* pos = vector(ptr->x+random(10)-5, ptr->y+random(10)-5, ptr->z+random(10)-5);
+	VECTOR* vel = vector(-5-random(10), -2-random(4), 2+random(4));
+	effect(PARTICLE_smoke, 6*time_step, pos, vel);
 
 	/* transitions */
 	if(animState <= 0)
@@ -286,11 +305,12 @@ void SKULL__die(ENTITY* ptr)
 
 void SKULL__hit(ENTITY* ptr)
 {
+	ent_animate(ptr, SKL_RUNANIM, 100, 0);
 	ptr->SKL_COUNTER = minv(ptr->SKL_COUNTER + 4*time_step, 40);
 	
 	VECTOR dir;
 	vec_set(&dir, ptr->DAMAGE_VEC);
-	vec_scale(&dir, 10*time_step);
+	vec_scale(&dir, 5*time_step);
 	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
 	c_move(ptr, nullvector, dir, mode);
 
@@ -306,7 +326,7 @@ void SKULL__hit(ENTITY* ptr)
 		reset(ptr, TRANSLUCENT);
 		ptr->SKL_STATE = SKL_STATE_WAIT;			
 		ptr->event = ENEMY_HIT_event;
-        vec_zero(ptr->DAMAGE_VEC);
+		vec_zero(ptr->DAMAGE_VEC);
 		ptr->SKL_COUNTER = 0;
 	}
 	else
@@ -351,6 +371,21 @@ void SKULL__fireEffect(PARTICLE *p)
 	p.event = SKULL__fireParticle;
 }
 
+void SKULL__smokeEffect(PARTICLE *p)
+{
+	set(p, MOVE | TRANSLUCENT);
+	p.red = 70;
+	p.green = 70;
+	p.blue = 70;
+	p.alpha = 100;
+	p.lifespan = 100;
+	p.size = 50;
+	p.vel_z = 20 + random(30);
+	p.gravity = -20.0;
+	p.skill_a = 20.0; // fade factor
+	p.event = SKULL__fireParticle;
+}
+
 void SKULL__shootParticle(PARTICLE *p)
 {
 	p.size += 50*time_step;
@@ -369,18 +404,4 @@ void SKULL__shootEffect(PARTICLE *p)
 	p.size = 100;
 	p.skill_a = 20.0; // fade factor
 	p.event = SKULL__fireParticle;
-}
-
-
-void spawnskull()
-{
-	
-	wait(-1);
-	//while(1)
-	{
-		ENTITY* ptr = ent_create("whiskas.mdl", vector(5800,-6050,250), Skull); // biodome
-		//ENTITY* ptr = ent_create("whiskas.mdl", vector(1288,0,250), Skull);
-		wait(-30);
-	}
-	
 }

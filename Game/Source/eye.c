@@ -48,6 +48,7 @@ action Eye()
 	if(my->EYE_PATROLSPEED == 0) my->EYE_PATROLSPEED = 15;
 	if(my->EYE_ACTIVEDIST == 0) my->EYE_ACTIVEDIST = 4000;
 	if(my->EYE_ATTACKDIST == 0) my->EYE_ATTACKDIST = 2000;
+	my->HEALTH = HEALTH_EYE;
 	vec_scale(me.scale_x, 10);
 //	my->EYE_PATHID = 2;//temp
 	my->material = matObject;

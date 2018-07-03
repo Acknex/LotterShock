@@ -3,6 +3,7 @@
 
 void PARTICLE_explode(var count, VECTOR* pos);
 void PARTICLE_laser(VECTOR* pos, ENTITY* ent);
+void PARTICLE_smoke(PARTICLE* p);
 
 /* local */
 void PARTICLE__explode_fade(PARTICLE* p);

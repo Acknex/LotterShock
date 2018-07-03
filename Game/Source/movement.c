@@ -386,9 +386,9 @@ void movement_update()
     if(movement_cheat_clipmode)
 #endif
 	{
-        camera.pan += -input_axis(INPUT_LOOK_HORIZONTAL)*input_axis_fac*time_step;
+        camera.pan += -input_axis(INPUT_LOOK_HORIZONTAL);
 		camera.pan %= 360;
-        camera.tilt = clamp(camera.tilt+input_axis(INPUT_LOOK_VERTICAL)*input_axis_fac*time_step,-85,85);
+        camera.tilt = clamp(camera.tilt+input_axis(INPUT_LOOK_VERTICAL),-85,85);
 		player.pan = camera.pan;
 		VECTOR temp;
 		vec_set(temp,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
@@ -455,8 +455,8 @@ void movement_update()
 	
 	// rotation
 	
-	var turnSpeedX = input_axis(INPUT_LOOK_HORIZONTAL)*input_axis_fac;
-	var turnSpeedY = input_axis(INPUT_LOOK_VERTICAL)*input_axis_fac;
+	var turnSpeedX = input_axis(INPUT_LOOK_HORIZONTAL);
+	var turnSpeedY = input_axis(INPUT_LOOK_VERTICAL);
 	/*if(mouse_right)
 	{
 		turnSpeedX = mouse_force.x*10;
@@ -464,10 +464,10 @@ void movement_update()
 	}*/
 	vec_set(camera.pan,playerAngle);
 	VECTOR temp;
-    if(playerSlideCounter > 0) camera.pan = clamp(camera.pan-turnSpeedX*time_step,playerSlidePan-90,playerSlidePan+90);
+    if(playerSlideCounter > 0) camera.pan = clamp(camera.pan-turnSpeedX,playerSlidePan-90,playerSlidePan+90);
 	else
 	{
-        camera.pan += -turnSpeedX*input_axis_fac*time_step;
+        camera.pan += -turnSpeedX;
 		camera.pan %= 360;
 	}
 	/*if(playerSlideCounter > 0)
@@ -476,7 +476,7 @@ void movement_update()
 		camera.pan = ;
 	}*/
 	
-    camera.tilt = clamp(camera.tilt+turnSpeedY*input_axis_fac*time_step,-85,85);
+    camera.tilt = clamp(camera.tilt+turnSpeedY,-85,85);
 	player.pan = camera.pan;
 	move_min_z = 0.75;
 	disable_z_glide = 1;

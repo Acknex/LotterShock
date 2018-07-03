@@ -63,7 +63,7 @@ action Eselslerche()
 	if(my->EL_ANIMSPEED == 0) my->EL_ANIMSPEED = 5;
 	if(my->EL_EXPLODEDIST == 0) my->EL_EXPLODEDIST = 200;
 	if(my->EL_ACTIVEDIST == 0) my->EL_ACTIVEDIST = 3000;
-	my->HEALTH = 50;
+	my->HEALTH = HEALTH_LERCHE;
 	ENEMY_HIT_init(my);
 	vec_scale(&my->scale_x, 2);
 	set(my, SHADOW);
@@ -102,7 +102,7 @@ void ESELSLERCHE_Update()
 			ptr->EL_ANIMSTATELIM = clamp(ptr->EL_ANIMSTATE, 0, 100);
 			ptr->EL_ANIMSTATE = cycle(ptr->EL_ANIMSTATE, 0, 100);
 
-			if (ptr->DAMAGE_HIT > 0 && ptr->EL_STATE != EL_STATE_EXPLODE)
+			if (ptr->DAMAGE_HIT > 0)
 			{
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
@@ -226,9 +226,16 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	if (SCAN_IsPlayerInSight(ptr, ptr->EL_EXPLODEDIST, 360))
 	{
 		ptr->EL_STATE = EL_STATE_EXPLODE;
-		playerAddHealth(-30-random(15));
+		set(ptr, PASSABLE|INVISIBLE);
+		me = ptr;
+		var dist = c_trace(&ptr->x, &player->x, IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
+		if (HIT_TARGET && you == player)
+		{
+			playerAddHealth(-30-random(15));
+		}
 		snd_play(eselslerche_snd_explo, 100, 0);
 		set(ptr, PASSABLE);
+		ptr->event = NULL;
 	}
 	else if (
 		//!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90) 
@@ -263,9 +270,6 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 	/* transitions */
 	if(ptr->EL_EXPLODESTATE >= 2.5)
 	{
-		me = ptr;
-		var dist = c_trace(&ptr->x, &player->x, IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
-		set(ptr, PASSABLE|INVISIBLE);
 		var i;
 		for ( i = 0; i < 5; i++)
 		{
@@ -284,6 +288,7 @@ void ESELSLERCHE__die(ENTITY* ptr)
 	var animState;
 	animState = clamp(ptr->EL_ANIMSTATE, 0, 35);
 	ent_animate(ptr, EL_DIEANIM, ptr->EL_ANIMSTATE, 0);
+
 	/* transitions */
 	if(animState >= 35)
 	{
@@ -326,7 +331,7 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 		ptr->EL_RAMPAGE = 1;
 		ptr->event = ENEMY_HIT_event;
 		ptr->EL_ANIMSTATE = 0;
-        vec_zero(ptr->DAMAGE_VEC);
+		vec_zero(ptr->DAMAGE_VEC);
 	}
 	else
 	{

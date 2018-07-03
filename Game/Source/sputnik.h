@@ -7,11 +7,11 @@ void SPUTNIK_Update();
 void SPUTNIK_Destroy();
 
 // local
-var SPUTNIK__turnToPlayer(ENTITY* ptr);
 void SPUTNIK__inactive(ENTITY* ptr);
 void SPUTNIK__wait(ENTITY* ptr);
 void SPUTNIK__follow(ENTITY* ptr);
 void SPUTNIK__die(ENTITY* ptr);
+void SPUTNIK__hitcheck(ENTITY* ptr);
 
 
 //SPUTNIK_STATE_INACTIVE 0

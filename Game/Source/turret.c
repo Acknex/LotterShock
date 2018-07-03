@@ -15,6 +15,7 @@
 #define TURRET_TOGGLE skill26
 #define TURRET_ROTMODE skill27
 #define TURRET_ROTTIMER skill28
+#define TURRET_HITLOCKCNT skill29
 
 #define TURRETOPEN 0
 #define TURRETCLOSE 1
@@ -35,6 +36,7 @@
 
 void TURRET__init();
 void TURRET__shoot(ENTITY* ptr);
+void TURRET__hitcheck(ENTITY* ptr);
 void TURRET__turnOn(ENTITY* ptr);
 void TURRET__turnOff(ENTITY* ptr);
 void TURRET__active(ENTITY* ptr);
@@ -48,25 +50,25 @@ SOUND* sndTurretDestroyed = "turret_destroyed.wav";
 SOUND* sndTurretShot = "turret_shot.wav";
 
 
-action enemy_turret_rotccw()
+action turret_rotccw()
 {
 	TURRET__init();
 	my->TURRET_ROTMODE = TURRETTURNCCW;
 }
 
-action enemy_turret_rotcw()
+action turret_rotcw()
 {
 	TURRET__init();
 	my->TURRET_ROTMODE = TURRETTURNCW;
 }
 
-action enemy_turret_alternate()
+action turret_alternate()
 {
 	TURRET__init();
 	my->TURRET_ROTMODE = TURRETTURNALT;
 }
 
-action enemy_turret_aim()
+action turret_aim()
 {
 	TURRET__init();
 	my->TURRET_ROTMODE = TURRETTURNAIM;
@@ -76,19 +78,18 @@ void TURRET__init()
 {
    framework_setup(my, SUBSYSTEM_ENEMY_TURRET);
 	ENEMY_HIT_init(my);
-	my->HEALTH = 100;
+	my->HEALTH = HEALTH_TURRET;
 	my->DELAY_COUNTER = 0;
 	my->TURRET_STATE = TURRETSLEEP;
 	set(my, PASSABLE | POLYGON | FLAG1);
 	ent_animate(my, "closed", 0, 0);
-	vec_scale(&my->scale_x, 1.5);
 	my->material = matObject;
 }
 
 void TURRET_Init()
 {
 	//DEBUG
-	ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,10), enemy_turret_rotccw);
+	ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,10), turret_rotccw);
 }
 
 void TURRET_Update()
@@ -99,14 +100,21 @@ void TURRET_Update()
 		if (player != NULL)
     	{
 
+			if (ptr->HEALTH > 0)
+			{
+				TURRET__hitcheck(ptr);
+			}
+			
 			if (ptr->DAMAGE_HIT > 0)
 			{
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
-				SPLATTER_splat(&ptr->x, vector(1.0, 1.0, 0.0));				
+				SPLATTER_splat(&ptr->x, vector(1.0, 1.0, 0.0));
+				ptr->TURRET_HITLOCKCNT = 7;
+				ptr->event = NULL;
+				
 				if (ptr->HEALTH <= 0)
 				{
-					ptr->event = NULL;
 					ptr->TURRET_STATE = TURRETDIE;
 					ptr.skill44 = floatv(0);
 					snd_play(sndTurretDestroyed, 100, 0);
@@ -144,6 +152,21 @@ void TURRET_Update()
 				default:
 					break;
 			}
+		}
+	}
+}
+
+void TURRET__hitcheck(ENTITY* ptr)
+{
+	if (ptr->TURRET_HITLOCKCNT > 0)
+	{
+		ptr->TURRET_HITLOCKCNT -= time_step;
+		
+		if (ptr->TURRET_HITLOCKCNT <= 0)
+		{
+			ptr->TURRET_HITLOCKCNT = 0;
+			ptr->event = ENEMY_HIT_event;
+			vec_zero(ptr->DAMAGE_VEC);
 		}
 	}
 }
