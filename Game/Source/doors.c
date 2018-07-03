@@ -14,7 +14,7 @@ void keypad_update() {
 		if (mouse_ent == ptr) {
 			ptr.skin = 2;
 			if (input_hit(INPUT_USE)) {
-				ent_playsound(ptr, snd_beep, 100);
+				ent_playsound(ptr, snd_beep, 800);
 				
 				if (ptr.KEYPAD_ID != current_keypad_id) {
 					str_cpy(keypad_input, "");
@@ -31,10 +31,10 @@ void keypad_update() {
 				
 				if (ptr.KEYPAD_KEY_ID == 11) {
 					if (str_cmp(keypad_input, str_for_num(NULL, ptr.KEYPAD_EXPECTED_KEY)) == 1) {
-						ent_playsound(ptr, snd_keypad_yes, 100);
+						ent_playsound(ptr, snd_keypad_yes, 800);
 						keys[ptr.KEYPAD_KEY_ID_TO_ENABLE] = 1;
 					} else {
-						ent_playsound(ptr, snd_keypad_no, 100);
+						ent_playsound(ptr, snd_keypad_no, 800);
 					}
 					str_cpy(keypad_input, "");
 				}
