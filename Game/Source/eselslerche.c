@@ -54,6 +54,8 @@ SOUND* eselslerche_snd_spot2 = "eselslerche_spot2.wav";
 
 SOUND* eselslerche_snd_explo = "eselslerche_explo.wav";
 
+
+
 // uses: EL_RUNSPEED, EL_TURNSPEED, EL_ANIMSPEED, EL_EXPLODEDIST, EL_ACTIVEDIST
 action Eselslerche()
 {
@@ -69,7 +71,9 @@ action Eselslerche()
 	set(my, SHADOW);
 	c_setminmax(me);
 	my->min_z += 30;
+	my->max_z += 30;
 	my->material = matObject;
+	
 }
 
 void ESELSLERCHE_GlobalInit()
@@ -94,7 +98,7 @@ void ESELSLERCHE_Update()
 {
 	ENTITY * ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENEMY_LERCHE)
-	{
+	{		
 		if (player != NULL)
     	{
 
@@ -165,13 +169,28 @@ void ESELSLERCHE_Update()
 	
 		if (ptr->EL_STATE != EL_STATE_EXPLODE && ptr->EL_STATE != EL_STATE_DIE && ptr->EL_STATE != EL_STATE_DEAD )
 		{
-			VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 100);
+			VECTOR* from = vector(ptr->x, ptr->y, ptr->z);
 			VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
 			me = ptr;
-			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;// | USE_BOX;
+			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_BOX;
+			ptr.min_x += 18;
+			ptr.min_y += 18;
+			ptr.max_x -= 18;
+			ptr.max_y -= 18;
 			c_trace(from, to, mode);
-			if(HIT_TARGET)
-				ptr->z = hit.z - ptr->min_z +30;
+			ptr.min_x -= 18;
+			ptr.min_y -= 18;
+			ptr.max_x += 18;
+			ptr.max_y += 18;
+			if (HIT_TARGET)
+			{
+				var newZ = hit.z - ptr->min_z + 30;
+				if (ptr->z < newZ)
+					ptr->z = minv(ptr->z + 17* time_step, newZ);
+				else
+					ptr->z = maxv(ptr->z - 17* time_step, newZ);
+				
+			}
 		}
 	}	
 }
@@ -219,8 +238,16 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	ptr->EL_RAMPAGE = maxv(0, ptr->EL_RAMPAGE - time_step);
 	ptr->EL_RUNSPEEDCUR = minv(ptr->EL_RUNSPEEDCUR + 4*time_step, ptr->EL_RUNSPEED);
 	ANG_turnToPlayer(ptr, ptr->EL_TURNSPEED, 5);
-	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
+	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE;
+	ptr.min_x -= 2;
+	ptr.min_y -= 2;
+	ptr.max_x += 2;
+	ptr.max_y += 2;
 	c_move(ptr, vector(ptr->EL_RUNSPEEDCUR, 0, 0), nullvector, mode);
+	ptr.min_x += 2;
+	ptr.min_y += 2;
+	ptr.max_x -= 2;
+	ptr.max_y -= 2;
 	ent_animate(ptr, EL_WALKANIM, ptr->EL_ANIMSTATE, ANM_CYCLE);
 
 	/* transitions */

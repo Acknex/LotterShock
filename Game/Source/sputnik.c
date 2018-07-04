@@ -37,7 +37,7 @@
 #define SPUTNIK_STATE_DEAD 5
 #define SPUTNIK_STATE_HIT 6
 
-#define SPUTNIK_FEET 15
+#define SPUTNIK_FEET 30
 
 
 BMAP* SPUTNIK_bmapSplatter[5];
@@ -189,11 +189,24 @@ void SPUTNIK_Update()
 			VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 100);
 			VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
 			me = ptr;
-			//var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON | USE_BOX;
-			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;
+			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_BOX;
+			ptr.min_x += 8;
+			ptr.min_y += 8;
+			ptr.max_x -= 8;
+			ptr.max_y -= 8;
 			c_trace(from, to, mode);
+			ptr.min_x -= 8;
+			ptr.min_y -= 8;
+			ptr.max_x += 8;
+			ptr.max_y += 8;
 			if (HIT_TARGET)
-				ptr->z = hit.z - ptr->min_z + SPUTNIK_FEET;
+			{
+				var newZ = hit.z - ptr->min_z + SPUTNIK_FEET;
+				if (ptr->z < newZ)
+					ptr->z = minv(ptr->z + 17* time_step, newZ);
+				else
+					ptr->z = maxv(ptr->z - 17* time_step, newZ);
+			}
 		}
 		
 	}	
@@ -256,8 +269,16 @@ void SPUTNIK__follow(ENTITY* ptr)
 {
 	ptr->SPUTNIK_RUNSPEEDCUR = ptr->SPUTNIK_RUNSPEED; //minv(ptr->SPUTNIK_RUNSPEEDCUR + ptr->SPUTNIK_RUNSPEED*0.25*time_step, ptr->SPUTNIK_RUNSPEED);
 	ANG_turnToPlayer(ptr, ptr->SPUTNIK_TURNSPEED, 5);
-	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
+	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE;
+	ptr.min_x -= 2;
+	ptr.min_y -= 2;
+	ptr.max_x += 2;
+	ptr.max_y += 2;
 	c_move(ptr, vector(ptr->SPUTNIK_RUNSPEEDCUR, 0, 0), nullvector, mode);
+	ptr.min_x += 2;
+	ptr.min_y += 2;
+	ptr.max_x -= 2;
+	ptr.max_y -= 2;
 	
 	// Player is near enough to attack
 	if (SCAN_IsPlayerInSight(ptr, ptr->SPUTNIK_ATTACKRANGE, 360))
