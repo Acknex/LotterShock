@@ -24,6 +24,16 @@ BMAP * hud_ammobar_bmap = "ammobar.png";
 FONT *HUD_font = "HUD_font.png";
 BMAP *HUD_font_bmap = "HUD_font.png";
 
+
+PANEL *HUD_tutorial =
+{
+	bmap = "Controlsenpai.png";
+	//flags = TRANSLUCENT;
+	layer = 10;
+	scale_x = 0.8;
+	scale_y = 0.8;
+}
+
 PANEL *HUD_background =
 {
 	bmap = "interfache_bg.png";
@@ -102,7 +112,7 @@ PANEL* HUD_Head =
 	//bmap = "lotterindahouse.png";
 	window(0,0, 0,0, hud_lotterhead_bmap, NULL, NULL);
 	flags = TRANSLUCENT | LIGHT;
-	layer = 1;
+	layer = 3;
 	scale_x = 1.1;
 	scale_y = 1.1;
 }
@@ -212,6 +222,13 @@ void hud_show()
 	HUD_HP_infotext->pos_x = pos_right;
 	HUD_HP_infotext->pos_y = screen_size.y - hud_sizey(HUD_HP_text)/2-HUD_BORDER_PADDING;
 	set(HUD_HP_infotext, SHOW);
+	
+	HUD_tutorial->pos_x = (screen_size.x - hud_sizex(HUD_tutorial))/2;
+	HUD_tutorial->pos_y = (screen_size.y - hud_sizey(HUD_tutorial))/2;
+	HUD_tutorial->alpha = 50;
+	set(HUD_tutorial, SHOW);
+	
+	
 /*		
 	HUD_Head->pos_x = (screen_size.x- hud_sizex(HUD_Head))/2;
 	HUD_Head->pos_y = screen_size.y - hud_sizey(HUD_Head) - HUD_BORDER_PADDING;
@@ -445,4 +462,19 @@ void hud_update()
 	}
 	else
 		hud_hide_ammobar();
+		
+		
+	
+	if(is(HUD_tutorial, TRANSLUCENT))
+	{
+		HUD_tutorial->alpha -= 10*time_step;
+		if(HUD_tutorial->alpha <= 0)
+			reset(HUD_tutorial, SHOW);
+	}
+	else
+		if(input_any())
+		{
+			set(HUD_tutorial, TRANSLUCENT);
+			HUD_tutorial->alpha = 50;
+		}
 }

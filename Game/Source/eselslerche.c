@@ -194,7 +194,7 @@ void ESELSLERCHE__wait(ENTITY* ptr)
 	ent_animate(ptr, EL_TURNANIM, ptr->EL_ANIMSTATE, ANM_CYCLE);
 
 	/* transitions */
-	if(ANG_turnToPlayer(ptr, ptr->EL_TURNSPEED, 5) != 0)
+	if(ANG_turnToPlayer(ptr, ptr->EL_TURNSPEED, 5) && SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90))
 	{
 		ptr->EL_ANIMSTATE = 0;
 		ptr->EL_RUNSPEEDCUR = 0;
@@ -216,6 +216,7 @@ void ESELSLERCHE__wait(ENTITY* ptr)
 
 void ESELSLERCHE__run(ENTITY* ptr)
 {
+	ptr->EL_RAMPAGE = maxv(0, ptr->EL_RAMPAGE - time_step);
 	ptr->EL_RUNSPEEDCUR = minv(ptr->EL_RUNSPEEDCUR + 4*time_step, ptr->EL_RUNSPEED);
 	ANG_turnToPlayer(ptr, ptr->EL_TURNSPEED, 5);
 	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
@@ -239,9 +240,9 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	}
 	else if (
 		//!SCAN_IsPlayerInSight(ptr, ptr->EL_ACTIVEDIST, 90) 
-		//&& (!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100))
- 		/*&&*/ SCAN_IsPlayerBehind(ptr, 1200)
- 		&& !ptr->EL_RAMPAGE
+		/*&&*/ ((!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100))
+ 		/*&&*/ || SCAN_IsPlayerBehind(ptr, 1200))
+ 		&& ptr->EL_RAMPAGE <= 0
 	)
 	{
 		ptr->EL_STATE = EL_STATE_WAIT;
@@ -328,7 +329,7 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 	else if (animState >= 90)
 	{
 		ptr->EL_STATE = EL_STATE_RUN;			
-		ptr->EL_RAMPAGE = 1;
+		ptr->EL_RAMPAGE = 16;
 		ptr->event = ENEMY_HIT_event;
 		ptr->EL_ANIMSTATE = 0;
 		vec_zero(ptr->DAMAGE_VEC);
