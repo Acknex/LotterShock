@@ -81,17 +81,18 @@ void doors_update() {
 						} 
 						else 
 						{
+							if(ptr.DOOR_SND_HANDLE != 0 && snd_playing(ptr.DOOR_SND_HANDLE))
+							{
+								snd_stop(ptr.DOOR_SND_HANDLE);
+								ptr.DOOR_SND_HANDLE = 0;
+							}
+							
 							if(ptr.DOOR_REQUIRED_KEY_ID >= 10 && story_enginesEnabled == 0)
 							{
 								ptr.DOOR_SND_HANDLE = snd_play(snd_denied_lockdown, 100, 0);
 							}
 							else
 							{	
-								if(ptr.DOOR_SND_HANDLE != 0 && snd_playing(ptr.DOOR_SND_HANDLE))
-								{
-									snd_stop(ptr.DOOR_SND_HANDLE);
-									ptr.DOOR_SND_HANDLE = 0;
-								}
 								switch(ptr.DOOR_REQUIRED_KEY_ID%10)
 								{
 									case 1: ptr.DOOR_SND_HANDLE = snd_play(snd_denied_green, 100, 0); break;

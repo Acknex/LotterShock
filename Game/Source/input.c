@@ -4,6 +4,7 @@
 #include "dmgsys.h"
 #include "movement.h"
 #include "settings.h"
+#include "environmentals.h"
 
 #include <windows.h>
 #include <acknex.h>
@@ -83,7 +84,7 @@ void input_add_axis(int inputID, var * value, float scale, float deadZone, bool 
     }
 }
 
-#define INPUT_CHEAT_COUNT 5
+#define INPUT_CHEAT_COUNT 6
 
 typedef struct cheatcode_t
 {
@@ -169,6 +170,20 @@ void input_cheat_all_weapons()
     weapons_add(WEAPON_FLAMETHROWER);
 }
 
+void input_cheat_weapons_and_keys()
+{
+    weapons_add(WEAPON_SWORD);
+    weapons_add(WEAPON_SHOTGUN);
+    weapons_add(WEAPON_CELLGUN);
+    weapons_add(WEAPON_FLAMETHROWER);
+    var i;
+    for(i = 0; i < 5; ++i)
+    {
+        keys[i] = 1;
+    }
+    story_enginesEnabled = 1;
+}
+
 void input_cheat_all_die()
 {
     ENTITY * it;
@@ -227,17 +242,20 @@ void input_init()
     cheatcodes[0].text = "iddqd";
     cheatcodes[0].trigger = input_cheat_indestructible;
 
-    cheatcodes[1].text = "idkfa";
+    cheatcodes[1].text = "idfa";
     cheatcodes[1].trigger = input_cheat_all_weapons;
 
-    cheatcodes[2].text = "idfa";
+    cheatcodes[2].text = "idkill";
     cheatcodes[2].trigger = input_cheat_all_die;
 
-    cheatcodes[3].text = "idspispopd";
+    cheatcodes[3].text = "idfly";
     cheatcodes[3].trigger = input_cheat_clipmode;
 
     cheatcodes[4].text = "idnoclip";
     cheatcodes[4].trigger = input_cheat_wallhack;
+
+    cheatcodes[5].text = "idkfa";
+    cheatcodes[5].trigger = input_cheat_weapons_and_keys;
 
     int i,k;
 
