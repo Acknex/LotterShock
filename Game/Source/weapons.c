@@ -23,6 +23,9 @@
 #define WEAPONS_FLAME_DAMPING 2.0
 #define WEAPONS_FLAME_GRAVITY 5.0
 
+#define WEAPONS_FLAME_MINSIZE 5
+#define WEAPONS_FLAME_MAXSIZE 75
+
 #define WEAPONS_CELLGUN_DAMAGE 7
 
 #define WEAPONS_DOUBLE_FLAME_EFFECT
@@ -447,7 +450,7 @@ void weapons_flame_effect_event(PARTICLE *p)
 		//p->size = clamp(p->size - time_step, 35, 100);
 	}
 
-	if(p->skill_z <= 0)
+    if(p->skill_z <= 0)
 	{
         // no entity -> no pushback
         dmgsys_set_src(DMGSYS_PLAYER, NULL, 0.5);
@@ -455,6 +458,11 @@ void weapons_flame_effect_event(PARTICLE *p)
 		ENTITY * it;
 		for(it = ent_next(NULL); it != NULL; it = ent_next(it))
         {
+            // NEVER FORGET 100ms!
+            // don't check non-subsystem entities, they aren't relevant for us!
+            if(it->SK_SUBSYSTEM == 0)
+                continue;
+
 			VECTOR tmp;
 			vec_diff(tmp, p->x, it->x);
 			vec_rotateback(tmp, it->pan);
@@ -485,7 +493,10 @@ void weapons_flame_effect_event(PARTICLE *p)
 
 		p->skill_z = 1;
 	}
-	p->skill_z -= time_step;
+    else
+    {
+        p->skill_z -= time_step;
+    }
 
 	if(p->skill_y > 40)
 		p->flags &= ~STREAK;
@@ -500,8 +511,10 @@ void weapons_flame_effect_event(PARTICLE *p)
 	p->blue  = maxv(64,  128 - p->skill_y*80);
 
 	p->skill_y += 10 * time_step;
-	#ifndef WEAPONS_DOUBLE_FLAME_EFFECT   
+    #ifndef WEAPONS_DOUBLE_FLAME_EFFECT
 		p->size += 10*time_step;
+        if(p->size >= WEAPONS_FLAME_MAXSIZE)
+            p->size = WEAPONS_FLAME_MAXSIZE;
 	#endif  
 
 	p->alpha = p->lifespan/2;
@@ -528,9 +541,8 @@ void weapons_flame_effect(PARTICLE *p)
 	vec_normalize(spread, random(WEAPONS_FLAME_SPREAD));
 	vec_rotate(p->skill_a, spread);
 	
-	
 	p->lifespan = 100;
-	p->size = 5 + random(5);
+    p->size = WEAPONS_FLAME_MINSIZE + random(WEAPONS_FLAME_MINSIZE);
 	p->event = weapons_flame_effect_event;
 	p->alpha = 80 + random(10);
 	p->skill[3] = (0.5 + random(1)/2) * WEAPONS_FLAME_DAMPING;

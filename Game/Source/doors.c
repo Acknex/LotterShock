@@ -75,9 +75,14 @@ void doors_update() {
 							ptr.DOOR_STATE = 1;
 							if(ptr.DOOR_OPENED_ONCE != 1)
 							{
+								if(ptr.DOOR_SND_HANDLE != 0 && snd_playing(ptr.DOOR_SND_HANDLE))
+								{
+									snd_stop(ptr.DOOR_SND_HANDLE);
+									ptr.DOOR_SND_HANDLE = 0;
+								}
 								snd_play(snd_granted, 100, 0);
 							}
-							ptr.DOOR_OPENED_ONCE = 1;
+							ptr.DOOR_SND_HANDLE = ptr.DOOR_OPENED_ONCE = 1;
 						} 
 						else 
 						{

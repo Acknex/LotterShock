@@ -26,6 +26,15 @@ bool input_hit(int id)
     return input[id].justPressed;
 }
 
+bool input_any()
+{
+	int i;
+	for(i = 0; i<=INPUT_MORPHBALL; ++i)
+		if(input[i].down)
+			return true;
+	return false;
+}
+
 var input_axis(int id)
 {
     return input[id].value;

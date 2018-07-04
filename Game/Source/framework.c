@@ -33,6 +33,8 @@ typedef struct
 
 framework_t framework;
 
+BMAP * framework_mouse_cursor = "cursor3.tga";
+
 BMAP * framework_load_screen_bmap = "game_loadingscreen.png";
 
 PANEL * framework_load_screen =
@@ -58,6 +60,8 @@ void framework_init()
     particle_mode = 8;
     collision_mode = 2;
     preload_mode = 3; // preload a lot
+
+    mouse_map = framework_mouse_cursor;
 
     video_set(
         settings.resolution_x,
@@ -267,6 +271,9 @@ void framework_update()
 
         case FRAMEWORK_STATE_GAME:
             game_close();
+            // restore mouse cursor after game
+            // mouse_mode 0 doesn't trigger mouse_ent and stuff
+            mouse_map = framework_mouse_cursor;
             break;
 
         case FRAMEWORK_STATE_UNLOAD:
@@ -311,6 +318,10 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_GAME:
+            // remove mouse cursor in game
+            // mouse_mode 0 doesn't trigger mouse_ent and stuff
+            // so mouse_mode 1 is required
+            mouse_map = NULL;
             game_open();
             break;
 

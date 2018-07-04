@@ -61,6 +61,11 @@ SOUND* player_snd_step3 = "steps_3.wav";
 SOUND* player_snd_jump1 = "jump_1.wav";
 SOUND* player_snd_jump2 = "jump_2.wav";
 SOUND* player_snd_jump3 = "jump_3.wav";
+SOUND* player_snd_hit1 = "player_hit1.wav";
+SOUND* player_snd_hit2 = "player_hit2.wav";
+SOUND* player_snd_hit3 = "player_hit3.wav";
+SOUND* player_snd_death1 = "player_death1.wav";
+SOUND* player_snd_death2 = "player_death2.wav";
 
 void player_initSpawn()
 {
@@ -103,6 +108,23 @@ void playerAddHealth(var amount)
 	playerHealth = clamp(playerHealth+amount,0,playerHealthMax);
 	if(amount < 0) 
 	{
+		if(playerHealth == 0)
+		{
+			switch(integer(random(2)))
+			{
+				case 0: snd_play(player_snd_death1, 100, 0); break;
+				case 1: snd_play(player_snd_death2, 100, 0); break;
+			}
+		}
+		else
+		{
+			switch(integer(random(3)))
+			{
+				case 0: snd_play(player_snd_hit1, 100, 0); break;
+				case 1: snd_play(player_snd_hit2, 100, 0); break;
+				case 2: snd_play(player_snd_hit3, 100, 0); break;
+			}
+		}
 		playerChromaticAbbTime = 0.5;
 		playerDamageCooldownTime = 20;
 	}

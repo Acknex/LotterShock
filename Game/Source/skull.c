@@ -42,8 +42,8 @@ action Skull()
 {
    framework_setup(my, SUBSYSTEM_ENEMY_SKULL);
 	//TODO: useful default values
-	if(my->SKL_RUNSPEED == 0) my->SKL_RUNSPEED = 20;
-	if(my->SKL_TURNSPEED == 0) my->SKL_TURNSPEED = 40;
+	if(my->SKL_RUNSPEED == 0) my->SKL_RUNSPEED = 25;
+	if(my->SKL_TURNSPEED == 0) my->SKL_TURNSPEED = 20;
 	if(my->SKL_ANIMSPEED == 0) my->SKL_ANIMSPEED = 8;
 	if(my->SKL_ATTACKDIST == 0) my->SKL_ATTACKDIST = 300;
 	if(my->SKL_ACTIVEDIST == 0) my->SKL_ACTIVEDIST = 3000;
