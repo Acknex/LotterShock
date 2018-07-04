@@ -6,9 +6,23 @@
 #include "framework.h"
 #include "music_player.h"
 
+#include "settings.h"
+
 #include <acknex.h>
 
-#define BESTIARY_COUNT 7
+#define BESTIARY_ROTSPEED  skill1
+#define BESTIARY_INDEX     skill2
+#define BESTIARY_ISTURRET  skill3
+#define BESTIARY_ANIMSPEED skill4
+#define BESTIARY_ANIMATION skill21
+#define BESTIARY_INITPOS   skill22
+// #define BESTIARY_INITPOS   skill23
+// #define BESTIARY_INITPOS   skill24
+#define BESTIARY_BEAST_UNLOCKED  skill25
+#define BESTIARY_INITSCALE   skill26
+// #define BESTIARY_INITSCALE   skill27
+// #define BESTIARY_INITSCALE   skill28
+#define BESTIARY_SPRITEPTR  skill29
 
 typedef struct beast_t
 {
@@ -88,7 +102,7 @@ struct
     int position;
     bool done;
     PANEL * lastPan;
-    beast_t beasts[BESTIARY_COUNT];
+    beast_t beasts[BEAST_COUNT];
 } bestiary;
 
 void bestiary_init()
@@ -184,7 +198,7 @@ void bestiary_update()
     if(input_hit(INPUT_NAVBACK) || (input_hit(INPUT_ATTACK) && !mouse_left))
         bestiary.done = true;
 
-    bestiary.position = clamp(bestiary.position, 0, BESTIARY_COUNT - 1);
+    bestiary.position = clamp(bestiary.position, 0, BEAST_COUNT - 1);
 
     bestiary_pan_back->pos_x = 16;
     bestiary_pan_back->pos_y = screen_size.y - 16 - bmap_height(bestiary_pan_back->bmap);
@@ -211,7 +225,7 @@ void bestiary_update()
     else
         reset(bestiary_pan_prev, SHOW);
 
-    if(bestiary.position < (BESTIARY_COUNT - 1))
+    if(bestiary.position < (BEAST_COUNT - 1))
         set(bestiary_pan_next, SHOW);
     else
         reset(bestiary_pan_next, SHOW);
@@ -225,10 +239,33 @@ void bestiary_update()
 
     bestiary.lastPan = mouse_panel;
 
-    vec_lerp(camera->x, camera->x, vector(0, -800 * bestiary.position, 180), 0.1);
+#ifdef DEBUG
+    if(def_camera == 0)
+#endif
+    {
+        vec_lerp(camera->x, camera->x, vector(0, -800 * bestiary.position, 180), 0.1);
+    }
 
     str_cpy(bestiary_beast_name, bestiary.beasts[bestiary.position].name);
     str_cpy(bestiary_beast_desc, bestiary.beasts[bestiary.position].flavour);
+
+    if(!achievements.bestiary_unlocked[bestiary.position])
+    {
+        int i;
+        char * mixup = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvxyz012345689!%&/?=-#";
+        int mixup_len = strlen(mixup);
+        srand((total_frames / 16) % 10 + 1); // fixed seed
+        for(i = 0; i < str_len(bestiary_beast_name); i++)
+        {
+            if((bestiary_beast_name->chars)[i] != ' ')
+                (bestiary_beast_name->chars)[i] = mixup[rand() % mixup_len];
+        }
+        for(i = 0; i < str_len(bestiary_beast_desc); i++)
+        {
+            if((bestiary_beast_desc->chars)[i] != ' ')
+                (bestiary_beast_desc->chars)[i] = mixup[rand() % mixup_len];
+        }
+    }
 
     /*
     draw_text(
@@ -250,18 +287,48 @@ void bestiary_update()
 
     SUBSYSTEM_LOOP(you, SUBSYSTEM_BESTIARY)
     {
-        you->pan += speed * time_step;
-    }
+        ENTITY * spr = you->BESTIARY_SPRITEPTR;
+        if(achievements.bestiary_unlocked[you->BESTIARY_INDEX] != you->BESTIARY_BEAST_UNLOCKED)
+        {
+            if(achievements.bestiary_unlocked[you->BESTIARY_INDEX])
+            {
+                set(spr, INVISIBLE);
+                reset(you, INVISIBLE);
+            }
+            else
+            {
+                reset(spr, INVISIBLE);
+                set(you, INVISIBLE);
+            }
 
-    SUBSYSTEM_LOOP(you, SUBSYSTEM_BESTIARYTURRET)
-    {
-		ent_bonerotate(you, "Bone1", vector(speed * time_step, 0, 0));
-    }
+            you->BESTIARY_BEAST_UNLOCKED = achievements.bestiary_unlocked[you->BESTIARY_INDEX];
+        }
 
+        // Standardverhalten
+        you->pan += speed * you->BESTIARY_ROTSPEED * time_step;
+
+        you->BESTIARY_ANIMATION += you->BESTIARY_ANIMSPEED * time_step;
+
+        if(you->string1 != NULL)
+        {
+            if(strlen(you->string1) > 0)
+            {
+                ent_animate(you, you->string1, you->BESTIARY_ANIMATION, ANM_CYCLE);
+            }
+        }
+
+        if(you->BESTIARY_ISTURRET)
+            ent_bonerotate(you, "Bone1", vector(speed * time_step, 0, 0));
+    }
 }
 
 void bestiary_close()
 {
+    SUBSYSTEM_LOOP(you, SUBSYSTEM_BESTIARY)
+    {
+        if(you->string2 != NULL)
+            free(you->string2);
+    }
     level_load(NULL);
     music_start("Media/intro.mp3", 1, 0);
     camera->arc = 60;
@@ -279,14 +346,35 @@ bool bestiary_is_done()
     return bestiary.done;
 }
 
+// skill1: Rotspeed 1.0
+// skill2: Bestiary-ID 0
+// skill3: IsTurret 0
+// skill4: Animspeed 1.0
+// string1: Animation "stand"
 action BeastiaryEntry()
 {
     // didn't to nothing
     framework_setup(me, SUBSYSTEM_BESTIARY);
-}
 
-action BeastiaryTEntry()
-{
-    // didn't to nothing
-    framework_setup(me, SUBSYSTEM_BESTIARYTURRET);
+    // Force update of beast state in next update
+    my->BESTIARY_BEAST_UNLOCKED = !achievements.bestiary_unlocked[my->BESTIARY_INDEX];
+
+    vec_set(my->BESTIARY_INITPOS, my->x);
+    vec_set(my->BESTIARY_INITSCALE, my->scale_x);
+
+    my->string2 = malloc(strlen(my->type) + 1);
+    strcpy(my->string2, my->type);
+
+    if(my->BESTIARY_ROTSPEED == 0)
+        my->BESTIARY_ROTSPEED = 1;
+
+    if(my->BESTIARY_ANIMSPEED == 0)
+        my->BESTIARY_ANIMSPEED = my->BESTIARY_ROTSPEED;
+
+    you = ent_create("best_noise.tga", my->x, NULL);
+    you->y = -800 * my->BESTIARY_INDEX; // hard align sprite
+    you->z = 200;
+    you->material = matNoiseSprite;
+    vec_fill(you->scale_x, 0.561);
+    my->BESTIARY_SPRITEPTR = you;
 }

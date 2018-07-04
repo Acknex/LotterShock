@@ -49,6 +49,10 @@ void settings_init()
         CreateDirectory(_chr(settings_file), NULL);
         str_cat(settings_file, "\\settings.ini");
     }
+
+    memset(&achievements, 0, sizeof(achievements_t));
+    achievements.bestiary_unlocked[BEAST_STARLOTTI] = 1;
+    achievements.bestiary_unlocked[BEAST_ACKTANA] = 1;
 }
 
 void settings_load_from(STRING * fileName)
@@ -85,4 +89,23 @@ void settings_save()
     ini_write_int(settings_file, "Audio", "volume", settings.game_volume);
 
     ini_write_var(settings_file, "Input", "sensitivity", settings.input_sensitivity);
+}
+
+
+void achievements_load()
+{
+    int i;
+    for(i = 0; i < BEAST_COUNT; i++)
+    {
+        achievements.bestiary_unlocked[i] = ini_read_var(settings_file, "Achievements", str_printf(NULL, "beast_%d", i), achievements.bestiary_unlocked[i]);
+    }
+}
+
+void achievements_save()
+{
+    int i;
+    for(i = 0; i < BEAST_COUNT; i++)
+    {
+        ini_write_var(settings_file, "Achievements", str_printf(NULL, "beast_%d", i), achievements.bestiary_unlocked[i]);
+    }
 }
