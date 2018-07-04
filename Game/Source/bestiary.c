@@ -19,29 +19,69 @@ typedef struct beast_t
 BMAP * bestiary_bmp_next = "best_next.png";
 BMAP * bestiary_bmp_prev = "best_prev.png";
 BMAP * bestiary_bmp_back = "best_back.png";
+BMAP * bestiary_bmp_panl = "best_panel.png";
 
 BMAP * bestiary_selection_bmap = "best_sel.png";
 
 PANEL * bestiary_pan_back =
 {
     bmap = bestiary_bmp_back;
+    layer = 2;
 }
 
 PANEL * bestiary_pan_next =
 {
     bmap = bestiary_bmp_next;
+        layer = 2;
 }
 
 PANEL * bestiary_pan_prev =
 {
     bmap = bestiary_bmp_prev;
+        layer = 2;
 }
 
 PANEL * bestiary_pan_sel =
 {
     bmap = mainmenu_selection_bmap;
+    layer = 3;
     flags = UNTOUCHABLE;
 }
+
+PANEL * bestiary_pan_info =
+{
+    bmap = bestiary_bmp_panl;
+    layer = 2;
+    flags = UNTOUCHABLE;
+}
+
+STRING * bestiary_beast_name = "#1024";
+STRING * bestiary_beast_desc = "#1024";
+
+FONT * bestiary_fnt_name = "Arial#32b";
+FONT * bestiary_fnt_desc = "Arial#24";
+
+TEXT * bestiary_txt_name =
+{
+    layer = 3;
+    string = (bestiary_beast_name);
+    font = bestiary_fnt_name;
+    red = 208;
+    green = 61;
+    blue = 34;
+}
+
+TEXT * bestiary_txt_desc =
+{
+    layer = 3;
+    string = (bestiary_beast_desc);
+    font = bestiary_fnt_desc;
+    red = 0;
+    green = 0;
+    blue = 0;
+    flags = WWRAP;
+}
+
 
 struct
 {
@@ -57,7 +97,7 @@ void bestiary_init()
     bestiary.beasts[0].flavour = "A mysterious adventurer from space. Follower of the Great Acknex.";
 
     bestiary.beasts[1].name    = "Acktana";
-    bestiary.beasts[1].flavour = "Star Lottis faithful companion AI.\nCreated by the Great Acknex itself, it was written in Lite-C\nto fully unleash its mighty intellect upon the Unity Union.";
+    bestiary.beasts[1].flavour = "Star Lottis faithful companion AI.\nCreated by the Great Acknex itself, it was written in Lite-C to fully unleash its mighty intellect upon the Unity Union.";
 
     bestiary.beasts[2].name    = "Donkey-Lark";
     bestiary.beasts[2].flavour = "A small animal from the far lands of Bielefeld.\nLikes to graze fresh flowers, but has to puke afterwards.\nBe careful, as donkey-larks might explode when beeing startled!";
@@ -93,6 +133,10 @@ void bestiary_open()
     set(bestiary_pan_back, SHOW);
     set(bestiary_pan_prev, SHOW);
     set(bestiary_pan_next, SHOW);
+
+    set(bestiary_pan_info, SHOW);
+    set(bestiary_txt_name, SHOW);
+    set(bestiary_txt_desc, SHOW);
 }
 
 void bestiary_update()
@@ -151,6 +195,17 @@ void bestiary_update()
     bestiary_pan_next->pos_x = screen_size.x - 16 - bmap_width(bestiary_pan_next->bmap);
     bestiary_pan_next->pos_y = (screen_size.y - bmap_height(bestiary_pan_next->bmap)) / 2;
 
+    bestiary_pan_info->pos_x = screen_size.x - bmap_width(bestiary_pan_info->bmap);
+    bestiary_pan_info->pos_y = screen_size.y - bmap_height(bestiary_pan_info->bmap);
+
+    bestiary_txt_name->pos_x = bestiary_pan_info->pos_x +  6;
+    bestiary_txt_name->pos_y = bestiary_pan_info->pos_y +  6;
+
+    bestiary_txt_desc->pos_x = bestiary_pan_info->pos_x +  6;
+    bestiary_txt_desc->pos_y = bestiary_pan_info->pos_y + 44;
+
+    bestiary_txt_desc->size_x = bmap_width(bestiary_pan_info->bmap) - 12;
+
     if(bestiary.position > 0)
         set(bestiary_pan_prev, SHOW);
     else
@@ -172,6 +227,10 @@ void bestiary_update()
 
     vec_lerp(camera->x, camera->x, vector(0, -800 * bestiary.position, 180), 0.1);
 
+    str_cpy(bestiary_beast_name, bestiary.beasts[bestiary.position].name);
+    str_cpy(bestiary_beast_desc, bestiary.beasts[bestiary.position].flavour);
+
+    /*
     draw_text(
         bestiary.beasts[bestiary.position].name,
         16,
@@ -183,6 +242,7 @@ void bestiary_update()
         16,
         32,
         vector(200, 200, 200));
+    */
 
     var speed = 1;
     if(input_down(INPUT_JUMP))
@@ -209,6 +269,9 @@ void bestiary_close()
     reset(bestiary_pan_prev, SHOW);
     reset(bestiary_pan_next, SHOW);
     reset(bestiary_pan_sel, SHOW);
+    reset(bestiary_pan_info, SHOW);
+    reset(bestiary_txt_name, SHOW);
+    reset(bestiary_txt_desc, SHOW);
 }
 
 bool bestiary_is_done()
