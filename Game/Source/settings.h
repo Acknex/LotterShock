@@ -41,4 +41,6 @@ void achievements_load();
 
 void achievements_save();
 
+void achievement_kill_beast(int beastid);
+
 #endif // SETTINGS_H

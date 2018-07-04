@@ -33,6 +33,7 @@
 #include "framework.h"
 #include "global.h"
 #include "splatter.h"
+#include "settings.h"
 
 void TURRET__init();
 void TURRET__shoot(ENTITY* ptr);
@@ -115,6 +116,7 @@ void TURRET_Update()
 				
 				if (ptr->HEALTH <= 0)
 				{
+                    achievement_kill_beast(BEAST_TURRET);
 					ptr->TURRET_STATE = TURRETDIE;
 					ptr.skill44 = floatv(0);
 					snd_play(sndTurretDestroyed, 100, 0);

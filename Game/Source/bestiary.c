@@ -74,6 +74,7 @@ STRING * bestiary_beast_desc = "#1024";
 
 FONT * bestiary_fnt_name = "Arial#32b";
 FONT * bestiary_fnt_desc = "Arial#24";
+FONT * bestiary_fnt_help = "Arial#16ib";
 
 TEXT * bestiary_txt_name =
 {
@@ -96,6 +97,15 @@ TEXT * bestiary_txt_desc =
     flags = WWRAP;
 }
 
+TEXT * bestiary_txt_help =
+{
+    layer = 3;
+    string = ("Kill this enemy to obtain more information!");
+    font = bestiary_fnt_help;
+    red = 208;
+    green = 61;
+    blue = 34;
+}
 
 struct
 {
@@ -217,8 +227,10 @@ void bestiary_update()
 
     bestiary_txt_desc->pos_x = bestiary_pan_info->pos_x +  6;
     bestiary_txt_desc->pos_y = bestiary_pan_info->pos_y + 44;
-
     bestiary_txt_desc->size_x = bmap_width(bestiary_pan_info->bmap) - 12;
+
+    bestiary_txt_help->pos_x = bestiary_pan_info->pos_x + 6;
+    bestiary_txt_help->pos_y = bestiary_pan_info->pos_y + bmap_height(bestiary_pan_info->bmap) - 20;
 
     if(bestiary.position > 0)
         set(bestiary_pan_prev, SHOW);
@@ -249,8 +261,14 @@ void bestiary_update()
     str_cpy(bestiary_beast_name, bestiary.beasts[bestiary.position].name);
     str_cpy(bestiary_beast_desc, bestiary.beasts[bestiary.position].flavour);
 
-    if(!achievements.bestiary_unlocked[bestiary.position])
+    if(achievements.bestiary_unlocked[bestiary.position])
     {
+        reset(bestiary_txt_help, SHOW);
+    }
+    else
+    {
+        set(bestiary_txt_help, SHOW);
+
         int i;
         char * mixup = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvxyz012345689!%&/?=-#";
         int mixup_len = strlen(mixup);
@@ -339,6 +357,7 @@ void bestiary_close()
     reset(bestiary_pan_info, SHOW);
     reset(bestiary_txt_name, SHOW);
     reset(bestiary_txt_desc, SHOW);
+    reset(bestiary_txt_help, SHOW);
 }
 
 bool bestiary_is_done()

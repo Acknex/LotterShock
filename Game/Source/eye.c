@@ -91,6 +91,15 @@ void EYE_Update()
 	{
 		if (player)
 		{
+            if(vec_dist(ptr->x, player->x) < 1000)
+            {
+                VECTOR tmp;
+                vec_set(tmp, ptr->x);
+                if(vec_to_screen(tmp, camera))
+                {
+                    achievement_kill_beast(BEAST_EYE);
+                }
+            }
 
     		/*DEBUG_VAR(ptr->EYE_STATE, 50);
     		DEBUG_VAR(ptr->x, 70);
