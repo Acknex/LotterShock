@@ -71,6 +71,8 @@ bool input_down(int id);
 
 bool input_hit(int id);
 
+bool input_any();
+
 var input_axis(int id);
 
 #endif // INPUT_H
