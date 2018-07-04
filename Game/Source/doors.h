@@ -17,7 +17,7 @@
 #define DOOR_STATE skill21
 #define WAIT_TIME skill22
 #define DOOR_Z_START skill23
-#define DOOR_Z_MAX 342
+#define DOOR_Z_MAX 322
 
 // keys
 #define KEYS_MAX 5
