@@ -450,7 +450,7 @@ void weapons_flame_effect_event(PARTICLE *p)
 		//p->size = clamp(p->size - time_step, 35, 100);
 	}
 
-    if(p->skill_z <= 0 && 0)
+    if(p->skill_z <= 0)
 	{
         // no entity -> no pushback
         dmgsys_set_src(DMGSYS_PLAYER, NULL, 0.5);
