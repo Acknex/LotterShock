@@ -77,6 +77,8 @@ VECTOR credits_background_dirs[CREDITS_BACKGROUNDS_MAX];
 int credits_background_count;
 
 var credits_timer;
+var credits_fadeout;
+var credits_render;
 
 var credits_done = 0;
 
@@ -280,6 +282,8 @@ void credits_open()
 
     credits_done = 0;
     credits_timer = 0;
+    credits_fadeout = 0;
+    credits_render = 1;
 }
 
 void credits_close()
@@ -354,105 +358,109 @@ void credits_update()
     var h = 0;
     var y = screen_size.y - credits_timer;
 
-    for(it = credits_firstNode; it != NULL; it = it->next, y += h)
+    if(credits_render)
     {
-        if(y >= screen_size.y) {
-            break;
-        }
-        h = it.height;
-        COLOR * color = COLOR_RED;
-        switch(it->fuckYouType)
+        for(it = credits_firstNode; it != NULL; it = it->next, y += h)
         {
-            case 0: // text
-                credits_text.font = credits_fontset[it.font];
-                credits_text.pos_y = y;
+            if(y >= screen_size.y) {
+                break;
+            }
+            h = it.height;
+            COLOR * color = COLOR_RED;
+            switch(it->fuckYouType)
+            {
+                case 0: // text
+                    credits_text.font = credits_fontset[it.font];
+                    credits_text.pos_y = y;
 
-                credits_text.flags &= ~(CENTER_X | ARIGHT);
-                switch(it.alignment) {
-                    case 0:
-                        credits_text.pos_x = credits_textMarginW;
-                    case 1:
-                        credits_text.pos_x = 0.5 * screen_size.x;
-                        credits_text.flags |= CENTER_X;
-                        break;
-                    case 2:
+                    credits_text.flags &= ~(CENTER_X | ARIGHT);
+                    switch(it.alignment) {
+                        case 0:
+                            credits_text.pos_x = credits_textMarginW;
+                        case 1:
+                            credits_text.pos_x = 0.5 * screen_size.x;
+                            credits_text.flags |= CENTER_X;
+                            break;
+                        case 2:
+                            credits_text.pos_x = screen_size.x - credits_textMarginW;
+                            credits_text.flags |= ARIGHT;
+                            break;
+                    }
+
+                    if(it.text1) {
+                        (credits_text.pstring)[0] = it.text1;
+                        draw_obj(credits_text);
+                    }
+
+                    if(it.text2) {
                         credits_text.pos_x = screen_size.x - credits_textMarginW;
                         credits_text.flags |= ARIGHT;
-                        break;
-                }
+                        (credits_text.pstring)[0] = it.text2;
+                        draw_obj(credits_text);
+                    }
 
-                if(it.text1) {
+                    y += credits_text.font.dy;
+                    break;
+                case 1: // image
+                    h = bmap_height(it.image);
+                    var w = bmap_width(it.image);
+                    var sc = (screen_size.x - 2*credits_imageMarginW) / w;
+                    draw_quad(
+                        it.image,
+                        vector(
+                            0.5 * (screen_size.x - sc * w),
+                            y + credits_imageMarginH,
+                            0),
+                        NULL,
+                        vector(w, h, 0), vector(sc, sc, 0),
+                        NULL, 100, 0);
+                    h *= sc;
+                    h += 2 * credits_imageMarginH;
+                    break;
+                case 2: // space
+                    break;
+
+                case 3: // filmic
+                    credits_text.font = credits_fontset[it.font];
+                    credits_text.pos_y = y;
+
+                    credits_text.flags &= ~(CENTER_X | ARIGHT);
+                    credits_text.flags |= ARIGHT;
+                    credits_text.pos_x = 0.5 * screen_size.x - 0.5 * credits_filmicTextDist;
                     (credits_text.pstring)[0] = it.text1;
                     draw_obj(credits_text);
-                }
 
-                if(it.text2) {
-                    credits_text.pos_x = screen_size.x - credits_textMarginW;
-                    credits_text.flags |= ARIGHT;
+                    draw_quad(
+                        NULL,
+                        vector(
+                            0.5 * screen_size.x - 0.5 * credits_filmicSepW,
+                            y + 0.5 * credits_text.font.dy,
+                            0),
+                        NULL,
+                        vector(credits_filmicSepW, 1, 0),
+                        NULL,
+                        COLOR_WHITE,
+                        100,
+                        0);
+
+                    credits_text.flags &= ~(CENTER_X | ARIGHT);
+                    credits_text.pos_x = 0.5 * screen_size.x + 0.5 * credits_filmicTextDist;
                     (credits_text.pstring)[0] = it.text2;
                     draw_obj(credits_text);
-                }
 
-                y += credits_text.font.dy;
-                break;
-            case 1: // image
-                h = bmap_height(it.image);
-                var w = bmap_width(it.image);
-                var sc = (screen_size.x - 2*credits_imageMarginW) / w;
-                draw_quad(
-                    it.image,
-                    vector(
-                        0.5 * (screen_size.x - sc * w),
-                        y + credits_imageMarginH,
-                        0),
-                    NULL,
-                    vector(w, h, 0), vector(sc, sc, 0),
-                    NULL, 100, 0);
-                h *= sc;
-                h += 2 * credits_imageMarginH;
-                break;
-            case 2: // space
-                break;
-
-            case 3: // filmic
-                credits_text.font = credits_fontset[it.font];
-                credits_text.pos_y = y;
-
-                credits_text.flags &= ~(CENTER_X | ARIGHT);
-                credits_text.flags |= ARIGHT;
-                credits_text.pos_x = 0.5 * screen_size.x - 0.5 * credits_filmicTextDist;
-                (credits_text.pstring)[0] = it.text1;
-                draw_obj(credits_text);
-
-                draw_quad(
-                    NULL,
-                    vector(
-                        0.5 * screen_size.x - 0.5 * credits_filmicSepW,
-                        y + 0.5 * credits_text.font.dy,
-                        0),
-                    NULL,
-                    vector(credits_filmicSepW, 1, 0),
-                    NULL,
-                    COLOR_WHITE,
-                    100,
-                    0);
-
-                credits_text.flags &= ~(CENTER_X | ARIGHT);
-                credits_text.pos_x = 0.5 * screen_size.x + 0.5 * credits_filmicTextDist;
-                (credits_text.pstring)[0] = it.text2;
-                draw_obj(credits_text);
-
-                y += credits_text.font.dy;
-                break;
-            default:
-                error(str_printf(NULL, "invalid fuckYouType: %d", it.fuckYouType));
-                break;
+                    y += credits_text.font.dy;
+                    break;
+                default:
+                    error(str_printf(NULL, "invalid fuckYouType: %d", it.fuckYouType));
+                    break;
+            }
         }
     }
-    if(y <= 0)
+    credits_render &= (y >= 0);
+
+    if(!credits_render && !music_is_playing())
     {
         // fade out screen to black, then be done as well
-
         draw_quad(
             NULL,
             vector(0,0,0),
@@ -460,29 +468,24 @@ void credits_update()
             screen_size,
             NULL,
             COLOR_BLACK,
-            clamp(-y, 0, 100),
+            credits_fadeout,
             0);
-        if(y <= -100)
+        if(credits_fadeout >= 100)
             credits_done = true;
+        credits_fadeout += credits_speedup * credits_scrollSpeed * time_step;
     }
 
     if(input_down(INPUT_JUMP))
     {
         credits_speedup = credits_speedup_factor;
-
         if ((total_ticks % 16) > 8)
         {
-            credits_pnl_ff.flags |= SHOW;
-        }
-        else
-        {
-            credits_pnl_ff.flags &= ~SHOW;
+            draw_obj(credits_pnl_ff);
         }
     }
     else
     {
         credits_speedup = 1;
-        credits_pnl_ff.flags &= ~SHOW;
     }
     credits_timer += credits_speedup * credits_scrollSpeed * time_step;
 
