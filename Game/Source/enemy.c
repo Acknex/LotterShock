@@ -1,4 +1,4 @@
-
+#include "enemy.h"
 #include "movement.h"
 
 #define bulletSpeed skill20
@@ -6,9 +6,6 @@
 
 #define ENEMY_BULLETLIFETIME 96
 #define ENEMY_BULLETSPEED 25
-
-
-void ENEMY__projectileEvent();
 
 action enemy_projectile()
 {

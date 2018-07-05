@@ -4,6 +4,7 @@
 #include "particle.h"
 #include "scan.h"
 #include "ang.h"
+#include "enemy.h"
 
 #include "splatter.h" //temp
 
@@ -14,6 +15,7 @@
 #define EYE_ATTACKDIST skill5
 #define EYE_ACTIVEDIST skill6
 #define EYE_ANIMSPEED skill7
+#define EYE_SHOTCOUNTER skill8
 
 #define EYE_ANIMSTATE skill21
 #define EYE_COUNTER skill22
@@ -152,6 +154,17 @@ void EYE_Update()
 	}
 }
 
+action eye_shot()
+{
+	my->emask |= ENABLE_IMPACT | ENABLE_SHOOT | ENABLE_ENTITY;
+	vec_scale(my->scale_x, 32);
+	my->event = ENEMY__projectileEvent;
+	my->skill20 = 50;
+	my->skill21 = 16*10;
+	set(my, LIGHT);
+	framework_setup(my, SUBSYSTEM_PROJECTILE);
+}
+
 var EYE__toFloor(ENTITY* ptr)
 {
 	VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 10);
@@ -199,6 +212,25 @@ void EYE__patrol(ENTITY* ptr)
 	vec_set(ptr->EYE_LASTPOS,&ptr->x);
 	ANG_turnToAngle(ptr, vecAngle.pan, ptr->EYE_TURNSPEED, 1);
 	
+	if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ATTACKDIST, 30))
+	{
+		
+		ptr->EYE_SHOTCOUNTER += time_step;
+		if(ptr->EYE_SHOTCOUNTER > 16)
+		{
+			ptr->EYE_SHOTCOUNTER -= 16;
+			ENTITY* ent = ent_create("eye_shot.mdl", ptr->x, eye_shot);
+			VECTOR v;
+			vec_set(v, ptr->x);
+			vec_sub(v, player->x);
+			vec_normalize(v,1);
+			vec_set(ent->skill1, v);
+			vec_scale(v, -1);
+			vec_to_angle(ent->pan, v);
+		}
+		
+	}
+
 	/* transitions */
 	/*if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ATTACKDIST, 75))
 	{

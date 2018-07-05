@@ -3,5 +3,6 @@
 
 action enemy_projectile();
 void ENEMY_UpdateProjectile();
+void ENEMY__projectileEvent();
 
 #endif
