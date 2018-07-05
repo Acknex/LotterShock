@@ -1046,4 +1046,9 @@ void weapons_close()
 		snd_stop(weapons.electro);
 		weapons.electro = 0;
     }
+    if(weapons.flamesound != 0)
+    {
+        snd_stop(weapons.flamesound);
+        weapons.flamesound = 0;
+    }
 }

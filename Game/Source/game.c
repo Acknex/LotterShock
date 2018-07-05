@@ -12,6 +12,7 @@
 #include "map.h"
 #include "turret.h"
 #include "enemy.h"
+#include "journals.h"
 
 #include <windows.h>
 
@@ -108,6 +109,7 @@ void game_close()
     hud_hide();
     weapons_close();
     map_close();
+    journals_quit();
     mouse_pointer = 1;
     input_cheats_enabled = 0;
 }
