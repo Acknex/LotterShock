@@ -260,10 +260,14 @@ void TURRET__active(ENTITY* ptr)
 		}
 
 		VECTOR vecdir;
-		vec_diff(&vecdir, &player->x, &ptr->x);
+		VECTOR vecplr;
+		vec_set(&vecplr, &player->x);
+		//vecplr.z += 300;//player->max_z;
+		vec_diff(&vecdir, &vecplr, &ptr->x);
 		ANGLE vecang;
 		vec_to_angle(&vecang, &vecdir);
 		ptr->SHOOT_ELEVATION = -vecang.tilt;
+		DEBUG_VAR(ptr->SHOOT_ELEVATION, 50);
 		ent_bonereset(ptr, "Bone3");
 		ent_bonerotate(ptr, "Bone3", vector(0, ptr->SHOOT_ELEVATION, 0));
 
@@ -351,6 +355,7 @@ void TURRET__shoot(ENTITY* ptr)
 
 	ENTITY* ent = ent_create(SPHERE_MDL, vecDist, enemy_projectile);	
 	ent->pan = ptr->SHOOT_ANGLE;	
+	ent->tilt = ptr->SHOOT_ELEVATION;	
 }
 
 // effects
