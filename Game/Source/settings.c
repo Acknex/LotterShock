@@ -28,7 +28,7 @@ void settings_init()
 
     settings.game_volume = 100;
 
-    settings.input_sensitivity = 20;
+    settings.input_sensitivity = 13;
 
     if(ini_write("settings.ini", "Dummy", "dummy", "dummy"))
     {
