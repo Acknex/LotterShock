@@ -13,7 +13,9 @@
 #define EYE_TURNSPEED skill4
 #define EYE_ATTACKDIST skill5
 #define EYE_ACTIVEDIST skill6
+#define EYE_ANIMSPEED skill7
 
+#define EYE_ANIMSTATE skill21
 #define EYE_COUNTER skill22
 #define EYE_STATE skill23
 #define EYE_LASERDIST skill24
@@ -26,6 +28,7 @@
 #define EYE_PATROLLEN skill33
 #define EYE_PATROLDIST skill34
 #define EYE_ZOFFSET skill35
+#define EYE_PATHENT skill36
 
 #define EYE_STATE_INACTIVE 0
 #define EYE_STATE_PATROL 1
@@ -33,6 +36,8 @@
 #define EYE_STATE_ATTACK 3
 #define EYE_STATE_DIE 4
 #define EYE_STATE_DEAD 5
+
+#define EYE_WALKANIM "stand"
 
 BMAP* EYE_BmapDecal = "bulletHoleCool.tga";
 BMAP* EYE_bmapSplatter[5];
@@ -48,19 +53,23 @@ action Eye()
 	if(my->EYE_PATROLSPEED == 0) my->EYE_PATROLSPEED = 15;
 	if(my->EYE_ACTIVEDIST == 0) my->EYE_ACTIVEDIST = 4000;
 	if(my->EYE_ATTACKDIST == 0) my->EYE_ATTACKDIST = 2000;
+	if(my->EYE_ANIMSPEED == 0) my->EYE_ANIMSPEED = 3;
 	my->HEALTH = HEALTH_EYE;
 	vec_scale(me.scale_x, 10);
 //	my->EYE_PATHID = 2;//temp
 	my->material = matObject;
-	if (path_set(my, str_for_num(NULL, my->EYE_PATHID)) == 0)
+	ENTITY* ent = ent_create(NULL, nullvector, NULL);
+	if (path_set(ent, str_for_num(NULL, my->EYE_PATHID)) == 0)
 	{
-		path_set(my, str_for_num(NULL, 0));
+		path_set(ent, str_for_num(NULL, 0));
 	}
 	my->EYE_PATROLLEN = path_length(me);
 	my->EYE_PATHPROGRESS = clamp(my->EYE_PATROLSPEED,0,100) / 100;
-	path_spline (my,&my->x,my->EYE_PATROLLEN * my->EYE_PATHPROGRESS);
+	path_spline (ent,&ent->x,my->EYE_PATROLLEN * my->EYE_PATHPROGRESS);
+	vec_set(&my->x, ent->x);
 	vec_set(&my->EYE_LASTPOS, &my->x);
 	set(my, PASSABLE);
+	my->EYE_PATHENT = handle(ent);
 }	
 
 
@@ -101,10 +110,7 @@ void EYE_Update()
                 }
             }
 
-    		/*DEBUG_VAR(ptr->EYE_STATE, 50);
-    		DEBUG_VAR(ptr->x, 70);
-    		DEBUG_VAR(ptr->y, 90);
-    		DEBUG_VAR(ptr->z, 110);*/			
+			ptr->EYE_ANIMSTATE += ptr->EYE_ANIMSPEED * time_step;
     		ptr->EYE_ZOFFSET = 0;
 
 			/*it's broken and I don't know.*/
@@ -176,7 +182,15 @@ void EYE__patrol(ENTITY* ptr)
 {
 	ptr->EYE_ZOFFSET = 20 * sinv(total_ticks * 20);
 	ptr->EYE_PATROLDIST = cycle(ptr->EYE_PATROLDIST + ptr->EYE_PATROLSPEED*time_step,0,ptr->EYE_PATROLLEN);
-	path_spline (ptr,&ptr->x,ptr->EYE_PATROLDIST );
+	ent_animate(ptr, EYE_WALKANIM, ptr->EYE_ANIMSTATE, ANM_CYCLE);
+	ENTITY* ent = ptr_for_handle(ptr->EYE_PATHENT);
+
+	path_spline (ent,&ent->x,ptr->EYE_PATROLDIST);
+	VECTOR vdiff;
+	vec_diff(&vdiff, &ent->x, &ptr->x);
+	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE;
+	c_move(ptr, nullvector, vdiff, mode);
+
 	ANGLE vecAngle;
 	VECTOR vecDir;
 	vec_diff(&vecDir,&ptr->x,ptr->EYE_LASTPOS);
@@ -246,6 +260,10 @@ void EYE__attack(ENTITY* ptr)
 		{
 			ptr->EYE_STATE = EYE_STATE_INACTIVE;
 		}
+}
+
+void EYE__die(ENTITY* ptr)
+{
 }
 
 void spawneye()

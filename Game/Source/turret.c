@@ -111,7 +111,7 @@ void TURRET_Update()
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
 				SPLATTER_splat(&ptr->x, vector(1.0, 1.0, 0.0));
-				ptr->TURRET_HITLOCKCNT = 7;
+				ptr->TURRET_HITLOCKCNT = 3;
 				ptr->event = NULL;
 				
 				if (ptr->HEALTH <= 0)
@@ -265,7 +265,7 @@ void TURRET__active(ENTITY* ptr)
 			ptr->SHOOT_ANGLE += vTurnStep;
 			ent_bonerotate(ptr, "Bone1", vector(vTurnStep, 0, 0));
 		}
-
+		c_updatehull(ptr,1);
 		ptr->DELAY_COUNTER = cycle(ptr->DELAY_COUNTER, 0, TURRET_SHOOTDELAY);		
 	}
 }

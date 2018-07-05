@@ -4,6 +4,18 @@
 
 #include <acknex.h>
 
+
+#define PRAGMA_BIND "logo.png"
+#define PRAGMA_BIND "screen_1.jpg"
+#define PRAGMA_BIND "screen_2.jpg"
+#define PRAGMA_BIND "screen_3.jpg"
+#define PRAGMA_BIND "screen_4.jpg"
+#define PRAGMA_BIND "screen_5.jpg"
+#define PRAGMA_BIND "screen_6.jpg"
+#define PRAGMA_BIND "screen_7.jpg"
+#define PRAGMA_BIND "screen_8.jpg"
+#define PRAGMA_BIND "screen_9.jpg"
+
 STRING * credits_source = "credits.dat";
 var credits_scrollSpeed = 2.8; // 1 Pixel per quant
 var credits_speedup = 1;

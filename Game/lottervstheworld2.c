@@ -2,6 +2,10 @@
 
 #include "config.h"
 
+#define PRAGMA_LEVEL "menue.wmp"
+#define PRAGMA_LEVEL "bestiary.wmp"
+#define PRAGMA_LEVEL "gamelevel.wmp"
+
 #define PRAGMA_PATH "Source"
 #define PRAGMA_PATH "Shaders"
 #define PRAGMA_PATH "Assets"

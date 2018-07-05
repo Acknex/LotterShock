@@ -196,7 +196,7 @@ BMAP* skyCute_cubemap = "skyCute+6.tga";
 
 MATERIAL* trident_sphere_mat =
 {
-	effect = "Shaders/tridentSphere.fx";
+	effect = "tridentSphere.fx";
 	flags = AUTORELOAD;
 }
 VECTOR vRotatedDirection;

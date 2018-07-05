@@ -4,7 +4,6 @@
 void SKULL_GlobalInit();
 void SKULL_Init();
 void SKULL_Update();
-void SKULL_Destroy();
 
 // local
 void SKULL__toFloor(ENTITY* ptr);

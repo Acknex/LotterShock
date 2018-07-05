@@ -1,23 +1,24 @@
 #ifndef MATERIALS_H
 #define MATERIALS_H
 
+#define PRAGMA_BIND "default.fx"
 #include <mtlView.c>
 
 BMAP *bmapPPOriginal = NULL;
 
 MATERIAL *matLevel =
 {
-	effect = "Shaders/walls_unlit.fx";
+	effect = "walls_unlit.fx";
 }
 
 MATERIAL *matObject =
 {
-	effect = "Shaders/object_basic.fx";
+	effect = "object_basic.fx";
 }
 
 MATERIAL *matSprite =
 {
-	effect = "Shaders/object_sprite.fx";
+	effect = "object_sprite.fx";
 }
 
 BMAP * matNoiseSpriteTexture = "best_noise_10.tga";
@@ -30,78 +31,78 @@ MATERIAL *matNoiseSprite =
 
 MATERIAL *matTree =
 {
-	effect = "Shaders/tree.fx";
+	effect = "tree.fx";
 }
 
 MATERIAL *matIce =
 {
-	effect = "Shaders/ice.fx";
+	effect = "ice.fx";
 }
 
 MATERIAL *matSkull =
 {
-	effect = "Shaders/enemy_skull.fx";
+	effect = "enemy_skull.fx";
 }
 
 MATERIAL *matWeaponBasic =
 {
-	effect = "Shaders/weapon_basic.fx";
+	effect = "weapon_basic.fx";
 }
 
 MATERIAL *matFlesh =
 {
-	effect = "Shaders/flesh_basic.fx";
+	effect = "flesh_basic.fx";
 }
 
 MATERIAL *matIce =
 {
-	effect = "Shaders/ice.fx";
+	effect = "ice.fx";
 }
 
 MATERIAL *matDecalBlood =
 {
-	effect = "Shaders/decal_blood.fx";
+	effect = "decal_blood.fx";
 }
 
 MATERIAL *matDecalBasic =
 {
-	effect = "Shaders/decal_basic.fx";
+	effect = "decal_basic.fx";
 }
 
 
 MATERIAL *matSplatBlood =
 {
-	effect = "Shaders/splat_blood.fx";
+	effect = "splat_blood.fx";
 }
 
 MATERIAL *matDecalGlow =
 {
-	effect = "Shaders/decal_glow.fx";
+	effect = "decal_glow.fx";
 }
 
 MATERIAL *matDecalBullethole =
 {
-	effect = "Shaders/decal_bullethole.fx";
+	effect = "decal_bullethole.fx";
 }
 
 MATERIAL *matPPBlurVertical =
 {
-	effect = "Shaders/pp_blur.fx";
+	effect = "pp_blur.fx";
 }
 
 MATERIAL *matPPBlurHorizontal =
 {
-	effect = "Shaders/pp_blur.fx";
+	effect = "pp_blur.fx";
 }
 
 MATERIAL *matPPCombine =
 {
-	effect = "Shaders/pp_combine.fx";
+	effect = "pp_combine.fx";
 }
 
 MATERIAL *matPPDesync =
 {
-	effect = "Shaders/desync.fx";
+	effect = "desync.fx";
 }
 
 void pp_desync(var strength)
@@ -152,10 +153,10 @@ void SetupDefaultMaterials()
 	camera.fog_start = 0.0;
 	camera.fog_end = 20000.0;
 	
-	effect_load(mtl_model, "Shaders/walls_unlit.fx");
-	effect_load(mtl_flat, "Shaders/walls_unlit.fx");
-	effect_load(mtl_shaded, "Shaders/walls_unlit.fx");
-	effect_load(mtl_sky, "Shaders/sky.fx");
+	effect_load(mtl_model, "walls_unlit.fx");
+	effect_load(mtl_flat, "walls_unlit.fx");
+	effect_load(mtl_shaded, "walls_unlit.fx");
+	effect_load(mtl_sky, "sky.fx");
 }
 
 #endif
