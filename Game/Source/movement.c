@@ -54,6 +54,7 @@ var playerEntMorphBallSpeedAdaptFac = 1;
 VECTOR playerEntMorphBallPinkFlarePos;
 var playerChromaticAbbTime = 0;
 var playerDamageCooldownTime = 0;
+var playerSndFlying;
 
 SOUND* player_snd_step1 = "steps_1.wav";
 SOUND* player_snd_step2 = "steps_2.wav";
@@ -61,6 +62,8 @@ SOUND* player_snd_step3 = "steps_3.wav";
 SOUND* player_snd_jump1 = "jump_1.wav";
 SOUND* player_snd_jump2 = "jump_2.wav";
 SOUND* player_snd_jump3 = "jump_3.wav";
+SOUND* player_snd_flying = "player_flying.wav";
+SOUND* player_snd_flying_stop = "player_flying_stop.wav";
 SOUND* player_snd_hit1 = "player_hit1.wav";
 SOUND* player_snd_hit2 = "player_hit2.wav";
 SOUND* player_snd_hit3 = "player_hit3.wav";
@@ -643,12 +646,23 @@ void movement_update()
 		playerJumpHangtime = maxv(playerJumpHangtime-time_step,0);
 		playerHoverPossible = maxv(playerHoverPossible-time_step,0);
 		var fac = 1;
-		if(!input[INPUT_JUMP].down) playerHoverPossible = playerJumpHangtime = 0;
+		if(!input[INPUT_JUMP].down) 
+		{
+			playerHoverPossible = playerJumpHangtime = 0;
+		}
 		if(playerJumpHangtime > 0) fac = 0.667;
 		if(playerHoverPossible)
 		{
 			fac *= clamp(player.PLAYER_SPEED_Z*0.05,0,1);
 			effect(p_playerSlide_smoke,2,target,vector(0,0,-30-random(30)));
+		}
+		else {
+			if(snd_playing(playerSndFlying))
+			{
+				snd_stop(playerSndFlying);
+				snd_play(player_snd_flying_stop, 100, 0);
+				playerSndFlying = 0;
+			}
 		}
 		player.PLAYER_SPEED_Z = maxv(player.PLAYER_SPEED_Z-fac*24*playerSpeedFac*time_step,-240);
 		c_move(player,nullvector,vector(0,0,player.PLAYER_SPEED_Z*time_step),PLAYER_C_MOVE_MODE_DEFAULT);
@@ -657,6 +671,7 @@ void movement_update()
 
 		if(input[INPUT_JUMP].justPressed && playerExtraJumpsLeft > 0 && !playerJumpNotOk)
 		{
+			playerSndFlying = snd_play(player_snd_flying, 100, 0);
 			playerExtraJumpsLeft--;
 			playerJumpHangtime = 6;
 			playerHoverPossible = 16;
