@@ -62,7 +62,7 @@ void SKULL_GlobalInit()
 
 void SKULL_Init()
 {
-	ENTITY* ptr = ent_create("whiskas.mdl", vector(5800,-6050,250), Skull); // biodome
+	// ENTITY* ptr = ent_create("whiskas.mdl", vector(5800,-6050,250), Skull); // biodome
 }
 
 void SKULL_Update()
