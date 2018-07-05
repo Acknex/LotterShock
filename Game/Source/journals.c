@@ -24,10 +24,11 @@ void journals_update() {
 	ENTITY *ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_JOURNAL) {
 		
+		
 		if (mouse_ent == ptr) {
 			if (input_hit(INPUT_USE)) {
 				
-				if (is(journal_pan, SHOW)) {
+				if (is(journal_pan, SHOW) == 0) {
 					ent_playsound(ptr, snd_beep, 100);
 					
 					switch(ptr.JOURNAL_ID) {
@@ -50,15 +51,18 @@ void journals_update() {
 					}
 					
 					show_journal();
-					journal_delay = 200;
-				} else {
-					journal_delay -=1*time_step;
-					if (journal_delay <= 0) {
-						hide_journal();
-					}
-					draw_text(str_cat("Journal show time", str_for_num(NULL, journal_delay)), 100, 10, COLOR_RED);
+					journal_delay = 400;
 				}
 			}
-		}	
+		}
+		
+		if (is(journal_pan, SHOW) && (journal_delay > 0)) {
+			journal_delay -=1*time_step;
+			if (journal_delay <= 0) {
+				hide_journal();
+			}
+			//draw_text(str_cat("Journal show time", str_for_num(NULL, journal_delay)), 100, 10, COLOR_RED);
+			
+		}
 	}
 }

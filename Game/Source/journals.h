@@ -19,7 +19,7 @@ TEXT *journal_txt = {
 
 void show_journal();
 void hide_journal();
-void journal;
+void journal();
 void journals_update();
 
 STRING *journal_01_str = "This is only my 3rd Tour with the Patchnotes but it doesn't seem to get any less crazy around here. The Science guys are working on some out of this world computer stuff. Don't understand a word of it. I hope I can make friends here. I miss my family.";
