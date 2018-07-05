@@ -402,7 +402,7 @@ void hud_update()
 	var player_maxhealth = playerGetMaxHealth();
 	var player_health = playerGetHealth();
 	
-	STRING *infostring = str_printf(NULL, "%d", (int)player_health);
+	STRING *infostring = str_printf(NULL, "%d", (int)floor(player_health+0.999));
 	str_cpy((HUD_HP_infotext->pstring)[0], infostring);
 	//
 	//hud_update_bar(HUD_HP_bars, hud_healthbar_bmap, player_health, player_maxhealth);
