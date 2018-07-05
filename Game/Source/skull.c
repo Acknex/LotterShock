@@ -5,6 +5,7 @@
 #include "enemy_hit.h"
 #include "ang.h"
 #include "particle.h"
+#include "settings.h"
 
 #define SKL_RUNSPEED skill1
 #define SKL_TURNSPEED skill2
@@ -337,7 +338,8 @@ void SKULL__hit(ENTITY* ptr)
 
 	/* transitions */
 	if (ptr->HEALTH <= 0)
-	{
+    {
+        achievement_kill_beast(BEAST_SKULL);
 		reset(ptr, TRANSLUCENT);
 		snd_play(skull_snd_death, 100, 0);
 		ptr->SKL_STATE = SKL_STATE_DIE;

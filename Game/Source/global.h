@@ -29,24 +29,25 @@ typedef int bool;
 #define SUBSYSTEM_skill_c skill59
 
 
-#define SUBSYSTEM_FRAMEWORK     1
-#define SUBSYSTEM_USABLES       2
-#define SUBSYSTEM_CREDITS       3
-#define SUBSYSTEM_COLLECTIBLES  4
-#define SUBSYSTEM_HUD           5
-#define SUBSYSTEM_JOURNAL       6
-#define SUBSYSTEM_INPUT         7
-#define SUBSYSTEM_MUSIC         8
-#define SUBSYSTEM_WEAPONS       9
-#define SUBSYSTEM_PROJECTILE    10
-#define SUBSYSTEM_DOORS         11
-#define SUBSYSTEM_KEYPADS       12
-#define SUBSYSTEM_JOURNALS      13
-#define SUBSYSTEM_ENVIRONMENT   14
-#define SUBSYSTEM_BESTIARY      15
-#define SUBSYSTEM_ENEMY_GIB     105
-#define SUBSYSTEM_ENEMY_PROJECTILE 16
-#define SUBSYSTEM_BESTIARYTURRET   17
+#define SUBSYSTEM_FRAMEWORK         1
+#define SUBSYSTEM_USABLES           2
+#define SUBSYSTEM_CREDITS           3
+#define SUBSYSTEM_COLLECTIBLES      4
+#define SUBSYSTEM_HUD               5
+#define SUBSYSTEM_JOURNAL           6
+#define SUBSYSTEM_INPUT             7
+#define SUBSYSTEM_MUSIC             8
+#define SUBSYSTEM_WEAPONS           9
+#define SUBSYSTEM_PROJECTILE        10
+#define SUBSYSTEM_DOORS             11
+#define SUBSYSTEM_KEYPADS           12
+#define SUBSYSTEM_JOURNALS          13
+#define SUBSYSTEM_ENVIRONMENT       14
+#define SUBSYSTEM_BESTIARY          15
+#define SUBSYSTEM_ENEMY_PROJECTILE  16
+#define SUBSYSTEM_ENEMY_GIB         17
+#define SUBSYSTEM_MAINMENU          18
+
 
 #define SUBSYSTEM_ENEMY_LERCHE  1000
 #define SUBSYSTEM_ENEMY_WARLOCK 1001

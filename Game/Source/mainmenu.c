@@ -1,11 +1,15 @@
 #include "mainmenu.h"
 #include "input.h"
+#include "global.h"
+#include "framework.h"
+#include <acknex.h>
 
 #define MAINMENU_ITEM_COUNT 4
 
 #define MAINMENU_BORDER_PADDING 16
 #define MAINMENU_FADE_SPEED 25
 
+SOUND * mainmenu_stupid = "aiaiaiai.ogg";
 
 BMAP * mainmenu_start_bmap = "mainmenu_start.png";
 BMAP * mainmenu_credits_bmap = "mainmenu_credits.png";
@@ -52,14 +56,16 @@ PANEL * mainmenu_items[MAINMENU_ITEM_COUNT];
 
 PANEL* mainmenue_title =
 {
-	bmap = "Menuetitle.png";
-	flags = TRANSLUCENT;
-	layer = 2;
+    bmap = "Menuetitle.png";
+    flags = TRANSLUCENT;
+    layer = 2;
 }
 
 int mainmenu_selection;
 
 int mainmenu_response;
+
+var mainmenu_cameradist;
 
 int mainmenu_get_response()
 {
@@ -89,20 +95,19 @@ void mainmenu_open()
     mouse_mode = 4;
     mainmenu_selection = 0;
     mainmenu_response = MAINMENU_RESPONSE_STILLACTIVE;
-    
+
     mainmenue_title->pos_x = (screen_size.x-mainmenue_title.size_x) /2;
-´   mainmenue_title->pos_y = 40;
+    mainmenue_title->pos_y = 40;
     set(mainmenue_title, SHOW);
-    
-	fog_color = 2;
-	camera.fog_end = 20000.0;
+
+    fog_color = 2;
+    camera.fog_end = 20000.0;
     level_load("menue.wmb");
-    wait_for(level_load);
-    wait(3);
+    mainmenu_cameradist = vec_dist(nullvector, camera.x);
 }
 
 void mainmenu_update()
-{	
+{
     int i;
 
     if(input_hit(INPUT_DOWN) && mainmenu_selection < (MAINMENU_ITEM_COUNT-1))
@@ -143,14 +148,35 @@ void mainmenu_update()
     var attack = input_hit(INPUT_ATTACK) && (!mouse_left || (mouse_left && (mouse_panel != NULL)));
     if(input_hit(INPUT_USE) || attack || input_hit(INPUT_JUMP))
     {
-        snd_play(mainmenu_accept_snd, 100, 0);
-        switch(mainmenu_selection)
+        if((mouse_panel == mainmenue_title) && (mouse_left))
         {
-        case 0: mainmenu_response = MAINMENU_RESPONSE_START; break;
-        case 1: mainmenu_response = MAINMENU_RESPONSE_CREDITS; break;
-        case 2: mainmenu_response = MAINMENU_RESPONSE_BESTIARY; break;
-        case 3: mainmenu_response = MAINMENU_RESPONSE_EXIT; break;
+            snd_play(mainmenu_stupid, 100, 0);
         }
+        else
+        {
+            snd_play(mainmenu_accept_snd, 100, 0);
+            switch(mainmenu_selection)
+            {
+            case 0: mainmenu_response = MAINMENU_RESPONSE_START; break;
+            case 1: mainmenu_response = MAINMENU_RESPONSE_CREDITS; break;
+            case 2: mainmenu_response = MAINMENU_RESPONSE_BESTIARY; break;
+            case 3: mainmenu_response = MAINMENU_RESPONSE_EXIT; break;
+            }
+        }
+    }
+
+    // rotate the camera a bit
+    camera->x = sin(total_ticks) * mainmenu_cameradist;
+    camera->y = cos(total_ticks) * mainmenu_cameradist;
+
+    VECTOR temp;
+    vec_set(temp, camera->x);
+    vec_scale(temp, -1);
+    vec_to_angle(camera->pan, temp);
+
+    SUBSYSTEM_LOOP(you, SUBSYSTEM_MAINMENU)
+    {
+        you->pan -= you->skill[0] * time_step;
     }
 }
 
@@ -165,118 +191,99 @@ void mainmenu_close()
     reset(mainmenue_title, SHOW);
 }
 
-action menuelevel_anchor()
+
+// skill1: Rotatespeed
+action MainmenuRotator()
 {
-	var camera_distance = vec_dist(&my->x, camera.x);
-	while(1)
-	{
-		if(str_cmp(level_name, "menue.wmb"))
-		{
-			camera->x = sin(total_ticks)*camera_distance;
-			camera->y = cos(total_ticks)*camera_distance;
-			
-			VECTOR diff;
-			vec_set(&diff, &my.x);
-			vec_sub(&diff, camera->x);
-			vec_to_angle(camera->pan, &diff);
-		}
-		wait(1);
-	}
+    framework_setup(me, SUBSYSTEM_MAINMENU);
+
+    my->alpha = 100;
+    if(my->skill1 == 0)
+        my->skill1 = 10;
 }
 
-//Henrik,s blöder code 
-action act_TFL1()
-
+action MainmenuLightflare()
 {
-
-
-
-	{
-
-//	 set(my, FLAG1);
-   }
-	if(my->string1 == NULL)
-	{
-	error("an animationobject has no animation set");
-	return;
-
-	}
-
-	if(str_cmpi(my->string1, ""))
-
-	{
-	error("an animationobject has no animation set");
-	return;
-
-	}
-
-	
-
-	if(my->skill[0] == 0)
-
-	my->skill[0] = 1;
-
-	if(my->skill[1] == 0)
-
-	my->skill[1] = 10;
-
-	while(1)
-
-	{
-
-		my->skill[99] = (my->skill[99] +my->skill[0]*time_step) %100;
-   	ent_animate(my, my->string1, my->skill[99], ANM_CYCLE);
-		my->pan -= my->skill[0.5]*time_step;
-		wait(1);
-
-	}
-
+   my->alpha = 100;
+   my->flags |= (BRIGHT|TRANSLUCENT);
+   my.emask &= ~DYNAMIC;
 }
+/*
 
++//Henrik,s bl<F6>der code ^M
++action act_TFL1()^M
++^M
++{^M
++^M
++^M
++^M
++       {^M
++^M
++//      set(my, FLAG1);^M
++   }^M
++       if(my->string1 == NULL)^M
++       {^M
++       error("an animationobject has no animation set");^M
++       return;^M
++^M
++       }^M
++^M
++       if(str_cmpi(my->string1, ""))^M
++^M
++       {^M
++       error("an animationobject has no animation set");^M
++       return;^M
++^M
++       }^M
++^M
++       ^M
++^M
++       if(my->skill[0] == 0)^M
++^M
++       my->skill[0] = 1;^M
++^M
++       if(my->skill[1] == 0)^M
++^M
++       my->skill[1] = 10;^M
++^M
++       while(1)^M
++^M
++       {^M
++^M
++               my->skill[99] = (my->skill[99] +my->skill[0]*time_step) %100;^M
++       ent_animate(my, my->string1, my->skill[99], ANM_CYCLE);^M
++               my->pan -= my->skill[0.5]*time_step;^M
++               wait(1);^M
++^M
++       }^M
++^M
++}^M
++^M
++^M
 
-action act_rotator()
-{
-	my->alpha = 100;
-	if(my->skill[0] == 0)
-		my->skill[0] = 10;
++^M
++action act_animation()^M
++{^M
++       if(my->string1 == NULL)^M
++       {^M
++               error("an animationobject has no animation set");^M
++               return;^M
++       }^M
++^M
++       if(str_cmpi(my->string1, ""))^M
++       {^M
++               error("an animationobject has no animation set");^M
++               return;^M
++       }^M
++       if(my->skill[0] == 0)^M
++               my->skill[0] = 1;^M
++^M
++       while(1)^M
++       {^M
++               my->skill[1] = (my->skill[1] +my->skill[0]*time_step) %100;^M
++               ent_animate(my, my->string1, my->skill[1], ANM_CYCLE);^M
++               wait(1);^M
++       }^M
++}^M
 
-	while(1)
-	{
-		my->pan -= my->skill[0]*time_step;
-		wait(1);
-	}
-}
-
-action act_lightflares()
-{
-	my->alpha = 100;
-
-	my->flags |= (BRIGHT|TRANSLUCENT);
-
-   
-	my.emask &= ~DYNAMIC;
-}
-
-action act_animation()
-{
-	if(my->string1 == NULL)
-	{
-		error("an animationobject has no animation set");
-		return;
-	}
-
-	if(str_cmpi(my->string1, ""))
-	{
-		error("an animationobject has no animation set");
-		return;
-	}
-	if(my->skill[0] == 0)
-		my->skill[0] = 1;
-
-	while(1)
-	{
-		my->skill[1] = (my->skill[1] +my->skill[0]*time_step) %100;
-		ent_animate(my, my->string1, my->skill[1], ANM_CYCLE);
-		wait(1);
-	}
-}
+*/

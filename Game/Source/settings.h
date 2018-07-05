@@ -1,6 +1,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include "bestiary.h"
+
 typedef struct settings_t
 {
     // Resolution
@@ -20,12 +22,25 @@ typedef struct settings_t
     var input_sensitivity;
 } settings_t;
 
+typedef struct achievements_t
+{
+    bool bestiary_unlocked[BEAST_COUNT];
+} achievements_t;
+
 settings_t settings;
+
+achievements_t achievements;
 
 void settings_init();
 
 void settings_load();
 
 void settings_save();
+
+void achievements_load();
+
+void achievements_save();
+
+void achievement_kill_beast(int beastid);
 
 #endif // SETTINGS_H

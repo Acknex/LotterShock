@@ -21,6 +21,14 @@ MATERIAL *matSprite =
 	effect = "object_sprite.fx";
 }
 
+BMAP * matNoiseSpriteTexture = "best_noise_10.tga";
+
+MATERIAL *matNoiseSprite =
+{
+    effect = "Shaders/object_noisesprite.fx";
+    skin1 = matNoiseSpriteTexture;
+}
+
 MATERIAL *matTree =
 {
 	effect = "tree.fx";
