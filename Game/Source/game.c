@@ -101,7 +101,7 @@ void game_update()
 
 void game_close()
 {
-	pp_desync(0);
+	pp_desync(0, 0);
     movement_close();
 	projectiles_close();
     hud_hide();

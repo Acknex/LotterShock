@@ -105,9 +105,10 @@ MATERIAL *matPPDesync =
 	effect = "desync.fx";
 }
 
-void pp_desync(var strength)
+void pp_desync(var strength, var contrast)
 {
 	matPPDesync.skill1 = floatv(strength);
+	matPPDesync.skill2 = floatv(contrast);
 }
 
 void UpdateRenderTargets()
