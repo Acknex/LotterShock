@@ -93,7 +93,7 @@ void input_add_axis(int inputID, var * value, float scale, float deadZone, bool 
     }
 }
 
-#define INPUT_CHEAT_COUNT 6
+#define INPUT_CHEAT_COUNT 7
 
 typedef struct cheatcode_t
 {
@@ -193,6 +193,11 @@ void input_cheat_weapons_and_keys()
     story_enginesEnabled = 1;
 }
 
+void input_cheat_suicide()
+{
+    playerAddHealth(-999);
+}
+
 void input_cheat_all_die()
 {
     ENTITY * it;
@@ -265,6 +270,9 @@ void input_init()
 
     cheatcodes[5].text = "idkfa";
     cheatcodes[5].trigger = input_cheat_weapons_and_keys;
+
+    cheatcodes[6].text = "idseppuku";
+    cheatcodes[6].trigger = input_cheat_suicide;
 
     int i,k;
 
