@@ -1,3 +1,39 @@
+#include "journals.h"
+#include "global.h"
+#include "framework.h"
+
+#include <acknex.h>
+
+#define JOURNAL_ID skill1
+
+#define JOURNAL_MINTIME_PER_CHAR (0.06 * 16) // measure for average text length designed by text[2]
+
+FONT * journal_fnt = "Arial#16b";
+
+PANEL *journal_pan =
+{
+    bmap = "journal.tga";
+    flags = TRANSLUCENT;
+    layer = 1;
+    alpha = 0;
+}
+
+TEXT *journal_txt =
+{
+    flags = WWRAP | TRANSLUCENT;
+    font = journal_fnt;
+    strings = 1;
+    layer = 2;
+    red = 0;
+    green = 0;
+    blue = 0;
+    alpha = 0;
+}
+
+int journals_current = 0;
+var journals_mediahandle = 0;
+var journals_mindelay = 0;
+
 void journals_init()
 {
 	// Lt. Woll
@@ -82,64 +118,109 @@ void journals_init()
 	journals[17].media = "";
 	journals[17].name = crew_name9;
 
-
-
-
+    journals_mediahandle = 0;
+    journals_current = -1;
 }
 
-void show_journal() {
+void journals_quit()
+{
+    reset(journal_pan, SHOW);
+    reset(journal_txt, SHOW);
+    if(journals_mediahandle != 0)
+    {
+        media_stop(journals_mediahandle);
+    }
+    journals_mediahandle = 0;
+    journals_current = -1;
+}
+
+void show_journal()
+{
 	journal_pan.pos_x = 0;
 	journal_pan.pos_y = 0;
 	
-	journal_txt.pos_x = journal_pan.pos_x + 100;
+    journal_txt.pos_x = journal_pan.pos_x + 10;
 	journal_txt.pos_y = journal_pan.pos_y + 10;
 	
-	journal_txt.size_x = bmap_width(journal_pan.bmap) - 100;
+    journal_txt.size_x = bmap_width(journal_pan.bmap) - 20;
+    journal_txt->size_y = bmap_height(journal_pan.bmap) - 20;
 	
 	set(journal_pan, SHOW);
 	set(journal_txt, SHOW);
 }
 
-void hide_journal() {
+void hide_journal()
+{
 	reset(journal_pan, SHOW);
 	reset(journal_txt, SHOW);
 }
 
-action journal() {	
+action journal()
+{
 	framework_setup(my, SUBSYSTEM_JOURNAL);
+    my.INTERACTIBLE = 1;
 }
 
-void journals_update() {
+void journals_update()
+{
 	ENTITY *ptr;
-	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_JOURNAL) {
-		
-		
-		if (mouse_ent == ptr) {
-			if (input_hit(INPUT_USE)) {
-				
-				if (is(journal_pan, SHOW) == 0) {
-					if(ptr.JOURNAL_ID >= MAX_JOURNALS)
-						return;
-					
-					str_cpy((journal_txt.pstring)[0], journals[ptr.JOURNAL_ID].text);
-					if(strcmp(journals[ptr.JOURNAL_ID].media, "") == 1)
-					{
-						media_play(journals[ptr.JOURNAL_ID].media, NULL, 100);
-					}
-					
-					show_journal();
-					journal_delay = 400;
-				}
-			}
-		}
-		
-		if (is(journal_pan, SHOW) && (journal_delay > 0)) {
-			journal_delay -=1*time_step;
-			if (journal_delay <= 0) {
-				hide_journal();
-			}
-			//draw_text(str_cat("Journal show time", str_for_num(NULL, journal_delay)), 100, 10, COLOR_RED);
-			
-		}
+    SUBSYSTEM_LOOP(ptr, SUBSYSTEM_JOURNAL)
+    {
+        if (mouse_ent == ptr && input_hit(INPUT_USE))
+        {
+            if(ptr.JOURNAL_ID >= MAX_JOURNALS)
+                return;
+            if (journals_current == -1)
+            {
+                journals_current = ptr.JOURNAL_ID;
+                journals_mindelay = JOURNAL_MINTIME_PER_CHAR * str_len(journals[journals_current].text);
+
+                str_cpy((journal_txt.pstring)[0], journals[journals_current].text);
+
+                if(journals_mediahandle != 0)
+                    media_stop(journals_mediahandle);
+
+                if(strcmp(journals[journals_current].media, "") != 0)
+                {
+                    journals_mediahandle = media_play(journals[journals_current].media, NULL, 100);
+                }
+                else
+                {
+                    journals_mediahandle = 0;
+                }
+                break; // can break out of the loop here
+            }
+        }
 	}
+
+    if(journals_current >= 0)
+    {
+        show_journal();
+        journal_pan->alpha = clamp(journal_pan->alpha + 5 * time_step, 0, 100);
+
+        if(media_playing(journals_mediahandle) || (journals_mindelay >= 0))
+        {
+            journals_mindelay -= time_step;
+        }
+        else
+        {
+            journals_current = -1;
+        }
+#ifdef DEBUG
+        DEBUG_VAR(journals_mindelay, 256);
+#endif
+
+    }
+    else
+    {
+        if(journals_mediahandle != 0)
+        {
+                media_stop(journals_mediahandle);
+                journals_mediahandle = 0;
+        }
+        journal_pan->alpha = clamp(journal_pan->alpha - 5 * time_step, 0, 100);
+        if(journal_pan->alpha == 0)
+            hide_journal();
+    }
+    journal_txt->alpha = journal_pan->alpha;
 }
