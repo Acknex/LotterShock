@@ -27,6 +27,7 @@ void game_init()
     SKULL_GlobalInit();
     EYE_GlobalInit();
     map_init();
+    journals_init();
 }
 
 void game_open()
