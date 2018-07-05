@@ -402,7 +402,7 @@ void movement_update()
 		{
 			camera.roll = minv(camera.roll + 120*time_step/16, 80);
 		}
-		pp_desync(sinv(15*total_ticks)*15, sinv(6*total_ticks)*15);
+		pp_desync(sinv(15*total_ticks)*15, sinv(7*total_ticks)*25);
 		return;
 	}
 #ifdef DEBUG
