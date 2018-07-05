@@ -112,6 +112,7 @@ void ESELSLERCHE_Update()
 				ptr->DAMAGE_HIT = 0;
 				ptr->event = NULL;
 				ptr->EL_STATE = EL_STATE_HIT;
+				ptr->EL_ANIMSTATE = 0;
 				switch(integer(random(2)))
 				{
 					case 0: snd_play(eselslerche_snd_hit1, 100, 0); break;
@@ -333,7 +334,9 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 	if (animState <=45)
 		animMirror = animState;
 	else
+	{
 		animMirror = 90 - animState;
+	}
 	ent_animate(ptr, EL_HITANIM, animMirror, 0);
 	
 	VECTOR dir;
@@ -361,9 +364,12 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 		ptr->EL_ANIMSTATE = 0;
 		vec_zero(ptr->DAMAGE_VEC);
 	}
+	else if (animState >= 20)
+	{
+		ptr->event = ENEMY_HIT_event;		
+	}
 	else
 	{
-		
 	}
 }
 

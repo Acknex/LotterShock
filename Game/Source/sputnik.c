@@ -114,7 +114,7 @@ void SPUTNIK_Update()
 			if (ptr->DAMAGE_HIT > 0)
 			{
 				ptr->event = NULL;
-				ptr->SPUTNIK_SPLATTERTHRESHOLD = 7;
+				ptr->SPUTNIK_SPLATTERTHRESHOLD = 3;
 				//DEBUG_VAR(ptr->DAMAGE_HIT, 260);
 				/* SPUTNIK has no hit sounds
 				if (ptr->SPUTNIK_SOUNDHANDLE != 0)
