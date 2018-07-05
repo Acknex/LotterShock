@@ -170,7 +170,7 @@ void journals_update()
         {
             if(ptr.JOURNAL_ID >= MAX_JOURNALS)
                 return;
-            if (journals_current == -1)
+            if (ptr.JOURNAL_ID != journals_current)
             {
                 journals_current = ptr.JOURNAL_ID;
                 journals_mindelay = JOURNAL_MINTIME_PER_CHAR * str_len(journals[journals_current].text);
