@@ -26,11 +26,23 @@ void journals_init();
 typedef struct journal_t
 {
 	STRING* text;
+	STRING* name;
 	STRING* media;
 } journal_t;
 
 #define MAX_JOURNALS 18
 journal_t journals[MAX_JOURNALS];
+
+STRING* crew_name0 = "Lt. Woll";
+STRING* crew_name1 = "Lt. Cmdr. Queissner";
+STRING* crew_name2 = "Dr. Horstmann";
+STRING* crew_name3 = "Dr. Pohl";
+STRING* crew_name4 = "Cmdr. Daumann";
+STRING* crew_name5 = "1st Office Truempler";
+STRING* crew_name6 = "Cpt. Kappes";
+STRING* crew_name7 = "Ens. Schwarz";
+STRING* crew_name8 = "Ens. Jaeger";
+STRING* crew_name9 = "Lt. Freiknecht";
 
 /*
 STRING *journal_01_str = "This is only my 3rd Tour with the Patchnotes but it doesn't seem to get any less crazy around here. The Science guys are working on some out of this world computer stuff. Don't understand a word of it. I hope I can make friends here. I miss my family.";
