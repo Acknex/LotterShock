@@ -16,6 +16,8 @@
 #define TURRET_ROTMODE skill27
 #define TURRET_ROTTIMER skill28
 #define TURRET_HITLOCKCNT skill29
+#define TURRET_LASTTILT skill30
+#define SHOOT_ELEVATION skill31
 
 #define TURRETOPEN 0
 #define TURRETCLOSE 1
@@ -34,6 +36,7 @@
 #include "global.h"
 #include "splatter.h"
 #include "settings.h"
+#include "scan.h"
 
 void TURRET__init();
 void TURRET__shoot(ENTITY* ptr);
@@ -81,6 +84,7 @@ void TURRET__init()
 	ENEMY_HIT_init(my);
 	my->HEALTH = HEALTH_TURRET;
 	my->DELAY_COUNTER = 0;
+	my->TURRET_LASTTILT = 0;
 	my->TURRET_STATE = TURRETSLEEP;
 	set(my, PASSABLE | POLYGON | FLAG1);
 	ent_animate(my, "closed", 0, 0);
@@ -90,7 +94,10 @@ void TURRET__init()
 void TURRET_Init()
 {
 	//DEBUG
-	// ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,10), turret_rotccw);
+	//ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,10), turret_rotccw);
+	//ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,440), turret_rotccw);
+	ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,10), turret_rotccw);
+	//ptr->tilt=0;
 }
 
 void TURRET_Update()
@@ -180,6 +187,8 @@ void TURRET__turnOn(ENTITY* ptr)
 	if (ptr->ANIM_COUNTER >= 100)
 	{
 		ptr->TURRET_STATE = TURRETACTIVE;
+		ent_bonereset(ptr, "Bone1");
+		ptr->SHOOT_ANGLE = 0;
 	}
 	ptr->ANIM_COUNTER = minv(100, ptr->ANIM_COUNTER);
 	ent_animate(ptr, "open", ptr->ANIM_COUNTER, 0);
@@ -248,6 +257,15 @@ void TURRET__active(ENTITY* ptr)
 			default:
 				break;
 		}
+
+		VECTOR vecdir;
+		vec_diff(&vecdir, &player->x, &ptr->x);
+		ANGLE vecang;
+		vec_to_angle(&vecang, &vecdir);
+		ptr->SHOOT_ELEVATION = -vecang.tilt;
+		ent_bonereset(ptr, "Bone3");
+		ent_bonerotate(ptr, "Bone3", vector(0, ptr->SHOOT_ELEVATION, 0));
+
 		if (ptr->TURRET_ROTMODE == TURRETTURNAIM)
 		{
 			VECTOR vecDist;
@@ -273,11 +291,11 @@ void TURRET__active(ENTITY* ptr)
 void TURRET__die(ENTITY* ptr)
 {
 		
-		effect(p_spark, 1, ptr.x, vector(6,6,6));
-		ptr->ANIM_COUNTER += TURRET_ANIMDIESPEED * time_step;
-		ptr->ANIM_COUNTER = minv(100, ptr->ANIM_COUNTER);
-		ent_animate(ptr, "die", ptr->ANIM_COUNTER, 0);	
-		ent_bonerotate(ptr, "Bone1", vector(ptr->SHOOT_ANGLE, 0, 0));
+	effect(p_spark, 1, ptr.x, vector(6,6,6));
+	ptr->ANIM_COUNTER += TURRET_ANIMDIESPEED * time_step;
+	ptr->ANIM_COUNTER = minv(100, ptr->ANIM_COUNTER);
+	ent_animate(ptr, "die", ptr->ANIM_COUNTER, 0);	
+	ent_bonerotate(ptr, "Bone1", vector(ptr->SHOOT_ANGLE, 0, 0));
 	
 	if (ptr->ANIM_COUNTER >= 100)
 	{
@@ -303,7 +321,8 @@ void TURRET__dead(ENTITY* ptr)
 void TURRET__sleep(ENTITY* ptr)
 {
 	ptr->event = NULL;
-	if (vec_dist(player->x, ptr->x) < TURRET_ATTACKRANGE)
+	//if (vec_dist(player->x, ptr->x) < TURRET_ATTACKRANGE)
+	if(SCAN_IsPlayerInSight(ptr,TURRET_ATTACKRANGE,360))
 	{
 		ptr->TURRET_STATE = TURRETOPEN;
 		snd_play(sndTurretUp, 100, 0);
@@ -324,7 +343,7 @@ void TURRET__shoot(ENTITY* ptr)
 	VECTOR vecPos;
 	vec_for_vertex(&vecPos, ptr, ptr->TURRET_TOGGLE);
 	VECTOR* vecDist = vector(-30, 0, 0);
-	ANGLE* angRot = vector(ptr->SHOOT_ANGLE, 0, 0);
+	ANGLE* angRot = vector(ptr->SHOOT_ANGLE, ptr->SHOOT_ELEVATION, 0);
 	vec_rotate(vecDist, angRot);
 	vec_add (vecDist, &vecPos);
 	snd_play(sndTurretShot, 100, 0);
