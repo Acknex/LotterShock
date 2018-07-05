@@ -60,6 +60,7 @@ void settings_init()
 
 void settings_load_from(STRING * fileName)
 {
+    diag(str_printf(NULL, "\nLoading settings from %s", _chr(fileName)));
     settings.fps_limit    = ini_read_int(fileName, "Game", "fps_limit", settings.fps_limit);
     settings.anisotropy   = ini_read_int(fileName, "Game", "anisotropy", settings.anisotropy);
     settings.vsync        = ini_read_int(fileName, "Game", "vsync", settings.vsync);
@@ -81,6 +82,7 @@ void settings_load()
 
 void settings_save()
 {
+    diag(str_printf(NULL, "\nSaving settings to %s", _chr(settings_file)));
     ini_write_int(settings_file, "Game", "fps_limit", settings.fps_limit);
     ini_write_int(settings_file, "Game", "anisotropy", settings.anisotropy);
     ini_write_int(settings_file, "Game", "vsync", settings.vsync);
@@ -97,6 +99,7 @@ void settings_save()
 
 void achievements_load()
 {
+    diag(str_printf(NULL, "\nLoading achivements from %s", _chr(settings_file)));
     int i;
     char buffer[64];
     for(i = 0; i < BEAST_COUNT; i++)
@@ -108,6 +111,7 @@ void achievements_load()
 
 void achievements_save()
 {
+    diag(str_printf(NULL, "\nSaving achievements to %s", _chr(settings_file)));
     int i;
     char buffer[64];
     for(i = 0; i < BEAST_COUNT; i++)
