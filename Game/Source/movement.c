@@ -76,6 +76,22 @@ void player_initSpawn()
 	playerHealth = playerHealthMax;
     movement_cheat_invincibility = false;
     movement_cheat_clipmode = false;
+
+    VECTOR spawnPos,vMin,vMax;
+    if(region_get("playerSpawn",1,vMin,vMax) == 0) // kein spawnareal gefunden
+    {
+        error("region 'playerSpawn' not found!");
+        return;
+    }
+    vec_lerp(spawnPos,vMin,vMax,0.5);
+    player = ent_create("cbabe_male.mdl", spawnPos, NULL);
+    //set(player,INVISIBLE);
+    player.material = matObject;
+    player.group = GROUP_PLAYER;
+    playerHealth = playerHealthMax;
+
+    // HACK: place player on the ground
+    movement_update();
 }
 
 void movement_close()
@@ -437,18 +453,6 @@ void movement_update()
 	
 	// DEBUG_VAR(playerDamageCooldownTime, 0);
 
-	if(!player)
-	{
-		VECTOR spawnPos,vMin,vMax;
-		if(region_get("playerSpawn",1,vMin,vMax) == 0) // kein spawnareal gefunden
-		return;
-		vec_lerp(spawnPos,vMin,vMax,0.5);
-		player = ent_create("cbabe_male.mdl", spawnPos, NULL);
-		//set(player,INVISIBLE);
-		player.material = matObject;
-		player.group = GROUP_PLAYER;
-		playerHealth = playerHealthMax;
-	}
 	vec_set(player.blue,vector(230,245,255));
 	player.lightrange = 1000;
 	sun_light = 0;
