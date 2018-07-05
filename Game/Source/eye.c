@@ -100,6 +100,15 @@ void EYE_Update()
 	{
 		if (player)
 		{
+            if(vec_dist(ptr->x, player->x) < 1000)
+            {
+                VECTOR tmp;
+                vec_set(tmp, ptr->x);
+                if(vec_to_screen(tmp, camera))
+                {
+                    achievement_kill_beast(BEAST_EYE);
+                }
+            }
 
 			ptr->EYE_ANIMSTATE += ptr->EYE_ANIMSPEED * time_step;
     		ptr->EYE_ZOFFSET = 0;

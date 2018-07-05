@@ -402,7 +402,7 @@ void movement_update()
 		{
 			camera.roll = minv(camera.roll + 120*time_step/16, 80);
 		}
-		pp_desync(sinv(15*total_ticks)*15);
+		pp_desync(sinv(15*total_ticks)*15, sinv(6*total_ticks)*15);
 		return;
 	}
 #ifdef DEBUG
@@ -423,8 +423,15 @@ void movement_update()
 		vec_add(camera.x,temp);
 		return;
 	}
+
+	// desync screen on hits and when health is low
 	playerChromaticAbbTime = maxv(0, playerChromaticAbbTime - time_step/16);
-	pp_desync(playerChromaticAbbTime/0.4*30);
+	var additionalEffect = maxv(40-playerHealth, 0)/40;
+	pp_desync(
+		playerChromaticAbbTime/0.4*30,
+		sinv(6*total_ticks)*10*additionalEffect
+	);
+
 	if(playerDamageCooldownTime > 0)
 		playerDamageCooldownTime -= 1 * time_step;
 	

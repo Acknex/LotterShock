@@ -8,6 +8,7 @@
 #include "particle.h"
 #include "movement.h"
 #include "ang.h"
+#include "settings.h"
 
 #define EL_RUNSPEED skill1
 #define EL_TURNSPEED skill2
@@ -348,6 +349,7 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 	/* transitions */
 	if (ptr->HEALTH <= 0)
 	{
+        achievement_kill_beast(BEAST_ESELSLERCHE);
 		ptr->EL_ANIMSTATE = 0;
 		ptr->EL_STATE = EL_STATE_DIE;
 		switch(integer(random(2)))

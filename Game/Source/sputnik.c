@@ -7,6 +7,7 @@
 #include "gib.h"
 #include "particle.h"
 #include "ang.h"
+#include "settings.h"
 
 #define SPUTNIK_RUNSPEED skill1
 #define SPUTNIK_TURNSPEED skill2
@@ -112,7 +113,7 @@ void SPUTNIK_Update()
 			
     		//DEBUG_VAR(ptr->DAMAGE_HIT, 240);
 			if (ptr->DAMAGE_HIT > 0)
-			{
+            {
 				ptr->event = NULL;
 				ptr->SPUTNIK_SPLATTERTHRESHOLD = 3;
 				//DEBUG_VAR(ptr->DAMAGE_HIT, 260);
@@ -136,6 +137,7 @@ void SPUTNIK_Update()
 
 				if (ptr->HEALTH <= 0)
 				{
+                    achievement_kill_beast(BEAST_SPUTNIK);
 					ptr->SPUTNIK_STATE = SPUTNIK_STATE_DIE;
 					ptr->SPUTNIK_ANIMSTATE = 0;
 					snd_play(sputnik_snd_death, 100, 0);

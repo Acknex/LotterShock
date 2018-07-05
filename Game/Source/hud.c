@@ -24,6 +24,11 @@ BMAP * hud_ammobar_bmap = "ammobar.png";
 FONT *HUD_font = "HUD_font.png";
 BMAP *HUD_font_bmap = "HUD_font.png";
 
+#define PRAGMA_BIND "label_sword.png"
+#define PRAGMA_BIND "label_shotgun.png"
+#define PRAGMA_BIND "label_cellgun.png"
+#define PRAGMA_BIND "label_flamethrower.png"
+
 
 PANEL *HUD_tutorial =
 {
