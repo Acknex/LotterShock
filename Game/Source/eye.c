@@ -253,6 +253,10 @@ void EYE__attack(ENTITY* ptr)
 		}
 }
 
+void EYE__die(ENTITY* ptr)
+{
+}
+
 void spawneye()
 {
 	

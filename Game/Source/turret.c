@@ -263,7 +263,7 @@ void TURRET__active(ENTITY* ptr)
 			ptr->SHOOT_ANGLE += vTurnStep;
 			ent_bonerotate(ptr, "Bone1", vector(vTurnStep, 0, 0));
 		}
-
+		c_updatehull(ptr,1);
 		ptr->DELAY_COUNTER = cycle(ptr->DELAY_COUNTER, 0, TURRET_SHOOTDELAY);		
 	}
 }

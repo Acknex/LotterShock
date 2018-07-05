@@ -4,7 +4,6 @@
 void ESELSLERCHE_GlobalInit();
 void ESELSLERCHE_Init();
 void ESELSLERCHE_Update();
-void ESELSLERCHE_Destroy();
 
 // local
 void ESELSLERCHE__inactive(ENTITY* ptr);
