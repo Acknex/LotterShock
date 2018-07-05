@@ -271,7 +271,7 @@ void input_init()
     cheatcodes[5].text = "idkfa";
     cheatcodes[5].trigger = input_cheat_weapons_and_keys;
 
-    cheatcodes[6].text = "idsepuku";
+    cheatcodes[6].text = "idseppuku";
     cheatcodes[6].trigger = input_cheat_suicide;
 
     int i,k;
