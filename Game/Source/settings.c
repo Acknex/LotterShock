@@ -30,26 +30,19 @@ void settings_init()
 
     settings.input_sensitivity = 13;
 
-    if(ini_write("settings.ini", "Dummy", "dummy", "dummy"))
+
+    // try to get "%APPDATA%\AckCon\2018\settings.ini"
+    if(ExpandEnvironmentStrings("%APPDATA%", settings_path, MAX_PATH) == 0)
     {
-        ini_write("settings.ini", "Dummy", NULL, NULL);
-        str_cpy(settings_file, "settings.ini");
+        error("Failed to expand environment variable for settings.");
+        return;
     }
-    else
-    {
-        // try to get "%APPDATA%\AckCon\2018\settings.ini"
-        if(ExpandEnvironmentStrings("%APPDATA%", settings_path, MAX_PATH) == 0)
-        {
-            error("Failed to expand environment variable for settings.");
-            return;
-        }
-        str_cpy(settings_file, settings_path);
-        str_cat(settings_file, "\\AckCon");
-        CreateDirectory(_chr(settings_file), NULL);
-        str_cat(settings_file, "\\2018");
-        CreateDirectory(_chr(settings_file), NULL);
-        str_cat(settings_file, "\\settings.ini");
-    }
+    str_cpy(settings_file, settings_path);
+    str_cat(settings_file, "\\AckCon");
+    CreateDirectory(_chr(settings_file), NULL);
+    str_cat(settings_file, "\\2018");
+    CreateDirectory(_chr(settings_file), NULL);
+    str_cat(settings_file, "\\settings.ini");
 
     memset(&achievements, 0, sizeof(achievements_t));
     achievements.bestiary_unlocked[BEAST_STARLOTTI] = 1;
