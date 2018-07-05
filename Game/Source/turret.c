@@ -89,7 +89,7 @@ void TURRET__init()
 void TURRET_Init()
 {
 	//DEBUG
-	//ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,10), turret_rotccw);
+	ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,10), turret_rotccw);
 }
 
 void TURRET_Update()
@@ -110,7 +110,7 @@ void TURRET_Update()
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
 				SPLATTER_splat(&ptr->x, vector(1.0, 1.0, 0.0));
-				ptr->TURRET_HITLOCKCNT = 7;
+				ptr->TURRET_HITLOCKCNT = 3;
 				ptr->event = NULL;
 				
 				if (ptr->HEALTH <= 0)

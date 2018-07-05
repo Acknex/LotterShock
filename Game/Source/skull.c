@@ -350,9 +350,12 @@ void SKULL__hit(ENTITY* ptr)
 		vec_zero(ptr->DAMAGE_VEC);
 		ptr->SKL_COUNTER = 0;
 	}
+	else if (ptr->SKL_COUNTER >= 30)
+	{
+		ptr->event = ENEMY_HIT_event;		
+	}
 	else
 	{
-		
 	}
 }
 

@@ -58,19 +58,18 @@ action Eye()
 	vec_scale(me.scale_x, 10);
 //	my->EYE_PATHID = 2;//temp
 	my->material = matObject;
-	if (path_set(my, str_for_num(NULL, my->EYE_PATHID)) == 0)
+	ENTITY* ent = ent_create(NULL, nullvector, NULL);
+	if (path_set(ent, str_for_num(NULL, my->EYE_PATHID)) == 0)
 	{
-		path_set(my, str_for_num(NULL, 0));
+		path_set(ent, str_for_num(NULL, 0));
 	}
 	my->EYE_PATROLLEN = path_length(me);
 	my->EYE_PATHPROGRESS = clamp(my->EYE_PATROLSPEED,0,100) / 100;
-	//ENTITY* ent = ent_create(SPHERE_MDL, nullvector, NULL);
-	//path_spline (ent,&ent->x,my->EYE_PATROLLEN * my->EYE_PATHPROGRESS);
-	path_spline (my,&my->x,my->EYE_PATROLLEN * my->EYE_PATHPROGRESS);
-	//vec_set(&my->x, ent->x);
+	path_spline (ent,&ent->x,my->EYE_PATROLLEN * my->EYE_PATHPROGRESS);
+	vec_set(&my->x, ent->x);
 	vec_set(&my->EYE_LASTPOS, &my->x);
 	set(my, PASSABLE);
-	//my->EYE_PATHENT = handle(ent);
+	my->EYE_PATHENT = handle(ent);
 }	
 
 
@@ -175,14 +174,13 @@ void EYE__patrol(ENTITY* ptr)
 	ptr->EYE_ZOFFSET = 20 * sinv(total_ticks * 20);
 	ptr->EYE_PATROLDIST = cycle(ptr->EYE_PATROLDIST + ptr->EYE_PATROLSPEED*time_step,0,ptr->EYE_PATROLLEN);
 	ent_animate(ptr, EYE_WALKANIM, ptr->EYE_ANIMSTATE, ANM_CYCLE);
-	//ENTITY* ent = ptr_for_handle(ptr->EYE_PATHENT);
+	ENTITY* ent = ptr_for_handle(ptr->EYE_PATHENT);
 
-//	path_spline (ent,&ent->x,ptr->EYE_PATROLDIST);
-	path_spline (ptr,&ptr->x,ptr->EYE_PATROLDIST);
-	/*VECTOR vdiff;
+	path_spline (ent,&ent->x,ptr->EYE_PATROLDIST);
+	VECTOR vdiff;
 	vec_diff(&vdiff, &ent->x, &ptr->x);
 	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE;
-	c_move(ptr, nullvector, vdiff, mode);*/
+	c_move(ptr, nullvector, vdiff, mode);
 
 	ANGLE vecAngle;
 	VECTOR vecDir;
