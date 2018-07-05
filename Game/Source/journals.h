@@ -29,7 +29,7 @@ typedef struct journal_t
 	STRING* media;
 } journal_t;
 
-#define MAX_JOURNALS 1
+#define MAX_JOURNALS 18
 journal_t journals[MAX_JOURNALS];
 
 /*
