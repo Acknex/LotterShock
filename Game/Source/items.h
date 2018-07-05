@@ -8,6 +8,10 @@
 #define ITEM_DOUBLEJUMP 4
 #define ITEM_HAZMAT 5
 
+#define ITEM_NOROTATE skill1
+#define AMMO_AMOUNT skill2
+#define HEALTH_AMOUNT skill2
+
 #define MEDIPACK_HEALTH_PLUS 10
 
 SOUND *medipack_snd = "gothealth.wav";

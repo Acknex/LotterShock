@@ -25,7 +25,11 @@ void itemCollectible_effect(ENTITY *item)
 	{
 		case ITEM_MEDIPACK:
 			// increase player health
-			playerAddHealth(MEDIPACK_HEALTH_PLUS);
+			if(item->HEALTH_AMOUNT > 0)
+				playerAddHealth(item->HEALTH_AMOUNT);
+			else
+				playerAddHealth(MEDIPACK_HEALTH_PLUS);
+
 			snd_play(medipack_snd, 100, 0);
 			break;
 			
@@ -68,7 +72,8 @@ void itemCollectible_effect(ENTITY *item)
 void collectibles_update() {
 	ENTITY *ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_COLLECTIBLES) {
-		ptr->pan += time_step * 10;
+
+		if(ptr->skill1 != 1) ptr->pan += time_step * 10;
 		
 		if (player) {
 			if (itemCollectible_condition(ptr)) {
@@ -88,6 +93,7 @@ MEDIPACK
 
 	condition: player hurt
 **********/
+// uses: ITEM_NOROTATE, HEALTH_AMOUNT
 action Medipack() {
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_MEDIPACK;
@@ -101,6 +107,7 @@ void medipack_init() {
 KEY
 	condition: none
 **********/
+// uses: ITEM_NOROTATE, KEYCARD_KEY_ID
 action keycard() {
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_KEYCARD;
@@ -109,6 +116,7 @@ action keycard() {
 DOUBLEJUMP
 	condition: none
 **********/
+// uses: ITEM_NOROTATE
 action doublejump() {
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_DOUBLEJUMP;
@@ -117,6 +125,7 @@ action doublejump() {
 HAZMAT SUIT
 	condition: none
 **********/
+// uses: ITEM_NOROTATE
 action hazmat() {
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_HAZMAT;
@@ -134,18 +143,30 @@ void item_ammo(int ammoType, var amount)
 	my->SUBSYSTEM_skill_a = ammoType;
 	my->SUBSYSTEM_skill_b = amount;
 }
+// uses: ITEM_NOROTATE, AMMO_AMOUNT
 action ammo_shotgun()
 {
-	item_ammo(WEAPON_SHOTGUN, 6);
+	if(my->AMMO_AMOUNT > 0)
+		item_ammo(WEAPON_SHOTGUN, my->AMMO_AMOUNT);
+	else
+		item_ammo(WEAPON_SHOTGUN, 6);
 	
 }
+// uses: ITEM_NOROTATE, AMMO_AMOUNT
 action ammo_cellgun()
 {
-	item_ammo(WEAPON_CELLGUN, 30);
+	if(my->AMMO_AMOUNT > 0)
+		item_ammo(WEAPON_CELLGUN, my->AMMO_AMOUNT);
+	else
+		item_ammo(WEAPON_CELLGUN, 30);
 }
+// uses: ITEM_NOROTATE, AMMO_AMOUNT
 action ammo_flamethrower()
 {
-	item_ammo(WEAPON_FLAMETHROWER, 75);
+	if(my->AMMO_AMOUNT > 0)
+		item_ammo(WEAPON_FLAMETHROWER, my->AMMO_AMOUNT);
+	else
+		item_ammo(WEAPON_FLAMETHROWER, 75);
 }
 
 /**********
@@ -160,18 +181,22 @@ void item_weapon(int weaponType)
 	my->SUBSYSTEM_skill_a = weaponType;
 }
 
+// uses: ITEM_NOROTATE
 action weapon_sword()
 {
 	item_weapon(WEAPON_SWORD);
 }
+// uses: ITEM_NOROTATE
 action weapon_shotgun()
 {
 	item_weapon(WEAPON_SHOTGUN);
 }
+// uses: ITEM_NOROTATE
 action weapon_cellgun()
 {
 	item_weapon(WEAPON_CELLGUN);
 }
+// uses: ITEM_NOROTATE
 action weapon_flamethrower()
 {
 	item_weapon(WEAPON_FLAMETHROWER);
