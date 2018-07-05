@@ -28,28 +28,21 @@ void settings_init()
 
     settings.game_volume = 100;
 
-    settings.input_sensitivity = 20;
+    settings.input_sensitivity = 13;
 
-    if(ini_write("settings.ini", "Dummy", "dummy", "dummy"))
+
+    // try to get "%APPDATA%\AckCon\2018\settings.ini"
+    if(ExpandEnvironmentStrings("%APPDATA%", settings_path, MAX_PATH) == 0)
     {
-        ini_write("settings.ini", "Dummy", NULL, NULL);
-        str_cpy(settings_file, "settings.ini");
+        error("Failed to expand environment variable for settings.");
+        return;
     }
-    else
-    {
-        // try to get "%APPDATA%\AckCon\2018\settings.ini"
-        if(ExpandEnvironmentStrings("%APPDATA%", settings_path, MAX_PATH) == 0)
-        {
-            error("Failed to expand environment variable for settings.");
-            return;
-        }
-        str_cpy(settings_file, settings_path);
-        str_cat(settings_file, "\\AckCon");
-        CreateDirectory(_chr(settings_file), NULL);
-        str_cat(settings_file, "\\2018");
-        CreateDirectory(_chr(settings_file), NULL);
-        str_cat(settings_file, "\\settings.ini");
-    }
+    str_cpy(settings_file, settings_path);
+    str_cat(settings_file, "\\AckCon");
+    CreateDirectory(_chr(settings_file), NULL);
+    str_cat(settings_file, "\\2018");
+    CreateDirectory(_chr(settings_file), NULL);
+    str_cat(settings_file, "\\settings.ini");
 
     memset(&achievements, 0, sizeof(achievements_t));
     achievements.bestiary_unlocked[BEAST_STARLOTTI] = 1;
@@ -60,6 +53,7 @@ void settings_init()
 
 void settings_load_from(STRING * fileName)
 {
+    diag(str_printf(NULL, "\nLoading settings from %s", _chr(fileName)));
     settings.fps_limit    = ini_read_int(fileName, "Game", "fps_limit", settings.fps_limit);
     settings.anisotropy   = ini_read_int(fileName, "Game", "anisotropy", settings.anisotropy);
     settings.vsync        = ini_read_int(fileName, "Game", "vsync", settings.vsync);
@@ -81,6 +75,7 @@ void settings_load()
 
 void settings_save()
 {
+    diag(str_printf(NULL, "\nSaving settings to %s", _chr(settings_file)));
     ini_write_int(settings_file, "Game", "fps_limit", settings.fps_limit);
     ini_write_int(settings_file, "Game", "anisotropy", settings.anisotropy);
     ini_write_int(settings_file, "Game", "vsync", settings.vsync);
@@ -97,6 +92,7 @@ void settings_save()
 
 void achievements_load()
 {
+    diag(str_printf(NULL, "\nLoading achivements from %s", _chr(settings_file)));
     int i;
     char buffer[64];
     for(i = 0; i < BEAST_COUNT; i++)
@@ -108,6 +104,7 @@ void achievements_load()
 
 void achievements_save()
 {
+    diag(str_printf(NULL, "\nSaving achievements to %s", _chr(settings_file)));
     int i;
     char buffer[64];
     for(i = 0; i < BEAST_COUNT; i++)

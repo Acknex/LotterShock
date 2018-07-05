@@ -41,12 +41,11 @@ typedef int bool;
 #define SUBSYSTEM_PROJECTILE        10
 #define SUBSYSTEM_DOORS             11
 #define SUBSYSTEM_KEYPADS           12
-#define SUBSYSTEM_JOURNALS          13
-#define SUBSYSTEM_ENVIRONMENT       14
-#define SUBSYSTEM_BESTIARY          15
-#define SUBSYSTEM_ENEMY_PROJECTILE  16
-#define SUBSYSTEM_ENEMY_GIB         17
-#define SUBSYSTEM_MAINMENU          18
+#define SUBSYSTEM_ENVIRONMENT       13
+#define SUBSYSTEM_BESTIARY          14
+#define SUBSYSTEM_ENEMY_PROJECTILE  15
+#define SUBSYSTEM_ENEMY_GIB         16
+#define SUBSYSTEM_MAINMENU          17
 
 
 #define SUBSYSTEM_ENEMY_LERCHE  1000

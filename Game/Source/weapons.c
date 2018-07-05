@@ -826,9 +826,9 @@ void weapons_update()
 			vec_set(targetPosePos, sourcePosePos);
 			vec_set(targetPoseAng, sourcePoseAng);
 			var kickbackFac = weaponGetKickbackFac(weapons.attackprogress, 10);
-			targetPosePos.x += sinv(playerGetCameraBob())*0.5-2*kickbackFac-3;
-			targetPosePos.y += 2*kickbackFac;
-			targetPosePos.z -= 10*kickbackFac+2;
+            targetPosePos.x += sinv(playerGetCameraBob()) * 0.5 - 2 * kickbackFac - 3;
+            targetPosePos.y += 2 * kickbackFac;
+            targetPosePos.z -= 10 * kickbackFac + 2;
 			ang_rotate(targetPoseAng,playerGetWeaponSway());
 			//draw_text(str_printf(NULL,"kick %.1f atprogress %.1f",(double)weaponGetKickbackFac(weapons.attackprogress, 10),(double)weapons.attackprogress),400,240,COLOR_RED);
 

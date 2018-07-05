@@ -19,9 +19,20 @@ TEXT *journal_txt = {
 
 void show_journal();
 void hide_journal();
-void journal;
+void journal();
 void journals_update();
+void journals_init();
 
+typedef struct journal_t
+{
+	STRING* text;
+	STRING* media;
+} journal_t;
+
+#define MAX_JOURNALS 18
+journal_t journals[MAX_JOURNALS];
+
+/*
 STRING *journal_01_str = "This is only my 3rd Tour with the Patchnotes but it doesn't seem to get any less crazy around here. The Science guys are working on some out of this world computer stuff. Don't understand a word of it. I hope I can make friends here. I miss my family.";
 
 STRING *journal_02_str = "Ok. So... you know that upper section in the mess hall? Yeah that one you can't actually get to. - WHO designs a starship like that? Why have it up there? It makes no sense!! -- Anyway, I threw my keycard up there, just for fun, I thought I could just climb up there and get it back. I couldn't. I think it might be easier if I just request a new one. I'm gonna need to get a new one anyway since my promotion.";
@@ -49,7 +60,7 @@ STRING *journal_16_str = "MAKE IT STOP MAKE IT STOP MAKE IT STOP MAKE IT STOP MA
 STRING *journal_17_str = "I fixed some of the coolant lines with duct tape. It's amazing. Even in space duct tape is still the best way to fix stuff. I even used it on some of the hull breaches. Works perfectly!";
 
 STRING *journal_18_str = "Some idiot tried to fix the coolant lines with duct tape! DUCT TAPE! What the fuck? Who thought this was a good idea? Even worse: The hull breaches on level 2 reopened. Can you guess why? BECAUSE SOMEONE FIXED THEM WITH DUCT TAPE!!!!";
-
+*/
 
 
 #endif

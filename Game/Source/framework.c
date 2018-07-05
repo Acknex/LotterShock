@@ -202,8 +202,13 @@ void framework_update()
 			bmap_to_cubemap(ent_getskin(sky, 0));
 			
         }
+
+        if(framework.loaderState == 6)
+        {
+            game_open();
+        }
         
-        if(framework.loaderState >= 6)
+        if(framework.loaderState >= 9)
         {
             framework_load_screen->alpha -= FRAMEWORK_ALPHA_BLENDSPEED * time_step;
             if(framework_load_screen->alpha <= 0)
@@ -315,14 +320,17 @@ void framework_update()
             framework.loaderState = 0;
             set(framework_load_screen, SHOW);
             framework_load_screen->alpha = 100;
-            break;
 
-        case FRAMEWORK_STATE_GAME:
             // remove mouse cursor in game
             // mouse_mode 0 doesn't trigger mouse_ent and stuff
             // so mouse_mode 1 is required
             mouse_map = NULL;
-            game_open();
+
+            break;
+
+        case FRAMEWORK_STATE_GAME:
+            // game was already openend
+            // by LOAD state
             break;
 
         case FRAMEWORK_STATE_UNLOAD:
