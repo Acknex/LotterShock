@@ -70,6 +70,7 @@ action Eye()
 	vec_set(&my->EYE_LASTPOS, &my->x);
 	set(my, PASSABLE);
 	my->EYE_PATHENT = handle(ent);
+	my->group = GROUP_ENEMY;
 }	
 
 
