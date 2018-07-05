@@ -16,6 +16,8 @@ float4 desync(float2 Tex : TEXCOORD0) : COLOR0
 	color.r = tex2D(g_samSrcColor, Tex.xy + float2(-0.727, -0.727) * vecViewPort.zw * vecSkill1.xx).r;
 	color.g = tex2D(g_samSrcColor, Tex.xy + float2(0.727, -0.727) * vecViewPort.zw * vecSkill1.xx).g;
 	color.b = tex2D(g_samSrcColor, Tex.xy + float2(0.0, 1.0) * vecViewPort.zw * vecSkill1.xx).b;
+	color.rgb = ((color.rgb - 0.5f) * max(1 + (vecSkill1.y+0.5)*0.005, 0)) + 0.5f;
+
 	color.a = 1;
 	
 	return color;
