@@ -66,4 +66,5 @@ typedef int bool;
 #define HEALTH_EYE		150
 #define HEALTH_TURRET	100
 
+#define GROUP_ENEMY 10
 #endif // GLOBAL_H

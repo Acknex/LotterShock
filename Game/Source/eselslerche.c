@@ -74,7 +74,7 @@ action Eselslerche()
 	my->min_z += 30;
 	my->max_z += 30;
 	my->material = matObject;
-	
+	my->group = GROUP_ENEMY;	
 }
 
 void ESELSLERCHE_GlobalInit()
@@ -179,6 +179,7 @@ void ESELSLERCHE_Update()
 			ptr.min_y += 18;
 			ptr.max_x -= 18;
 			ptr.max_y -= 18;
+			c_ignore(10,0);
 			c_trace(from, to, mode);
 			ptr.min_x -= 18;
 			ptr.min_y -= 18;
@@ -240,7 +241,7 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	ptr->EL_RAMPAGE = maxv(0, ptr->EL_RAMPAGE - time_step);
 	ptr->EL_RUNSPEEDCUR = minv(ptr->EL_RUNSPEEDCUR + 4*time_step, ptr->EL_RUNSPEED);
 	ANG_turnToPlayer(ptr, ptr->EL_TURNSPEED, 5);
-	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE;
+	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES /*| IGNORE_PUSH*/ | GLIDE;
 	ptr.min_x -= 2;
 	ptr.min_y -= 2;
 	ptr.max_x += 2;

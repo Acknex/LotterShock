@@ -55,6 +55,7 @@ action Skull()
 	SKULL__toFloor(me);
 	c_setminmax(me);
 	my->material = matSkull;
+	my->group = GROUP_ENEMY;
 }
 
 void SKULL_GlobalInit()
@@ -184,6 +185,7 @@ var SKULL__toFloor(ENTITY* ptr)
 	ptr.min_y += 8;
 	ptr.max_x -= 8;
 	ptr.max_y -= 8;
+	c_ignore(10,0);
 	c_trace(from, to, mode);
 	ptr.min_x -= 8;
 	ptr.min_y -= 8;
@@ -235,7 +237,7 @@ void SKULL__run(ENTITY* ptr)
 {
 	ent_animate(ptr, SKL_RUNANIM, ptr->SKL_ANIMSTATE, ANM_CYCLE);
 	ptr->SKL_RUNSPEEDCUR = minv(ptr->SKL_RUNSPEEDCUR + 6*time_step, ptr->SKL_RUNSPEED);
-	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE | USE_POLYGON;
+	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | /*IGNORE_PUSH |*/ GLIDE | USE_POLYGON;
 	ptr.min_x -= 2;
 	ptr.min_y -= 2;
 	ptr.max_x += 2;

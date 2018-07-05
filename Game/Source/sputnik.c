@@ -78,6 +78,7 @@ action Sputnik()
 	set(my, SHADOW);
 	c_setminmax(me);
 	my->min_z += SPUTNIK_FEET;
+	my->group = GROUP_ENEMY;
 }
 
 void SPUTNIK_GlobalInit()
@@ -196,6 +197,7 @@ void SPUTNIK_Update()
 			ptr.min_y += 8;
 			ptr.max_x -= 8;
 			ptr.max_y -= 8;
+			c_ignore(10,0);
 			c_trace(from, to, mode);
 			ptr.min_x -= 8;
 			ptr.min_y -= 8;
@@ -271,7 +273,7 @@ void SPUTNIK__follow(ENTITY* ptr)
 {
 	ptr->SPUTNIK_RUNSPEEDCUR = ptr->SPUTNIK_RUNSPEED; //minv(ptr->SPUTNIK_RUNSPEEDCUR + ptr->SPUTNIK_RUNSPEED*0.25*time_step, ptr->SPUTNIK_RUNSPEED);
 	ANG_turnToPlayer(ptr, ptr->SPUTNIK_TURNSPEED, 5);
-	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE;
+	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES /*| IGNORE_PUSH*/ | GLIDE;
 	ptr.min_x -= 2;
 	ptr.min_y -= 2;
 	ptr.max_x += 2;

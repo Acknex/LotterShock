@@ -89,6 +89,7 @@ void TURRET__init()
 	set(my, PASSABLE | POLYGON | FLAG1);
 	ent_animate(my, "closed", 0, 0);
 	my->material = matObject;
+	my->group = GROUP_ENEMY;
 }
 
 void TURRET_Init()
