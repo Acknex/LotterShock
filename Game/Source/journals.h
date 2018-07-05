@@ -1,27 +1,13 @@
 #ifndef JOURNALS_H
 #define JOURNALS_H
 
-#define JOURNAL_ID skill1
-
-var journal_delay = 0;
-
-PANEL *journal_pan = {
-	bmap = "journal.tga";
-	flags = OVERLAY;
-	layer = 1;
-}
-
-TEXT *journal_txt = {
-	flags = WWRAP;
-	strings = 1;
-	layer = 2;
-}
-
 void show_journal();
 void hide_journal();
 void journal();
 void journals_update();
+
 void journals_init();
+void journals_quit();
 
 typedef struct journal_t
 {
