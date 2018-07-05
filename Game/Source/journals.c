@@ -1,3 +1,9 @@
+void journals_init()
+{
+	journals[0].text = "This is only my 3rd Tour with the Patchnotes but it doesn't seem to get any less crazy around here. The Science guys are working on some out of this world computer stuff. Don't understand a word of it. I hope I can make friends here. I miss my family.";
+	journals[0].media = "Media/pda_cpt_kappes1.mp3";
+}
+
 void show_journal() {
 	journal_pan.pos_x = 0;
 	journal_pan.pos_y = 0;
@@ -29,26 +35,11 @@ void journals_update() {
 			if (input_hit(INPUT_USE)) {
 				
 				if (is(journal_pan, SHOW) == 0) {
-					ent_playsound(ptr, snd_beep, 100);
+					if(ptr.JOURNAL_ID >= MAX_JOURNALS)
+						return;
 					
-					switch(ptr.JOURNAL_ID) {
-						case 1: str_cpy((journal_txt.pstring)[0], journal_01_str); break;
-						case 2: str_cpy((journal_txt.pstring)[0], journal_02_str); break;
-						case 3: str_cpy((journal_txt.pstring)[0], journal_03_str); break;
-						case 4: str_cpy((journal_txt.pstring)[0], journal_04_str); break;
-						case 5: str_cpy((journal_txt.pstring)[0], journal_05_str); break;
-						case 6: str_cpy((journal_txt.pstring)[0], journal_06_str); break;
-						case 7: str_cpy((journal_txt.pstring)[0], journal_07_str); break;
-						case 8: str_cpy((journal_txt.pstring)[0], journal_08_str); break;
-						case 9: str_cpy((journal_txt.pstring)[0], journal_09_str); break;
-						case 10: str_cpy((journal_txt.pstring)[0], journal_10_str); break;
-						case 11: str_cpy((journal_txt.pstring)[0], journal_11_str); break;
-						case 12: str_cpy((journal_txt.pstring)[0], journal_12_str); break;
-						case 13: str_cpy((journal_txt.pstring)[0], journal_13_str); break;
-						case 14: str_cpy((journal_txt.pstring)[0], journal_14_str); break;
-						case 15: str_cpy((journal_txt.pstring)[0], journal_15_str); break;
-						case 16: str_cpy((journal_txt.pstring)[0], journal_16_str); break;
-					}
+					str_cpy((journal_txt.pstring)[0], journals[ptr.JOURNAL_ID].text);
+					media_play(journals[ptr.JOURNAL_ID].media, NULL, 100);
 					
 					show_journal();
 					journal_delay = 400;
