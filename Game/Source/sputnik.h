@@ -4,7 +4,6 @@
 void SPUTNIK_GlobalInit();
 void SPUTNIK_Init();
 void SPUTNIK_Update();
-void SPUTNIK_Destroy();
 
 // local
 void SPUTNIK__inactive(ENTITY* ptr);

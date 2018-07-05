@@ -88,7 +88,7 @@ void bestiary_open()
     bestiary.done = false;
     bestiary.position = 0;
 
-    music_start("Media/blirg.mp3", 0.5, true);
+    music_start("Media/beastiary.mp3", 0.5, true);
 
     set(bestiary_pan_back, SHOW);
     set(bestiary_pan_prev, SHOW);
