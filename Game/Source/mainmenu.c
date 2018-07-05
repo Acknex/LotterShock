@@ -1,11 +1,15 @@
 #include "mainmenu.h"
 #include "input.h"
+#include "global.h"
+#include "framework.h"
+#include <acknex.h>
 
 #define MAINMENU_ITEM_COUNT 4
 
 #define MAINMENU_BORDER_PADDING 16
 #define MAINMENU_FADE_SPEED 25
 
+SOUND * mainmenu_stupid = "aiaiaiai.ogg";
 
 BMAP * mainmenu_start_bmap = "mainmenu_start.png";
 BMAP * mainmenu_credits_bmap = "mainmenu_credits.png";
@@ -61,6 +65,8 @@ int mainmenu_selection;
 
 int mainmenu_response;
 
+var mainmenu_cameradist;
+
 int mainmenu_get_response()
 {
     return mainmenu_response;
@@ -97,8 +103,7 @@ void mainmenu_open()
     fog_color = 2;
     camera.fog_end = 20000.0;
     level_load("menue.wmb");
-    wait_for(level_load);
-    wait(3);
+    mainmenu_cameradist = vec_dist(nullvector, camera.x);
 }
 
 void mainmenu_update()
@@ -143,14 +148,35 @@ void mainmenu_update()
     var attack = input_hit(INPUT_ATTACK) && (!mouse_left || (mouse_left && (mouse_panel != NULL)));
     if(input_hit(INPUT_USE) || attack || input_hit(INPUT_JUMP))
     {
-        snd_play(mainmenu_accept_snd, 100, 0);
-        switch(mainmenu_selection)
+        if((mouse_panel == mainmenue_title) && (mouse_left))
         {
-        case 0: mainmenu_response = MAINMENU_RESPONSE_START; break;
-        case 1: mainmenu_response = MAINMENU_RESPONSE_CREDITS; break;
-        case 2: mainmenu_response = MAINMENU_RESPONSE_BESTIARY; break;
-        case 3: mainmenu_response = MAINMENU_RESPONSE_EXIT; break;
+            snd_play(mainmenu_stupid, 100, 0);
         }
+        else
+        {
+            snd_play(mainmenu_accept_snd, 100, 0);
+            switch(mainmenu_selection)
+            {
+            case 0: mainmenu_response = MAINMENU_RESPONSE_START; break;
+            case 1: mainmenu_response = MAINMENU_RESPONSE_CREDITS; break;
+            case 2: mainmenu_response = MAINMENU_RESPONSE_BESTIARY; break;
+            case 3: mainmenu_response = MAINMENU_RESPONSE_EXIT; break;
+            }
+        }
+    }
+
+    // rotate the camera a bit
+    camera->x = sin(total_ticks) * mainmenu_cameradist;
+    camera->y = cos(total_ticks) * mainmenu_cameradist;
+
+    VECTOR temp;
+    vec_set(temp, camera->x);
+    vec_scale(temp, -1);
+    vec_to_angle(camera->pan, temp);
+
+    SUBSYSTEM_LOOP(you, SUBSYSTEM_MAINMENU)
+    {
+        you->pan -= you->skill[0] * time_step;
     }
 }
 
@@ -164,3 +190,100 @@ void mainmenu_close()
     reset(mainmenu_selection_pan, SHOW);
     reset(mainmenue_title, SHOW);
 }
+
+
+// skill1: Rotatespeed
+action MainmenuRotator()
+{
+    framework_setup(me, SUBSYSTEM_MAINMENU);
+
+    my->alpha = 100;
+    if(my->skill1 == 0)
+        my->skill1 = 10;
+}
+
+action MainmenuLightflare()
+{
+   my->alpha = 100;
+   my->flags |= (BRIGHT|TRANSLUCENT);
+   my.emask &= ~DYNAMIC;
+}
+/*
+
++//Henrik,s bl<F6>der code ^M
++action act_TFL1()^M
++^M
++{^M
++^M
++^M
++^M
++       {^M
++^M
++//      set(my, FLAG1);^M
++   }^M
++       if(my->string1 == NULL)^M
++       {^M
++       error("an animationobject has no animation set");^M
++       return;^M
++^M
++       }^M
++^M
++       if(str_cmpi(my->string1, ""))^M
++^M
++       {^M
++       error("an animationobject has no animation set");^M
++       return;^M
++^M
++       }^M
++^M
++       ^M
++^M
++       if(my->skill[0] == 0)^M
++^M
++       my->skill[0] = 1;^M
++^M
++       if(my->skill[1] == 0)^M
++^M
++       my->skill[1] = 10;^M
++^M
++       while(1)^M
++^M
++       {^M
++^M
++               my->skill[99] = (my->skill[99] +my->skill[0]*time_step) %100;^M
++       ent_animate(my, my->string1, my->skill[99], ANM_CYCLE);^M
++               my->pan -= my->skill[0.5]*time_step;^M
++               wait(1);^M
++^M
++       }^M
++^M
++}^M
++^M
++^M
+
++^M
++action act_animation()^M
++{^M
++       if(my->string1 == NULL)^M
++       {^M
++               error("an animationobject has no animation set");^M
++               return;^M
++       }^M
++^M
++       if(str_cmpi(my->string1, ""))^M
++       {^M
++               error("an animationobject has no animation set");^M
++               return;^M
++       }^M
++       if(my->skill[0] == 0)^M
++               my->skill[0] = 1;^M
++^M
++       while(1)^M
++       {^M
++               my->skill[1] = (my->skill[1] +my->skill[0]*time_step) %100;^M
++               ent_animate(my, my->string1, my->skill[1], ANM_CYCLE);^M
++               wait(1);^M
++       }^M
++}^M
+
+*/
