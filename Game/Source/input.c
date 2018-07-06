@@ -15,8 +15,6 @@ VECTOR mickey_smoothed;
 
 var input_states[INPUT_AXIS_MAX];
 
-INPUT input[INPUT_MAX];
-
 bool input_down(int id)
 {
     if(id < 0 || id >= INPUT_MAX) error("input_down: unknown button!");
@@ -92,21 +90,24 @@ void input_init()
 #endif
 
     int i,k;
-
-    memset(input, 0, sizeof(INPUT) * INPUT_MAX);
     for(i = 0; i < INPUT_MAX; i++)
     {
         INPUT *pinput = &input[i];
         pinput->down = 0;
         pinput->justPressed = 0;
-        for(k = 0; k < 4; k++)
-        {
-            pinput->configs[k].type = INPUT_TYPE_NONE;
-            pinput->configs[k].deadZone = 0;
-        }
-        pinput->deadZone = 0.1;
         pinput->value = 0.0;
         pinput->sensitivity = 1.0;
+        strcpy(pinput->cinfo, "");
+
+        if(settings.has_input_mapping == false)
+        {
+            // make some stuff sane
+            for(k = 0; k < 4; k++)
+            {
+                pinput->configs[k].type = INPUT_TYPE_NONE;
+                pinput->configs[k].deadZone = 0;
+            }
+        }
     }
     //*/
 
@@ -129,56 +130,56 @@ void input_init()
     //////////////////////////////
     // configurable stuff
 
-    // Keyboard Mapping
-    input_add(INPUT_UP,         INPUT_TYPE_KEYBOARD, key_for_str("w") );
-    input_add(INPUT_UP,         INPUT_TYPE_KEYBOARD, 72);
-    input_add(INPUT_DOWN,       INPUT_TYPE_KEYBOARD, key_for_str("s"));
-    input_add(INPUT_DOWN,       INPUT_TYPE_KEYBOARD, 80);
-    input_add(INPUT_LEFT,       INPUT_TYPE_KEYBOARD, key_for_str("a"));
-    input_add(INPUT_LEFT,       INPUT_TYPE_KEYBOARD, 75);
-    input_add(INPUT_RIGHT,      INPUT_TYPE_KEYBOARD, key_for_str("d"));
-    input_add(INPUT_RIGHT,      INPUT_TYPE_KEYBOARD, 77);
-    input_add(INPUT_JUMP,       INPUT_TYPE_KEYBOARD, 57);
-    input_add(INPUT_USE,        INPUT_TYPE_KEYBOARD, key_for_str("e"));
-    input_add(INPUT_USE,        INPUT_TYPE_KEYBOARD, 28);
-    input_add(INPUT_ATTACK,     INPUT_TYPE_KEYBOARD, 280);
-    input_add(INPUT_BLOCK,      INPUT_TYPE_KEYBOARD, 281);
-    input_add(INPUT_NAVBACK,    INPUT_TYPE_KEYBOARD, key_for_str("esc"));
-    input_add(INPUT_CROUCH,     INPUT_TYPE_KEYBOARD, key_for_str("ctrl"));
-    input_add(INPUT_MORPHBALL,  INPUT_TYPE_KEYBOARD, key_for_str("shiftl"));
-    input_add(INPUT_SHOW_MAP,   INPUT_TYPE_KEYBOARD, 15); // TAB
+    if(settings.has_input_mapping == false)
+    {
+        // Keyboard Mapping
+        input_add(INPUT_UP,         INPUT_TYPE_KEYBOARD, key_for_str("w") );
+        input_add(INPUT_UP,         INPUT_TYPE_KEYBOARD, 72);
+        input_add(INPUT_DOWN,       INPUT_TYPE_KEYBOARD, key_for_str("s"));
+        input_add(INPUT_DOWN,       INPUT_TYPE_KEYBOARD, 80);
+        input_add(INPUT_LEFT,       INPUT_TYPE_KEYBOARD, key_for_str("a"));
+        input_add(INPUT_LEFT,       INPUT_TYPE_KEYBOARD, 75);
+        input_add(INPUT_RIGHT,      INPUT_TYPE_KEYBOARD, key_for_str("d"));
+        input_add(INPUT_RIGHT,      INPUT_TYPE_KEYBOARD, 77);
+        input_add(INPUT_JUMP,       INPUT_TYPE_KEYBOARD, 57);
+        input_add(INPUT_USE,        INPUT_TYPE_KEYBOARD, key_for_str("e"));
+        input_add(INPUT_USE,        INPUT_TYPE_KEYBOARD, 28);
+        input_add(INPUT_ATTACK,     INPUT_TYPE_KEYBOARD, 280);
+        input_add(INPUT_BLOCK,      INPUT_TYPE_KEYBOARD, 281);
+        input_add(INPUT_NAVBACK,    INPUT_TYPE_KEYBOARD, key_for_str("esc"));
+        input_add(INPUT_CROUCH,     INPUT_TYPE_KEYBOARD, key_for_str("ctrl"));
+        input_add(INPUT_MORPHBALL,  INPUT_TYPE_KEYBOARD, key_for_str("shiftl"));
+        input_add(INPUT_SHOW_MAP,   INPUT_TYPE_KEYBOARD, 15); // TAB
 
-    // input_add(INPUT_WEAPON_UP,  INPUT_TYPE_KEYBOARD, key_for_str("q"));  // mickey.z
-    // input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_KEYBOARD, key_for_str("e"));
+        // Controller Mapping:
+        input_add(INPUT_UP,         INPUT_TYPE_GAMEPAD, XINPUT_DPAD_UP );
+        input_add(INPUT_DOWN,       INPUT_TYPE_GAMEPAD, XINPUT_DPAD_DOWN );
+        input_add(INPUT_LEFT,       INPUT_TYPE_GAMEPAD, XINPUT_DPAD_LEFT );
+        input_add(INPUT_RIGHT,      INPUT_TYPE_GAMEPAD, XINPUT_DPAD_RIGHT );
+        input_add(INPUT_USE,        INPUT_TYPE_GAMEPAD, XINPUT_X );
+        input_add(INPUT_ATTACK,     INPUT_TYPE_GAMEPAD, XINPUT_B );
+        input_add(INPUT_BLOCK,      INPUT_TYPE_GAMEPAD, XINPUT_Y );
+        input_add(INPUT_JUMP,       INPUT_TYPE_GAMEPAD, XINPUT_A );
+        input_add(INPUT_NAVBACK,    INPUT_TYPE_GAMEPAD, XINPUT_START );
+        input_add(INPUT_SHOW_MAP,   INPUT_TYPE_GAMEPAD, XINPUT_SELECT );
+        input_add(INPUT_CROUCH,     INPUT_TYPE_GAMEPAD, XINPUT_LEFT_STICK );
+        input_add(INPUT_MORPHBALL,  INPUT_TYPE_GAMEPAD, XINPUT_RIGHT_STICK );
 
-    // Controller Mapping:
-    input_add(INPUT_UP,         INPUT_TYPE_GAMEPAD, XINPUT_DPAD_UP );
-    input_add(INPUT_DOWN,       INPUT_TYPE_GAMEPAD, XINPUT_DPAD_DOWN );
-    input_add(INPUT_LEFT,       INPUT_TYPE_GAMEPAD, XINPUT_DPAD_LEFT );
-    input_add(INPUT_RIGHT,      INPUT_TYPE_GAMEPAD, XINPUT_DPAD_RIGHT );
-    input_add(INPUT_USE,        INPUT_TYPE_GAMEPAD, XINPUT_X );
-    input_add(INPUT_ATTACK,     INPUT_TYPE_GAMEPAD, XINPUT_B );
-    input_add(INPUT_BLOCK,      INPUT_TYPE_GAMEPAD, XINPUT_Y );
-    input_add(INPUT_JUMP,       INPUT_TYPE_GAMEPAD, XINPUT_A );
-    input_add(INPUT_NAVBACK,    INPUT_TYPE_GAMEPAD, XINPUT_START );
-    input_add(INPUT_SHOW_MAP,   INPUT_TYPE_GAMEPAD, XINPUT_SELECT );
-    input_add(INPUT_CROUCH,     INPUT_TYPE_GAMEPAD, XINPUT_LEFT_STICK );
-    input_add(INPUT_MORPHBALL,  INPUT_TYPE_GAMEPAD, XINPUT_RIGHT_STICK );
+        input_add(INPUT_WEAPON_UP,  INPUT_TYPE_GAMEPAD, XINPUT_RIGHT_BUTTON);
+        input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_GAMEPAD, XINPUT_LEFT_BUTTON);
 
-    input_add(INPUT_WEAPON_UP,  INPUT_TYPE_GAMEPAD, XINPUT_RIGHT_BUTTON);
-    input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_GAMEPAD, XINPUT_LEFT_BUTTON);
+        input_add_axis(INPUT_WEAPON_UP,   INPUT_AXIS_MOUSEWHEEL, 0.0, false);
+        input_add_axis(INPUT_WEAPON_DOWN, INPUT_AXIS_MOUSEWHEEL, 0.0, true);
 
-    input_add_axis(INPUT_WEAPON_UP,   INPUT_AXIS_MOUSEWHEEL, 0.0, false);
-    input_add_axis(INPUT_WEAPON_DOWN, INPUT_AXIS_MOUSEWHEEL, 0.0, true);
+        input_add_axis(INPUT_LEFT,  INPUT_AXIS_LEFT_STICK_X, 0.3, true);
+        input_add_axis(INPUT_RIGHT, INPUT_AXIS_LEFT_STICK_X, 0.3, false);
 
-    input_add_axis(INPUT_LEFT,  INPUT_AXIS_LEFT_STICK_X, 0.3, true);
-    input_add_axis(INPUT_RIGHT, INPUT_AXIS_LEFT_STICK_X, 0.3, false);
+        input_add_axis(INPUT_UP,    INPUT_AXIS_LEFT_STICK_Y, 0.3, false);
+        input_add_axis(INPUT_DOWN,  INPUT_AXIS_LEFT_STICK_Y, 0.3, true);
 
-    input_add_axis(INPUT_UP,    INPUT_AXIS_LEFT_STICK_Y, 0.3, false);
-    input_add_axis(INPUT_DOWN,  INPUT_AXIS_LEFT_STICK_Y, 0.3, true);
-
-    input_add_axis(INPUT_ATTACK, INPUT_AXIS_RIGHT_TRIGGER, 0.3, false);
-    input_add_axis(INPUT_BLOCK,  INPUT_AXIS_LEFT_TRIGGER,  0.3, false);
+        input_add_axis(INPUT_ATTACK, INPUT_AXIS_RIGHT_TRIGGER, 0.3, false);
+        input_add_axis(INPUT_BLOCK,  INPUT_AXIS_LEFT_TRIGGER,  0.3, false);
+    }
 
     int slot = ackXInputGetGamepadNum();
     if(slot >= 0)
@@ -186,7 +187,10 @@ void input_init()
         ackXInputGamepadSlot = slot;
         ackXInputGamepadUse = 1;
     }
-    else ackXInputGamepadUse = 0;
+    else
+    {
+        ackXInputGamepadUse = 0;
+    }
 }
 
 var input_deadzone(var value, var deadzone)

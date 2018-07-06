@@ -101,9 +101,9 @@ void options_cancel()
 
 void options_save()
 {
-    error("save here!");
-
     memcpy(input, options_input_copy, sizeof(INPUT) * INPUT_MAX);
+
+    settings_save();
 
     options_done = 1;
 }
@@ -288,6 +288,7 @@ void options_update()
     {
         if(options_assign_key.timer <= 0)
         {
+            options_input_copy[options_assign_key.inputid].configs[options_assign_key.slot].type = INPUT_TYPE_NONE;
             reset(options_pan_assignwindow, SHOW);
         }
         else

@@ -83,7 +83,6 @@ void uisystem_update(uisystem_t * system)
 {
     if(system == NULL) error("uisystem: system must not be NULL!");
 
-
     uibutton_t * last = system->selected;
 
     // refresh all button positions and stuff
