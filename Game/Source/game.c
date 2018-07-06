@@ -76,9 +76,8 @@ void game_update()
             game_done = true;
             pausemenu_close();
             break;
-        case PAUSEMENU_RESPONSE_OPTIONS:
-            error("options not implemented yet!");
-            break;
+        default:
+            error("game_update: invalid response from pausemenu!");
         }
     }
     else

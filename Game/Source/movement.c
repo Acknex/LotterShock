@@ -219,7 +219,7 @@ void playerEntMorphBallDo()
 	if(playerEntMorphBallActive != 1 || playerEntMorphBallPerc < 50) vec_set(targetSpeed,nullvector);
 	else
 	{
-		vec_set(targetSpeed,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
+        vec_set(targetSpeed,vector((input_down(INPUT_UP)-input_down(INPUT_DOWN)*0.667),(input_down(INPUT_LEFT)-input_down(INPUT_RIGHT)),0));
 		if(targetSpeed.x || targetSpeed.y)
 		{
 			vec_normalize(targetSpeed,playerMaxSpeedFac);
@@ -288,14 +288,14 @@ void playerEntMorphBallDo()
 		player.PLAYER_GROUND_CONTACT = 0;
 		playerJumpHangtime = maxv(playerJumpHangtime-time_step,0);
 		var fac = 1;
-		if(!input[INPUT_JUMP].down) playerHoverPossible = playerJumpHangtime = 0;
+        if(!input_down(INPUT_JUMP)) playerHoverPossible = playerJumpHangtime = 0;
 		if(playerJumpHangtime > 0) fac = 0.667;
 		player.PLAYER_SPEED_Z = maxv(player.PLAYER_SPEED_Z-fac*24*playerSpeedFac*time_step,-240);
 		c_move(player,nullvector,vector(0,0,player.PLAYER_SPEED_Z*time_step),PLAYER_C_MOVE_MODE_DEFAULT);
 		if(HIT_TARGET && normal.z < 0 && target.z > player.z) player.PLAYER_SPEED_Z = minv(player.PLAYER_SPEED_Z,0);
 		player.z = maxv(player.z,heightWanted);
 
-		/*if(input[INPUT_JUMP].justPressed && playerExtraJumpsLeft > 0)
+        /*if(input_hit(INPUT_JUMP) && playerExtraJumpsLeft > 0)
 		{
 			playerExtraJumpsLeft--;
 			playerJumpHangtime = 6;
@@ -315,7 +315,7 @@ void playerEntMorphBallDo()
 			effect(p_playerSlide_smoke,2,target,normal);
 		}
 		playerExtraJumpsLeft = 0; //playerHasDoubleJump;
-		/*if(input[INPUT_JUMP].justPressed)
+        /*if(input_hit(INPUT_JUMP))
 		{
 			player.PLAYER_GROUND_CONTACT = 0;
 			playerJumpHangtime = 6;
@@ -427,12 +427,12 @@ void movement_update()
     if(movement_cheat_clipmode)
 #endif
 	{
-        camera.pan += -input_axis(INPUT_LOOK_HORIZONTAL);
+        camera.pan += -input_axis(INPUT_AXIS_LOOK_HORIZONTAL);
 		camera.pan %= 360;
-        camera.tilt = clamp(camera.tilt+input_axis(INPUT_LOOK_VERTICAL),-85,85);
+        camera.tilt = clamp(camera.tilt+input_axis(INPUT_AXIS_LOOK_VERTICAL),-85,85);
 		player.pan = camera.pan;
 		VECTOR temp;
-		vec_set(temp,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
+        vec_set(temp,vector((input_down(INPUT_UP)-input_down(INPUT_DOWN)*0.667),(input_down(INPUT_LEFT)-input_down(INPUT_RIGHT)),0));
 		vec_scale(temp,80*time_step);
 		vec_rotate(temp,camera.pan);
 		vec_add(player.x,temp);
@@ -491,8 +491,8 @@ void movement_update()
 	
 	// rotation
 	
-	var turnSpeedX = input_axis(INPUT_LOOK_HORIZONTAL);
-	var turnSpeedY = input_axis(INPUT_LOOK_VERTICAL);
+    var turnSpeedX = input_axis(INPUT_AXIS_LOOK_HORIZONTAL);
+    var turnSpeedY = input_axis(INPUT_AXIS_LOOK_VERTICAL);
 	/*if(mouse_right)
 	{
 		turnSpeedX = mouse_force.x*10;
@@ -566,7 +566,7 @@ void movement_update()
 	}
 	else
 	{
-		vec_set(targetSpeed,vector((input[INPUT_UP].down-input[INPUT_DOWN].down*0.667),(input[INPUT_LEFT].down-input[INPUT_RIGHT].down),0));
+        vec_set(targetSpeed,vector((input_down(INPUT_UP)-input_down(INPUT_DOWN)*0.667),(input_down(INPUT_LEFT)-input_down(INPUT_RIGHT)),0));
 		if(targetSpeed.x || targetSpeed.y)
 		{
 			if(player.PLAYER_GROUND_CONTACT != 0)
@@ -657,7 +657,7 @@ void movement_update()
 		playerJumpHangtime = maxv(playerJumpHangtime-time_step,0);
 		playerHoverPossible = maxv(playerHoverPossible-time_step,0);
 		var fac = 1;
-		if(!input[INPUT_JUMP].down) 
+        if(!input_down(INPUT_JUMP))
 		{
 			playerHoverPossible = playerJumpHangtime = 0;
 		}
@@ -680,7 +680,7 @@ void movement_update()
 		if(HIT_TARGET && normal.z < 0 && target.z > player.z) player.PLAYER_SPEED_Z = minv(player.PLAYER_SPEED_Z,0);
 		if(!playerJumpNotOk) player.z = maxv(player.z,heightWanted);
 
-		if(input[INPUT_JUMP].justPressed && playerExtraJumpsLeft > 0 && !playerJumpNotOk)
+        if(input_hit(INPUT_JUMP) && playerExtraJumpsLeft > 0 && !playerJumpNotOk)
 		{
 			playerSndFlying = snd_play(player_snd_flying, 100, 0);
 			playerExtraJumpsLeft--;
@@ -695,7 +695,7 @@ void movement_update()
 		player.z += (heightWanted-player.z)*0.5*time_step;
 		player.PLAYER_SPEED_Z = 0;
 		player.PLAYER_GROUND_CONTACT = 1;
-		if(input[INPUT_JUMP].justPressed && !playerJumpNotOk)
+        if(input_hit(INPUT_JUMP) && !playerJumpNotOk)
 		{
 			player.PLAYER_GROUND_CONTACT = 0;
 			playerJumpHangtime = 6;
@@ -723,7 +723,7 @@ void movement_update()
 	camera.y = player.y;
 	camera.z = player.z+playerCameraHeight+sinv(playerWeaponBob)*6-playerCrouchPerc*1.1;
 	camera.arc = 95;
-	camera.roll += (-(input[INPUT_LEFT].down-input[INPUT_RIGHT].down)*2+sinv(playerWeaponBob*0.5)*(0.5+playerCrouchPerc*0.05)-camera.roll)*0.5*(1-0.01*playerSlidePerc)*time_step;
+    camera.roll += (-(input_down(INPUT_LEFT)-input_down(INPUT_RIGHT))*2+sinv(playerWeaponBob*0.5)*(0.5+playerCrouchPerc*0.05)-camera.roll)*0.5*(1-0.01*playerSlidePerc)*time_step;
 	
 	vec_set(playerAngle,camera.pan);
 	var progress = weaponGetAttackProgress();

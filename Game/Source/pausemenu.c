@@ -3,6 +3,7 @@
 #include "global.h"
 #include "framework.h"
 #include "ui.h"
+#include "options.h"
 
 #include <acknex.h>
 
@@ -11,11 +12,10 @@
 BMAP * pausemenu_bmp_continue   = "pause_continue.png";
 BMAP * pausemenu_bmp_options    = "pause_options.png";
 BMAP * pausemenu_bmp_quit       = "pause_quit.png";
-BMAP * pausemenu_bmp_background = "pause_background.png";
 
 PANEL * pausemenu_pan_background =
 {
-    bmap = pausemenu_bmp_background;
+    bmap = ui_bmp_background;
     layer = 100;
 }
 
@@ -50,9 +50,16 @@ int pausemenu_response;
 
 int pausemenu_selection;
 
+bool pausemenu_shows_options;
+
 int pausemenu_get_response()
 {
     return pausemenu_response;
+}
+
+void pausemenu_reset_response()
+{
+    pausemenu_response = PAUSEMENU_RESPONSE_NONE;
 }
 
 PANEL * pausemenu_panels[PAUSEMENU_PAN_COUNT];
@@ -74,8 +81,9 @@ void pausemenu_open()
         pausemenu_panels[i]->pos_x = -bmap_width(pausemenu_panels[i]->bmap);
         pausemenu_panels[i]->pos_y = 16 + 50 * i;
     }
-    pausemenu_response = 0;
+    pausemenu_reset_response();
     pausemenu_selection = 0;
+    pausemenu_shows_options = false;
 }
 
 void pausemenu_update()
@@ -85,6 +93,17 @@ void pausemenu_update()
 
     pausemenu_pan_background->scale_x = screen_size.x / bmap_width(pausemenu_pan_background->bmap);
     pausemenu_pan_background->scale_y = screen_size.y / bmap_height(pausemenu_pan_background->bmap);
+
+    if(pausemenu_shows_options)
+    {
+        options_update();
+        if(options_wants_close())
+        {
+            options_close();
+            pausemenu_shows_options = false;
+        }
+        return;
+    }
 
     if(input_hit(INPUT_NAVBACK))
     {
@@ -127,7 +146,10 @@ void pausemenu_update()
         switch(pausemenu_selection)
         {
         case 0: pausemenu_response = PAUSEMENU_RESPONSE_CONTINUE; break;
-        case 1: pausemenu_response = PAUSEMENU_RESPONSE_OPTIONS; break;
+        case 1:
+            pausemenu_shows_options = true;
+            options_open();
+            return;
         case 2: pausemenu_response = PAUSEMENU_RESPONSE_QUIT; break;
         error("pausemenu_update: invalid menu selection!");
         }

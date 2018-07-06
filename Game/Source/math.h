@@ -10,6 +10,8 @@
 
 #define PI 3.14159265
 
+var var_lerp(var a, var b, var f);
+
 /**
  * \brief   Interpolates a single angle.
  * \param	a1	The first angle.

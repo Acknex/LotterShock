@@ -3,9 +3,10 @@
 #include "global.h"
 #include "framework.h"
 #include "ui.h"
+#include "options.h"
 #include <acknex.h>
 
-#define MAINMENU_ITEM_COUNT 4
+#define MAINMENU_ITEM_COUNT 5
 
 #define MAINMENU_BORDER_PADDING 16
 #define MAINMENU_FADE_SPEED 25
@@ -14,8 +15,9 @@ SOUND * mainmenu_stupid = "aiaiaiai.ogg";
 
 BMAP * mainmenu_start_bmap = "mainmenu_start.png";
 BMAP * mainmenu_credits_bmap = "mainmenu_credits.png";
-BMAP * mainmenu_exit_bmap = "mainmenu_exit.png";
 BMAP * mainmenu_bestiary_bmap = "mainmenu_bestiary.png";
+BMAP * mainmenu_options_bmap = "mainmenu_options.png";
+BMAP * mainmenu_exit_bmap = "mainmenu_exit.png";
 
 PANEL * mainmenu_start_pan =
 {
@@ -31,16 +33,23 @@ PANEL * mainmenu_credits_pan =
         layer = 2;
 }
 
-PANEL * mainmenu_exit_pan =
+PANEL * mainmenu_bestiary_pan =
 {
-    bmap = mainmenu_exit_bmap;
+    bmap = mainmenu_bestiary_bmap;
     flags = TRANSLUCENT;
     layer = 2;
 }
 
-PANEL * mainmenu_bestiary_pan =
+PANEL * mainmenu_options_pan =
 {
-    bmap = mainmenu_bestiary_bmap;
+    bmap = mainmenu_options_bmap;
+    flags = TRANSLUCENT;
+    layer = 2;
+}
+
+PANEL * mainmenu_exit_pan =
+{
+    bmap = mainmenu_exit_bmap;
     flags = TRANSLUCENT;
     layer = 2;
 }
@@ -68,6 +77,8 @@ int mainmenu_response;
 
 var mainmenu_cameradist;
 
+bool mainmenu_shows_optionsmenu;
+
 int mainmenu_get_response()
 {
     return mainmenu_response;
@@ -78,7 +89,8 @@ void mainmenu_init()
     mainmenu_items[0] = mainmenu_start_pan;
     mainmenu_items[1] = mainmenu_credits_pan;
     mainmenu_items[2] = mainmenu_bestiary_pan;
-    mainmenu_items[3] = mainmenu_exit_pan;
+    mainmenu_items[3] = mainmenu_options_pan;
+    mainmenu_items[4] = mainmenu_exit_pan;
 }
 
 void mainmenu_open()
@@ -109,6 +121,17 @@ void mainmenu_open()
 void mainmenu_update()
 {
     int i;
+
+    if(mainmenu_shows_optionsmenu)
+    {
+        options_update();
+        if(options_wants_close())
+        {
+            options_close();
+            mainmenu_shows_optionsmenu = false;
+        }
+        return;
+    }
 
     if(input_hit(INPUT_DOWN) && mainmenu_selection < (MAINMENU_ITEM_COUNT-1))
     {
@@ -160,7 +183,11 @@ void mainmenu_update()
             case 0: mainmenu_response = MAINMENU_RESPONSE_START; break;
             case 1: mainmenu_response = MAINMENU_RESPONSE_CREDITS; break;
             case 2: mainmenu_response = MAINMENU_RESPONSE_BESTIARY; break;
-            case 3: mainmenu_response = MAINMENU_RESPONSE_EXIT; break;
+            case 3:
+                mainmenu_shows_optionsmenu = true;
+                options_open();
+                return;
+            case 4: mainmenu_response = MAINMENU_RESPONSE_EXIT; break;
             }
         }
     }

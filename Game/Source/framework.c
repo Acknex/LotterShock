@@ -10,6 +10,8 @@
 #include "meshFun.h"
 #include "settings.h"
 #include "bestiary.h"
+#include "options.h"
+#include "cheats.h"
 
 #include <acknex.h>
 #include <windows.h>
@@ -80,9 +82,6 @@ void framework_init()
 #endif
 
     on_frame = framework_update;
-#ifdef DEBUG
-    on_esc = NULL;
-#endif
 }
 
 void framework_setup(ENTITY * ent, int subsystem)
@@ -159,6 +158,10 @@ void framework_update()
         framework_capture_mouse();
 #endif
 
+#ifdef DEBUG_NO_ESCAPE_QUIT
+    on_esc = NULL;
+#endif
+
     input_update();
 
     switch(framework.state)
@@ -176,6 +179,8 @@ void framework_update()
             credits_init();
             hud_init();
             bestiary_init();
+            options_init();
+            cheats_init();
 
             music_set_master_volume(settings.game_volume);
 

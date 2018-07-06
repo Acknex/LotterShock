@@ -3,33 +3,36 @@
 
 #include "ackXinput.h"
 
+#define INPUT_TYPE_NONE     0
+#define INPUT_TYPE_KEYBOARD 1
+#define INPUT_TYPE_GAMEPAD  2
+#define INPUT_TYPE_AXIS     3
+
 typedef struct
 {
-    var * value;
+    int type;
+    int index;
     float deadZone;
-    float scale;
-    bool time_sensitive;
-} input_axis_t;
+    bool inverted;
+} input_config_t;
 
 typedef struct
 {
 	int down;
     int justPressed;
-	int scanCodes[4];
-	int gamepadKeys[4];
-    int useAxis;
-	float factor;
-	char cinfo[32];
-    EVENT fnc;
+
+    char cinfo[128];
+
+    input_config_t configs[4];
 
     // analog input
     var value;
-    input_axis_t axes[4];
-    bool positiveValue;
     float deadZone;
     float sensitivity;
 } INPUT;
 
+
+// THESE ARE BUTTONS
 #define INPUT_UP 0
 #define INPUT_DOWN 1
 #define INPUT_LEFT 2
@@ -43,27 +46,30 @@ typedef struct
 #define INPUT_BLOCK 10
 #define INPUT_CROUCH 11
 #define INPUT_MORPHBALL 12
+#define INPUT_SHOW_MAP 13
+#define INPUT_MAX 14
 
-#define INPUT_LOOK_HORIZONTAL 13
-#define INPUT_LOOK_VERTICAL 14
-
-#define INPUT_SHOW_MAP 15
-
-#define INPUT_MAX 16
-
-#define INPUT_TYPE_KEYBOARD 0
-#define INPUT_TYPE_GAMEPAD 1
-#define INPUT_TYPE_MOUSEAXIS 2
-
-INPUT input[INPUT_MAX];
-
-bool input_cheats_enabled = false;
+// THESE ARE AXIS
+#define INPUT_AXIS_LOOK_HORIZONTAL 0
+#define INPUT_AXIS_LOOK_VERTICAL   1
+#define INPUT_AXIS_MOUSE_X         2
+#define INPUT_AXIS_MOUSE_Y         3
+#define INPUT_AXIS_MOUSEWHEEL      4
+#define INPUT_AXIS_LEFT_STICK_X    5
+#define INPUT_AXIS_LEFT_STICK_Y    6
+#define INPUT_AXIS_RIGHT_STICK_X   7
+#define INPUT_AXIS_RIGHT_STICK_Y   8
+#define INPUT_AXIS_LEFT_TRIGGER    9
+#define INPUT_AXIS_RIGHT_TRIGGER   10
+#define INPUT_AXIS_MAX             11
 
 void input_update();
 
+//! adds a button input
 void input_add(int inputID, int inputType, int value);
 
-void input_add_axis(int inputID, var * value, float scale, float deadZone, bool time_sensitive);
+//! adds a button input for an axis
+void input_add_axis(int inputID, int axis, float deadZone, bool inverted);
 
 void input_init();
 
