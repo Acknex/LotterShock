@@ -72,16 +72,13 @@ void itemCollectible_effect(ENTITY *item)
 void collectibles_update() {
 	ENTITY *ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_COLLECTIBLES) {
-
 		if(ptr->skill1 != 1) ptr->pan += time_step * 10;
 		
 		if (player) {
 			if (itemCollectible_condition(ptr)) {
-				var trace = c_trace(ptr.x, player.x, IGNORE_ME);
-				if ((trace > 0) && (trace < 100)) {
-					if (you == player) {
+				var distance = vec_dist(ptr.x, player.x);
+				if (distance < 120) 
 						itemCollectible_effect(ptr);
-					}
 				}
 			}
 		}
@@ -97,6 +94,7 @@ MEDIPACK
 action Medipack() {
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_MEDIPACK;
+	set(my, PASSABLE);
 }
 
 void medipack_init() {
@@ -111,6 +109,7 @@ KEY
 action keycard() {
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_KEYCARD;
+	set(my, PASSABLE);
 }
 /**********
 DOUBLEJUMP
@@ -120,6 +119,7 @@ DOUBLEJUMP
 action doublejump() {
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_DOUBLEJUMP;
+	set(my, PASSABLE);
 }
 /**********
 HAZMAT SUIT
@@ -129,6 +129,7 @@ HAZMAT SUIT
 action hazmat() {
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_HAZMAT;
+	set(my, PASSABLE);
 }
 
 /**********
@@ -142,6 +143,7 @@ void item_ammo(int ammoType, var amount)
 	my->SUBSYSTEM_PARAMETER = ITEM_AMMUNITION;
 	my->SUBSYSTEM_skill_a = ammoType;
 	my->SUBSYSTEM_skill_b = amount;
+	set(my, PASSABLE);
 }
 // uses: ITEM_NOROTATE, AMMO_AMOUNT
 action ammo_shotgun()
@@ -179,6 +181,7 @@ void item_weapon(int weaponType)
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_WEAPON;
 	my->SUBSYSTEM_skill_a = weaponType;
+	set(my, PASSABLE);
 }
 
 // uses: ITEM_NOROTATE
