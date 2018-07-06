@@ -1,5 +1,10 @@
 #include <acknex.h>
 
+var var_lerp(var a, var b, var f)
+{
+    return a + (b - a) * f;
+}
+
 var ang_lerp_single(var a1, var a2, var f)
 {
 	var angle = ang(a1 - a2);

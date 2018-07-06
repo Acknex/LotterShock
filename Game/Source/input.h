@@ -19,7 +19,7 @@ typedef struct
 	int gamepadKeys[4];
     int useAxis;
 	float factor;
-	char cinfo[32];
+    char cinfo[128];
     EVENT fnc;
 
     // analog input

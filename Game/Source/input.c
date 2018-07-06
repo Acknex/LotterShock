@@ -299,18 +299,21 @@ void input_init()
     }
     //*/
 
-    strcpy(input[INPUT_UP].cinfo,"UP");
-    strcpy(input[INPUT_DOWN].cinfo,"DOWN");
-    strcpy(input[INPUT_LEFT].cinfo,"LEFT");
-    strcpy(input[INPUT_RIGHT].cinfo,"RIGHT");
-    strcpy(input[INPUT_JUMP].cinfo,"JUMP");
-    strcpy(input[INPUT_USE].cinfo,"USE");
-    strcpy(input[INPUT_ATTACK].cinfo,"ATTACK");
-    strcpy(input[INPUT_WEAPON_UP].cinfo,"WEAPON_UP");
-    strcpy(input[INPUT_WEAPON_DOWN].cinfo,"WEAPON_DOWN");
-    strcpy(input[INPUT_NAVBACK].cinfo,"NAVBACK");
-    strcpy(input[INPUT_CROUCH].cinfo,"CROUCH");
-    strcpy(input[INPUT_MORPHBALL].cinfo,"ENTMORPHBALL");
+    strcpy(input[INPUT_UP].cinfo,"Walk (Forward)");
+    strcpy(input[INPUT_DOWN].cinfo,"Walk (Back)");
+    strcpy(input[INPUT_LEFT].cinfo,"Walk (Left)");
+    strcpy(input[INPUT_RIGHT].cinfo,"Walk (Right)");
+    strcpy(input[INPUT_JUMP].cinfo,"Jump");
+    strcpy(input[INPUT_USE].cinfo,"Use");
+    strcpy(input[INPUT_ATTACK].cinfo,"Attack");
+    strcpy(input[INPUT_WEAPON_UP].cinfo,"Next Weapon");
+    strcpy(input[INPUT_WEAPON_DOWN].cinfo,"Previous Weapon");
+    strcpy(input[INPUT_CROUCH].cinfo,"Crouch");
+    strcpy(input[INPUT_NAVBACK].cinfo,"Navigate Back");
+    strcpy(input[INPUT_MORPHBALL].cinfo,"Toggle Morphball");
+    strcpy(input[INPUT_LOOK_HORIZONTAL].cinfo,"Camera (Horizontal)");
+    strcpy(input[INPUT_LOOK_VERTICAL].cinfo,"Camera (Vertical)");
+    strcpy(input[INPUT_SHOW_MAP].cinfo, "Toggle Map");
 
 
     //////////////////////////////

@@ -62,6 +62,7 @@
 #include "enemy.c"
 #include "pausemenu.c"
 #include "options.c"
+#include "ui.c"
 
 void main()
 {
