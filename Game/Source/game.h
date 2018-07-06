@@ -1,6 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
+bool game_hidehud;
+
 void game_init();
 
 void game_open();

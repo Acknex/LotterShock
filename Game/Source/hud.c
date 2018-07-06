@@ -30,16 +30,6 @@ BMAP *HUD_font_bmap = "HUD_font.png";
 #define PRAGMA_BIND "label_cellgun.png"
 #define PRAGMA_BIND "label_flamethrower.png"
 
-
-PANEL *HUD_tutorial =
-{
-	bmap = "Controlsenpai.png";
-	//flags = TRANSLUCENT;
-	layer = 10;
-	scale_x = 0.8;
-	scale_y = 0.8;
-}
-
 PANEL *HUD_background =
 {
 	bmap = "interfache_bg.png";
@@ -235,12 +225,7 @@ void hud_show()
 	
 	HUD_HP_infotext->pos_x = pos_right;
 	HUD_HP_infotext->pos_y = screen_size.y - hud_sizey(HUD_HP_text)/2-HUD_BORDER_PADDING;
-	set(HUD_HP_infotext, SHOW);
-	
-	HUD_tutorial->pos_x = (screen_size.x - hud_sizex(HUD_tutorial))/2;
-	HUD_tutorial->pos_y = (screen_size.y - hud_sizey(HUD_tutorial))/2;
-	HUD_tutorial->alpha = 50;
-	set(HUD_tutorial, SHOW);
+    set(HUD_HP_infotext, SHOW);
 	
    //KEY 0 is unused -> start with 1
 	for(i = 0; i<KEYS_MAX ;++i)
@@ -388,19 +373,5 @@ void hud_update()
 	}
 	else
 		hud_hide_ammobar();
-		
-		
-	
-	if(is(HUD_tutorial, TRANSLUCENT))
-	{
-		HUD_tutorial->alpha -= 10*time_step;
-		if(HUD_tutorial->alpha <= 0)
-			reset(HUD_tutorial, SHOW);
-	}
-	else
-		if(input_any())
-		{
-			set(HUD_tutorial, TRANSLUCENT);
-			HUD_tutorial->alpha = 50;
-		}
+
 }
