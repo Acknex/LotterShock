@@ -2,6 +2,7 @@
 #include "input.h"
 #include "global.h"
 #include "framework.h"
+#include "ui.h"
 #include <acknex.h>
 
 #define MAINMENU_ITEM_COUNT 4
@@ -92,7 +93,6 @@ void mainmenu_open()
     }
     set(mainmenu_selection_pan, SHOW);
     mainmenu_selection_pan->alpha = 0;
-    mouse_mode = 4;
     mainmenu_selection = 0;
     mainmenu_response = MAINMENU_RESPONSE_STILLACTIVE;
 
@@ -113,12 +113,12 @@ void mainmenu_update()
     if(input_hit(INPUT_DOWN) && mainmenu_selection < (MAINMENU_ITEM_COUNT-1))
     {
         mainmenu_selection += 1;
-        snd_play(mainmenu_swap_snd, 100, 0);
+        snd_play(ui_swap_snd, 100, 0);
     }
     if(input_hit(INPUT_UP) && mainmenu_selection > 0)
     {
         mainmenu_selection -= 1;
-        snd_play(mainmenu_swap_snd, 100, 0);
+        snd_play(ui_swap_snd, 100, 0);
     }
 
     for(i = 0; i < MAINMENU_ITEM_COUNT; i++)
@@ -134,7 +134,7 @@ void mainmenu_update()
         if(mouse_panel == mainmenu_items[i])
         {
             if(mainmenu_selection != i)
-                snd_play(mainmenu_swap_snd, 100, 0);
+                snd_play(ui_swap_snd, 100, 0);
             mainmenu_selection = i;
         }
     }
@@ -154,7 +154,7 @@ void mainmenu_update()
         }
         else
         {
-            snd_play(mainmenu_accept_snd, 100, 0);
+            snd_play(ui_accept_snd, 100, 0);
             switch(mainmenu_selection)
             {
             case 0: mainmenu_response = MAINMENU_RESPONSE_START; break;

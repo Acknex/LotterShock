@@ -13,11 +13,13 @@
 #include "turret.h"
 #include "enemy.h"
 #include "journals.h"
-
-#include <windows.h>
+#include "pausemenu.h"
+#include "framework.h"
 
 bool game_done;
 var story_enginesEnabled = 0;
+
+var game_ispaused;
 
 void game_init()
 {
@@ -29,6 +31,7 @@ void game_init()
     EYE_GlobalInit();
     map_init();
     journals_init();
+    pausemenu_init();
 }
 
 void game_open()
@@ -44,13 +47,6 @@ void game_open()
     player_initSpawn();
     map_open();
 
-    // Setup mouse
-    mouse_mode = 1;
-    mouse_range = 500;
-    mouse_pointer = 0;
-    vec_set(mouse_pos, screen_size);
-    vec_scale(mouse_pos, 0.5);
-
     // reset story stuff
     story_enginesEnabled = 0;
     playerHasHazmat = 0;
@@ -58,47 +54,65 @@ void game_open()
 
     // activates cheats ingame
     input_cheats_enabled = 1;
-}
 
-void game_capture_mouse()
-{
-    RECT rect;
-    GetWindowRect(hWnd, &rect);
-    SetCursorPos((rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2);
+    game_ispaused = 0;
 }
 
 void game_update()
 {
-#ifndef DEBUG_NO_CAPTURE
-    if(window_focus)
-        game_capture_mouse();
-#endif
+    if(game_ispaused)
+    {
+        pausemenu_update();
 
-    movement_update();
-    if(!weapons_disabled)
-        weapons_update();
-    projectiles_update();
-    collectibles_update();
-    keypad_update();
-    doors_update();
-    journals_update();
+        switch(pausemenu_get_response())
+        {
+        case PAUSEMENU_RESPONSE_NONE: break;
+        case PAUSEMENU_RESPONSE_CONTINUE:
+            game_ispaused = false;
+            pausemenu_close();
+            framework_set_mousemode(MOUSEMODE_GAME);
+            break;
+        case PAUSEMENU_RESPONSE_QUIT:
+            game_done = true;
+            pausemenu_close();
+            break;
+        case PAUSEMENU_RESPONSE_OPTIONS:
+            error("options not implemented yet!");
+            break;
+        }
+    }
+    else
+    {
+        movement_update();
+        if(!weapons_disabled)
+            weapons_update();
+        projectiles_update();
+        collectibles_update();
+        keypad_update();
+        doors_update();
+        journals_update();
 
-	environmentals_update();
-    
-	ESELSLERCHE_Update();
-    SPUTNIK_Update();
-    SKULL_Update();
-    EYE_Update();
-    TURRET_Update();
-    GIB_Update();
-	ENEMY_UpdateProjectile();
-	
-    hud_update();
+        environmentals_update();
 
-    map_update();
-	
-    if(input_hit(INPUT_NAVBACK))
-        game_done = true;
+        ESELSLERCHE_Update();
+        SPUTNIK_Update();
+        SKULL_Update();
+        EYE_Update();
+        TURRET_Update();
+        GIB_Update();
+        ENEMY_UpdateProjectile();
+
+        hud_update();
+
+        map_update();
+
+        if(input_hit(INPUT_NAVBACK))
+        {
+            game_ispaused = true;
+            pausemenu_open();
+            framework_set_mousemode(MOUSEMODE_UI);
+        }
+    }
 }
 
 void game_close()
@@ -110,6 +124,7 @@ void game_close()
     weapons_close();
     map_close();
     journals_quit();
+    pausemenu_close();
     mouse_pointer = 1;
     input_cheats_enabled = 0;
 }

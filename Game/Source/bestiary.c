@@ -1,7 +1,7 @@
 #include "bestiary.h"
 #include "input.h"
 #include "music_player.h"
-#include "mainmenu.h"
+#include "ui.h"
 #include "global.h"
 #include "framework.h"
 #include "music_player.h"
@@ -243,11 +243,11 @@ void bestiary_update()
         reset(bestiary_pan_next, SHOW);
 
     if(mouse_panel != bestiary.lastPan)
-        snd_play(mainmenu_swap_snd, 100, 0);
+        snd_play(ui_swap_snd, 100, 0);
     if(bestiary.done)
-        snd_play(mainmenu_accept_snd, 100, 0);
+        snd_play(ui_accept_snd, 100, 0);
     if(inital != bestiary.position)
-        snd_play(mainmenu_accept_snd, 100, 0);
+        snd_play(ui_accept_snd, 100, 0);
 
     bestiary.lastPan = mouse_panel;
 

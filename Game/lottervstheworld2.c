@@ -60,6 +60,7 @@
 #include "bestiary.c"
 #include "turret.c"
 #include "enemy.c"
+#include "pausemenu.c"
 
 void main()
 {

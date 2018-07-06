@@ -11,6 +11,9 @@
 #include "settings.h"
 #include "bestiary.h"
 
+#include <acknex.h>
+#include <windows.h>
+
 #define FRAMEWORK_ALPHA_BLENDSPEED  25
 
 #define FRAMEWORK_STATE_SHUTDOWN    -1
@@ -44,6 +47,8 @@ PANEL * framework_load_screen =
     size_y = 720;
     flags = TRANSLUCENT;
 }
+
+int framework_mousemode;
 
 //! Initialisiert das Spiel und so
 void framework_init()
@@ -104,12 +109,54 @@ void framework_cleanup()
     }
 }
 
+void framework_set_mousemode(int mode)
+{
+    switch(mode)
+    {
+    case MOUSEMODE_UI:
+        // restore mouse cursor after game
+        // mouse_mode 0 doesn't trigger mouse_ent and stuff
+        mouse_map = framework_mouse_cursor;
+        mouse_mode = 4;
+        break;
+
+    case MOUSEMODE_GAME:
+        // remove mouse cursor in game
+        // mouse_mode 0 doesn't trigger mouse_ent and stuff
+        // so mouse_mode 1 is required
+        mouse_map = NULL;
+        mouse_mode = 1;
+        mouse_range = 500;
+        mouse_pointer = 0;
+
+        vec_set(mouse_pos, screen_size);
+        vec_scale(mouse_pos, 0.5);
+
+        break;
+    default:
+        error("framework_set_mousemode: unknown mouse mode!");
+    }
+    framework_mousemode = mode;
+}
+
+void framework_capture_mouse()
+{
+    RECT rect;
+    GetWindowRect(hWnd, &rect);
+    SetCursorPos((rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2);
+}
+
 //! Aktualisiert alles.
 void framework_update()
 {
 #ifdef DEBUG
     if(key_alt && key_f4)
         framework_transfer(FRAMEWORK_STATE_SHUTDOWN);
+#endif
+
+#ifndef DEBUG_NO_CAPTURE
+    if(window_focus && framework_mousemode == MOUSEMODE_GAME)
+        framework_capture_mouse();
 #endif
 
     input_update();
@@ -276,9 +323,6 @@ void framework_update()
 
         case FRAMEWORK_STATE_GAME:
             game_close();
-            // restore mouse cursor after game
-            // mouse_mode 0 doesn't trigger mouse_ent and stuff
-            mouse_map = framework_mouse_cursor;
             break;
 
         case FRAMEWORK_STATE_UNLOAD:
@@ -308,23 +352,22 @@ void framework_update()
             break;
 
         case FRAMEWORK_STATE_MAINMENU:
+            framework_set_mousemode(MOUSEMODE_UI);
             mainmenu_open();
             break;
 
         case FRAMEWORK_STATE_CREDITS:
+            framework_set_mousemode(MOUSEMODE_GAME);
             credits_open();
             break;
 
         case FRAMEWORK_STATE_LOAD:
+            framework_set_mousemode(MOUSEMODE_GAME);
             music_start("Media/background.mp3", 3, true);
             framework.loaderState = 0;
             set(framework_load_screen, SHOW);
             framework_load_screen->alpha = 100;
 
-            // remove mouse cursor in game
-            // mouse_mode 0 doesn't trigger mouse_ent and stuff
-            // so mouse_mode 1 is required
-            mouse_map = NULL;
 
             break;
 
