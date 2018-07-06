@@ -61,6 +61,7 @@
 #include "turret.c"
 #include "enemy.c"
 #include "pausemenu.c"
+#include "options.c"
 
 void main()
 {

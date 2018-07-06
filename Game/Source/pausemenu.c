@@ -3,6 +3,7 @@
 #include "global.h"
 #include "framework.h"
 #include "ui.h"
+#include "options.h"
 
 #include <acknex.h>
 
@@ -50,6 +51,8 @@ int pausemenu_response;
 
 int pausemenu_selection;
 
+bool pausemenu_shows_options;
+
 int pausemenu_get_response()
 {
     return pausemenu_response;
@@ -81,6 +84,7 @@ void pausemenu_open()
     }
     pausemenu_reset_response();
     pausemenu_selection = 0;
+    pausemenu_shows_options = false;
 }
 
 void pausemenu_update()
@@ -90,6 +94,17 @@ void pausemenu_update()
 
     pausemenu_pan_background->scale_x = screen_size.x / bmap_width(pausemenu_pan_background->bmap);
     pausemenu_pan_background->scale_y = screen_size.y / bmap_height(pausemenu_pan_background->bmap);
+
+    if(pausemenu_shows_options)
+    {
+        options_update();
+        if(options_wants_close())
+        {
+            options_close();
+            pausemenu_shows_options = false;
+        }
+        return;
+    }
 
     if(input_hit(INPUT_NAVBACK))
     {
@@ -133,9 +148,9 @@ void pausemenu_update()
         {
         case 0: pausemenu_response = PAUSEMENU_RESPONSE_CONTINUE; break;
         case 1:
-            // TODO: Open options menu as overlay here!
-            error("pausemenu_update: options not implemented yet!");
-            break;
+            pausemenu_shows_options = true;
+            options_open();
+            return;
         case 2: pausemenu_response = PAUSEMENU_RESPONSE_QUIT; break;
         error("pausemenu_update: invalid menu selection!");
         }

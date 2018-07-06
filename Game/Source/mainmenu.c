@@ -3,6 +3,7 @@
 #include "global.h"
 #include "framework.h"
 #include "ui.h"
+#include "options.h"
 #include <acknex.h>
 
 #define MAINMENU_ITEM_COUNT 5
@@ -76,6 +77,8 @@ int mainmenu_response;
 
 var mainmenu_cameradist;
 
+bool mainmenu_shows_optionsmenu;
+
 int mainmenu_get_response()
 {
     return mainmenu_response;
@@ -118,6 +121,17 @@ void mainmenu_open()
 void mainmenu_update()
 {
     int i;
+
+    if(mainmenu_shows_optionsmenu)
+    {
+        options_update();
+        if(options_wants_close())
+        {
+            options_close();
+            mainmenu_shows_optionsmenu = false;
+        }
+        return;
+    }
 
     if(input_hit(INPUT_DOWN) && mainmenu_selection < (MAINMENU_ITEM_COUNT-1))
     {
@@ -170,8 +184,9 @@ void mainmenu_update()
             case 1: mainmenu_response = MAINMENU_RESPONSE_CREDITS; break;
             case 2: mainmenu_response = MAINMENU_RESPONSE_BESTIARY; break;
             case 3:
-                error("mainmenu_update: options not implemented yet!");
-                break;
+                mainmenu_shows_optionsmenu = true;
+                options_open();
+                return;
             case 4: mainmenu_response = MAINMENU_RESPONSE_EXIT; break;
             }
         }
