@@ -17,6 +17,7 @@ BMAP * options_bmp_btn_save = "options_save.png";
 BMAP * options_bmp_inputslot = "option_inputslot.png";
 BMAP * options_bmp_xbox = "options_xbox.png";
 BMAP * options_bmp_assignwindow = "options_assignwait.png";
+BMAP * options_bmp_axis = "options_axis.png";
 
 FONT * options_panel_font = "Arial#26b";
 
@@ -314,6 +315,17 @@ void options_update()
                     wasset = true;
                 }
             }
+            for(i = 2; i < INPUT_AXIS_MAX; i++)
+            {
+                if(abs(input_axis(i)) > 0.3)
+                {
+                    cfg.type = INPUT_TYPE_AXIS;
+                    cfg.index = i;
+                    cfg.inverted = (input_axis(i) < 0);
+                    cfg.deadZone = 0.3;
+                    wasset = true;
+                }
+            }
 
             if(options_assign_key.isClear)
             {
@@ -383,7 +395,20 @@ void options_update()
                 break;
 
             case INPUT_TYPE_AXIS:
-                draw_text("AXIS", 0, 8, COLOR_RED);
+                if(cfg->inverted)
+                    draw_quad(NULL, vector(0,0,0),NULL,vector(37,37,0),NULL, vector(192,192,255), 100, 0);
+                else
+                    draw_quad(NULL, vector(0,0,0),NULL,vector(37,37,0),NULL, vector(255,192,192), 100, 0);
+                draw_quad(
+                    options_bmp_axis,
+                    vector(0, 0, 0),
+                    vector(37 * cfg->index, 0, 0),
+                    vector(37, 37, 0),
+                    NULL,
+                    NULL,
+                    100,
+                    0);
+
                 break;
 
             }
