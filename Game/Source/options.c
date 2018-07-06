@@ -288,6 +288,7 @@ void options_update()
     {
         if(options_assign_key.timer <= 0)
         {
+            options_input_copy[options_assign_key.inputid].configs[options_assign_key.slot].type = INPUT_TYPE_NONE;
             reset(options_pan_assignwindow, SHOW);
         }
         else

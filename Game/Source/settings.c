@@ -68,7 +68,6 @@ void settings_load_from(STRING * fileName)
 
     if(ini_read_int(settings_file, "Input", "config_written", 0) == 1)
     {
-        error("ja!");
         settings.has_input_mapping = 1;
 
         int i,k;
