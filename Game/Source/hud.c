@@ -2,6 +2,7 @@
 #include "movement.h"
 #include "global.h"
 #include "environmentals.h"
+#include "doors.h"
 
 #define HUD_ELEMENT_COUNT 1
 
@@ -123,6 +124,7 @@ PANEL* HUD_Head =
 }
 
 PANEL *hud_weapon_icon[4];
+PANEL *hud_keycard_icon[KEYS_MAX];
 
 void hud_init()
 {
@@ -130,6 +132,13 @@ void hud_init()
 	hud_weapon_icon[WEAPON_SHOTGUN-1] = pan_create("bmap = label_shotgun.png",2);
 	hud_weapon_icon[WEAPON_CELLGUN-1] = pan_create("bmap = label_cellgun.png",2);
 	hud_weapon_icon[WEAPON_FLAMETHROWER-1] = pan_create("bmap = label_flamethrower.png",2);
+	
+   //KEY 0 is unused -> start with 1
+	hud_keycard_icon[BLACK_KEY] = pan_create("bmap = icon_keycard4.png",2);
+	hud_keycard_icon[GREEN_KEY] = pan_create("bmap = icon_keycard2.png",2);
+	hud_keycard_icon[RED_KEY] = pan_create("bmap = icon_keycard.png",2);
+	hud_keycard_icon[YELLOW_KEY] = pan_create("bmap = icon_keycard3.png",2);
+	hud_keycard_icon[BLUE_KEY] = pan_create("bmap = icon_keycard1.png",2);
 }
 
 
@@ -233,105 +242,12 @@ void hud_show()
 	HUD_tutorial->alpha = 50;
 	set(HUD_tutorial, SHOW);
 	
-	
-/*		
-	HUD_Head->pos_x = (screen_size.x- hud_sizex(HUD_Head))/2;
-	HUD_Head->pos_y = screen_size.y - hud_sizey(HUD_Head) - HUD_BORDER_PADDING;
-	//set(HUD_Head, SHOW);
-
-	var SEGMENT_DISTANCE = 20;
-	
-	var space_left = HUD_Head->pos_x - HUD_BORDER_PADDING;
-	space_left /= 2;
-	
-	var lb_leftElement = HUD_BORDER_PADDING;
-	var lb_rightElement = HUD_BORDER_PADDING+space_left;
-	
-	var ub_leftElement = lb_rightElement-SEGMENT_DISTANCE;
-	var ub_rightElement = HUD_Head->pos_x-SEGMENT_DISTANCE;
-	
-	var leftElementShift = -20;
-	lb_leftElement += leftElementShift;
-	ub_leftElement += leftElementShift;
-	
-	var center_leftElement = (ub_leftElement+lb_leftElement)/2;
-	var center_rightElement = (ub_rightElement+lb_rightElement)/2;
-	
-	var cc_digitSize = (ub_leftElement-lb_leftElement)/5;
-	var cc_left = lb_leftElement + 1.5*cc_digitSize;
-	var cc_right = ub_leftElement - 0.8*cc_digitSize;
-	
-	var element_width = space_left - SEGMENT_DISTANCE;
-	
-	var height_right = hud_sizey(hud_weapon_icon[0]) + hud_sizey(HUD_Ammo_bars);
-	var height_left = hud_sizey(HUD_HP_text);
-	var height_total = maxv(height_right, height_left);
-	
-	var center_all = screen_size.y - height_total/2 - HUD_BORDER_PADDING;
-	
-	var desired_background_height = height_total+2*HUD_BORDER_PADDING;
-	var scale_rightx = element_width / hud_weapon_icon[0].size_x;
-	var scale_righty = (desired_background_height-2*HUD_BORDER_PADDING) / hud_weapon_icon[0].size_x;
-	var scale_right = minv(scale_rightx, scale_righty);
-	
-	int i;
-	for(i=0; i<4; ++i)
+   //KEY 0 is unused -> start with 1
+	for(i = 0; i<KEYS_MAX ;++i)
 	{
-		hud_weapon_icon[i]->scale_x = scale_right;
-		hud_weapon_icon[i]->scale_y = scale_right;
-		
-	 	hud_weapon_icon[i]->pos_x = center_rightElement - hud_sizex(hud_weapon_icon[i])/2;
-	 	hud_weapon_icon[i]->pos_y = center_all - height_right*scale_right/2;
+		hud_keycard_icon[i]->pos_x = HUD_BORDER_PADDING;
+		hud_keycard_icon[i]->pos_y = screen_size.y - hud_sizey(hud_keycard_icon[i])*(i+1) - HUD_BORDER_PADDING;
 	}
-	
-	HUD_Ammo_bars->scale_x = scale_right*1.5;
-	HUD_Ammo_bars->scale_y = scale_right*1.3;
-	
-	hud_place_bar(HUD_Ammo_bars, center_rightElement - hud_sizex(HUD_Ammo_bars)/2);
-	HUD_Ammo_bars->pos_y = center_all + height_right/2 - hud_sizey(HUD_Ammo_bars);
-	
-	
-	HUD_gunframe->scale_x = scale_right;
-	HUD_gunframe->scale_y = scale_right;
-	
-	HUD_gunframe->pos_x = center_rightElement - hud_sizex(HUD_gunframe)/2;
-	HUD_gunframe->pos_y = center_all - hud_sizey(HUD_gunframe)/2 + 10;
-	set(HUD_gunframe, SHOW);
-	
-	
-	
-	
-	HUD_HP_text->pos_x = cc_right - hud_sizex(HUD_HP_text)/2;
-	HUD_HP_text->pos_y = center_all - hud_sizey(HUD_HP_text)/2;
-	set(HUD_HP_text, SHOW);
-	
-	
-	HUD_HP_infotext->pos_x = cc_left;
-	HUD_HP_infotext->pos_y = center_all;
-	set(HUD_HP_infotext, SHOW);
-	
-	
-	
-	
-	HUD_background->scale_y = desired_background_height/HUD_background->size_y;
-	HUD_background->scale_x = HUD_background->scale_y;
-	
-	
-	var background_ub = (screen_size.x+hud_sizex(HUD_Head))/2 +HUD_BORDER_PADDING;
-	var background_overshoot = hud_sizex(HUD_background) - background_ub;
-	
-	HUD_background->pos_x = -background_overshoot;
-	HUD_background->pos_y = screen_size.y-hud_sizey(HUD_background);
-	set(HUD_background, SHOW);
-	
-	
-	HUD_crosshair->pos_x = (screen_size.x - hud_sizex(HUD_crosshair)) /2;
-	HUD_crosshair->pos_y = (screen_size.y - hud_sizey(HUD_crosshair)) /2;
-	HUD_crosshair->alpha = 10;
-	set(HUD_crosshair, SHOW);
-	
-	HUD_Ammo_infotext->pos_x = HUD_Ammo_bars->pos_x + hud_sizex(HUD_Ammo_bars)/2;
-	HUD_Ammo_infotext->pos_y = HUD_Ammo_bars->pos_y + hud_sizey(HUD_Ammo_bars)/2;*/
 }
 
 void hud_hide()
@@ -341,8 +257,6 @@ void hud_hide()
 	reset(HUD_HP_text, SHOW);
 	reset(HUD_crosshair, SHOW);
 	reset(HUD_HP_label, SHOW);
-	//reset(HUD_HP_bars, SHOW);
-	//reset(HUD_Ammo_label, SHOW);
 	reset(HUD_Ammo_bars, SHOW);
 	reset(HUD_Ammo_infotext, SHOW);
 	reset(HUD_background, SHOW);
@@ -398,6 +312,13 @@ void hud_update()
         set(HUD_crosshair, LIGHT);
     else
         reset(HUD_crosshair, LIGHT);
+   
+   
+   //KEY 0 is unused -> start with 1
+	int i;
+	for(i=0; i<KEYS_MAX ; ++i)
+		if(keys[i])
+			set(hud_keycard_icon[i], SHOW);
 
 	var player_maxhealth = playerGetMaxHealth();
 	var player_health = playerGetHealth();
