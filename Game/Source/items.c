@@ -72,14 +72,14 @@ void itemCollectible_effect(ENTITY *item)
 void collectibles_update() {
 	ENTITY *ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_COLLECTIBLES) {
+		
 		if(ptr->skill1 != 1) ptr->pan += time_step * 10;
 		
 		if (player) {
 			if (itemCollectible_condition(ptr)) {
 				var distance = vec_dist(ptr.x, player.x);
 				if (distance < 120) 
-						itemCollectible_effect(ptr);
-				}
+					itemCollectible_effect(ptr);
 			}
 		}
 	}
