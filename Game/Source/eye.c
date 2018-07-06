@@ -5,8 +5,8 @@
 #include "scan.h"
 #include "ang.h"
 #include "enemy.h"
-
-#include "splatter.h" //temp
+#include "splatter.h"
+#include "gib.h"
 
 #define EYE_PATHID skill1
 #define EYE_PATHPROGRESS skill2
@@ -31,6 +31,10 @@
 #define EYE_PATROLDIST skill34
 #define EYE_ZOFFSET skill35
 #define EYE_PATHENT skill36
+#define EYE_BASESCALE skill37
+//#define EYE_BASESCALE skill38
+//#define EYE_BASESCALE skill39
+#define EYE_LASTPAN skill40
 
 #define EYE_STATE_INACTIVE 0
 #define EYE_STATE_PATROL 1
@@ -38,6 +42,7 @@
 #define EYE_STATE_ATTACK 3
 #define EYE_STATE_DIE 4
 #define EYE_STATE_DEAD 5
+#define EYE_STATE_HIT 6
 
 #define EYE_WALKANIM "stand"
 
@@ -57,8 +62,8 @@ action Eye()
 	if(my->EYE_ATTACKDIST == 0) my->EYE_ATTACKDIST = 2000;
 	if(my->EYE_ANIMSPEED == 0) my->EYE_ANIMSPEED = 3;
 	my->HEALTH = HEALTH_EYE;
-	vec_scale(me.scale_x, 10);
-//	my->EYE_PATHID = 2;//temp
+	vec_scale(&my->scale_x, 10);
+	vec_set(&my->EYE_BASESCALE, &my->scale_x);
 	my->material = matObject;
 	ENTITY* ent = ent_create(NULL, nullvector, NULL);
 	if (path_set(ent, str_for_num(NULL, my->EYE_PATHID)) == 0)
@@ -70,9 +75,11 @@ action Eye()
 	path_spline (ent,&ent->x,my->EYE_PATROLLEN * my->EYE_PATHPROGRESS);
 	vec_set(&my->x, ent->x);
 	vec_set(&my->EYE_LASTPOS, &my->x);
-	set(my, PASSABLE);
+	//set(my, PASSABLE);
+	ENEMY_HIT_init(me);		
 	my->EYE_PATHENT = handle(ent);
 	my->group = GROUP_ENEMY;
+	c_setminmax(me);
 }	
 
 
@@ -90,10 +97,12 @@ void EYE_GlobalInit()
 	}
 }
 
-void spawneye();
 void EYE_Init()
 {
-	spawneye();
+	//DEBUG
+		//ENTITY* ptr = ent_create("enemy_eye.mdl", vector(400,1600,200), Eye);
+//		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(5900,-6050,250), Eye);		
+		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(1200,6500,250), Eye);		
 }
 
 void EYE_Update()
@@ -103,7 +112,7 @@ void EYE_Update()
 	{
 		if (player)
 		{
-            if(vec_dist(ptr->x, player->x) < 1000)
+            /*if(vec_dist(ptr->x, player->x) < 1000)
             {
                 VECTOR tmp;
                 vec_set(tmp, ptr->x);
@@ -111,12 +120,22 @@ void EYE_Update()
                 {
                     achievement_kill_beast(BEAST_EYE);
                 }
-            }
+            }*/
 
 			ptr->EYE_ANIMSTATE += ptr->EYE_ANIMSPEED * time_step;
     		ptr->EYE_ZOFFSET = 0;
 
-			/*it's broken and I don't know.*/
+			if (ptr->DAMAGE_HIT > 0)
+			{
+				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
+				ptr->DAMAGE_HIT = 0;
+				ptr->event = NULL;
+				ptr->EYE_STATE = EYE_STATE_HIT;
+				SPLATTER_splat(&ptr->x, vector(1.0,0.0,0.0));
+				ptr->EYE_COUNTER = 0;
+				ptr->EYE_LASTPAN = ptr->pan;
+			}
+
 			switch(ptr->EYE_STATE)    	
 			{
 				case EYE_STATE_INACTIVE:
@@ -134,6 +153,12 @@ void EYE_Update()
 				case EYE_STATE_ATTACK:
 				{
 					EYE__attack(ptr);
+					break;
+				}
+
+				case EYE_STATE_HIT:
+				{
+					EYE__hit(ptr);
 					break;
 				}
 
@@ -180,14 +205,17 @@ void EYE__inactive(ENTITY* ptr)
 {
 	//adjust eye position but do not do anything else
 	ptr->EYE_PATROLDIST = cycle(ptr->EYE_PATROLDIST + ptr->EYE_PATROLSPEED*time_step,0,ptr->EYE_PATROLLEN);
-	
+	ENTITY* ent = ptr_for_handle(ptr->EYE_PATHENT);
+	path_spline (ent,&ent->x,ptr->EYE_PATROLDIST);
+
 	/* transitions */
-	if(SCAN_IsPlayerNear(ptr, ptr->EYE_ACTIVEDIST))
+	if(SCAN_IsPlayerNear(ent, ptr->EYE_ACTIVEDIST))
 	{
 		ptr->EYE_ZOFFSET = 20 * sinv(total_ticks * 20);
-		if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ACTIVEDIST, 360) || SCAN_IsPlayerNear(ptr, ptr->EYE_ACTIVEDIST * 0.3))
+		if (SCAN_IsPlayerInSight(ent, ptr->EYE_ACTIVEDIST, 360) || SCAN_IsPlayerNear(ent, ptr->EYE_ACTIVEDIST * 0.3))
 		{
 			ptr->EYE_STATE = EYE_STATE_PATROL;
+			vec_set(&ptr->x, &ent->x);
 		}
 	}
 }
@@ -195,14 +223,20 @@ void EYE__inactive(ENTITY* ptr)
 void EYE__patrol(ENTITY* ptr)
 {
 	ptr->EYE_ZOFFSET = 20 * sinv(total_ticks * 20);
-	ptr->EYE_PATROLDIST = cycle(ptr->EYE_PATROLDIST + ptr->EYE_PATROLSPEED*time_step,0,ptr->EYE_PATROLLEN);
 	ent_animate(ptr, EYE_WALKANIM, ptr->EYE_ANIMSTATE, ANM_CYCLE);
-	ENTITY* ent = ptr_for_handle(ptr->EYE_PATHENT);
 
-	path_spline (ent,&ent->x,ptr->EYE_PATROLDIST);
+	ENTITY* ent = ptr_for_handle(ptr->EYE_PATHENT);
+	//eye stuck detection. do not progress path until eye caught up
+	if(vec_dist(&ptr->x, &ent->x) < 100)
+	{
+		ptr->EYE_PATROLDIST = cycle(ptr->EYE_PATROLDIST + ptr->EYE_PATROLSPEED*time_step,0,ptr->EYE_PATROLLEN);
+		path_spline (ent,&ent->x,ptr->EYE_PATROLDIST);
+	}
+
 	VECTOR vdiff;
 	vec_diff(&vdiff, &ent->x, &ptr->x);
-	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_PUSH | GLIDE;
+	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | GLIDE;
+	c_ignore(GROUP_ENEMY,0);
 	c_move(ptr, nullvector, vdiff, mode);
 
 	ANGLE vecAngle;
@@ -211,7 +245,7 @@ void EYE__patrol(ENTITY* ptr)
 	vec_to_angle(&vecAngle,&vecDir);
 	vec_set(ptr->EYE_LASTPOS,&ptr->x);
 	ANG_turnToAngle(ptr, vecAngle.pan, ptr->EYE_TURNSPEED, 1);
-	
+
 	if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ATTACKDIST, 30))
 	{
 		
@@ -219,14 +253,15 @@ void EYE__patrol(ENTITY* ptr)
 		if(ptr->EYE_SHOTCOUNTER > 16)
 		{
 			ptr->EYE_SHOTCOUNTER -= 16;
-			ENTITY* ent = ent_create("eye_shot.mdl", ptr->x, eye_shot);
+			//fix me.
+			/*ENTITY* ent = ent_create("eye_shot.mdl", ptr->x, eye_shot);
 			VECTOR v;
 			vec_set(v, ptr->x);
 			vec_sub(v, player->x);
 			vec_normalize(v,1);
 			vec_set(ent->skill1, v);
 			vec_scale(v, -1);
-			vec_to_angle(ent->pan, v);
+			vec_to_angle(ent->pan, v);*/
 		}
 		
 	}
@@ -295,18 +330,58 @@ void EYE__attack(ENTITY* ptr)
 		}
 }
 
-void EYE__die(ENTITY* ptr)
+void EYE__hit(ENTITY* ptr)
 {
+	ptr->EYE_COUNTER += 10 * time_step;
+	ptr->pan = ptr->EYE_LASTPAN + 4*ptr->EYE_COUNTER;
+
+	/* transitions */
+	if (ptr->HEALTH <= 0)
+	{
+        achievement_kill_beast(BEAST_EYE);
+		ptr->EYE_COUNTER = 0;
+		ptr->EYE_STATE = EYE_STATE_DIE;
+		set(ptr, PASSABLE);
+	}
+	else if (ptr->EYE_COUNTER >= 90)
+	{
+		ptr->EYE_STATE = EYE_STATE_PATROL;			
+		ptr->event = ENEMY_HIT_event;
+		ptr->EYE_COUNTER = 0;
+		vec_zero(ptr->DAMAGE_VEC);
+	}
+	else if (ptr->EYE_COUNTER>= 50)
+	{
+		ptr->event = ENEMY_HIT_event;		
+	}
+	else
+	{
+	}
 }
 
-void spawneye()
+void EYE__die(ENTITY* ptr)
 {
+	ptr->EYE_COUNTER += time_step;
+	vec_set(&ptr->scale_x, &ptr->EYE_BASESCALE);
+	//factor 18 * 20 should make this end with cos(360deg) = 1 = max scale before poof
+	vec_scale(&ptr->scale_x, 1 + (0.1*ptr->EYE_COUNTER * absv(cosv(2*ptr->EYE_COUNTER * 18))));
+	VECTOR diff;
+	vec_diff(&diff, &player->x, &ptr->x);
+	ANGLE dir;
+	vec_to_angle(&dir, &diff);
+	ptr->pan = dir.pan;
 	
-	wait(-5);
-	//while(1)
+	/* transitions */
+	if(ptr->EYE_COUNTER >= 20)
 	{
-		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(400,1600,200), Eye);
-		//ENTITY* ptr = ent_create("enemy_eye.mdl", vector(5900,-6050,250), Eye);		
-		wait(-30);
+		var i;
+		for ( i = 0; i < 3; i++)
+		{
+			GIB_Spawn(&ptr->x);
+		}
+		SPLATTER_explode(50, ptr, 400, EYE_bmapSplatter, 5);
+		ptr->EYE_STATE = EYE_STATE_DEAD;
+		ptr->SK_ENTITY_DEAD = 1;
 	}
+
 }
