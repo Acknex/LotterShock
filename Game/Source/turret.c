@@ -88,17 +88,17 @@ void TURRET__init()
 	my->TURRET_STATE = TURRETSLEEP;
 	set(my, PASSABLE | POLYGON | FLAG1);
 	ent_animate(my, "closed", 0, 0);
-	my->material = matObject;
+	my->material = matTurret;
 	my->group = GROUP_ENEMY;
 }
 
 void TURRET_Init()
 {
 	//DEBUG
-	//ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,10), turret_rotccw);
-	//ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,440), turret_rotccw);
-	// ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,10), turret_rotccw);
-	//ptr->tilt=0;
+	//ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,0), turret_rotccw);
+	//ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,450), turret_aim);
+	//ptr->tilt=180;
+	 //ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,2), turret_aim);
 }
 
 void TURRET_Update()
@@ -266,7 +266,14 @@ void TURRET__active(ENTITY* ptr)
 		ptr->SHOOT_ELEVATION = -vecang.tilt;
 		//DEBUG_VAR(ptr->SHOOT_ELEVATION, 50);
 		ent_bonereset(ptr, "Bone3");
-		ent_bonerotate(ptr, "Bone3", vector(0, ptr->SHOOT_ELEVATION, 0));
+		if (ptr->tilt > 90)
+		{
+			ent_bonerotate(ptr, "Bone3", vector(0, -ptr->SHOOT_ELEVATION, 0));
+		}
+		else
+		{
+			ent_bonerotate(ptr, "Bone3", vector(0, ptr->SHOOT_ELEVATION, 0));
+		}
 
 		if (ptr->TURRET_ROTMODE == TURRETTURNAIM)
 		{
@@ -276,13 +283,23 @@ void TURRET__active(ENTITY* ptr)
 			vecDist.z = ptr->z;
 			ANGLE angTemp;
 			vec_to_angle(&angTemp, &vecDist);
-			ptr->SHOOT_ANGLE = 180 + angTemp.pan;
 			ent_bonereset(ptr, "Bone1");
-			ent_bonerotate(ptr, "Bone1", vector(ptr->SHOOT_ANGLE, 0, 0));
+			if (ptr->tilt > 90)
+			{
+				ptr->SHOOT_ANGLE = angTemp.pan;
+				ent_bonerotate(ptr, "Bone1", vector(360-ptr->SHOOT_ANGLE, 0, 0));
+			}
+			else
+			{
+				ptr->SHOOT_ANGLE = 180 + angTemp.pan;
+				ent_bonerotate(ptr, "Bone1", vector(ptr->SHOOT_ANGLE, 0, 0));
+			}
 		}
 		else
 		{
 			ptr->SHOOT_ANGLE += vTurnStep;
+			if (ptr->tilt > 90)
+				vTurnStep*=-1;
 			ent_bonerotate(ptr, "Bone1", vector(vTurnStep, 0, 0));
 		}
 		c_updatehull(ptr,1);
@@ -342,16 +359,19 @@ void TURRET__shoot(ENTITY* ptr)
 	else
 		ptr->TURRET_TOGGLE = 592;
 	
+	var panOffs = 0;
+	if (ptr->tilt > 90)
+		panOffs = 180;
 	VECTOR vecPos;
 	vec_for_vertex(&vecPos, ptr, ptr->TURRET_TOGGLE);
 	VECTOR* vecDist = vector(-30, 0, 0);
-	ANGLE* angRot = vector(ptr->SHOOT_ANGLE, ptr->SHOOT_ELEVATION, 0);
+	ANGLE* angRot = vector(panOffs+ptr->SHOOT_ANGLE, ptr->SHOOT_ELEVATION, 0);
 	vec_rotate(vecDist, angRot);
 	vec_add (vecDist, &vecPos);
 	snd_play(sndTurretShot, 100, 0);
 
 	ENTITY* ent = ent_create(SPHERE_MDL, vecDist, enemy_projectile);	
-	ent->pan = ptr->SHOOT_ANGLE;	
+	ent->pan = panOffs+ptr->SHOOT_ANGLE;	
 	ent->tilt = ptr->SHOOT_ELEVATION;	
 }
 
