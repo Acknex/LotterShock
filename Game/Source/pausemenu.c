@@ -12,11 +12,10 @@
 BMAP * pausemenu_bmp_continue   = "pause_continue.png";
 BMAP * pausemenu_bmp_options    = "pause_options.png";
 BMAP * pausemenu_bmp_quit       = "pause_quit.png";
-BMAP * pausemenu_bmp_background = "pause_background.png";
 
 PANEL * pausemenu_pan_background =
 {
-    bmap = pausemenu_bmp_background;
+    bmap = ui_bmp_background;
     layer = 100;
 }
 
