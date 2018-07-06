@@ -217,6 +217,22 @@ void options_init()
     optionbutton.input_tab->neighbour[UIDIR_LEFT] = optionbutton.common_tab;
     optionbutton.common_tab->neighbour[UIDIR_RIGHT] = optionbutton.input_tab;
 
+    /* INPUT
+     * settings.input_sensitivity = 13;
+     */
+    /* COMMON
+     * --------------------------------------------
+     * Resolution:  [ settings.resolution_x, settings.resolution_y ]
+     * Fullscreen:  [ 'X', ' ' ]
+     * V-Sync:      [ 'X', ' ' ]
+     * FPS Limit:   [ 30, 60, 90, 144, free ]
+     * Anisotropic: [ 0, 1, 2, 3] -> 0, 3, 5, 7
+     * --------------------------------------------
+     * Master Volume: 100
+     *
+     *
+     */
+
     { // initialize and interconnect all input slots
 
         int middle = INPUT_MAX / 2;
