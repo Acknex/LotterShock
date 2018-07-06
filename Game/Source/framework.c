@@ -52,6 +52,19 @@ PANEL * framework_load_screen =
 
 int framework_mousemode;
 
+void framework_update_settings()
+{
+    fps_max = settings.fps_limit;
+    d3d_anisotropy = settings.anisotropy;
+    d3d_triplebuffer = settings.vsync;
+
+    video_set(
+        settings.resolution_x,
+        settings.resolution_y,
+        0,
+        2 - !!settings.fullscreen); // !! -> 0 oder 1
+}
+
 //! Initialisiert das Spiel und so
 void framework_init()
 {
@@ -59,22 +72,15 @@ void framework_init()
     settings_load();
 
     fps_min = 25; // overshoot vermeiden, v.a. wenn's ruckelt
-    fps_max = settings.fps_limit;
 
-    d3d_anisotropy = settings.anisotropy;
-    d3d_triplebuffer = settings.vsync;
+    framework_update_settings();
+    settings_register_signal(framework_update_settings);
 
     particle_mode = 8;
     collision_mode = 2;
     preload_mode = 3; // preload a lot
 
     mouse_map = framework_mouse_cursor;
-
-    video_set(
-        settings.resolution_x,
-        settings.resolution_y,
-        0,
-        2 - !!settings.fullscreen); // !! -> 0 oder 1
     
 #ifndef FRAMEWORK_NO_POSTPROCESS
     SetupDefaultMaterials();
@@ -181,8 +187,6 @@ void framework_update()
             bestiary_init();
             options_init();
             cheats_init();
-
-            music_set_master_volume(settings.game_volume);
 
             // TODO: Fix relative link?
             music_start("Media/intro.mp3", 0.2, false);
