@@ -5,6 +5,7 @@ SOUND* snd_terminal = "keys_engine_room.wav";
 // skill1: SPEED
 action environ_fake_cloud()
 {	
+    my->flags2 |= UNTOUCHABLE;
     set(me, PASSABLE);
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_FAKECLOUD;
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
@@ -15,6 +16,7 @@ action environ_ice_cloud()
 {	
     set(me, PASSABLE);
     set(me, TRANSLUCENT);
+    my->flags2 |= UNTOUCHABLE;
 
     my.alpha = 20 + random(80);    
     my->ENVIRONMENTALS_TEMP = integer(random(1));
@@ -29,6 +31,7 @@ action environ_toxic_cloud()
     set(me, PASSABLE);  
     set(me, LIGHT);
     set(me, TRANSLUCENT);
+    my->flags2 |= UNTOUCHABLE;
 
     vec_set(my->blue, vector(0,255,0)); 
 
@@ -44,6 +47,7 @@ action environ_engine_beam()
     set(me, PASSABLE);  
     set(me, LIGHT);
     set(me, TRANSLUCENT);
+    my->flags2 |= UNTOUCHABLE;
 
     vec_set(my->blue, vector(255,0,0)); 
 

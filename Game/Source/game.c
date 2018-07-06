@@ -21,6 +21,8 @@ var story_enginesEnabled = 0;
 
 var game_ispaused;
 
+bool game_hashud;
+
 void game_init()
 {
     weapons_init();
@@ -32,6 +34,9 @@ void game_init()
     map_init();
     journals_init();
     pausemenu_init();
+
+    game_hidehud = 0;
+    game_hashud = 1;
 }
 
 void game_open()
@@ -82,8 +87,23 @@ void game_update()
     }
     else
     {
+        if(game_hashud != !game_hidehud)
+        {
+            game_hashud = !game_hidehud;
+            if(game_hashud)
+            {
+                hud_show();
+                weapons_open();
+            }
+            else
+            {
+                hud_hide();
+                weapons_close();
+            }
+        }
+
         movement_update();
-        if(!weapons_disabled)
+        if(!weapons_disabled && game_hashud)
             weapons_update();
         projectiles_update();
         collectibles_update();
@@ -101,7 +121,8 @@ void game_update()
         GIB_Update();
         ENEMY_UpdateProjectile();
 
-        hud_update();
+        if(game_hashud)
+            hud_update();
 
         map_update();
 
@@ -119,8 +140,12 @@ void game_close()
 	pp_desync(0, 0);
     movement_close();
 	projectiles_close();
-    hud_hide();
-    weapons_close();
+
+    if(game_hashud)
+    {
+        hud_hide();
+        weapons_close();
+    }
     map_close();
     journals_quit();
     pausemenu_close();

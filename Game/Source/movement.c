@@ -430,6 +430,7 @@ void movement_update()
         camera.pan += -input_axis(INPUT_AXIS_LOOK_HORIZONTAL);
 		camera.pan %= 360;
         camera.tilt = clamp(camera.tilt+input_axis(INPUT_AXIS_LOOK_VERTICAL),-85,85);
+        camera.roll = 0;
 		player.pan = camera.pan;
 		VECTOR temp;
         vec_set(temp,vector((input_down(INPUT_UP)-input_down(INPUT_DOWN)*0.667),(input_down(INPUT_LEFT)-input_down(INPUT_RIGHT)),0));

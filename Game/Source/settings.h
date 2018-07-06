@@ -38,6 +38,12 @@ void settings_load();
 
 void settings_save();
 
+//! registers notification for settings updates
+void settings_register_signal(void * reload);
+
+//! sends the update notification
+void settings_send_signal();
+
 void achievements_load();
 
 void achievements_save();

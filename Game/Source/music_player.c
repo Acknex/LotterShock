@@ -1,4 +1,5 @@
 #include "music_player.h"
+#include "settings.h"
 
 typedef struct
 {
@@ -14,6 +15,11 @@ typedef struct
 
 music_t music;
 
+void music_reload_settings()
+{
+    music.maxVol = settings.game_volume;
+}
+
 void music_init()
 {
     music.handle_current = 0;
@@ -21,9 +27,11 @@ void music_init()
     music.volume_current = 0;
     music.volume_last = 0;
     music.crossTime = 0;
-    music.maxVol = 100;
+    music.maxVol = settings.game_volume;
     music.musicCurrentPosition = 0;
     music.currentMusic = NULL;
+
+    settings_register_signal(music_reload_settings);
 }
 
 void music_start(STRING* file, var crossFadeTime, var loop)

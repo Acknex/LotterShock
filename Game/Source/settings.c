@@ -16,6 +16,28 @@ HRESULT SHGetFolderPath(HWND hwnd, int csidl, HANDLE hToken, DWORD dwFlags, LPST
 
 char settings_path[MAX_PATH];
 
+void * settings_signals[1000];
+int settings_signal_count = 0;
+
+void settings_register_signal(void * reload)
+{
+    if(reload == NULL)
+        error("settings_register_signal: reload was NULL");
+    settings_signals[settings_signal_count] = reload;
+    settings_signal_count += 1;
+}
+
+void settings_send_signal()
+{
+    function foo();
+    int i;
+    for(i = 0; i < settings_signal_count; i++)
+    {
+        foo = settings_signals[i];
+        foo();
+    }
+}
+
 void settings_init()
 {
     // Set default values here

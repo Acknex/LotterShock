@@ -1,6 +1,7 @@
 #include "cheats.h"
+#include "game.h"
 
-#define INPUT_CHEAT_COUNT 7
+#define INPUT_CHEAT_COUNT 8
 
 SOUND * input_snd_cheat_unlocked = "snd_jingle.ogg";
 SOUND * input_snd_cheat_tap = "snd_button_tap.wav";
@@ -137,6 +138,11 @@ void input_cheat_clipmode()
     movement_cheat_clipmode = !movement_cheat_clipmode;
 }
 
+void cheat_killhud()
+{
+    game_hidehud = !game_hidehud;
+}
+
 void cheats_init()
 {
 
@@ -168,4 +174,7 @@ void cheats_init()
 
     cheatcodes[6].text = "idseppuku";
     cheatcodes[6].trigger = input_cheat_suicide;
+
+    cheatcodes[7].text = "idnohud";
+    cheatcodes[7].trigger = cheat_killhud;
 }
