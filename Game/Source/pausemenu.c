@@ -55,6 +55,11 @@ int pausemenu_get_response()
     return pausemenu_response;
 }
 
+void pausemenu_reset_response()
+{
+    pausemenu_response = PAUSEMENU_RESPONSE_NONE;
+}
+
 PANEL * pausemenu_panels[PAUSEMENU_PAN_COUNT];
 
 void pausemenu_init()
@@ -74,7 +79,7 @@ void pausemenu_open()
         pausemenu_panels[i]->pos_x = -bmap_width(pausemenu_panels[i]->bmap);
         pausemenu_panels[i]->pos_y = 16 + 50 * i;
     }
-    pausemenu_response = 0;
+    pausemenu_reset_response();
     pausemenu_selection = 0;
 }
 
@@ -127,7 +132,10 @@ void pausemenu_update()
         switch(pausemenu_selection)
         {
         case 0: pausemenu_response = PAUSEMENU_RESPONSE_CONTINUE; break;
-        case 1: pausemenu_response = PAUSEMENU_RESPONSE_OPTIONS; break;
+        case 1:
+            // TODO: Open options menu as overlay here!
+            error("pausemenu_update: options not implemented yet!");
+            break;
         case 2: pausemenu_response = PAUSEMENU_RESPONSE_QUIT; break;
         error("pausemenu_update: invalid menu selection!");
         }
