@@ -375,8 +375,15 @@ void options_update()
                 break;
 
             case INPUT_TYPE_KEYBOARD:
-                str_for_key((options_txt_brush->pstring)[0], cfg->index);
-                str_upr((options_txt_brush->pstring)[0]);
+                if(cfg->index > 0 && cfg->index < 256)
+                {
+                    str_for_key((options_txt_brush->pstring)[0], cfg->index);
+                    str_upr((options_txt_brush->pstring)[0]);
+                }
+                else
+                {
+                    str_for_num((options_txt_brush->pstring)[0], cfg->index);
+                }
                 options_txt_brush->pos_x = 37 / 2.0;
                 options_txt_brush->pos_y = 37 / 2.0;
                 draw_obj(options_txt_brush);

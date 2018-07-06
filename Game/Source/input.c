@@ -133,10 +133,14 @@ void input_init()
     input_add(INPUT_UP,         INPUT_TYPE_KEYBOARD, key_for_str("w") );
     input_add(INPUT_UP,         INPUT_TYPE_KEYBOARD, 72);
     input_add(INPUT_DOWN,       INPUT_TYPE_KEYBOARD, key_for_str("s"));
+    input_add(INPUT_DOWN,       INPUT_TYPE_KEYBOARD, 80);
     input_add(INPUT_LEFT,       INPUT_TYPE_KEYBOARD, key_for_str("a"));
+    input_add(INPUT_LEFT,       INPUT_TYPE_KEYBOARD, 75);
     input_add(INPUT_RIGHT,      INPUT_TYPE_KEYBOARD, key_for_str("d"));
+    input_add(INPUT_RIGHT,      INPUT_TYPE_KEYBOARD, 77);
     input_add(INPUT_JUMP,       INPUT_TYPE_KEYBOARD, 57);
-    input_add(INPUT_USE,        INPUT_TYPE_KEYBOARD, key_for_str("f"));
+    input_add(INPUT_USE,        INPUT_TYPE_KEYBOARD, key_for_str("e"));
+    input_add(INPUT_USE,        INPUT_TYPE_KEYBOARD, 28);
     input_add(INPUT_ATTACK,     INPUT_TYPE_KEYBOARD, 280);
     input_add(INPUT_BLOCK,      INPUT_TYPE_KEYBOARD, 281);
     input_add(INPUT_NAVBACK,    INPUT_TYPE_KEYBOARD, key_for_str("esc"));
@@ -144,8 +148,8 @@ void input_init()
     input_add(INPUT_MORPHBALL,  INPUT_TYPE_KEYBOARD, key_for_str("shiftl"));
     input_add(INPUT_SHOW_MAP,   INPUT_TYPE_KEYBOARD, 15); // TAB
 
-    input_add(INPUT_WEAPON_UP,  INPUT_TYPE_KEYBOARD, key_for_str("q"));  // mickey.z
-    input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_KEYBOARD, key_for_str("e"));
+    // input_add(INPUT_WEAPON_UP,  INPUT_TYPE_KEYBOARD, key_for_str("q"));  // mickey.z
+    // input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_KEYBOARD, key_for_str("e"));
 
     // Controller Mapping:
     input_add(INPUT_UP,         INPUT_TYPE_GAMEPAD, XINPUT_DPAD_UP );
@@ -242,9 +246,6 @@ void input_update()
         input_states[INPUT_AXIS_LOOK_HORIZONTAL] = input_axis_hori;
         input_states[INPUT_AXIS_LOOK_VERTICAL]   = input_axis_vert;
     }
-
-    for(i = 0; i < INPUT_AXIS_MAX; i++)
-        DEBUG_VAR(input_states[i], 16 * i);
 
     for(i = 0; i < INPUT_MAX; i++)
     {
