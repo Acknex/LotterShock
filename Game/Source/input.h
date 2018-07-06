@@ -3,28 +3,33 @@
 
 #include "ackXinput.h"
 
+#define INPUT_TYPE_NONE     0
+#define INPUT_TYPE_KEYBOARD 1
+#define INPUT_TYPE_GAMEPAD  2
+#define INPUT_TYPE_AXIS     3
+
 typedef struct
 {
-    var * value;
+    int type;
+    int button;
+    var * pvalue;
     float deadZone;
     float scale;
     bool time_sensitive;
-} input_axis_t;
+} input_config_t;
+
 
 typedef struct
 {
 	int down;
     int justPressed;
-	int scanCodes[4];
-	int gamepadKeys[4];
-    int useAxis;
-	float factor;
+
     char cinfo[128];
-    EVENT fnc;
+
+    input_config_t configs[4];
 
     // analog input
     var value;
-    input_axis_t axes[4];
     bool positiveValue;
     float deadZone;
     float sensitivity;
@@ -50,10 +55,6 @@ typedef struct
 #define INPUT_SHOW_MAP 15
 
 #define INPUT_MAX 16
-
-#define INPUT_TYPE_KEYBOARD 0
-#define INPUT_TYPE_GAMEPAD 1
-#define INPUT_TYPE_MOUSEAXIS 2
 
 INPUT input[INPUT_MAX];
 

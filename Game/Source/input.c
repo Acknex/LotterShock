@@ -43,35 +43,18 @@ var input_axis(int id)
 void input_add(int inputID, int inputType, int value)
 {
     int k;
+    if(inputType == INPUT_TYPE_AXIS)
+        error("wrong type!");
 
     INPUT *pinput = &input[inputID]; // no error checks!
     for(k = 0; k < 4; k++)
     {
-        switch(inputType)
-        {
-            case INPUT_TYPE_KEYBOARD:
-            if(pinput->scanCodes[k] == -1)
-            {
-                pinput->scanCodes[k] = value;
-                return;
-            }
-            break;
-
-            case INPUT_TYPE_GAMEPAD:
-            if(pinput->gamepadKeys[k] == -1)
-            {
-                pinput->gamepadKeys[k] = value;
-                return;
-            }
-            break;
-
-            case INPUT_TYPE_MOUSEAXIS:
-            pinput->useAxis = value;
-            break;
-
-            default:
-            error("inputAdd: wow! error!");
-        }
+        input_config_t * cfg = &pinput->configs[k];
+        if(cfg->type != INPUT_TYPE_NONE)
+            continue;
+        cfg->type = inputType;
+        cfg->button = value;
+        break;
     }
 }
 
@@ -82,14 +65,16 @@ void input_add_axis(int inputID, var * value, float scale, float deadZone, bool 
     INPUT *pinput = &input[inputID]; // no error checks!
     for(k = 0; k < 4; k++)
     {
-        if(pinput->axes[k].value == NULL)
-        {
-            pinput->axes[k].value = value;
-            pinput->axes[k].deadZone = deadZone;
-            pinput->axes[k].scale = scale;
-            pinput->axes[k].time_sensitive = time_sensitive;
-            return;
-        }
+        input_config_t * cfg = &pinput->configs[k];
+        if(cfg->type != INPUT_TYPE_NONE)
+            continue;
+        cfg->type = INPUT_TYPE_AXIS;
+
+        cfg->pvalue = value;
+        cfg->deadZone = deadZone;
+        cfg->scale = scale;
+        cfg->time_sensitive = time_sensitive;
+        break;
     }
 }
 
@@ -282,15 +267,10 @@ void input_init()
         INPUT *pinput = &input[i];
         pinput->down = 0;
         pinput->justPressed = 0;
-        for(k = 0; k < 4; k++) (pinput->scanCodes)[k] = -1;
-        for(k = 0; k < 4; k++) (pinput->gamepadKeys)[k] = -1;
-        pinput->useAxis = -1;
-        pinput->factor = 0;
-
         for(k = 0; k < 4; k++)
         {
-            pinput->axes[k].value = NULL;
-            pinput->axes[k].deadZone = 0;
+            pinput->configs[k].type = INPUT_TYPE_NONE;
+            pinput->configs[k].deadZone = 0;
         }
         pinput->deadZone = 0.1;
         pinput->positiveValue = true;
@@ -432,31 +412,37 @@ void input_update()
 
         for(k = 0; k < 4; k++)
         {
-            pinput->factor = 1;
-            if(pinput->scanCodes[k] != -1)
+            input_config_t * cfg = &pinput->configs[k];
+            switch(cfg->type)
             {
-                if(key_pressed(pinput->scanCodes[k]))
-                    pinput->down = 1;
-            }
-            if(ackXInputGamepadUse)
-            {
-                if(pinput->gamepadKeys[k] != -1)
-                {
-                    if(ackXInputGetButtonState3(pinput->gamepadKeys[k]))
+                case INPUT_TYPE_KEYBOARD:
+                    if(key_pressed(cfg->button))
                         pinput->down = 1;
+                    break;
+
+                case INPUT_TYPE_GAMEPAD:
+                    if(!ackXInputGamepadUse)
+                        break;
+
+                    if(ackXInputGetButtonState3(cfg->button))
+                        pinput->down = 1;
+
+                    break;
+
+                case INPUT_TYPE_AXIS:
+                {
+                    var val = (*(cfg->pvalue)) * cfg->scale;
+                    var ded = cfg->deadZone;
+
+                    if(abs(val) < ded)
+                        val = 0;
+
+                    if(cfg->time_sensitive)
+                        pinput->value += val * time_step;
+                    else
+                        pinput->value += val;
+                    break;
                 }
-            }
-            if(pinput->axes[k].value != NULL)
-            {
-                var val = (*(pinput->axes[k].value)) * pinput->axes[k].scale;
-                var ded = pinput->axes[k].deadZone;
-
-                if(abs(val) < ded) val = 0;
-
-                if(pinput->axes[k].time_sensitive)
-                    pinput->value += val * time_step;
-                else
-                    pinput->value += val;
             }
         }
 
