@@ -11,6 +11,7 @@
 #include "settings.h"
 #include "bestiary.h"
 #include "options.h"
+#include "cheats.h"
 
 #include <acknex.h>
 #include <windows.h>
@@ -179,6 +180,7 @@ void framework_update()
             hud_init();
             bestiary_init();
             options_init();
+            cheats_init();
 
             music_set_master_volume(settings.game_volume);
 

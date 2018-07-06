@@ -63,6 +63,7 @@
 #include "pausemenu.c"
 #include "options.c"
 #include "ui.c"
+#include "cheats.c"
 
 void main()
 {

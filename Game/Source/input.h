@@ -20,7 +20,6 @@ typedef struct
     bool time_sensitive;
 } input_config_t;
 
-
 typedef struct
 {
 	int down;
@@ -37,6 +36,7 @@ typedef struct
     float sensitivity;
 } INPUT;
 
+// THESE ARE BUTTONS
 #define INPUT_UP 0
 #define INPUT_DOWN 1
 #define INPUT_LEFT 2
@@ -50,17 +50,14 @@ typedef struct
 #define INPUT_BLOCK 10
 #define INPUT_CROUCH 11
 #define INPUT_MORPHBALL 12
+#define INPUT_SHOW_MAP 13
+#define INPUT_MAX 14
 
-#define INPUT_LOOK_HORIZONTAL 13
-#define INPUT_LOOK_VERTICAL 14
-
-#define INPUT_SHOW_MAP 15
-
-#define INPUT_MAX 16
+// THESE ARE AXIS
+#define INPUT_LOOK_HORIZONTAL -1
+#define INPUT_LOOK_VERTICAL   -2
 
 INPUT input[INPUT_MAX];
-
-bool input_cheats_enabled = false;
 
 void input_update();
 
