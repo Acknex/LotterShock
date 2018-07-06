@@ -1,5 +1,6 @@
 #include "settings.h"
 #include "ini.h"
+#include "input.h"
 
 #include <windows.h>
 #include <acknex.h>
@@ -29,7 +30,6 @@ void settings_init()
     settings.game_volume = 100;
 
     settings.input_sensitivity = 13;
-
 
     // try to get "%APPDATA%\AckCon\2018\settings.ini"
     if(ExpandEnvironmentStrings("%APPDATA%", settings_path, MAX_PATH) == 0)
@@ -65,6 +65,32 @@ void settings_load_from(STRING * fileName)
     settings.game_volume  = ini_read_int(fileName, "Audio", "volume", settings.game_volume);
 
     settings.input_sensitivity = ini_read_var(fileName, "Input", "sensitivity", settings.input_sensitivity);
+
+    if(ini_read_int(settings_file, "Input", "config_written", 0) == 1)
+    {
+        error("ja!");
+        settings.has_input_mapping = 1;
+
+        int i,k;
+        char buffer[64];
+        for(i = 0; i < INPUT_MAX; i++)
+        {
+            for(k = 0; k < 4; k++)
+            {
+                sprintf(buffer, "btn%d_%d_type", i, k);
+                input[i].configs[k].type = ini_read_int(settings_file, "Input", _str(buffer), 0);
+
+                sprintf(buffer, "btn%d_%d_index", i, k);
+                input[i].configs[k].index = ini_read_int(settings_file, "Input", _str(buffer), 0);
+
+                sprintf(buffer, "btn%d_%d_invert", i, k);
+                input[i].configs[k].inverted = ini_read_int(settings_file, "Input", _str(buffer), 0);
+
+                sprintf(buffer, "btn%d_%d_deadzone", i, k);
+                input[i].configs[k].deadZone = ini_read_var(settings_file, "Input", _str(buffer), 0.3);
+            }
+        }
+    }
 }
 
 
@@ -87,6 +113,28 @@ void settings_save()
     ini_write_int(settings_file, "Audio", "volume", settings.game_volume);
 
     ini_write_var(settings_file, "Input", "sensitivity", settings.input_sensitivity);
+
+    int i,k;
+    char buffer[64];
+    for(i = 0; i < INPUT_MAX; i++)
+    {
+        for(k = 0; k < 4; k++)
+        {
+            sprintf(buffer, "btn%d_%d_type", i, k);
+            ini_write_int(settings_file, "Input", _str(buffer), input[i].configs[k].type);
+
+            sprintf(buffer, "btn%d_%d_index", i, k);
+            ini_write_int(settings_file, "Input", _str(buffer), input[i].configs[k].index);
+
+            sprintf(buffer, "btn%d_%d_invert", i, k);
+            ini_write_int(settings_file, "Input", _str(buffer), input[i].configs[k].inverted);
+
+            sprintf(buffer, "btn%d_%d_deadzone", i, k);
+            ini_write_var(settings_file, "Input", _str(buffer), input[i].configs[k].deadZone);
+        }
+    }
+
+    ini_write_int(settings_file, "Input", "config_written", 1);
 }
 
 

@@ -8,30 +8,6 @@
 #define INPUT_TYPE_GAMEPAD  2
 #define INPUT_TYPE_AXIS     3
 
-typedef struct
-{
-    int type;
-    int index;
-    float deadZone;
-    bool inverted;
-} input_config_t;
-
-typedef struct
-{
-	int down;
-    int justPressed;
-
-    char cinfo[128];
-
-    input_config_t configs[4];
-
-    // analog input
-    var value;
-    float deadZone;
-    float sensitivity;
-} INPUT;
-
-
 // THESE ARE BUTTONS
 #define INPUT_UP 0
 #define INPUT_DOWN 1
@@ -62,6 +38,30 @@ typedef struct
 #define INPUT_AXIS_LEFT_TRIGGER    9
 #define INPUT_AXIS_RIGHT_TRIGGER   10
 #define INPUT_AXIS_MAX             11
+
+typedef struct
+{
+    int type;
+    int index;
+    float deadZone;
+    bool inverted;
+} input_config_t;
+
+typedef struct
+{
+	int down;
+    int justPressed;
+
+    char cinfo[128];
+
+    input_config_t configs[4];
+
+    // analog input
+    var value;
+    float sensitivity;
+} INPUT;
+
+INPUT input[INPUT_MAX];
 
 void input_update();
 

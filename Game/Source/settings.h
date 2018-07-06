@@ -20,6 +20,7 @@ typedef struct settings_t
 
     // Input
     var input_sensitivity;
+    bool has_input_mapping;
 } settings_t;
 
 typedef struct achievements_t

@@ -101,9 +101,9 @@ void options_cancel()
 
 void options_save()
 {
-    error("save here!");
-
     memcpy(input, options_input_copy, sizeof(INPUT) * INPUT_MAX);
+
+    settings_save();
 
     options_done = 1;
 }
