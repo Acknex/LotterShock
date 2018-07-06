@@ -91,9 +91,9 @@ TEXT * bestiary_txt_desc =
     layer = 3;
     string = (bestiary_beast_desc);
     font = bestiary_fnt_desc;
-    red = 0;
-    green = 0;
-    blue = 0;
+    red = 200;
+    green = 200;
+    blue = 200;
     flags = WWRAP;
 }
 
@@ -222,12 +222,12 @@ void bestiary_update()
     bestiary_pan_info->pos_x = screen_size.x - bmap_width(bestiary_pan_info->bmap);
     bestiary_pan_info->pos_y = screen_size.y - bmap_height(bestiary_pan_info->bmap);
 
-    bestiary_txt_name->pos_x = bestiary_pan_info->pos_x +  6;
+    bestiary_txt_name->pos_x = bestiary_pan_info->pos_x + 10;
     bestiary_txt_name->pos_y = bestiary_pan_info->pos_y +  6;
 
-    bestiary_txt_desc->pos_x = bestiary_pan_info->pos_x +  6;
-    bestiary_txt_desc->pos_y = bestiary_pan_info->pos_y + 44;
-    bestiary_txt_desc->size_x = bmap_width(bestiary_pan_info->bmap) - 12;
+    bestiary_txt_desc->pos_x = bestiary_pan_info->pos_x + 22;
+    bestiary_txt_desc->pos_y = bestiary_pan_info->pos_y + 50;
+    bestiary_txt_desc->size_x = bmap_width(bestiary_pan_info->bmap) - 44;
 
     bestiary_txt_help->pos_x = bestiary_pan_info->pos_x + 6;
     bestiary_txt_help->pos_y = bestiary_pan_info->pos_y + bmap_height(bestiary_pan_info->bmap) - 20;
