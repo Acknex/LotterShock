@@ -21,11 +21,11 @@
 
 // keys
 #define KEYS_MAX 5
-#define RED_KEY 0
-#define BLUE_KEY 1
-#define GREEN_KEY 2
+#define BLACK_KEY 0
+#define GREEN_KEY 1
+#define RED_KEY 2
 #define YELLOW_KEY 3
-#define BLACK_KEY 4
+#define BLUE_KEY 4
 
 SOUND* snd_beep = "Beep.wav";
 SOUND* snd_keypad_yes = "keypadYes.wav";
