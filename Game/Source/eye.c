@@ -245,8 +245,7 @@ void EYE__patrol(ENTITY* ptr)
 	vec_to_angle(&vecAngle,&vecDir);
 	vec_set(ptr->EYE_LASTPOS,&ptr->x);
 	ANG_turnToAngle(ptr, vecAngle.pan, ptr->EYE_TURNSPEED, 1);
-	DEBUG_VAR(ptr->x, 50);
-	DEBUG_VAR(ptr->y, 70);
+
 	if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ATTACKDIST, 30))
 	{
 		
