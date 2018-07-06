@@ -5,6 +5,9 @@
 #include "settings.h"
 
 #include <acknex.h>
+#include <d3d9.h>
+
+
 
 BMAP * options_bmp_pane = "options_pane.png";
 BMAP * options_bmp_tab_common = "options_tab_common.png";
@@ -12,6 +15,12 @@ BMAP * options_bmp_tab_input = "options_tab_input.png";
 BMAP * options_bmp_btn_cancel = "options_cancel.png";
 BMAP * options_bmp_btn_save = "options_save.png";
 BMAP * options_bmp_inputslot = "option_inputslot.png";
+BMAP * options_bmp_xbox = "options_xbox.png";
+BMAP * options_bmp_assignwindow = "options_assignwait.png";
+
+FONT * options_panel_font = "Arial#26b";
+
+FONT * options_inputslot_font = "Impact#24b";
 
 PANEL * options_pan_pane =
 {
@@ -25,7 +34,21 @@ PANEL * options_pan_background =
     layer = 500;
 }
 
-FONT * options_panel_font = "Arial#26b";
+PANEL * options_pan_assignwindow =
+{
+    bmap = options_bmp_assignwindow;
+    layer = 510;
+}
+
+TEXT * options_txt_brush =
+{
+    string ( "hi" );
+    font = options_inputslot_font;
+    flags = LIGHT | CENTER_X | CENTER_Y;
+    red = 0;
+    green = 0;
+    blue = 0;
+}
 
 int options_current_tab;
 
@@ -37,6 +60,7 @@ struct inputslot_t
 {
     INPUT * target;
     uibutton_t * slot[4];
+    BMAP * content[4];
     TEXT * description;
 };
 
@@ -51,8 +75,18 @@ struct
     struct inputslot_t inputs[INPUT_MAX];
 } optionbutton;
 
+struct
+{
+    var timer;
+    int inputid;
+    int slot;
+    bool isClear;
+} options_assign_key;
+
 #define OPTIONGROUP_COMMON 1
 #define OPTIONGROUP_INPUT  2
+
+INPUT options_input_copy[INPUT_MAX];
 
 bool options_wants_close()
 {
@@ -67,6 +101,9 @@ void options_cancel()
 void options_save()
 {
     error("save here!");
+
+    memcpy(input, options_input_copy, sizeof(INPUT) * INPUT_MAX);
+
     options_done = 1;
 }
 
@@ -113,7 +150,11 @@ void options_select_input()
 
 void options_setup_input(uibutton_t * btn)
 {
-    error("change input here!");
+    options_assign_key.timer = 5 * 16;
+    options_assign_key.inputid = btn->skill1;
+    options_assign_key.slot = btn->skill2;
+    options_assign_key.isClear = false;
+    set(options_pan_assignwindow, SHOW);
 }
 
 void options_init_slots(int from, int to, int x_offset, int y_offset)
@@ -132,6 +173,12 @@ void options_init_slots(int from, int to, int x_offset, int y_offset)
         {
             optionbutton.inputs[i].slot[j] = uisystem_add_button(options_ui, x_offset + 46 * j, y_offset + 46 * (i - from), options_bmp_inputslot, options_setup_input);
             optionbutton.inputs[i].slot[j]->group = OPTIONGROUP_INPUT;
+            optionbutton.inputs[i].slot[j]->skill1 = i;
+            optionbutton.inputs[i].slot[j]->skill2 = j;
+
+
+            optionbutton.inputs[i].content[j] = bmap_createblack(37, 37, 8888);
+            pan_setwindow(optionbutton.inputs[i].slot[j]->pan, 0, 3, 3, 37, 37, optionbutton.inputs[i].content[j], &nullvector->x, &nullvector->y);
         }
     }
     // connect all input slots
@@ -212,9 +259,13 @@ void options_open()
     options_current_tab = 0;
     options_done = false;
 
+    memcpy(options_input_copy, input, sizeof(INPUT) * INPUT_MAX);
+
     uisystem_show_all(options_ui);
     options_select_common();
 }
+
+STRING * options_tempstring = "#64";
 
 void options_update()
 {
@@ -229,14 +280,115 @@ void options_update()
     options_ui->pos_x = options_pan_pane->pos_x;
     options_ui->pos_y = options_pan_pane->pos_y;
 
+    options_pan_assignwindow->pos_x = (screen_size.x - bmap_width(options_pan_assignwindow->bmap)) / 2;
+    options_pan_assignwindow->pos_y = (screen_size.y - bmap_height(options_pan_assignwindow->bmap)) / 2;
+
+    if(is(options_pan_assignwindow, SHOW))
+    {
+        if(options_assign_key.timer <= 0)
+        {
+            reset(options_pan_assignwindow, SHOW);
+        }
+        else
+        {
+            options_assign_key.timer -= time_step;
+
+            input_config_t cfg;
+            memcpy(&cfg, &options_input_copy[options_assign_key.inputid].configs[options_assign_key.slot], sizeof(input_config_t));
+
+            bool wasset = false;
+
+            if(key_any)
+            {
+                cfg.type = INPUT_TYPE_KEYBOARD;
+                cfg.button = key_lastpressed;
+                wasset = true;
+            }
+
+            for(i = 0; i < 16; i++)
+            {
+                if(ackXInputGetButtonState3(i))
+                {
+                    cfg.type = INPUT_TYPE_GAMEPAD;
+                    cfg.button = i;
+                    wasset = true;
+                }
+            }
+
+            if(options_assign_key.isClear)
+            {
+                if(wasset)
+                {
+                    memcpy(&options_input_copy[options_assign_key.inputid].configs[options_assign_key.slot], &cfg, sizeof(input_config_t));
+                    snd_play(ui_accept_snd, 100, 0);
+                    reset(options_pan_assignwindow, SHOW);
+                }
+            }
+            else
+            {
+                if(!wasset)
+                    options_assign_key.isClear = true;
+            }
+
+            return;
+        }
+    }
+
     uisystem_update(options_ui);
 
-    int i;
+    int i, j;
     for(i = 0; i < INPUT_MAX; i++)
     {
-
         optionbutton.inputs[i].description->pos_x = optionbutton.inputs[i].slot[0]->pan->pos_x - 3;
         optionbutton.inputs[i].description->pos_y = optionbutton.inputs[i].slot[0]->pan->pos_y + (46 - optionbutton.inputs[i].description->font->dy) / 2;
+
+        for(j = 0; j < 4; j++)
+        {
+            input_config_t * cfg = &options_input_copy[i].configs[j];
+
+            // Render the input icon
+            bmap_rendertarget(optionbutton.inputs[i].content[j], 0, 0);
+
+            LPDIRECT3DDEVICE9 pd3dDev;
+            pd3dDev = (LPDIRECT3DDEVICE9)draw_begin();
+            if(pd3dDev)
+            {
+                pd3dDev->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_RGBA(255, 255, 255, 0), 1.0, 0);
+            }
+
+            switch(cfg->type)
+            {
+            case INPUT_TYPE_NONE:
+                // Nothing to do here
+                break;
+
+            case INPUT_TYPE_KEYBOARD:
+                str_for_key((options_txt_brush->pstring)[0], cfg->button);
+                str_upr((options_txt_brush->pstring)[0]);
+                options_txt_brush->pos_x = 37 / 2.0;
+                options_txt_brush->pos_y = 37 / 2.0;
+                draw_obj(options_txt_brush);
+                break;
+
+            case INPUT_TYPE_GAMEPAD:
+                draw_quad(
+                    options_bmp_xbox,
+                    vector(0, 0, 0),
+                    vector(37 * cfg->button, 0, 0),
+                    vector(37, 37, 0),
+                    NULL,
+                    NULL,
+                    100,
+                    0);
+                break;
+
+            case INPUT_TYPE_AXIS:
+                draw_text("AXIS", 0, 8, COLOR_RED);
+                break;
+
+            }
+            bmap_rendertarget(NULL, 0, 0);
+        }
     }
 
     if(input_hit(INPUT_NAVBACK))

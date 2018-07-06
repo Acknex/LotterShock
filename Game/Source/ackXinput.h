@@ -1,6 +1,21 @@
 ///////////////////////////////
 // XINPUT structs
 
+#define XINPUT_DPAD_UP      0
+#define XINPUT_DPAD_DOWN    1
+#define XINPUT_DPAD_LEFT    2
+#define XINPUT_DPAD_RIGHT   3
+#define XINPUT_START        4
+#define XINPUT_SELECT       5
+#define XINPUT_LEFT_STICK   6
+#define XINPUT_RIGHT_STICK  7
+#define XINPUT_LEFT_BUTTON  8
+#define XINPUT_RIGHT_BUTTON 9
+#define XINPUT_A            12
+#define XINPUT_B            13
+#define XINPUT_X            14
+#define XINPUT_Y            15
+
 typedef struct _XINPUT_GAMEPAD
 {
 	WORD                                wButtons;

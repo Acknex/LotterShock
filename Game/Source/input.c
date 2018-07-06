@@ -279,6 +279,7 @@ void input_init()
     }
     //*/
 
+    strcpy(input[INPUT_BLOCK].cinfo,"Block");
     strcpy(input[INPUT_UP].cinfo,"Walk (Forward)");
     strcpy(input[INPUT_DOWN].cinfo,"Walk (Back)");
     strcpy(input[INPUT_LEFT].cinfo,"Walk (Left)");
@@ -318,21 +319,21 @@ void input_init()
     input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_KEYBOARD, key_for_str("e"));
 
     // Controller Mapping:
-    input_add(INPUT_UP,         INPUT_TYPE_GAMEPAD, 0  ); //! dpad up
-    input_add(INPUT_DOWN,       INPUT_TYPE_GAMEPAD, 1  ); //! dpad down
-    input_add(INPUT_LEFT,       INPUT_TYPE_GAMEPAD, 2  ); //! dpad left
-    input_add(INPUT_RIGHT,      INPUT_TYPE_GAMEPAD, 3  ); //! dpad right
-    input_add(INPUT_USE,        INPUT_TYPE_GAMEPAD, 14 ); //! X
-    input_add(INPUT_ATTACK,     INPUT_TYPE_GAMEPAD, 13 ); //! B
-    input_add(INPUT_BLOCK,      INPUT_TYPE_GAMEPAD, 15 ); //! Y
-    input_add(INPUT_JUMP,       INPUT_TYPE_GAMEPAD, 12 ); //! A
-    input_add(INPUT_NAVBACK,    INPUT_TYPE_GAMEPAD, 4  ); //! start
-    input_add(INPUT_SHOW_MAP,   INPUT_TYPE_GAMEPAD, 5  ); //! select
-    input_add(INPUT_CROUCH,     INPUT_TYPE_GAMEPAD, 6  ); //! left stick
-    input_add(INPUT_MORPHBALL,  INPUT_TYPE_GAMEPAD, 7  ); //! right stick
+    input_add(INPUT_UP,         INPUT_TYPE_GAMEPAD, XINPUT_DPAD_UP );
+    input_add(INPUT_DOWN,       INPUT_TYPE_GAMEPAD, XINPUT_DPAD_DOWN );
+    input_add(INPUT_LEFT,       INPUT_TYPE_GAMEPAD, XINPUT_DPAD_LEFT );
+    input_add(INPUT_RIGHT,      INPUT_TYPE_GAMEPAD, XINPUT_DPAD_RIGHT );
+    input_add(INPUT_USE,        INPUT_TYPE_GAMEPAD, XINPUT_X );
+    input_add(INPUT_ATTACK,     INPUT_TYPE_GAMEPAD, XINPUT_B );
+    input_add(INPUT_BLOCK,      INPUT_TYPE_GAMEPAD, XINPUT_Y );
+    input_add(INPUT_JUMP,       INPUT_TYPE_GAMEPAD, XINPUT_A );
+    input_add(INPUT_NAVBACK,    INPUT_TYPE_GAMEPAD, XINPUT_START );
+    input_add(INPUT_SHOW_MAP,   INPUT_TYPE_GAMEPAD, XINPUT_SELECT );
+    input_add(INPUT_CROUCH,     INPUT_TYPE_GAMEPAD, XINPUT_LEFT_STICK );
+    input_add(INPUT_MORPHBALL,  INPUT_TYPE_GAMEPAD, XINPUT_RIGHT_STICK );
 
-    input_add(INPUT_WEAPON_UP,  INPUT_TYPE_GAMEPAD, 9); //! right shoulder
-    input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_GAMEPAD, 8); //! left shoulder
+    input_add(INPUT_WEAPON_UP,  INPUT_TYPE_GAMEPAD, XINPUT_RIGHT_BUTTON);
+    input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_GAMEPAD, XINPUT_LEFT_BUTTON);
 
     input_add_axis(INPUT_WEAPON_UP,  &mickey.z, 1.0, 0.0, false);
     input_add_axis(INPUT_WEAPON_DOWN,&mickey.z, 1.0, 0.0, false);

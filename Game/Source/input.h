@@ -8,6 +8,8 @@
 #define INPUT_TYPE_GAMEPAD  2
 #define INPUT_TYPE_AXIS     3
 
+
+
 typedef struct
 {
     int type;
