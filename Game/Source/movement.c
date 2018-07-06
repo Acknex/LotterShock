@@ -427,9 +427,9 @@ void movement_update()
     if(movement_cheat_clipmode)
 #endif
 	{
-        camera.pan += -input_axis(INPUT_LOOK_HORIZONTAL);
+        camera.pan += -input_axis(INPUT_AXIS_LOOK_HORIZONTAL);
 		camera.pan %= 360;
-        camera.tilt = clamp(camera.tilt+input_axis(INPUT_LOOK_VERTICAL),-85,85);
+        camera.tilt = clamp(camera.tilt+input_axis(INPUT_AXIS_LOOK_VERTICAL),-85,85);
 		player.pan = camera.pan;
 		VECTOR temp;
         vec_set(temp,vector((input_down(INPUT_UP)-input_down(INPUT_DOWN)*0.667),(input_down(INPUT_LEFT)-input_down(INPUT_RIGHT)),0));
@@ -491,8 +491,8 @@ void movement_update()
 	
 	// rotation
 	
-	var turnSpeedX = input_axis(INPUT_LOOK_HORIZONTAL);
-	var turnSpeedY = input_axis(INPUT_LOOK_VERTICAL);
+    var turnSpeedX = input_axis(INPUT_AXIS_LOOK_HORIZONTAL);
+    var turnSpeedY = input_axis(INPUT_AXIS_LOOK_VERTICAL);
 	/*if(mouse_right)
 	{
 		turnSpeedX = mouse_force.x*10;

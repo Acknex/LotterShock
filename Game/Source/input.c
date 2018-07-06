@@ -1,4 +1,4 @@
-#include "input.h"
+ #include "input.h"
 #include "ackXinput.h"
 #include "weapons.h"
 #include "dmgsys.h"
@@ -11,31 +11,39 @@
 
 //////////////////////////////
 
-
 VECTOR mickey_smoothed;
+
+var input_states[INPUT_AXIS_MAX];
+
+INPUT input[INPUT_MAX];
 
 bool input_down(int id)
 {
+    if(id < 0 || id >= INPUT_MAX) error("input_down: unknown button!");
     return input[id].down;
 }
 
 bool input_hit(int id)
 {
+    if(id < 0 || id >= INPUT_MAX) error("input_hit: unknown button!");
     return input[id].justPressed;
 }
 
 bool input_any()
 {
 	int i;
-	for(i = 0; i<=INPUT_MORPHBALL; ++i)
+    for(i = 0; i <= INPUT_MAX; ++i)
+    {
 		if(input[i].down)
 			return true;
+    }
 	return false;
 }
 
 var input_axis(int id)
 {
-    return input[id].value;
+    if(id < 0 || id >= INPUT_AXIS_MAX) error("input_axis: unknown axis!");
+    return input_states[id];
 }
 
 void input_add(int inputID, int inputType, int value)
@@ -51,12 +59,12 @@ void input_add(int inputID, int inputType, int value)
         if(cfg->type != INPUT_TYPE_NONE)
             continue;
         cfg->type = inputType;
-        cfg->button = value;
+        cfg->index = value;
         break;
     }
 }
 
-void input_add_axis(int inputID, var * value, float scale, float deadZone, bool time_sensitive)
+void input_add_axis(int inputID, int axisid, float deadZone, bool inverted)
 {
     int k;
 
@@ -67,24 +75,13 @@ void input_add_axis(int inputID, var * value, float scale, float deadZone, bool 
         if(cfg->type != INPUT_TYPE_NONE)
             continue;
         cfg->type = INPUT_TYPE_AXIS;
-
-        cfg->pvalue = value;
+        cfg->index = axisid;
         cfg->deadZone = deadZone;
-        cfg->scale = scale;
-        cfg->time_sensitive = time_sensitive;
+        cfg->inverted = inverted;
         break;
     }
 }
 
-typedef struct inputstate_t
-{
-    VECTOR leftStick;
-    VECTOR rightStick;
-    var leftTrigger;
-    var rightTrigger;
-} inputstate_t;
-
-inputstate_t input_states;
 
 void input_init()
 {
@@ -108,7 +105,6 @@ void input_init()
             pinput->configs[k].deadZone = 0;
         }
         pinput->deadZone = 0.1;
-        pinput->positiveValue = true;
         pinput->value = 0.0;
         pinput->sensitivity = 1.0;
     }
@@ -127,8 +123,6 @@ void input_init()
     strcpy(input[INPUT_CROUCH].cinfo,"Crouch");
     strcpy(input[INPUT_NAVBACK].cinfo,"Navigate Back");
     strcpy(input[INPUT_MORPHBALL].cinfo,"Toggle Morphball");
-    strcpy(input[INPUT_LOOK_HORIZONTAL].cinfo,"Camera (Horizontal)");
-    strcpy(input[INPUT_LOOK_VERTICAL].cinfo,"Camera (Vertical)");
     strcpy(input[INPUT_SHOW_MAP].cinfo, "Toggle Map");
 
 
@@ -170,34 +164,17 @@ void input_init()
     input_add(INPUT_WEAPON_UP,  INPUT_TYPE_GAMEPAD, XINPUT_RIGHT_BUTTON);
     input_add(INPUT_WEAPON_DOWN,INPUT_TYPE_GAMEPAD, XINPUT_LEFT_BUTTON);
 
-    input_add_axis(INPUT_WEAPON_UP,   &mickey.z, 1.0, 0.0, false);
-    input_add_axis(INPUT_WEAPON_DOWN, &mickey.z, 1.0, 0.0, false);
+    input_add_axis(INPUT_WEAPON_UP,   INPUT_AXIS_MOUSEWHEEL, 0.0, false);
+    input_add_axis(INPUT_WEAPON_DOWN, INPUT_AXIS_MOUSEWHEEL, 0.0, true);
 
-    input_add_axis(INPUT_LOOK_HORIZONTAL, &mickey_smoothed.x, 1.0/40.0, 0.0, false);
-    input_add_axis(INPUT_LOOK_VERTICAL,   &mickey_smoothed.y, -1.0/40.0, 0.0, false);
+    input_add_axis(INPUT_LEFT,  INPUT_AXIS_LEFT_STICK_X, 0.3, true);
+    input_add_axis(INPUT_RIGHT, INPUT_AXIS_LEFT_STICK_X, 0.3, false);
 
-	input_add_axis(INPUT_LOOK_HORIZONTAL, &input_states.rightStick.x, 1.0 / 255.0, 0.3, true);	
-	input_add_axis(INPUT_LOOK_VERTICAL,   &input_states.rightStick.y, 1.0 / 255.0, 0.3, true);
+    input_add_axis(INPUT_UP,    INPUT_AXIS_LEFT_STICK_Y, 0.3, false);
+    input_add_axis(INPUT_DOWN,  INPUT_AXIS_LEFT_STICK_Y, 0.3, true);
 
-    input_add_axis(INPUT_LEFT,  &input_states.leftStick.x, 1.0 / 255.0, 0.3, false);
-    input_add_axis(INPUT_RIGHT, &input_states.leftStick.x, 1.0 / 255.0, 0.3, false);
-
-    input_add_axis(INPUT_UP,    &input_states.leftStick.y, 1.0 / 255.0, 0.3, false);
-    input_add_axis(INPUT_DOWN,  &input_states.leftStick.y, 1.0 / 255.0, 0.3, false);
-
-    input_add_axis(INPUT_ATTACK, &input_states.rightTrigger, 1.0 / 255.0, 0.3, false);
-    input_add_axis(INPUT_BLOCK,  &input_states.leftTrigger,  1.0 / 255.0, 0.3, false);
-
-    // axis configuration
-    input[INPUT_DOWN].positiveValue = false;
-    input[INPUT_LEFT].positiveValue = false;
-
-    input[INPUT_WEAPON_UP].positiveValue   = true;
-    input[INPUT_WEAPON_DOWN].positiveValue = false;
-
-    // TODO: Controller + Mouse Sensitivity
-    input[INPUT_LOOK_HORIZONTAL].sensitivity = settings.input_sensitivity;
-    input[INPUT_LOOK_VERTICAL].sensitivity   = settings.input_sensitivity;
+    input_add_axis(INPUT_ATTACK, INPUT_AXIS_RIGHT_TRIGGER, 0.3, false);
+    input_add_axis(INPUT_BLOCK,  INPUT_AXIS_LEFT_TRIGGER,  0.3, false);
 
     int slot = ackXInputGetGamepadNum();
     if(slot >= 0)
@@ -208,36 +185,66 @@ void input_init()
     else ackXInputGamepadUse = 0;
 }
 
-var input_axis_hori = 0;
-var input_axis_vert = 0;
+var input_deadzone(var value, var deadzone)
+{
+    if(abs(value) < deadzone)
+        return 0.0;
+    return value;
+}
 
 void input_update()
 {
     int i,k;
 
-	mickey_smoothed.x += (mickey.x-mickey_smoothed.x)*0.75;
-	mickey_smoothed.y += (mickey.y-mickey_smoothed.y)*0.75;
-	if(!mickey.x && abs(mickey_smoothed.x) < 0.01) mickey_smoothed.x = 0;
-	if(!mickey.y && abs(mickey_smoothed.y) < 0.01) mickey_smoothed.y = 0;
+    mickey_smoothed.x += (mickey.x - mickey_smoothed.x) * 0.75;
+    mickey_smoothed.y += (mickey.y - mickey_smoothed.y) * 0.75;
+
+    if(!mickey.x && abs(mickey_smoothed.x) < 0.01)
+        mickey_smoothed.x = 0;
+
+    if(!mickey.y && abs(mickey_smoothed.y) < 0.01)
+        mickey_smoothed.y = 0;
   
+
+    for(i = 0; i < INPUT_AXIS_MAX; i++)
+        input_states[i] = 0;
+
+    input_states[INPUT_AXIS_MOUSE_X]    = mickey_smoothed.x;
+    input_states[INPUT_AXIS_MOUSE_Y]    = mickey_smoothed.y;
+    input_states[INPUT_AXIS_MOUSEWHEEL] = mickey.z / 120.0;
+
     if(ackXInputGamepadUse)
     {
         ackXInputGetState3();
 
-        input_states.leftStick.x = ackXInputGetThumbState3(0, 0);
-        input_states.leftStick.y = ackXInputGetThumbState3(0, 1);
-        input_states.rightStick.x = ackXInputGetThumbState3(1, 0);
-        input_states.rightStick.y = ackXInputGetThumbState3(1, 1);
-        input_states.leftTrigger = ackXInputGetTriggerState3(0);
-        input_states.rightTrigger = ackXInputGetTriggerState3(1);
+        input_states[INPUT_AXIS_LEFT_STICK_X]  = ackXInputGetThumbState3(0, 0) / 255.0;
+        input_states[INPUT_AXIS_LEFT_STICK_Y]  = ackXInputGetThumbState3(0, 1) / 255.0;
+        input_states[INPUT_AXIS_RIGHT_STICK_X] = ackXInputGetThumbState3(1, 0) / 255.0;
+        input_states[INPUT_AXIS_RIGHT_STICK_Y] = ackXInputGetThumbState3(1, 1) / 255.0;
+        input_states[INPUT_AXIS_LEFT_TRIGGER]  = ackXInputGetTriggerState3(0) / 255.0;
+        input_states[INPUT_AXIS_RIGHT_TRIGGER] = ackXInputGetTriggerState3(1) / 255.0;
     }
-    else
-    {
-        vec_zero(input_states.leftStick);
-        vec_zero(input_states.rightStick);
-        input_states.leftTrigger = 0;
-        input_states.rightTrigger = 0;
+
+    { // refresh combined axis manually
+
+        var input_axis_hori = 0;
+        var input_axis_vert = 0;
+
+        input_axis_hori += mickey_smoothed.x / 40.0;
+        input_axis_vert -= mickey_smoothed.y / 40.0;
+
+        input_axis_hori += input_deadzone(input_states[INPUT_AXIS_RIGHT_STICK_X], 0.3) * time_step;
+        input_axis_vert += input_deadzone(input_states[INPUT_AXIS_RIGHT_STICK_Y], 0.3) * time_step;
+
+        input_axis_hori *= settings.input_sensitivity;
+        input_axis_vert *= settings.input_sensitivity;
+
+        input_states[INPUT_AXIS_LOOK_HORIZONTAL] = input_axis_hori;
+        input_states[INPUT_AXIS_LOOK_VERTICAL]   = input_axis_vert;
     }
+
+    for(i = 0; i < INPUT_AXIS_MAX; i++)
+        DEBUG_VAR(input_states[i], 16 * i);
 
     for(i = 0; i < INPUT_MAX; i++)
     {
@@ -254,7 +261,7 @@ void input_update()
             switch(cfg->type)
             {
                 case INPUT_TYPE_KEYBOARD:
-                    if(key_pressed(cfg->button))
+                    if(key_pressed(cfg->index))
                         pinput->down = 1;
                     break;
 
@@ -262,38 +269,25 @@ void input_update()
                     if(!ackXInputGamepadUse)
                         break;
 
-                    if(ackXInputGetButtonState3(cfg->button))
+                    if(ackXInputGetButtonState3(cfg->index))
                         pinput->down = 1;
 
                     break;
 
                 case INPUT_TYPE_AXIS:
                 {
-                    var val = (*(cfg->pvalue)) * cfg->scale;
-                    var ded = cfg->deadZone;
+                    var val = input_deadzone(input_states[cfg->index], cfg->deadZone);
+                    if(cfg->inverted)
+                        val = -val;
 
-                    if(abs(val) < ded)
-                        val = 0;
-
-                    if(cfg->time_sensitive)
-                        pinput->value += val * time_step;
-                    else
-                        pinput->value += val;
+                    pinput->value += maxv(0.0, val);
                     break;
                 }
             }
         }
 
         pinput->value *= pinput->sensitivity;
-
-        if(pinput->positiveValue)
-        {
-            pinput->down |= (pinput->value > 0.3);
-        }
-        else
-        {
-            pinput->down |= (pinput->value < -0.3);
-        }
+        pinput->down |= (pinput->value > 0.3);
 
         if(pinput->down && !prevDown)
             pinput->justPressed = 1;

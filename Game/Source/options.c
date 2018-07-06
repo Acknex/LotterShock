@@ -301,7 +301,7 @@ void options_update()
             if(key_any)
             {
                 cfg.type = INPUT_TYPE_KEYBOARD;
-                cfg.button = key_lastpressed;
+                cfg.index = key_lastpressed;
                 wasset = true;
             }
 
@@ -310,7 +310,7 @@ void options_update()
                 if(ackXInputGetButtonState3(i))
                 {
                     cfg.type = INPUT_TYPE_GAMEPAD;
-                    cfg.button = i;
+                    cfg.index = i;
                     wasset = true;
                 }
             }
@@ -363,7 +363,7 @@ void options_update()
                 break;
 
             case INPUT_TYPE_KEYBOARD:
-                str_for_key((options_txt_brush->pstring)[0], cfg->button);
+                str_for_key((options_txt_brush->pstring)[0], cfg->index);
                 str_upr((options_txt_brush->pstring)[0]);
                 options_txt_brush->pos_x = 37 / 2.0;
                 options_txt_brush->pos_y = 37 / 2.0;
@@ -374,7 +374,7 @@ void options_update()
                 draw_quad(
                     options_bmp_xbox,
                     vector(0, 0, 0),
-                    vector(37 * cfg->button, 0, 0),
+                    vector(37 * cfg->index, 0, 0),
                     vector(37, 37, 0),
                     NULL,
                     NULL,
