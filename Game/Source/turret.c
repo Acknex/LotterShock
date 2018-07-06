@@ -96,9 +96,9 @@ void TURRET_Init()
 {
 	//DEBUG
 	//ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,0), turret_rotccw);
-	ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,450), turret_aim);
-	ptr->tilt=180;
-	 ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,2), turret_aim);
+	//ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,450), turret_aim);
+	//ptr->tilt=180;
+	 //ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,2), turret_aim);
 }
 
 void TURRET_Update()
