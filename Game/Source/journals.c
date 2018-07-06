@@ -159,6 +159,7 @@ action journal()
 {
 	framework_setup(my, SUBSYSTEM_JOURNAL);
     my.INTERACTIBLE = 1;
+    set(my, PASSABLE);
 }
 
 void journals_update()

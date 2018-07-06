@@ -64,6 +64,7 @@
 #include "pausemenu.c"
 #include "ui.c"
 #include "cheats.c"
+#include "secretroom.c"
 
 void main()
 {
