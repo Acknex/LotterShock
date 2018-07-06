@@ -102,7 +102,8 @@ void EYE_Init()
 	//DEBUG
 		//ENTITY* ptr = ent_create("enemy_eye.mdl", vector(400,1600,200), Eye);
 //		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(5900,-6050,250), Eye);		
-		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(1200,6500,250), Eye);		
+//		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(1200,6500,250), Eye);		
+		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(100000,100000,250), Eye);		
 }
 
 void EYE_Update()
@@ -271,14 +272,14 @@ void EYE__patrol(ENTITY* ptr)
 	{
 		ptr->EYE_STATE = EYE_STATE_ATTACK;
 	}
-	else if (!SCAN_IsPlayerNear(ptr, ptr->EYE_ACTIVEDIST * 1.1))
+	else*/ if (!SCAN_IsPlayerNear(ptr, ptr->EYE_ACTIVEDIST * 1.1))
 	{
 		ptr->EYE_STATE = EYE_STATE_INACTIVE;
 	}
 	else
 	{
 		
-	}*/
+	}
 }
 
 void EYE__attack(ENTITY* ptr)

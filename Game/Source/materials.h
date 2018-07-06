@@ -25,7 +25,7 @@ BMAP * matNoiseSpriteTexture = "best_noise_10.tga";
 
 MATERIAL *matNoiseSprite =
 {
-    effect = "Shaders/object_noisesprite.fx";
+    effect = "object_noisesprite.fx";
     skin1 = matNoiseSpriteTexture;
 }
 
@@ -42,6 +42,11 @@ MATERIAL *matIce =
 MATERIAL *matSkull =
 {
 	effect = "enemy_skull.fx";
+}
+
+MATERIAL *matTurret =
+{
+	effect = "turret.fx";
 }
 
 MATERIAL *matWeaponBasic =
