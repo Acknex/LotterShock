@@ -101,9 +101,9 @@ void options_cancel()
 
 void options_save()
 {
-    error("save here!");
-
     memcpy(input, options_input_copy, sizeof(INPUT) * INPUT_MAX);
+
+    settings_save();
 
     options_done = 1;
 }
@@ -217,6 +217,22 @@ void options_init()
     optionbutton.input_tab->neighbour[UIDIR_LEFT] = optionbutton.common_tab;
     optionbutton.common_tab->neighbour[UIDIR_RIGHT] = optionbutton.input_tab;
 
+    /* INPUT
+     * settings.input_sensitivity = 13;
+     */
+    /* COMMON
+     * --------------------------------------------
+     * Resolution:  [ settings.resolution_x, settings.resolution_y ]
+     * Fullscreen:  [ 'X', ' ' ]
+     * V-Sync:      [ 'X', ' ' ]
+     * FPS Limit:   [ 30, 60, 90, 144, free ]
+     * Anisotropic: [ 0, 1, 2, 3] -> 0, 3, 5, 7
+     * --------------------------------------------
+     * Master Volume: 100
+     *
+     *
+     */
+
     { // initialize and interconnect all input slots
 
         int middle = INPUT_MAX / 2;
@@ -288,6 +304,7 @@ void options_update()
     {
         if(options_assign_key.timer <= 0)
         {
+            options_input_copy[options_assign_key.inputid].configs[options_assign_key.slot].type = INPUT_TYPE_NONE;
             reset(options_pan_assignwindow, SHOW);
         }
         else
