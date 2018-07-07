@@ -19,7 +19,9 @@ typedef struct settings_t
     int game_volume;
 
     // Input
-    var input_sensitivity;
+    var hsensitivity;
+    var vsensitivity;
+    bool invertX, invertY;
     bool has_input_mapping;
 } settings_t;
 

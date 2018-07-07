@@ -51,7 +51,8 @@ void settings_init()
 
     settings.game_volume = 100;
 
-    settings.input_sensitivity = 13;
+    settings.hsensitivity = 13;
+    settings.vsensitivity = 13;
 
     // try to get "%APPDATA%\AckCon\2018\settings.ini"
     if(ExpandEnvironmentStrings("%APPDATA%", settings_path, MAX_PATH) == 0)
@@ -86,7 +87,11 @@ void settings_load_from(STRING * fileName)
 
     settings.game_volume  = ini_read_int(fileName, "Audio", "volume", settings.game_volume);
 
-    settings.input_sensitivity = ini_read_var(fileName, "Input", "sensitivity", settings.input_sensitivity);
+    settings.hsensitivity = ini_read_var(fileName, "Input", "hsensitivity", settings.hsensitivity);
+    settings.vsensitivity = ini_read_var(fileName, "Input", "vsensitivity", settings.vsensitivity);
+
+    settings.invertX = ini_read_var(settings_file, "Input", "invert_h", settings.invertX);
+    settings.invertY = ini_read_var(settings_file, "Input", "invert_v", settings.invertY);
 
     if(ini_read_int(settings_file, "Input", "config_written", 0) == 1)
     {
@@ -133,7 +138,11 @@ void settings_save()
 
     ini_write_int(settings_file, "Audio", "volume", settings.game_volume);
 
-    ini_write_var(settings_file, "Input", "sensitivity", settings.input_sensitivity);
+    ini_write_var(settings_file, "Input", "hsensitivity", settings.hsensitivity);
+    ini_write_var(settings_file, "Input", "vsensitivity", settings.vsensitivity);
+
+    ini_write_var(settings_file, "Input", "invert_h", settings.invertX);
+    ini_write_var(settings_file, "Input", "invert_v", settings.invertY);
 
     int i,k;
     char buffer[64];
