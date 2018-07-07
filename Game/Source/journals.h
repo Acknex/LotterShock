@@ -21,7 +21,7 @@ journal_t journals[MAX_JOURNALS];
 
 STRING* crew_name0 = "Lt. Woll";
 STRING* crew_name1 = "Lt. Cmdr. Queissner";
-STRING* crew_name2 = "Dr. Horstmann";
+STRING* crew_name2 = "Dr. Schwarzfeuer";
 STRING* crew_name3 = "Dr. Pohl";
 STRING* crew_name4 = "Cmdr. Daumann";
 STRING* crew_name5 = "1st Office Truempler";
