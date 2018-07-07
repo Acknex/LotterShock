@@ -584,7 +584,7 @@ void weapons_shoot_sword(VECTOR * _pos, VECTOR * _ang)
 	vec_add(pos, camera.x);
 
 	VECTOR end;
-	vec_set(end, vector(0, 0, 5.7 + 0.9 * weapons.swordLength));
+	vec_set(end, vector(0, 0, 12.0 + 1.9 * weapons.swordLength));
 
 	vec_scale(end, 20); // sword is kinda 10 times longer
 
@@ -592,7 +592,7 @@ void weapons_shoot_sword(VECTOR * _pos, VECTOR * _ang)
 	vec_rotate(end, camera.pan);
 	vec_add(end, pos);
 
-	dmgsys_set_src(DMGSYS_PLAYER, player, 1);
+	dmgsys_set_src(DMGSYS_PLAYER, player, 10);
 	var dist = c_trace(pos, end, IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
 	if(HIT_TARGET)
 	{
