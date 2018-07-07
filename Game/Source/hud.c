@@ -149,8 +149,6 @@ void hud_place_bar(PANEL *bar, var offsetX)
 	bar->alpha = HUD_BARS_MAX_ALPHA;
 	
 	pan_setwindow  (bar, 0, 0,0, 0, bmap_height(hud_ammobar_bmap), hud_ammobar_bmap, 0,0);
-	
-	set(bar, SHOW);
 }
 
 void hud_update_bar(PANEL *bar, BMAP *source, var current_value, var max_value)
@@ -167,8 +165,7 @@ void hud_update_bar(PANEL *bar, BMAP *source, var current_value, var max_value)
 							0,0);
 }
 
-
-void hud_show()
+void hud_applyLayout()
 {
 	pan_setwindow(HUD_Head,1, 0,0,bmap_width(hud_lotterhead_bmap)/4, bmap_height(hud_lotterhead_bmap),hud_lotterhead_bmap, hud_lotterhead_shift, NULL);
 	HUD_Head->pos_x = (screen_size.x- bmap_width(hud_lotterhead_bmap)*HUD_Head.scale_x/4)/2;
@@ -212,7 +209,6 @@ void hud_show()
 	HUD_Ammo_bars->scale_y = desired_height/HUD_Ammo_bars->size_y;
 	
 	hud_place_bar(HUD_Ammo_bars, pos_left - hud_sizex(HUD_Ammo_bars)/2);
-	//HUD_Ammo_bars->pos_y = screen_size.y - hud_sizey(HUD_Ammo_bars);
 	
 	HUD_Ammo_infotext->pos_x = HUD_Ammo_bars->pos_x + hud_sizex(HUD_Ammo_bars)/2;
 	HUD_Ammo_infotext->pos_y = HUD_Ammo_bars->pos_y + hud_sizey(HUD_Ammo_bars)/2;
@@ -220,12 +216,10 @@ void hud_show()
 	
 	HUD_HP_text->pos_x = pos_rright-hud_sizex(HUD_HP_text)/2;
 	HUD_HP_text->pos_y = screen_size.y - hud_sizey(HUD_HP_text)-HUD_BORDER_PADDING;
-	set(HUD_HP_text, SHOW);
 	
 	
 	HUD_HP_infotext->pos_x = pos_right;
 	HUD_HP_infotext->pos_y = screen_size.y - hud_sizey(HUD_HP_text)/2-HUD_BORDER_PADDING;
-    set(HUD_HP_infotext, SHOW);
 	
    //KEY 0 is unused -> start with 1
 	for(i = 0; i<KEYS_MAX ;++i)
@@ -233,6 +227,22 @@ void hud_show()
 		hud_keycard_icon[i]->pos_x = HUD_BORDER_PADDING;
 		hud_keycard_icon[i]->pos_y = screen_size.y - hud_sizey(hud_keycard_icon[i])*(i+1) - HUD_BORDER_PADDING;
 	}
+}
+
+void hud_show()
+{
+	hud_applyLayout();
+	
+	set(HUD_Head, SHOW);
+	set(HUD_background, SHOW);
+	
+	set(HUD_Ammo_bars, SHOW);
+	set(HUD_HP_text, SHOW);
+	set(HUD_HP_infotext, SHOW);
+	
+	set(HUD_crosshair, SHOW);
+	
+   settings_register_signal(hud_applyLayout);
 }
 
 void hud_hide()
