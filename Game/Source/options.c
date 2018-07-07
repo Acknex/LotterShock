@@ -507,6 +507,19 @@ TEXT * options_anisotropy_text =
     string = ("None", "1x", "2x", "3x", "4x", "5x", "6x", "7x");
 }
 
+int options_fpslimits_value[6] =
+{
+    30, 60, 90, 120, 144, 999
+};
+
+int options_resolutions_value[8] =
+{
+    1280, 720,
+    1920, 1080,
+    1920, 1200,
+    2560, 1440
+};
+
 void options_init()
 {
     int i;
@@ -629,6 +642,24 @@ void options_open()
 
     uisystem_show_all(options_ui);
     options_select_common();
+
+
+    options_selected_resolution = 0;
+    for(i = 0; i < options_resolutions->strings; i++)
+    {
+        if(options_settings_copy.resolution_x != options_resolutions_value[2 * i + 0])
+            continue;
+        if(options_settings_copy.resolution_y != options_resolutions_value[2 * i + 1])
+            continue;
+        options_selected_resolution = i;
+    }
+
+    options_selected_fpslimit = 0;
+    for(i = 0; i < options_fpslimits_text->strings; i++)
+    {
+        if(options_settings_copy.fps_limit >= options_fpslimits_value[i])
+            options_selected_fpslimit = i;
+    }
 }
 
 STRING * options_tempstring = "#64";
@@ -729,6 +760,10 @@ void options_update()
     options_checkbox_update(&optionbutton.hinvert);
     options_checkbox_update(&optionbutton.vinvert);
 
+    // force-update values
+    options_settings_copy.fps_limit = options_fpslimits_value[options_selected_fpslimit];
+    options_settings_copy.resolution_x = options_resolutions_value[2 * options_selected_resolution + 0];
+    options_settings_copy.resolution_y = options_resolutions_value[2 * options_selected_resolution + 1];
 
     int i, j;
     for(i = 0; i < INPUT_MAX; i++)
