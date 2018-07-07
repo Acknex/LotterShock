@@ -244,8 +244,14 @@ void input_update()
         input_axis_hori += input_deadzone(input_states[INPUT_AXIS_RIGHT_STICK_X], 0.3) * time_step;
         input_axis_vert += input_deadzone(input_states[INPUT_AXIS_RIGHT_STICK_Y], 0.3) * time_step;
 
-        input_axis_hori *= settings.input_sensitivity;
-        input_axis_vert *= settings.input_sensitivity;
+        input_axis_hori *= settings.hsensitivity;
+        input_axis_vert *= settings.vsensitivity;
+
+        if(settings.invertX)
+            input_axis_hori = -input_axis_hori;
+
+        if(settings.invertY)
+            input_axis_vert = -input_axis_vert;
 
         input_states[INPUT_AXIS_LOOK_HORIZONTAL] = input_axis_hori;
         input_states[INPUT_AXIS_LOOK_VERTICAL]   = input_axis_vert;
