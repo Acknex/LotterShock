@@ -104,6 +104,7 @@ void SPLATTER_splat(VECTOR* pos, VECTOR* color)
 			p->skill45 = floatv(c.x);
 			p->skill46 = floatv(c.y);
 			p->skill47 = floatv(c.z);
+			vec_scale(p->scale_x, 1 + random(2));
 		}
 		wait(-0.02);
 	}
