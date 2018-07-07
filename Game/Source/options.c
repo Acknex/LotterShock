@@ -59,14 +59,6 @@ TEXT * options_txt_brush =
     blue = 0;
 }
 
-TEXT * options_txt_resolution =
-{
-    string("Resolution");
-    font = options_panel_font;
-    flags = ARIGHT | OUTLINE;
-    layer = 503;
-}
-
 TEXT * options_txt_fps_limit =
 {
     string("FPS Limit");
@@ -117,6 +109,18 @@ typedef struct checkbox_t
     TEXT * label;
 } checkbox_t;
 
+typedef struct selector_t
+{
+    uibutton_t * decrease;
+    uibutton_t * increase;
+    TEXT * label;
+    TEXT * value;
+    PANEL * inbetween;
+
+    int * target;
+    TEXT * options;
+} selector_t ;
+
 struct
 {
     // COMMON
@@ -126,14 +130,13 @@ struct
     uibutton_t * save;
     uibutton_t * cancel;
 
-    uibutton_t * prevResolution;
-    uibutton_t * nextResolution;
+    selector_t resolution;
 
     checkbox_t fullscreen;
     checkbox_t vsync;
 
-    uibutton_t * fpslimits[5];
-    uibutton_t * anisotropy[5];
+    selector_t fpslimit;
+    selector_t anisotropy;
 
     // INPUT
     struct inputslot_t inputs[INPUT_MAX];
@@ -159,6 +162,88 @@ struct
 INPUT options_input_copy[INPUT_MAX];
 
 settings_t options_settings_copy;
+
+int options_selected_resolution;
+int options_selected_fpslimit;
+int options_selected_anisotropy;
+
+void options_selector_click(uibutton_t * btn)
+{
+    selector_t * selector = btn->skill1;
+    (*selector->target) = cycle(
+        (*selector->target) + (int)(btn->skill2),
+        0,
+        selector->options->strings);
+}
+
+void options_selector_init(selector_t * selector, int * _target, TEXT * options, var x, var y, BMAP * inbetween, STRING * label, int group)
+{
+    selector->target = _target;
+    selector->options = options;
+
+    selector->decrease = uisystem_add_button(options_ui, x, y, options_bmp_less, options_selector_click);
+    selector->increase = uisystem_add_button(options_ui, x + bmap_width(options_bmp_less) + 6 + bmap_width(inbetween) , y, options_bmp_more, options_selector_click);
+
+    selector->decrease->skill1 = selector;
+    selector->increase->skill1 = selector;
+
+    selector->decrease->skill2 = -1;
+    selector->increase->skill2 =  1;
+
+    selector->decrease->group = group;
+    selector->increase->group = group;
+
+    selector->decrease->neighbour[UIDIR_RIGHT] = selector->increase;
+    selector->increase->neighbour[UIDIR_LEFT] = selector->decrease;
+
+    selector->inbetween = pan_create("", 503);
+    selector->inbetween->bmap = inbetween;
+
+    selector->label = txt_create(1, 504);
+    selector->label->flags = ARIGHT | OUTLINE;
+    selector->label->font = options_panel_font;
+    str_cpy((selector->label->pstring)[0], label);
+
+    selector->value = txt_create(1, 504);
+    selector->value->flags = CENTER_X | LIGHT;
+    selector->value->font = options_inputslot_font;
+    vec_set(&selector->value->blue, vector(0,0,0));
+    str_cpy((selector->value->pstring)[0], "~~");
+}
+
+void options_selector_update(selector_t * selector)
+{
+    selector->inbetween->pos_x = selector->decrease->pan->pos_x + bmap_width(selector->decrease->bmap) + 3;
+    selector->inbetween->pos_y = selector->decrease->pan->pos_y;
+
+    selector->label->pos_x = selector->decrease->pan->pos_x - 3;
+    selector->label->pos_y = selector->decrease->pan->pos_y + (43 - selector->label->font->dy) / 2;
+
+    selector->value->pos_x = selector->inbetween->pos_x + bmap_width(selector->inbetween->bmap) / 2;
+    selector->value->pos_y = selector->decrease->pan->pos_y + (43 - selector->value->font->dy) / 2;
+
+    str_cpy((selector->value->pstring)[0], (selector->options->pstring)[(*selector->target)]);
+
+    if(is(selector->decrease->pan, SHOW))
+    {
+        set(selector->inbetween, SHOW);
+        set(selector->label, SHOW);
+        set(selector->value, SHOW);
+    }
+    else
+    {
+        reset(selector->inbetween, SHOW);
+        reset(selector->label, SHOW);
+        reset(selector->value, SHOW);
+    }
+}
+
+void options_selector_hide(selector_t * selector)
+{
+    reset(selector->inbetween, SHOW);
+    reset(selector->label, SHOW);
+    reset(selector->value, SHOW);
+}
 
 void options_modify_val(uibutton_t * btn)
 {
@@ -317,7 +402,6 @@ void options_select_common()
     set(optionbutton.common_tab->pan, LIGHT);
     reset(optionbutton.input_tab->pan, LIGHT);
 
-    set(options_txt_resolution, SHOW);
     set(options_txt_fps_limit, SHOW);
     set(options_txt_anisotropic, SHOW);
 
@@ -329,11 +413,11 @@ void options_select_common()
     {
         reset(optionbutton.inputs[i].description, SHOW);
     }
-    optionbutton.input_tab->neighbour[UIDIR_DOWN] = optionbutton.nextResolution;
-    optionbutton.common_tab->neighbour[UIDIR_DOWN] = optionbutton.prevResolution;
+    optionbutton.input_tab->neighbour[UIDIR_DOWN] = optionbutton.resolution.increase;
+    optionbutton.common_tab->neighbour[UIDIR_DOWN] = optionbutton.resolution.decrease;
 
-    optionbutton.save->neighbour[UIDIR_UP] = optionbutton.anisotropy[4];
-    optionbutton.cancel->neighbour[UIDIR_UP] = optionbutton.anisotropy[4];
+    optionbutton.save->neighbour[UIDIR_UP] = optionbutton.anisotropy.increase;
+    optionbutton.cancel->neighbour[UIDIR_UP] = optionbutton.anisotropy.increase;
 }
 
 void options_select_input()
@@ -341,7 +425,6 @@ void options_select_input()
     reset(optionbutton.common_tab->pan, LIGHT);
     set(optionbutton.input_tab->pan, LIGHT);
 
-    reset(options_txt_resolution, SHOW);
     reset(options_txt_fps_limit, SHOW);
     reset(options_txt_anisotropic, SHOW);
 
@@ -411,24 +494,17 @@ void options_init_slots(int from, int to, int x_offset, int y_offset)
     }
 }
 
-void options_toggle_fullscreen()
+TEXT * options_resolutions =
 {
-    options_settings_copy.fullscreen = !options_settings_copy.fullscreen;
+    string = ("1280x720", "1920x1080", "1920x1200", "2560x1440");
 }
-
-void options_toggle_vsync()
+TEXT * options_fpslimits_text =
 {
-    options_settings_copy.vsync = !options_settings_copy.vsync;
+    string = ("30 FPS", "60 FPS", "90 FPS", "120 FPS", "144 FPS", "Unlimited");
 }
-
-void options_set_fps_limit(uibutton_t * btn)
+TEXT * options_anisotropy_text =
 {
-    options_settings_copy.fps_limit = btn->skill1;
-}
-
-void options_set_anisotropy(uibutton_t * btn)
-{
-    options_settings_copy.anisotropy = btn->skill1;
+    string = ("None", "1x", "2x", "3x", "4x", "5x", "6x", "7x");
 }
 
 void options_init()
@@ -451,88 +527,39 @@ void options_init()
     optionbutton.input_tab->neighbour[UIDIR_LEFT] = optionbutton.common_tab;
     optionbutton.common_tab->neighbour[UIDIR_RIGHT] = optionbutton.input_tab;
 
-    /* INPUT
-     * settings.input_sensitivity = 13;
-     */
-    /* COMMON
-     * --------------------------------------------
-     * Resolution:  [ settings.resolution_x, settings.resolution_y ]
-     * Fullscreen:  [ 'X', ' ' ]
-     * V-Sync:      [ 'X', ' ' ]
-     * FPS Limit:   [ 30, 60, 90, 144, free ]
-     * Anisotropic: [ 0, 1, 2, 3, 4] -> 0, 1, 3, 5, 7
-     * --------------------------------------------
-     * Master Volume: 100
-     *
-     */
 
-    optionbutton.prevResolution = uisystem_add_button(options_ui, 190, 10, options_bmp_less, NULL);
-    optionbutton.prevResolution->group = OPTIONGROUP_COMMON;
-
-    optionbutton.nextResolution = uisystem_add_button(options_ui, 350, 10, options_bmp_more, NULL);
-    optionbutton.nextResolution->group = OPTIONGROUP_COMMON;
+    options_selector_init(&optionbutton.resolution, &options_selected_resolution, options_resolutions, 190, 10, options_bmp_inbetween_large, "Resolution", OPTIONGROUP_COMMON);
 
     options_checkbox_init(&optionbutton.fullscreen, &options_settings_copy.fullscreen, 190, 60, "Fullscreen", OPTIONGROUP_COMMON);
     options_checkbox_init(&optionbutton.vsync, &options_settings_copy.vsync, 190, 110, "V-Sync", OPTIONGROUP_COMMON);
 
-    for(i = 0; i < 5; i++)
-    {
-        optionbutton.fpslimits[i] = uisystem_add_button(options_ui, 190 + 46 * i, 160, options_bmp_inputslot, options_set_fps_limit);
-        optionbutton.fpslimits[i]->group = OPTIONGROUP_COMMON;
-    }
+    options_selector_init(&optionbutton.fpslimit, &options_selected_fpslimit, options_fpslimits_text, 190, 160, options_bmp_inbetween_large, "FPS Limit", OPTIONGROUP_COMMON);
 
-    optionbutton.fpslimits[0]->skill1 = 30;
-    optionbutton.fpslimits[1]->skill1 = 60;
-    optionbutton.fpslimits[2]->skill1 = 90;
-    optionbutton.fpslimits[3]->skill1 = 144;
-    optionbutton.fpslimits[4]->skill1 = 999;
+    options_selector_init(&optionbutton.anisotropy, &options_settings_copy.anisotropy, options_anisotropy_text, 190, 210, options_bmp_inbetween_large, "Anisotropic Filter", OPTIONGROUP_COMMON);
 
-    for(i = 0; i < 5; i++)
-    {
-        optionbutton.anisotropy[i] = uisystem_add_button(options_ui, 190 + 46 * i, 210, options_bmp_inputslot, options_set_anisotropy);
-        optionbutton.anisotropy[i]->group = OPTIONGROUP_COMMON;
-    }
+    optionbutton.resolution.decrease->neighbour[UIDIR_UP] = optionbutton.common_tab;
+    optionbutton.resolution.decrease->neighbour[UIDIR_DOWN] = optionbutton.fullscreen.button;
 
-    optionbutton.anisotropy[0]->skill1 = 0;
-    optionbutton.anisotropy[1]->skill1 = 1;
-    optionbutton.anisotropy[2]->skill1 = 3;
-    optionbutton.anisotropy[3]->skill1 = 5;
-    optionbutton.anisotropy[4]->skill1 = 7;
+    optionbutton.resolution.increase->neighbour[UIDIR_UP] = optionbutton.common_tab;
+    optionbutton.resolution.increase->neighbour[UIDIR_DOWN] = optionbutton.fullscreen.button;
 
-    optionbutton.prevResolution->neighbour[UIDIR_UP] = optionbutton.common_tab;
-    optionbutton.prevResolution->neighbour[UIDIR_DOWN] = optionbutton.fullscreen.button;
-    optionbutton.prevResolution->neighbour[UIDIR_RIGHT] = optionbutton.nextResolution;
-
-    optionbutton.nextResolution->neighbour[UIDIR_UP] = optionbutton.common_tab;
-    optionbutton.nextResolution->neighbour[UIDIR_DOWN] = optionbutton.fullscreen.button;
-    optionbutton.nextResolution->neighbour[UIDIR_LEFT] = optionbutton.prevResolution;
-
-    optionbutton.fullscreen.button->neighbour[UIDIR_UP] = optionbutton.prevResolution;
+    optionbutton.fullscreen.button->neighbour[UIDIR_UP] = optionbutton.resolution.decrease;
     optionbutton.fullscreen.button->neighbour[UIDIR_DOWN] = optionbutton.vsync.button;
 
     optionbutton.vsync.button->neighbour[UIDIR_UP] = optionbutton.fullscreen.button;
-    optionbutton.vsync.button->neighbour[UIDIR_DOWN] = optionbutton.fpslimits[0];
+    optionbutton.vsync.button->neighbour[UIDIR_DOWN] = optionbutton.fpslimit.decrease;
 
-    for(i = 0; i < 5; i++)
-    {
-        optionbutton.anisotropy[i]->neighbour[UIDIR_UP] = optionbutton.fpslimits[i];
-        optionbutton.anisotropy[i]->neighbour[UIDIR_DOWN] = optionbutton.cancel;
+    optionbutton.fpslimit.increase->neighbour[UIDIR_UP] = optionbutton.vsync.button;
+    optionbutton.fpslimit.decrease->neighbour[UIDIR_UP] = optionbutton.vsync.button;
 
-        optionbutton.fpslimits[i]->neighbour[UIDIR_UP] =  optionbutton.vsync.button;
-        optionbutton.fpslimits[i]->neighbour[UIDIR_DOWN] = optionbutton.anisotropy[i];
+    optionbutton.fpslimit.increase->neighbour[UIDIR_DOWN] = optionbutton.anisotropy.increase;
+    optionbutton.fpslimit.decrease->neighbour[UIDIR_DOWN] = optionbutton.anisotropy.decrease;
 
-        if(i > 0)
-        {
-            optionbutton.anisotropy[i]->neighbour[UIDIR_LEFT] = optionbutton.anisotropy[i - 1];
-            optionbutton.fpslimits[i]->neighbour[UIDIR_LEFT] = optionbutton.fpslimits[i - 1];
-        }
+    optionbutton.anisotropy.increase->neighbour[UIDIR_UP] = optionbutton.fpslimit.increase;
+    optionbutton.anisotropy.decrease->neighbour[UIDIR_UP] = optionbutton.fpslimit.decrease;
 
-        if(i < 4)
-        {
-            optionbutton.anisotropy[i]->neighbour[UIDIR_RIGHT] = optionbutton.anisotropy[i + 1];
-            optionbutton.fpslimits[i]->neighbour[UIDIR_RIGHT] = optionbutton.fpslimits[i + 1];
-        }
-    }
+    optionbutton.anisotropy.increase->neighbour[UIDIR_DOWN] = optionbutton.cancel;
+    optionbutton.anisotropy.decrease->neighbour[UIDIR_DOWN] = optionbutton.cancel;
 
     { // initialize and interconnect all input slots
 
@@ -685,31 +712,13 @@ void options_update()
         }
     }
 
-    for(i = 0; i < 5; i++)
-    {
-        if(options_settings_copy.anisotropy == optionbutton.anisotropy[i]->skill1)
-            optionbutton.anisotropy[i]->bmap = options_bmp_checkbox;
-        else
-            optionbutton.anisotropy[i]->bmap = options_bmp_inputslot;
-
-        if(options_settings_copy.fps_limit == optionbutton.fpslimits[i]->skill1)
-            optionbutton.fpslimits[i]->bmap = options_bmp_checkbox;
-        else
-            optionbutton.fpslimits[i]->bmap = options_bmp_inputslot;
-    }
-
     uisystem_update(options_ui);
 
-    var dy = (43 - options_txt_resolution->font->dy) / 2;
+    var dy = 0;
 
-    options_txt_resolution->pos_x = optionbutton.prevResolution->pan->pos_x - 3;
-    options_txt_resolution->pos_y = optionbutton.prevResolution->pan->pos_y + dy;
-
-    options_txt_fps_limit->pos_x = optionbutton.fpslimits[0]->pan->pos_x - 3;
-    options_txt_fps_limit->pos_y = optionbutton.fpslimits[0]->pan->pos_y + dy;
-
-    options_txt_anisotropic->pos_x = optionbutton.anisotropy[0]->pan->pos_x - 3;
-    options_txt_anisotropic->pos_y = optionbutton.anisotropy[0]->pan->pos_y + dy;
+    options_selector_update(&optionbutton.resolution);
+    options_selector_update(&optionbutton.fpslimit);
+    options_selector_update(&optionbutton.anisotropy);
 
     options_slider_update(&optionbutton.hsensitivity);
     options_slider_update(&optionbutton.vsensitivity);
@@ -806,7 +815,6 @@ void options_close()
     reset(options_pan_background, SHOW);
     reset(options_pan_pane, SHOW);
 
-    reset(options_txt_resolution, SHOW);
     reset(options_txt_fps_limit, SHOW);
     reset(options_txt_anisotropic, SHOW);
 
@@ -815,6 +823,10 @@ void options_close()
     {
         reset(optionbutton.inputs[i].description, SHOW);
     }
+
+    options_selector_hide(&optionbutton.resolution);
+    options_selector_hide(&optionbutton.fpslimit);
+    options_selector_hide(&optionbutton.anisotropy);
 
     options_slider_hide(&optionbutton.hsensitivity);
     options_slider_hide(&optionbutton.vsensitivity);
