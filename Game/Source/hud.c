@@ -260,6 +260,8 @@ void hud_hide()
 	int i;
 	for(i = 0; i<4; ++i)
 		reset(hud_weapon_icon[i], SHOW);
+	for(i = 0; i<KEYS_MAX; ++i)
+		reset(hud_keycard_icon[i], SHOW);
 }
 
 void hud_show_weapon_icon(int id)
