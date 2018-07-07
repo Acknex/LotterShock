@@ -1,5 +1,6 @@
 #include "splashscreen.h"
 #include "input.h"
+#include "settings.h"
 
 BMAP * splashscreen_image_map = "splashscreen.png";
 
@@ -13,10 +14,16 @@ PANEL * splashscreen_image =
 
 var splashscreen_timer;
 
-void splashscreen_init()
+void splashscreen_resize()
 {
     splashscreen_image.scale_x = screen_size.x / splashscreen_image.size_x;
     splashscreen_image.scale_y = screen_size.y / splashscreen_image.size_y;
+}
+
+void splashscreen_init()
+{
+    splashscreen_resize();
+    settings_register_signal(splashscreen_resize);
 }
 
 bool splashscreen_is_done()
