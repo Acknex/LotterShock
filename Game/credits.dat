@@ -11,6 +11,7 @@ r;Level
 s;2
 l;Felix "MasterQ32" Queiﬂner
 r;Framework
+r;Controller support
 r;Weapons
 r;Credits
 s;2
@@ -38,10 +39,11 @@ l;Michael "xwcg" Schwarz
 r;Level Design
 s;2
 l;Henrik "hen-woll" Wollmann
-r;Character
+r;2D & 3D Assets
 r;Weapons
-r;MENUE
-r;ASSET
+r;Texturing
+r;Animation
+r;UI & Menue
 s;2
 l;Andreas "lemming" Holm
 r;Props
@@ -52,8 +54,10 @@ l;Kitsune "Kitsu" Schwarzfeuer
 r;Weapons
 r;Effects
 s;2
-l;Steffen "sgpohl" Pohl
-r;HUD
+l;Steffen "D.E.M" Pohl
+r;HUD & Layout
+r;Effects
+r;Items
 s;4
 h3;Voices
 s;2;
@@ -81,7 +85,7 @@ s;4;
 x;oP Group;Providing a monetary boost
 s;8
 c;No Donkey-larks were harmed during the production of this game.
-c;(but they exploded...)
+c;(they exploded of their own volition)
 c;(A LOT)
 s;8
 c;Gamestudio wasn't updated since March 2016, still waiting for the 2017 update!
