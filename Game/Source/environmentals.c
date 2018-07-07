@@ -5,8 +5,13 @@ SOUND* snd_terminal = "keys_engine_room.wav";
 // skill1: SPEED
 action environ_fake_cloud()
 {	
-    my->flags2 |= UNTOUCHABLE;
     set(me, PASSABLE);
+    set(me, TRANSLUCENT);
+    my->flags2 |= UNTOUCHABLE;
+
+    my.alpha = 50 + random(50);    
+    my->ENVIRONMENTALS_TEMP = integer(random(1));
+
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_FAKECLOUD;
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
@@ -89,6 +94,18 @@ void environmentals_update()
         {
             case ENVIRONMENTAL_FAKECLOUD:
                 ptr.roll += ptr.ENVIRONMENTALS_FAKECLOUD_ROTATESPEED * time_step;
+                if(ptr.ENVIRONMENTALS_TEMP == 0)
+                {
+                    ptr.alpha -= ptr.ENVIRONMENTALS_FAKECLOUD_ROTATESPEED * 5 * time_step;
+                    if(ptr.alpha <= 50)
+                        ptr.ENVIRONMENTALS_TEMP = 1;
+                }
+                else
+                {
+                    ptr.alpha += ptr.ENVIRONMENTALS_FAKECLOUD_ROTATESPEED * 5 * time_step;
+                    if(ptr.alpha >= 100)
+                        ptr.ENVIRONMENTALS_TEMP = 0;
+                }
                 break;	
             case ENVIRONMENTAL_ICECLOUD:
                 ptr.roll += ptr.ENVIRONMENTALS_FAKECLOUD_ROTATESPEED * time_step;
