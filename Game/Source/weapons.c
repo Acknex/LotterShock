@@ -26,7 +26,7 @@
 #define WEAPONS_FLAME_MINSIZE 5
 #define WEAPONS_FLAME_MAXSIZE 75
 
-#define WEAPONS_CELLGUN_DAMAGE 7
+#define WEAPONS_CELLGUN_DAMAGE 20
 
 #define WEAPONS_DOUBLE_FLAME_EFFECT
 
@@ -216,7 +216,7 @@ void weapons_init()
 	weapons.weapon[WEAPON_SHOTGUN].attackspeed = 10;
 	weapons.weapon[WEAPON_FLAMETHROWER].streaming = true;
 	weapons.weapon[WEAPON_CELLGUN].streaming = true;
-	weapons.weapon[WEAPON_CELLGUN].attackspeed = 20.0;
+	weapons.weapon[WEAPON_CELLGUN].attackspeed = 6.0;
 
 	weapons.weapon[WEAPON_SWORD].max_ammo        = 0;
 	weapons.weapon[WEAPON_SHOTGUN].max_ammo      = 36;
@@ -913,11 +913,11 @@ weapons_wp_cellgun.skill41 = floatd(weapons.spearpower,100);
 				}
 				else
 				{
-					int spearshots[3] = { 0, 33, 66, 999 };
+					int spearshots[3] = { 0, 25, 50, 999 };
 
 					if(weapons.speartimer >= spearshots[weapons.attackstate])
 					{
-						if(weapons.attackstate < 3)
+						if(weapons.attackstate < 4)
 						{
 							if(weapons_draw_ammo(1))
 							{
