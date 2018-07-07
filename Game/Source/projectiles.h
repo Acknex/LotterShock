@@ -98,7 +98,30 @@
 		p.lifespan = 0.01;
 		p.event = NULL;
 	}
-
+	
+	void p_projectile_cell_hit_event(PARTICLE* p)
+	{
+		p.size += time_step*15;
+		p.alpha -= time_step*15;
+		if(p.alpha < 0) 
+			p.lifespan = 0;
+	}
+	void p_projectile_cell_hit(PARTICLE* p)
+	{
+		p.bmap = smokeSprite1_bmp;
+		set(p,BRIGHT);
+		//set(p,BRIGHT);
+		p.alpha = 100;
+		vec_set(p.blue,vector(255,230,10));
+		
+		vec_normalize(p.vel_x, 25);
+		vec_add(p.x,p.vel_x);
+		vec_set(p.vel_x, nullvector);
+		
+		p.size = 90+random(8);
+		p.lifespan = 100;
+		p.event = p_projectile_cell_hit_event;
+	}
 	void p_projectile_cell(PARTICLE* p)
 	{
 		p.bmap = NULL;
@@ -211,6 +234,7 @@
 					if(proj->type == PROJECTILE_TYPE_CELL)
 					{
 						bmp = projBounce2_bmp;
+						effect(p_projectile_cell_hit,1,target,normal);
 					}
 					PARTICLE* p = ent_decal(you, bmp, 9+random(2), 0);
 					if(p)
