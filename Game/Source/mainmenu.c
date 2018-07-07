@@ -4,6 +4,7 @@
 #include "framework.h"
 #include "ui.h"
 #include "options.h"
+#include "settings.h"
 #include <acknex.h>
 
 #define MAINMENU_ITEM_COUNT 5
@@ -84,6 +85,19 @@ int mainmenu_get_response()
     return mainmenu_response;
 }
 
+void mainmenu_resize()
+{
+    int i;
+    for(i = 0; i < MAINMENU_ITEM_COUNT; i++)
+    {
+        mainmenu_items[i]->pos_x = screen_size.x - 192 - MAINMENU_BORDER_PADDING;
+        mainmenu_items[i]->pos_y = screen_size.y - MAINMENU_BORDER_PADDING - (MAINMENU_ITEM_COUNT - i) * (64 + MAINMENU_BORDER_PADDING);
+    }
+
+    mainmenue_title->pos_x = (screen_size.x-mainmenue_title.size_x) /2;
+    mainmenue_title->pos_y = 40;
+}
+
 void mainmenu_init()
 {
     mainmenu_items[0] = mainmenu_start_pan;
@@ -91,26 +105,27 @@ void mainmenu_init()
     mainmenu_items[2] = mainmenu_bestiary_pan;
     mainmenu_items[3] = mainmenu_options_pan;
     mainmenu_items[4] = mainmenu_exit_pan;
+
+    settings_register_signal(mainmenu_resize);
 }
 
 void mainmenu_open()
 {
-    int i;
-    for(i = 0; i < MAINMENU_ITEM_COUNT; i++)
-    {
-        set(mainmenu_items[i], SHOW);
-        mainmenu_items[i]->alpha = 0;
-        mainmenu_items[i]->pos_x = screen_size.x - 192 - MAINMENU_BORDER_PADDING;
-        mainmenu_items[i]->pos_y = screen_size.y - MAINMENU_BORDER_PADDING - (MAINMENU_ITEM_COUNT - i) * (64 + MAINMENU_BORDER_PADDING);
-    }
+    mainmenu_resize();
     set(mainmenu_selection_pan, SHOW);
     mainmenu_selection_pan->alpha = 0;
     mainmenu_selection = 0;
     mainmenu_response = MAINMENU_RESPONSE_STILLACTIVE;
 
-    mainmenue_title->pos_x = (screen_size.x-mainmenue_title.size_x) /2;
-    mainmenue_title->pos_y = 40;
     set(mainmenue_title, SHOW);
+
+
+    int i;
+    for(i = 0; i < MAINMENU_ITEM_COUNT; i++)
+    {
+        set(mainmenu_items[i], SHOW);
+        mainmenu_items[i]->alpha = 0;
+    }
 
     fog_color = 2;
     camera.fog_end = 20000.0;

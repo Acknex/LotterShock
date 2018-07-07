@@ -63,6 +63,10 @@ void framework_update_settings()
         settings.resolution_y,
         0,
         2 - !!settings.fullscreen); // !! -> 0 oder 1
+
+    // Ladebildschirm passend skalieren
+    framework_load_screen.scale_x = screen_size.x / framework_load_screen.size_x;
+    framework_load_screen.scale_y = screen_size.y / framework_load_screen.size_y;
 }
 
 //! Initialisiert das Spiel und so
@@ -190,10 +194,6 @@ void framework_update()
 
             // TODO: Fix relative link?
             music_start("Media/intro.mp3", 0.2, false);
-
-            // Ladebildschirm passend skalieren
-            framework_load_screen.scale_x = screen_size.x / framework_load_screen.size_x;
-            framework_load_screen.scale_y = screen_size.y / framework_load_screen.size_y;
 
 #ifdef DEBUG_FRAMEWORK_FASTSTART
             framework_transfer(FRAMEWORK_STATE_LOAD);

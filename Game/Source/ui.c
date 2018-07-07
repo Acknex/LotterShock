@@ -139,7 +139,7 @@ void uisystem_update(uisystem_t * system)
         reset(system->selector, SHOW);
     }
 
-#ifdef DEBUG
+#ifdef DEBUG_UI_PATHS
     { // draw debug lines
 
         uibutton_t * btn;
