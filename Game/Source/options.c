@@ -498,7 +498,7 @@ void options_init_slots(int from, int to, int x_offset, int y_offset)
 
 TEXT * options_resolutions =
 {
-    string = ("1280x720", "1920x1080", "1920x1200", "2560x1440");
+    strings = 1;
 }
 TEXT * options_fpslimits_text =
 {
@@ -514,7 +514,8 @@ int options_fpslimits_value[6] =
     30, 60, 90, 120, 144, 999
 };
 
-int options_resolutions_value[8] =
+// just enough resolutions...
+int options_resolutions_value[500] =
 {
     1280, 720,
     1920, 1080,
@@ -522,9 +523,71 @@ int options_resolutions_value[8] =
     2560, 1440
 };
 
+#define D3DFMT_X8R8G8B8 22
+
+#undef D3DDISPLAYMODE
+typedef struct D3DDISPLAYMODE {
+  UINT      Width;
+  UINT      Height;
+  UINT      RefreshRate;
+  D3DFORMAT Format;
+} D3DDISPLAYMODE;
+
 void options_init()
 {
-    int i;
+    int i, j, k;
+
+    int total = 0;
+    LPDIRECT3DDEVICE9 pd3dDev;
+    pd3dDev = (LPDIRECT3DDEVICE9)draw_begin();
+    if(pd3dDev)
+    {
+        LPDIRECT3D9 d3d9;
+        pd3dDev->GetDirect3D(&d3d9);
+
+        if(d3d9)
+        {
+            long count = d3d9->GetAdapterCount();
+            for(i = 0; i < count; i++)
+            {
+                long modecount = d3d9->GetAdapterModeCount(i, D3DFMT_X8R8G8B8);
+                for(j = 0; j < modecount; j++)
+                {
+                    D3DDISPLAYMODE mode;
+                    d3d9->EnumAdapterModes(i, D3DFMT_X8R8G8B8, j, &mode);
+                    if(mode.RefreshRate == 60)
+                    {
+                        bool use = true;
+                        for(k = 0; k < total; k++)
+                        {
+                            if(options_resolutions_value[2*k+0] != mode.Width)
+                                continue;
+                            if(options_resolutions_value[2*k+1] != mode.Height)
+                                continue;
+                            use = false;
+                            break;
+                        }
+
+                        if(use)
+                        {
+                            if(total == 0)
+                                str_printf((options_resolutions->pstring)[0], "%dx%d", mode.Width, mode.Height);
+                            else
+                                txt_addstring(options_resolutions, str_printf(NULL, "%dx%d", mode.Width, mode.Height));
+                            options_resolutions_value[2*total + 0] = mode.Width;
+                            options_resolutions_value[2*total + 1] = mode.Height;
+                            total += 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if(total == 0)
+    {
+        error("options_init: failed to list display modes!");
+        str_printf((options_resolutions->pstring)[0], "%dx%d", settings.resolution_x, settings.resolution_y);
+    }
 
     options_ui = uisystem_new(502);
 

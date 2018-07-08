@@ -2,6 +2,9 @@
 #include <acknex.h>
 
 SOUND* snd_terminal = "keys_engine_room.wav";
+
+var environ_ribanna_music;
+
 // skill1: SPEED
 action environ_fake_cloud()
 {	
@@ -93,6 +96,12 @@ action EnvironAirlock()
 action EnvironRadio()
 {
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_RADIO;
+
+    if(environ_ribanna_music != 0)
+        error("Two EnvironRadios are not allowed!");
+
+    environ_ribanna_music = media_loop("media/ribanna.mid", NULL, 0);
 }
 
 action environ_server()
@@ -107,10 +116,18 @@ action environ_server()
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
 
+void environmentals_close()
+{
+    if(environ_ribanna_music != 0)
+        media_stop(environ_ribanna_music);
+    environ_ribanna_music = 0;
+}
+
 void environmentals_update()
 {
     ENTITY *ptr;
     var dmgTest;
+    var dist;
 
     SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENVIRONMENT) 
     {
@@ -123,6 +140,13 @@ void environmentals_update()
                     ptr->ENVIRONMENTALS_TEMP = 0;
                     ptr->skin = 1 + integer(random(2));
                 }
+                break;
+
+            case ENVIRONMENTAL_RADIO:
+                dist = (clamp(vec_dist(ptr->x, camera->x), 500, 2500) - 500) / 2000.0;
+
+                media_tune(environ_ribanna_music, 100 * dist, 0, 0);
+
                 break;
 
             case ENVIRONMENTAL_AIRLOCK:
