@@ -145,12 +145,7 @@ void environmentals_update()
 
             case ENVIRONMENTAL_RADIO:
                 dist = vec_dist(ptr->x, camera->x);
-
-                DEBUG_VAR(dist, 16);
-
                 dist = (clamp(dist, RIBANNA_MINDIST, RIBANNA_MAXDIST) - RIBANNA_MINDIST) / ((RIBANNA_MAXDIST - RIBANNA_MINDIST) / 100);
-
-                DEBUG_VAR(dist, 32);
 
                 if(dist >= 98)
                 {
