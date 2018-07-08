@@ -71,7 +71,7 @@ void journals_init()
 	journals[2].media = "Media/pda_lt_cmd_queissner2.mp3";
 	journals[2].name = crew_name1;
 
-	// Dr. Horstmann
+	// Dr. Schwarzfeuer
 	journals[3].text = "Infusing the Donkey-Lark DNA with Nitroglycerine might have been a bad idea. These little buggers seem to have developed some... explosive tendencies. Whenever they get excited or agitated they violently explode. We've already lost 3 interns trying to feed them. I will have to look into reinforcing the cages lest they blow their way free. If they get loose, we'll have big problems on our hands.";
 	journals[3].media = "Media/pda_dr_horstmann1.mp3";
 	journals[3].name = crew_name2;
