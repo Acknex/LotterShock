@@ -203,7 +203,7 @@ void journals_update()
                 return;
             if (ptr.JOURNAL_ID != journals_current)
             {
-                journals_current = 9; // ptr.JOURNAL_ID;
+                journals_current = ptr.JOURNAL_ID;
                 journals_mindelay = JOURNAL_MINTIME_PER_CHAR * str_len(journals[journals_current].text);
 
                 str_cpy((journal_txt.pstring)[0], journals[journals_current].text);
