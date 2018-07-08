@@ -83,6 +83,13 @@ action environ_ice()
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
 
+action EnvironAirlock()
+{
+    framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_AIRLOCK;
+
+}
+
 void environmentals_update()
 {
     ENTITY *ptr;
