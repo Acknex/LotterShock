@@ -52,4 +52,6 @@ void doors_update();
 void keypad();
 void keypad_update();
 
+void keys_reset();
+
 #endif

@@ -51,6 +51,7 @@ void game_open()
     hud_show();
     player_initSpawn();
     map_open();
+    keys_reset();
 
     // reset story stuff
     story_enginesEnabled = 0;

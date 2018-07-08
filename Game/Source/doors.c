@@ -2,6 +2,17 @@
 // skill2: KEYPAD_ID
 // skill3: EXPECTED_KEY
 // skill4: ENABLE_KEY
+
+void keys_reset() 
+{
+	int i;
+	for(i=0; i<KEYS_MAX; ++i)
+	{
+		keys[i] = 0;
+	}
+	keys[0] = 1;
+}
+
 action keypad() {	
 	framework_setup(my, SUBSYSTEM_KEYPADS);
 	set(me, PASSABLE);
