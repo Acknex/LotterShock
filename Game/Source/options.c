@@ -556,8 +556,6 @@ void options_init()
         D3DDEVICE_CREATION_PARAMETERS params;
         pd3dDev->GetCreationParameters(&params);
 
-
-
         if(d3d9)
         {
             long modecount = d3d9->GetAdapterModeCount(params.AdapterOrdinal, D3DFMT_X8R8G8B8);

@@ -16,6 +16,7 @@
 #include "pausemenu.h"
 #include "framework.h"
 #include "environmentals.h"
+#include "flesh.h"
 
 bool game_done;
 var story_enginesEnabled = 0;
@@ -35,6 +36,7 @@ void game_init()
     map_init();
     journals_init();
     pausemenu_init();
+    FLESH_GlobalInit();
 
     game_hidehud = 0;
     game_hashud = 1;
@@ -123,6 +125,7 @@ void game_update()
         TURRET_Update();
         GIB_Update();
         ENEMY_UpdateProjectile();
+        FLESH_Update();
 
         if(game_hashud)
             hud_update();

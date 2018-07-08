@@ -46,6 +46,7 @@ typedef int bool;
 #define SUBSYSTEM_ENEMY_PROJECTILE  15
 #define SUBSYSTEM_ENEMY_GIB         16
 #define SUBSYSTEM_MAINMENU          17
+#define SUBSYSTEM_FLESH             18
 
 
 #define SUBSYSTEM_ENEMY_LERCHE  1000
@@ -66,5 +67,6 @@ typedef int bool;
 #define HEALTH_EYE		150
 #define HEALTH_TURRET	100
 
+#define GROUP_PLAYER 3
 #define GROUP_ENEMY 10
 #endif // GLOBAL_H

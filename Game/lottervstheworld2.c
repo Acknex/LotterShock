@@ -65,6 +65,7 @@
 #include "ui.c"
 #include "cheats.c"
 #include "secretroom.c"
+#include "flesh.c"
 
 void main()
 {

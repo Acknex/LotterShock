@@ -197,7 +197,7 @@ void SPUTNIK_Update()
 			ptr.min_y += 8;
 			ptr.max_x -= 8;
 			ptr.max_y -= 8;
-			c_ignore(10,0);
+			c_ignore(GROUP_ENEMY,GROUP_PLAYER,0);
 			c_trace(from, to, mode);
 			ptr.min_x -= 8;
 			ptr.min_y -= 8;
