@@ -70,7 +70,7 @@ action environ_engine_beam()
 
 action environ_engterm()
 {	
-    my->ENVIRONMENTALS_TEMP = 0;
+    my->ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_INACTIVE;
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_ENGINE_TERMINAL;
     my->INTERACTIBLE = 1;
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
@@ -122,6 +122,51 @@ void environmentals_close()
     if(environ_ribanna_music != 0)
         media_stop(environ_ribanna_music);
     environ_ribanna_music = 0;
+}
+
+void environmentals_engine_terminal_starting(ENTITY *ptr)
+{
+	fog_color = 2;
+	camera.fog_end = 20000.0;
+}
+void environmentals_terminal(ENTITY* ptr, void *starting_effect, var *flag)
+{
+    
+    switch(ptr.ENVIRONMENTALS_TEMP)
+	{
+		case ENVIRONMENTAL_TERMINAL_INACTIVE:
+    		if(mouse_ent == ptr) 
+            {
+                ptr.skin = 2;
+                if(input_hit(INPUT_USE)) 
+                {
+                    snd_play(snd_terminal, 100, 0);
+                    ptr.ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_STARTING;
+                }
+            }
+            else
+            {
+                ptr.skin = 1;
+            }
+			break;
+		case ENVIRONMENTAL_TERMINAL_STARTING:
+    		
+    		ptr.skin = 3;
+		    ptr.ENVIRONMENTALS_TIMER += 1 * time_step;
+		
+		    if(ptr.ENVIRONMENTALS_TIMER >= 30)
+		    {
+	    		function starting(ENTITY*);
+	    		starting = starting_effect;
+	    		starting(ptr);
+    			ptr.ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_ACTIVE;
+    			(*flag) = 1;
+    		}
+			break;
+		case ENVIRONMENTAL_TERMINAL_ACTIVE:
+        	ptr.skin = 4;
+			break;
+	}
 }
 
 void environmentals_update()
@@ -247,39 +292,7 @@ void environmentals_update()
                 break;
             
             case ENVIRONMENTAL_ENGINE_TERMINAL:
-                if(ptr.ENVIRONMENTALS_TEMP == 0)
-                {
-                    if(mouse_ent == ptr) 
-                    {
-                        ptr.skin = 2;
-                        if(input_hit(INPUT_USE)) 
-                        {
-                            snd_play(snd_terminal, 100, 0);
-                            ptr.ENVIRONMENTALS_TEMP = 1;
-                        }
-                    }
-                    else
-                    {
-                        ptr.skin = 1;
-                    }
-                }
-                else if(ptr.ENVIRONMENTALS_TEMP == 1)
-                {
-                    ptr.skin = 3;
-                    ptr.ENVIRONMENTALS_TIMER += 1 * time_step;
-
-                    if(ptr.ENVIRONMENTALS_TIMER >= 30)
-                    {
-						fog_color = 2;
-						camera.fog_end = 20000.0;
-                        ptr.ENVIRONMENTALS_TEMP = 2;
-                        story_enginesEnabled = 1;
-                    }
-                }
-                else
-                {
-                    ptr.skin = 4;
-                }
+            	environmentals_terminal(ptr, environmentals_engine_terminal_starting, &story_enginesEnabled);
                 break;
 
             case ENVIRONMENTAL_ICE:
