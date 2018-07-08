@@ -37,7 +37,8 @@ void environ_ice_cloud();
 void environ_engine_beam();
 void environ_engterm();
 void environ_server();
-
+void environ_power_beam();
+void environ_powerterm();
 
 
 void environmentals_close();
