@@ -67,6 +67,8 @@ void framework_update_settings()
     // Ladebildschirm passend skalieren
     framework_load_screen.scale_x = screen_size.x / framework_load_screen.size_x;
     framework_load_screen.scale_y = screen_size.y / framework_load_screen.size_y;
+
+    UpdateRenderTargets();
 }
 
 //! Initialisiert das Spiel und so

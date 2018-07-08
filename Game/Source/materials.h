@@ -132,7 +132,15 @@ void UpdateRenderTargets()
 	bmapPPOriginal = bmap_createblack(screen_size.x, screen_size.y, 8888);
 	
 	camera.target1 = bmapPPOriginal;
-	matPPCombine.skin1 = bmapPPOriginal;
+    matPPCombine.skin1 = bmapPPOriginal;
+
+    VIEW * it = camera;
+    while(it != NULL)
+    {
+        it->size_x = screen_size.x;
+        it->size_y = screen_size.y;
+        it = it->stage;
+    }
 }
 
 void SetupPostprocessing()
