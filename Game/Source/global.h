@@ -60,7 +60,7 @@ typedef int bool;
 #define SUBSYSTEM_LOOP(ptr,system) for(ptr = ent_next(NULL); ptr != NULL; ptr = ent_next(ptr)) if(ptr->SK_SUBSYSTEM == (system))
 
 
-#define HEALTH_SKULL		200
+#define HEALTH_SKULL		125
 #define HEALTH_LERCHE	50
 #define HEALTH_SPUTNIK	80
 #define HEALTH_EYE		150
