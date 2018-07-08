@@ -370,9 +370,6 @@ void journals_play(int id)
 
 void journals_update()
 {
-    if(input_hit(INPUT_BLOCK))
-        journals_play(42);
-
 	ENTITY *ptr;
     SUBSYSTEM_LOOP(ptr, SUBSYSTEM_JOURNAL)
     {

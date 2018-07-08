@@ -533,6 +533,14 @@ typedef struct D3DDISPLAYMODE {
   D3DFORMAT Format;
 } D3DDISPLAYMODE;
 
+#undef D3DDEVICE_CREATION_PARAMETERS
+typedef struct D3DDEVICE_CREATION_PARAMETERS {
+  UINT       AdapterOrdinal;
+  D3DDEVTYPE DeviceType;
+  HWND       hFocusWindow;
+  DWORD      BehaviorFlags;
+} D3DDEVICE_CREATION_PARAMETERS;
+
 void options_init()
 {
     int i, j, k;
@@ -545,39 +553,40 @@ void options_init()
         LPDIRECT3D9 d3d9;
         pd3dDev->GetDirect3D(&d3d9);
 
+        D3DDEVICE_CREATION_PARAMETERS params;
+        pd3dDev->GetCreationParameters(&params);
+
+
+
         if(d3d9)
         {
-            long count = d3d9->GetAdapterCount();
-            for(i = 0; i < count; i++)
+            long modecount = d3d9->GetAdapterModeCount(params.AdapterOrdinal, D3DFMT_X8R8G8B8);
+            for(j = 0; j < modecount; j++)
             {
-                long modecount = d3d9->GetAdapterModeCount(i, D3DFMT_X8R8G8B8);
-                for(j = 0; j < modecount; j++)
+                D3DDISPLAYMODE mode;
+                d3d9->EnumAdapterModes(params.AdapterOrdinal, D3DFMT_X8R8G8B8, j, &mode);
+                if(mode.RefreshRate == 60)
                 {
-                    D3DDISPLAYMODE mode;
-                    d3d9->EnumAdapterModes(i, D3DFMT_X8R8G8B8, j, &mode);
-                    if(mode.RefreshRate == 60)
+                    bool use = true;
+                    for(k = 0; k < total; k++)
                     {
-                        bool use = true;
-                        for(k = 0; k < total; k++)
-                        {
-                            if(options_resolutions_value[2*k+0] != mode.Width)
-                                continue;
-                            if(options_resolutions_value[2*k+1] != mode.Height)
-                                continue;
-                            use = false;
-                            break;
-                        }
+                        if(options_resolutions_value[2*k+0] != mode.Width)
+                            continue;
+                        if(options_resolutions_value[2*k+1] != mode.Height)
+                            continue;
+                        use = false;
+                        break;
+                    }
 
-                        if(use)
-                        {
-                            if(total == 0)
-                                str_printf((options_resolutions->pstring)[0], "%dx%d", mode.Width, mode.Height);
-                            else
-                                txt_addstring(options_resolutions, str_printf(NULL, "%dx%d", mode.Width, mode.Height));
-                            options_resolutions_value[2*total + 0] = mode.Width;
-                            options_resolutions_value[2*total + 1] = mode.Height;
-                            total += 1;
-                        }
+                    if(use)
+                    {
+                        if(total == 0)
+                            str_printf((options_resolutions->pstring)[0], "%dx%d", mode.Width, mode.Height);
+                        else
+                            txt_addstring(options_resolutions, str_printf(NULL, "%dx%d", mode.Width, mode.Height));
+                        options_resolutions_value[2*total + 0] = mode.Width;
+                        options_resolutions_value[2*total + 1] = mode.Height;
+                        total += 1;
                     }
                 }
             }
