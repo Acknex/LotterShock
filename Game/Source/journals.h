@@ -21,6 +21,7 @@ typedef struct journal_t
 	STRING* name;
 	STRING* media;
     int followup; // when set to non-zero, the followup journal is played next right after the current journal entry
+    void * event; // event callback is triggered when the journal is  completed
 } journal_t;
 
 STRING* crew_name0 = "Lt. Woll";

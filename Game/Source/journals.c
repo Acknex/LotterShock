@@ -50,6 +50,11 @@ var journals_mindelay = 0;
 #define MAX_JOURNALS 50
 journal_t journals[MAX_JOURNALS];
 
+void journals_game_end()
+{
+    error("journals_game_end: not implemented yet!");
+}
+
 void journals_init()
 {
 	// Lt. Woll
@@ -134,6 +139,11 @@ void journals_init()
 	journals[17].media = "";
 	journals[17].name = crew_name9;
 
+    ///////////////////////////////////////////////////////////////////////
+    // PART 1
+    ///////////////////////////////////////////////////////////////////////
+
+    // Game Intro Sequence
     journals[18].text = "Preliminary scans reveal that the ship seems to be running on emergency power.";
     journals[18].name = acktana_name;
     journals[18].followup = 19;
@@ -148,6 +158,122 @@ void journals_init()
 
     journals[21].text = "Alright, Let's code, motherfucker.";
     journals[21].name = lotter_name;
+
+    // Finding battery sequence
+    journals[22].text = "Analysis of this battery reveals that it should have enough power to jumpstart the ion-containment field in order to restart the engine poston-field generator.";
+    journals[22].name = acktana_name;
+    journals[22].followup = 23;
+
+    journals[23].text = " In other words: Stick it into the engine and press the big red button?";
+    journals[23].name = lotter_name;
+    journals[23].followup = 24;
+
+    journals[24].text = "Yes, that would be another way to say it. You imbecile.";
+    journals[24].name = acktana_name;
+
+    ///////////////////////////////////////////////////////////////////////
+    // PART 2
+    ///////////////////////////////////////////////////////////////////////
+
+    // Insert battery into engine
+
+    journals[25].text = "I've got the power! Acktana, how's it lookin'?";
+    journals[25].name = lotter_name;
+    journals[25].followup = 26;
+
+    journals[26].text = "That seems to have done it. Main power is coming back online... Connecting to ship information system, stand by.... Power is go. Engines are go. Lavatories are go. Life support is go. Gravity generators are online. Server systems are offline.";
+    journals[26].name = acktana_name;
+    journals[26].followup = 27;
+
+    journals[27].text = "That's strange, why are the servers offline?";
+    journals[27].name = lotter_name;
+    journals[27].followup = 28;
+
+    journals[28].text = "System information shows that the servers are powered independently. There seems to be a higher power draw than usual. It would be impossible to know why, until I get a good look at the servers.";
+    journals[28].name = acktana_name;
+    journals[28].followup = 29;
+
+    journals[29].text = "Let's get you there then!";
+    journals[29].name = lotter_name;
+    journals[29].followup = 30;
+
+    journals[30].text = "Powering up the generators seems to have opened up some additional doors. That should help. . . . . You're welcome.";
+    journals[30].name = acktana_name;
+
+    // Finding the Flamethrower
+
+    journals[31].text = "This should help with the frozen door.";
+    journals[31].name = lotter_name;
+
+    // Finding Jetpackl/Jumpboots
+
+    journals[32].text = "This is a prototype Silverman-Stolipin Gravity Assist module!";
+    journals[32].name = acktana_name;
+    journals[32].followup = 33;
+
+    journals[33].text = "What's it do?";
+    journals[33].name = lotter_name;
+    journals[33].followup = 34;
+
+    journals[34].text = "Perform a mid-air jump";
+    journals[34].name = acktana_name;
+    journals[34].followup = 35;
+
+    journals[35].text = "So... double jumping?";
+    journals[35].name = lotter_name;
+    journals[35].followup = 36;
+
+    journals[36].text = "Yes, \"double jumping\".";
+    journals[36].name = acktana_name;
+
+    ///////////////////////////////////////////////////////////////////////
+    // PART 3
+    ///////////////////////////////////////////////////////////////////////
+
+    // Server room enter first time
+
+    journals[37].text = "There's the terminal there at the end. Get me there and I'll take look.";
+    journals[37].name = acktana_name;
+
+    // Server use first time
+
+    journals[38].text = "Connecting... [modem sounds] It seems that the Patchnotes was working on digitization prior to the incident, and when it arrived they uploaded the crew into the computer to escape the Unity Union boarding party. Power requirements for the system increased exponentially with this many people. The system is running on a low power mode. Until we can get it back up, I can't get you any more information.";
+    journals[38].name = acktana_name;
+    journals[38].followup = 39;
+
+    journals[39].text = "Start the generator and talk to the computer people, got it.";
+    journals[39].name = lotter_name;
+
+    ///////////////////////////////////////////////////////////////////////
+    // PART 4
+    ///////////////////////////////////////////////////////////////////////
+
+    // Power core boot
+
+    journals[40].text = "Power core output stable at 1.21 Gigawatts. Servers are resuming operation now. Take me back.";
+    journals[40].name = acktana_name;
+    journals[40].followup = 41;
+
+    journals[41].text = " You got it babe.";
+    journals[41].name = lotter_name;
+
+    // Server terminal
+
+    journals[42].text = "[Modem sounds] .... This is terrible. Apparently immediately after uploading themselves, they got attacked by a computer virus by the Unity union. They deployed countermeasures.... something called the... Guardian System? It defeated the Unity Union Virus, but it also trapped them in nullpointer space.";
+    journals[42].name = acktana_name;
+    journals[42].followup = 43;
+
+    journals[43].text = "Anything we can do?";
+    journals[43].name = lotter_name;
+    journals[43].followup = 44;
+
+    journals[44].text = "Jack in, turn off the Guardian and jack out?";
+    journals[44].name = acktana_name;
+    journals[44].followup = 45;
+
+    journals[45].text = " Alright! Let's jack in, kill that jack-off and jack out!";
+    journals[45].name = lotter_name;
+    journals[45].event = journals_game_end;
 
     journals_mediahandle = 0;
     journals_current = -1;
@@ -245,7 +371,7 @@ void journals_play(int id)
 void journals_update()
 {
     if(input_hit(INPUT_BLOCK))
-        journals_play(18);
+        journals_play(42);
 
 	ENTITY *ptr;
     SUBSYSTEM_LOOP(ptr, SUBSYSTEM_JOURNAL)
@@ -273,6 +399,11 @@ void journals_update()
         }
         else
         {
+            function callback();
+            callback = journals[journals_current].event;
+            if(callback)
+                callback();
+
             if(journals[journals_current].followup > 0)
             {
                 journals_play(journals[journals_current].followup);
