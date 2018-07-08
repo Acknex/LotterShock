@@ -116,8 +116,8 @@ void ESELSLERCHE_Update()
 				ptr->EL_ANIMSTATE = 0;
 				switch(integer(random(2)))
 				{
-					case 0: snd_play(eselslerche_snd_hit1, 100, 0); break;
-					case 1: snd_play(eselslerche_snd_hit2, 100, 0); break;
+					case 0: ent_playsound2(ptr, eselslerche_snd_hit1, 10000, 10000); break;
+					case 1: ent_playsound2(ptr, eselslerche_snd_hit2, 10000, 10000); break;
 				}
 				SPLATTER_splat(&ptr->x, vector(73.0/255.0,159.0/255.0,0.0));
 				SPLATTER_explode(20, ptr, 200, EL_bmapSplatter, 5);
@@ -223,8 +223,8 @@ void ESELSLERCHE__wait(ENTITY* ptr)
 		ptr->EL_STATE = EL_STATE_RUN;
 		switch(integer(random(2)))
 		{
-			case 0: snd_play(eselslerche_snd_spot1, 100, 0); break;
-			case 1: snd_play(eselslerche_snd_spot2, 100, 0); break;
+			case 0: ent_playsound2(ptr, eselslerche_snd_spot1, 10000, 10000); break;
+			case 1: ent_playsound2(ptr, eselslerche_snd_spot2, 10000, 10000); break;
 		}
 	}
 	else if(!SCAN_IsPlayerNear(ptr, ptr->EL_ACTIVEDIST + 100))
@@ -257,14 +257,14 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	if (SCAN_IsPlayerInSight(ptr, ptr->EL_EXPLODEDIST, 360))
 	{
 		ptr->EL_STATE = EL_STATE_EXPLODE;
-		set(ptr, PASSABLE|INVISIBLE);
+		set(ptr, PASSABLE);
 		me = ptr;
 		var dist = c_trace(&ptr->x, &player->x, IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
 		if (HIT_TARGET && you == player)
 		{
 			playerAddHealth(-30-random(15));
 		}
-		snd_play(eselslerche_snd_explo, 100, 0);
+		ent_playsound2(ptr, eselslerche_snd_explo, 10000, 10000);
 		set(ptr, PASSABLE);
 		ptr->event = NULL;
 	}
@@ -295,7 +295,7 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 	}
 	else
 	{
-		vec_add(&ptr->scale_x, vec_scale(vector(time_step, time_step, time_step),2));
+		vec_add(&ptr->scale_x, vec_scale(vector(time_step, time_step, time_step),ptr->EL_EXPLODESTATE));
 	}
 	
 	/* transitions */
@@ -310,6 +310,12 @@ void ESELSLERCHE__explode(ENTITY* ptr)
 		//PARTICLE_explode(50, &ptr->x);
 		SPLATTER_splat(&ptr->x, vector(0,0.8,0));
 		ptr->EL_STATE = EL_STATE_DEAD;
+		// ptr->SK_ENTITY_DEAD = 1;
+		set(ptr, INVISIBLE);
+	}
+
+	if(ptr->EL_EXPLODESTATE >= 5)
+	{
 		ptr->SK_ENTITY_DEAD = 1;
 	}
 }
@@ -355,8 +361,8 @@ void ESELSLERCHE__hit(ENTITY* ptr)
 		ptr->EL_STATE = EL_STATE_DIE;
 		switch(integer(random(2)))
 		{
-			case 0: snd_play(eselslerche_snd_death1, 100, 0); break;
-			case 1: snd_play(eselslerche_snd_death2, 100, 0); break;
+			case 0: ent_playsound2(ptr, eselslerche_snd_death1, 10000, 10000); break;
+			case 1: ent_playsound2(ptr, eselslerche_snd_death2, 10000, 10000); break;
 		}
 	}
 	else if (animState >= 90)
