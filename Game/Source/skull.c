@@ -254,7 +254,7 @@ void SKULL__run(ENTITY* ptr)
 		ptr->SKL_COUNTER = 0;
 		ptr->SKL_COUNTER2 = 0;
 		ptr->SKL_STATE = SKL_STATE_ATTACK;
-		playerAddHealth(-20-random(5));
+		playerAddHealth(-10-random(5));
 		snd_play(skull_snd_shoot, 100, 0);
 	}
 	else if (/*!SCAN_IsPlayerInSight(ptr, ptr->SKL_ATTACKDIST, 75) && */SCAN_IsPlayerBehind(ptr, 1200))
