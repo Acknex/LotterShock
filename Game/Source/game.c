@@ -132,7 +132,7 @@ void game_update()
 
         map_update();
 
-        if(input_hit(INPUT_NAVBACK))
+        if(input_hit(INPUT_NAVBACK) || (window_focus == 0))
         {
             game_ispaused = true;
             journals_pause();

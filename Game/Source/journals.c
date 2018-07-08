@@ -45,7 +45,7 @@ TEXT *journal_txt_name =
 
 int journals_current = 0;
 var journals_mediahandle = 0;
-var journals_mindelay = 0;
+var journals_timeout = 0;
 
 #define MAX_JOURNALS 50
 journal_t journals[MAX_JOURNALS];
@@ -345,7 +345,7 @@ void journals_play(int id)
     }
 
     journals_current = id;
-    journals_mindelay = JOURNAL_MINTIME_PER_CHAR * str_len(journals[journals_current].text);
+    journals_timeout = total_ticks + JOURNAL_MINTIME_PER_CHAR * str_len(journals[journals_current].text);
 
     str_cpy((journal_txt.pstring)[0], journals[journals_current].text);
     str_cpy((journal_txt_name.pstring)[0], journals[journals_current].name);
@@ -390,11 +390,19 @@ void journals_update()
         show_journal();
         journal_pan->alpha = clamp(journal_pan->alpha + 5 * time_step, 0, 100);
 
-        if(media_playing(journals_mediahandle) || (journals_mindelay >= 0))
-        {
-            journals_mindelay -= time_step;
-        }
-        else
+#ifdef DEBUG
+        DEBUG_VAR(journals_mediahandle, 0);
+        DEBUG_VAR(media_playing(journals_mediahandle), 16);
+        DEBUG_VAR(journals_timeout, 32);
+        DEBUG_VAR(journals[journals_current].followup, 48);
+        DEBUG_VAR(journals_current, 64);
+        DEBUG_VAR(total_ticks, 72);
+#endif
+
+        media_pause(journals_mediahandle);
+        media_start(journals_mediahandle);
+
+        if(!media_playing(journals_mediahandle) && (total_ticks >= journals_timeout))
         {
             function callback();
             callback = journals[journals_current].event;
@@ -410,10 +418,6 @@ void journals_update()
                 journals_current = -1;
             }
         }
-#ifdef DEBUG
-        DEBUG_VAR(journals_mindelay, 256);
-#endif
-
     }
     else
     {
