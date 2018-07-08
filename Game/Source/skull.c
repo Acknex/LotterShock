@@ -311,6 +311,7 @@ void SKULL__attack(ENTITY* ptr)
 
 void SKULL__die(ENTITY* ptr)
 {
+	set(ptr, PASSABLE);
 	ptr->SKL_COUNTER = minv(ptr->SKL_COUNTER + 4*time_step, 100);
 	var animState = (100 - ptr->SKL_COUNTER ) / 100;	
 	vec_set(&ptr->scale_x, vector(animState, animState, animState));
@@ -323,7 +324,6 @@ void SKULL__die(ENTITY* ptr)
 	{
 		ptr->SKL_COUNTER = 0;
 		ptr->SKL_STATE = SKL_STATE_DEAD;
-		set(ptr, PASSABLE);
 	}
 }
 
