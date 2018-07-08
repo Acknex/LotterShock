@@ -15,6 +15,7 @@
 #include "journals.h"
 #include "pausemenu.h"
 #include "framework.h"
+#include "environmentals.h"
 
 bool game_done;
 var story_enginesEnabled = 0;
@@ -152,6 +153,8 @@ void game_close()
     map_close();
     journals_quit();
     pausemenu_close();
+    environmentals_close();
+
     mouse_pointer = 1;
     input_cheats_enabled = 0;
 }

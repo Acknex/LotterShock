@@ -22,6 +22,8 @@
 #define ENVIRONMENTAL_DAMAGE_TOXIC      5
 #define ENVIRONMENTAL_DAMAGE_BEAM       50
 
+#define RIBANNA_MINDIST 1000
+#define RIBANNA_MAXDIST 3200
 
 void environ_fake_cloud();
 void environ_toxic_cloud();

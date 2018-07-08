@@ -101,7 +101,8 @@ action EnvironRadio()
     if(environ_ribanna_music != 0)
         error("Two EnvironRadios are not allowed!");
 
-    environ_ribanna_music = media_loop("media/ribanna.mid", NULL, 0);
+    // midi can't be tuned!
+    environ_ribanna_music = media_loop("media/ribanna.mp3", NULL, 0);
 }
 
 action environ_server()
@@ -143,9 +144,23 @@ void environmentals_update()
                 break;
 
             case ENVIRONMENTAL_RADIO:
-                dist = (clamp(vec_dist(ptr->x, camera->x), 500, 2500) - 500) / 2000.0;
+                dist = vec_dist(ptr->x, camera->x);
 
-                media_tune(environ_ribanna_music, 100 * dist, 0, 0);
+                DEBUG_VAR(dist, 16);
+
+                dist = (clamp(dist, RIBANNA_MINDIST, RIBANNA_MAXDIST) - RIBANNA_MINDIST) / ((RIBANNA_MAXDIST - RIBANNA_MINDIST) / 100);
+
+                DEBUG_VAR(dist, 32);
+
+                if(dist >= 98)
+                {
+                    media_pause(environ_ribanna_music);
+                }
+                else
+                {
+                    media_start(environ_ribanna_music);
+                    media_tune(environ_ribanna_music, 100 - dist, 0, 0);
+                }
 
                 break;
 
