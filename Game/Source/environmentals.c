@@ -76,6 +76,14 @@ action environ_engterm()
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
 
+action environ_powerterm()
+{	
+    my->ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_INACTIVE;
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_POWERCORE_TERMINAL;
+    my->INTERACTIBLE = 1;
+    framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+}
+
 action environ_ice()
 {
     my->ENVIRONMENTALS_TEMP = 0;
@@ -127,6 +135,12 @@ void environmentals_close()
 void environmentals_engine_terminal_starting(ENTITY *ptr)
 {
 	fog_color = 2;
+	camera.fog_end = 20000.0;
+}
+void environmentals_powercore_terminal_starting(ENTITY *ptr)
+{
+	fog_color = 4;
+	vec_set(d3d_fogcolor4.blue, vector(128,255,128));
 	camera.fog_end = 20000.0;
 }
 void environmentals_terminal(ENTITY* ptr, void *starting_effect, var *flag)
@@ -293,6 +307,9 @@ void environmentals_update()
             
             case ENVIRONMENTAL_ENGINE_TERMINAL:
             	environmentals_terminal(ptr, environmentals_engine_terminal_starting, &story_enginesEnabled);
+                break;
+            case ENVIRONMENTAL_POWERCORE_TERMINAL:
+            	environmentals_terminal(ptr, environmentals_powercore_terminal_starting, &story_powercoreEnabled);
                 break;
 
             case ENVIRONMENTAL_ICE:
