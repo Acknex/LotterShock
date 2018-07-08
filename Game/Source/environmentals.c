@@ -67,6 +67,22 @@ action environ_engine_beam()
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
 
+action environ_power_beam()
+{	
+    set(me, PASSABLE);  
+    set(me, LIGHT);
+    set(me, TRANSLUCENT);
+    my->flags2 |= UNTOUCHABLE;
+
+    vec_set(my->blue, vector(0,255,0)); 
+
+    my.alpha = 0;    
+    my->ENVIRONMENTALS_TEMP = 0;
+    my->ENVIRONMENTALS_TIMER = 60 + random(120);
+
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_POWERCORE_BEAM;
+    framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+}
 
 action environ_engterm()
 {	
@@ -145,7 +161,6 @@ void environmentals_powercore_terminal_starting(ENTITY *ptr)
 }
 void environmentals_terminal(ENTITY* ptr, void *starting_effect, var *flag)
 {
-    
     switch(ptr.ENVIRONMENTALS_TEMP)
 	{
 		case ENVIRONMENTAL_TERMINAL_INACTIVE:
@@ -188,9 +203,9 @@ bool environmentals_beam_active(var beamType)
 	switch(beamType)
 	{
 		case ENVIRONMENTAL_ENGINE_BEAM:
-			if(story_enginesEnabled == 1)
-				return true;
-			break;
+			return (story_enginesEnabled == 1);
+		case ENVIRONMENTAL_POWERCORE_BEAM:
+			return (story_powercoreEnabled == 1);
 	}
 	return false;
 }
@@ -291,6 +306,7 @@ void environmentals_update()
                 }
                 break;
             case ENVIRONMENTAL_ENGINE_BEAM:
+            case ENVIRONMENTAL_POWERCORE_BEAM:
                 if(environmentals_beam_active(ptr.ENVIRONMENTALS_TYPE))
 			    {
 			        if(ptr.ENVIRONMENTALS_TEMP > ptr.ENVIRONMENTALS_TIMER)
