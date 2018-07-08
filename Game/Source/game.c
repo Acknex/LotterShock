@@ -20,6 +20,7 @@
 
 bool game_done;
 var story_enginesEnabled = 0;
+var story_powercoreEnabled = 0;
 
 var game_ispaused;
 
@@ -58,6 +59,7 @@ void game_open()
 
     // reset story stuff
     story_enginesEnabled = 0;
+    story_powercoreEnabled = 0;
     playerHasHazmat = 0;
     playerHasDoubleJump = 0;
 
