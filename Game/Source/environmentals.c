@@ -183,6 +183,18 @@ void environmentals_terminal(ENTITY* ptr, void *starting_effect, var *flag)
 	}
 }
 
+bool environmentals_beam_active(var beamType)
+{
+	switch(beamType)
+	{
+		case ENVIRONMENTAL_ENGINE_BEAM:
+			if(story_enginesEnabled == 1)
+				return true;
+			break;
+	}
+	return false;
+}
+
 void environmentals_update()
 {
     ENTITY *ptr;
@@ -279,30 +291,30 @@ void environmentals_update()
                 }
                 break;
             case ENVIRONMENTAL_ENGINE_BEAM:
-                if(story_enginesEnabled == 1)
-                {
-                    if(ptr.ENVIRONMENTALS_TEMP > ptr.ENVIRONMENTALS_TIMER)
-                    {
-                        if(ptr.alpha < 100) 
-                        {
-                            ptr.alpha += 20 * time_step;
-                            ptr.lightrange += 400 * time_step;
-                        }
-                        else if(random(100) > 95)
-                        {
-                            ptr.alpha = 75;
-                            ptr.lightrange = ptr.lightrange * 0.75;
-                        }
-
-                        dmgTest = c_intersect(vector(ptr.x + (ptr.min_x * 0.77), ptr.y + (ptr.min_y * 0.77), ptr.z + (ptr.min_z * 0.77)), vector(ptr.x + (ptr.max_x * 0.77), ptr.y + (ptr.max_y * 0.77), ptr.z + (ptr.max_z * 0.77)), NULL, vector(player.x + player.min_x, player.y + player.min_y, player.z + player.min_z), vector(player.x + player.max_x, player.y + player.max_y, player.z + player.max_z), NULL);
-                        if(dmgTest == -1)
-                            playerAddHealth(-ENVIRONMENTAL_DAMAGE_BEAM);
-                    }
-                    else
-                    {
-                        ptr.ENVIRONMENTALS_TEMP += 2 * time_step;
-                    }
-                }
+                if(environmentals_beam_active(ptr.ENVIRONMENTALS_TYPE))
+			    {
+			        if(ptr.ENVIRONMENTALS_TEMP > ptr.ENVIRONMENTALS_TIMER)
+			        {
+			            if(ptr.alpha < 100) 
+			            {
+			                ptr.alpha += 20 * time_step;
+			                ptr.lightrange += 400 * time_step;
+			            }
+			            else if(random(100) > 95)
+			            {
+			                ptr.alpha = 75;
+			                ptr.lightrange = ptr.lightrange * 0.75;
+			            }
+			
+			            dmgTest = c_intersect(vector(ptr.x + (ptr.min_x * 0.77), ptr.y + (ptr.min_y * 0.77), ptr.z + (ptr.min_z * 0.77)), vector(ptr.x + (ptr.max_x * 0.77), ptr.y + (ptr.max_y * 0.77), ptr.z + (ptr.max_z * 0.77)), NULL, vector(player.x + player.min_x, player.y + player.min_y, player.z + player.min_z), vector(player.x + player.max_x, player.y + player.max_y, player.z + player.max_z), NULL);
+			            if(dmgTest == -1)
+			                playerAddHealth(-ENVIRONMENTAL_DAMAGE_BEAM);
+			        }
+			        else
+			        {
+			            ptr.ENVIRONMENTALS_TEMP += 2 * time_step;
+			        }
+			    }
                 break;
             
             case ENVIRONMENTAL_ENGINE_TERMINAL:
