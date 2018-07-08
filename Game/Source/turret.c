@@ -333,8 +333,7 @@ void TURRET__dead(ENTITY* ptr)
 	else 
 	{
 		ptr->skill41 = floatv(1.0);
-	}
-	wait(1);		
+    }
 }
 
 void TURRET__sleep(ENTITY* ptr)

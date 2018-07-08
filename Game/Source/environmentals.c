@@ -67,11 +67,35 @@ action environ_engine_beam()
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
 
+action environ_power_beam()
+{	
+    set(me, PASSABLE);  
+    set(me, LIGHT);
+    set(me, TRANSLUCENT);
+    my->flags2 |= UNTOUCHABLE;
+
+    vec_set(my->blue, vector(0,255,0)); 
+
+    my.alpha = 0;    
+    my->ENVIRONMENTALS_TEMP = 0;
+    my->ENVIRONMENTALS_TIMER = 60 + random(120);
+
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_POWERCORE_BEAM;
+    framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+}
 
 action environ_engterm()
 {	
-    my->ENVIRONMENTALS_TEMP = 0;
+    my->ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_INACTIVE;
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_ENGINE_TERMINAL;
+    my->INTERACTIBLE = 1;
+    framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+}
+
+action environ_powerterm()
+{	
+    my->ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_INACTIVE;
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_POWERCORE_TERMINAL;
     my->INTERACTIBLE = 1;
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
@@ -122,6 +146,68 @@ void environmentals_close()
     if(environ_ribanna_music != 0)
         media_stop(environ_ribanna_music);
     environ_ribanna_music = 0;
+}
+
+void environmentals_engine_terminal_starting(ENTITY *ptr)
+{
+	fog_color = 2;
+	camera.fog_end = 20000.0;
+}
+void environmentals_powercore_terminal_starting(ENTITY *ptr)
+{
+	fog_color = 4;
+	vec_set(d3d_fogcolor4.blue, vector(128,255,128));
+	camera.fog_end = 20000.0;
+}
+void environmentals_terminal(ENTITY* ptr, void *starting_effect, var *flag)
+{
+    switch(ptr.ENVIRONMENTALS_TEMP)
+	{
+		case ENVIRONMENTAL_TERMINAL_INACTIVE:
+    		if(mouse_ent == ptr) 
+            {
+                ptr.skin = 2;
+                if(input_hit(INPUT_USE)) 
+                {
+                    snd_play(snd_terminal, 100, 0);
+                    ptr.ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_STARTING;
+                }
+            }
+            else
+            {
+                ptr.skin = 1;
+            }
+			break;
+		case ENVIRONMENTAL_TERMINAL_STARTING:
+    		
+    		ptr.skin = 3;
+		    ptr.ENVIRONMENTALS_TIMER += 1 * time_step;
+		
+		    if(ptr.ENVIRONMENTALS_TIMER >= 30)
+		    {
+	    		function starting(ENTITY*);
+	    		starting = starting_effect;
+	    		starting(ptr);
+    			ptr.ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_ACTIVE;
+    			(*flag) = 1;
+    		}
+			break;
+		case ENVIRONMENTAL_TERMINAL_ACTIVE:
+        	ptr.skin = 4;
+			break;
+	}
+}
+
+bool environmentals_beam_active(var beamType)
+{
+	switch(beamType)
+	{
+		case ENVIRONMENTAL_ENGINE_BEAM:
+			return (story_enginesEnabled == 1);
+		case ENVIRONMENTAL_POWERCORE_BEAM:
+			return (story_powercoreEnabled == 1);
+	}
+	return false;
 }
 
 void environmentals_update()
@@ -220,66 +306,38 @@ void environmentals_update()
                 }
                 break;
             case ENVIRONMENTAL_ENGINE_BEAM:
-                if(story_enginesEnabled == 1)
-                {
-                    if(ptr.ENVIRONMENTALS_TEMP > ptr.ENVIRONMENTALS_TIMER)
-                    {
-                        if(ptr.alpha < 100) 
-                        {
-                            ptr.alpha += 20 * time_step;
-                            ptr.lightrange += 400 * time_step;
-                        }
-                        else if(random(100) > 95)
-                        {
-                            ptr.alpha = 75;
-                            ptr.lightrange = ptr.lightrange * 0.75;
-                        }
-
-                        dmgTest = c_intersect(vector(ptr.x + (ptr.min_x * 0.77), ptr.y + (ptr.min_y * 0.77), ptr.z + (ptr.min_z * 0.77)), vector(ptr.x + (ptr.max_x * 0.77), ptr.y + (ptr.max_y * 0.77), ptr.z + (ptr.max_z * 0.77)), NULL, vector(player.x + player.min_x, player.y + player.min_y, player.z + player.min_z), vector(player.x + player.max_x, player.y + player.max_y, player.z + player.max_z), NULL);
-                        if(dmgTest == -1)
-                            playerAddHealth(-ENVIRONMENTAL_DAMAGE_BEAM);
-                    }
-                    else
-                    {
-                        ptr.ENVIRONMENTALS_TEMP += 2 * time_step;
-                    }
-                }
+            case ENVIRONMENTAL_POWERCORE_BEAM:
+                if(environmentals_beam_active(ptr.ENVIRONMENTALS_TYPE))
+			    {
+			        if(ptr.ENVIRONMENTALS_TEMP > ptr.ENVIRONMENTALS_TIMER)
+			        {
+			            if(ptr.alpha < 100) 
+			            {
+			                ptr.alpha += 20 * time_step;
+			                ptr.lightrange += 400 * time_step;
+			            }
+			            else if(random(100) > 95)
+			            {
+			                ptr.alpha = 75;
+			                ptr.lightrange = ptr.lightrange * 0.75;
+			            }
+			
+			            dmgTest = c_intersect(vector(ptr.x + (ptr.min_x * 0.77), ptr.y + (ptr.min_y * 0.77), ptr.z + (ptr.min_z * 0.77)), vector(ptr.x + (ptr.max_x * 0.77), ptr.y + (ptr.max_y * 0.77), ptr.z + (ptr.max_z * 0.77)), NULL, vector(player.x + player.min_x, player.y + player.min_y, player.z + player.min_z), vector(player.x + player.max_x, player.y + player.max_y, player.z + player.max_z), NULL);
+			            if(dmgTest == -1)
+			                playerAddHealth(-ENVIRONMENTAL_DAMAGE_BEAM);
+			        }
+			        else
+			        {
+			            ptr.ENVIRONMENTALS_TEMP += 2 * time_step;
+			        }
+			    }
                 break;
             
             case ENVIRONMENTAL_ENGINE_TERMINAL:
-                if(ptr.ENVIRONMENTALS_TEMP == 0)
-                {
-                    if(mouse_ent == ptr) 
-                    {
-                        ptr.skin = 2;
-                        if(input_hit(INPUT_USE)) 
-                        {
-                            snd_play(snd_terminal, 100, 0);
-                            ptr.ENVIRONMENTALS_TEMP = 1;
-                        }
-                    }
-                    else
-                    {
-                        ptr.skin = 1;
-                    }
-                }
-                else if(ptr.ENVIRONMENTALS_TEMP == 1)
-                {
-                    ptr.skin = 3;
-                    ptr.ENVIRONMENTALS_TIMER += 1 * time_step;
-
-                    if(ptr.ENVIRONMENTALS_TIMER >= 30)
-                    {
-						fog_color = 2;
-						camera.fog_end = 20000.0;
-                        ptr.ENVIRONMENTALS_TEMP = 2;
-                        story_enginesEnabled = 1;
-                    }
-                }
-                else
-                {
-                    ptr.skin = 4;
-                }
+            	environmentals_terminal(ptr, environmentals_engine_terminal_starting, &story_enginesEnabled);
+                break;
+            case ENVIRONMENTAL_POWERCORE_TERMINAL:
+            	environmentals_terminal(ptr, environmentals_powercore_terminal_starting, &story_powercoreEnabled);
                 break;
 
             case ENVIRONMENTAL_ICE:

@@ -241,16 +241,26 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	ptr->EL_RAMPAGE = maxv(0, ptr->EL_RAMPAGE - time_step);
 	ptr->EL_RUNSPEEDCUR = minv(ptr->EL_RUNSPEEDCUR + 4*time_step, ptr->EL_RUNSPEED);
 	ANG_turnToPlayer(ptr, ptr->EL_TURNSPEED, 5);
-	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES /*| IGNORE_PUSH*/ | GLIDE;
-	ptr.min_x -= 2;
-	ptr.min_y -= 2;
-	ptr.max_x += 2;
-	ptr.max_y += 2;
-	c_move(ptr, vector(ptr->EL_RUNSPEEDCUR, 0, 0), nullvector, mode);
-	ptr.min_x += 2;
-	ptr.min_y += 2;
-	ptr.max_x -= 2;
-	ptr.max_y -= 2;
+
+	//this is a test to avoid glitching through walls
+	VECTOR* to = vector(ptr->EL_RUNSPEEDCUR + 2, 0, 0);
+	vec_rotate(to, vector(ptr->pan,0,0));
+	vec_add (to, &ptr->x);
+	var tracemode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_CONTENT;
+	c_ignore (GROUP_ENEMY, GROUP_PLAYER, 0);
+	if (c_trace(&ptr->x, to, tracemode) <= 0)
+	{
+		var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES /*| IGNORE_PUSH*/ | GLIDE;
+		ptr.min_x -= 2;
+		ptr.min_y -= 2;
+		ptr.max_x += 2;
+		ptr.max_y += 2;
+		c_move(ptr, vector(ptr->EL_RUNSPEEDCUR, 0, 0), nullvector, mode);
+		ptr.min_x += 2;
+		ptr.min_y += 2;
+		ptr.max_x -= 2;
+		ptr.max_y -= 2;
+	}
 	ent_animate(ptr, EL_WALKANIM, ptr->EL_ANIMSTATE, ANM_CYCLE);
 
 	/* transitions */
