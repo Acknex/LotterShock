@@ -102,6 +102,13 @@ void framework_setup(ENTITY * ent, int subsystem)
     ent->SK_SUBSYSTEM = subsystem;
 }
 
+void framework_freeze(ENTITY * ent)
+{
+    if(ent == NULL) error("framework: framework_freeze mit NULL aufgerufen!");
+    ent->SK_SUBSYSTEM = 0;
+    ent->emask &= ~DYNAMIC;
+}
+
 void framework_transfer(int state)
 {
     framework.nextState = state;

@@ -10,6 +10,9 @@ void framework_init();
 //! Initialisiert eine Entity für das gegebene Subsystem
 void framework_setup(ENTITY * ent, int subsystem);
 
+//! "Friert" die Entity ein und entfernt ihre Subsystemzuweisung sowie das DYNAMIC-Flag
+void framework_freeze(ENTITY * ent);
+
 //! Aktualisiert alles.
 void framework_update();
 

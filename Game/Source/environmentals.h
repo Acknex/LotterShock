@@ -16,6 +16,7 @@
 #define ENVIRONMENTAL_ENGINE_TERMINAL   5
 #define ENVIRONMENTAL_ICE               6
 #define ENVIRONMENTAL_AIRLOCK           7
+#define ENVIRONMENTAL_SERVER            8
 
 #define ENVIRONMENTAL_DAMAGE_TOXIC      5
 #define ENVIRONMENTAL_DAMAGE_BEAM       50
@@ -26,6 +27,7 @@ void environ_toxic_cloud();
 void environ_ice_cloud();
 void environ_engine_beam();
 void environ_engterm();
+void environ_server();
 
 void environmentals_update();
 
