@@ -83,6 +83,18 @@ action environ_ice()
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
 
+action environ_server()
+{
+    my->skin = 1 + integer(random(2));
+
+    my->ENVIRONMENTALS_TIMER = 5 + random(10);
+    my->ENVIRONMENTALS_TEMP = random(my->ENVIRONMENTALS_TIMER);
+
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_SERVER;
+
+    framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+}
+
 void environmentals_update()
 {
     ENTITY *ptr;
@@ -92,6 +104,15 @@ void environmentals_update()
     {
         switch(ptr.ENVIRONMENTALS_TYPE) 
         {
+            case ENVIRONMENTAL_SERVER:
+                ptr->ENVIRONMENTALS_TEMP += time_step;
+                if(ptr->ENVIRONMENTALS_TEMP >= ptr->ENVIRONMENTALS_TIMER)
+                {
+                    ptr->ENVIRONMENTALS_TEMP = 0;
+                    ptr->skin = 1 + integer(random(2));
+                }
+                break;  
+
             case ENVIRONMENTAL_FAKECLOUD:
                 ptr.roll += ptr.ENVIRONMENTALS_FAKECLOUD_ROTATESPEED * time_step;
                 if(ptr.ENVIRONMENTALS_TEMP == 0)
