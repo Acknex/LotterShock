@@ -90,6 +90,11 @@ action EnvironAirlock()
     my->ENVIRONMENTALS_TEMP = 0;
 }
 
+action EnvironRadio()
+{
+    framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+}
+
 action environ_server()
 {
     my->skin = 1 + integer(random(2));
