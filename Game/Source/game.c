@@ -75,6 +75,7 @@ void game_update()
         case PAUSEMENU_RESPONSE_CONTINUE:
             game_ispaused = false;
             pausemenu_close();
+            journals_resume();
             framework_set_mousemode(MOUSEMODE_GAME);
             break;
         case PAUSEMENU_RESPONSE_QUIT:
@@ -129,6 +130,7 @@ void game_update()
         if(input_hit(INPUT_NAVBACK))
         {
             game_ispaused = true;
+            journals_pause();
             pausemenu_open();
             framework_set_mousemode(MOUSEMODE_UI);
         }

@@ -24,9 +24,9 @@ TEXT *journal_txt =
     font = journal_fnt;
     strings = 1;
     layer = 2;
-    red = 0;
-    green = 0;
-    blue = 0;
+    red = 200;
+    green = 200;
+    blue = 200;
     alpha = 0;
 }
 
@@ -160,6 +160,18 @@ action journal()
 	framework_setup(my, SUBSYSTEM_JOURNAL);
     my.INTERACTIBLE = 1;
     set(my, PASSABLE);
+}
+
+void journals_pause()
+{
+    if(journals_mediahandle != 0)
+        media_pause(journals_mediahandle);
+}
+
+void journals_resume()
+{
+    if(journals_mediahandle != 0)
+        media_start(journals_mediahandle);
 }
 
 void journals_update()

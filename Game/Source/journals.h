@@ -9,6 +9,9 @@ void journals_update();
 void journals_init();
 void journals_quit();
 
+void journals_pause();
+void journals_resume();
+
 typedef struct journal_t
 {
 	STRING* text;
