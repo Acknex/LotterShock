@@ -23,6 +23,7 @@
 //#define SK_LASTPOS skill33
 //#define SK_LASTPOS skill34
 #define SKL_ZOFFSET skill35
+#define SKL_BASEZ skill36
 
 #define SKL_RUNANIM "stand"
 
@@ -52,10 +53,19 @@ action Skull()
 	ENEMY_HIT_init(my);
 	vec_scale(&my->scale_x, 1.5);
 	set(my, SHADOW);
-	SKULL__toFloor(me);
+	//SKULL__toFloor(me);
 	c_setminmax(me);
 	my->material = matSkull;
 	my->group = GROUP_ENEMY;
+	
+	var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_BOX;
+	VECTOR* from = vector(my->x, my->y, my->z + 10);
+	VECTOR* to = vector(my->x, my->y, my->z - 1000);
+	c_ignore(GROUP_ENEMY, GROUP_PLAYER, 0);
+	if (c_trace(from, to, mode))
+		my->z = hit.z + 150 + my->SKL_ZOFFSET;
+		
+	my->SKL_BASEZ = my->z;
 }
 
 void SKULL_GlobalInit()
@@ -185,19 +195,56 @@ var SKULL__toFloor(ENTITY* ptr)
 	ptr.min_y += 8;
 	ptr.max_x -= 8;
 	ptr.max_y -= 8;
-	c_ignore(10,0);
+	var vmin, vmax;
+
+	c_ignore(GROUP_ENEMY, GROUP_PLAYER, 0);
 	c_trace(from, to, mode);
+	if (HIT_TARGET)
+	{
+		vmin = hit->z;
+	}
+	else
+	{
+		vmin = to->z;
+	}
+	//30: max z-sway
+	vmin = vmin - ptr->min_z + 30;
+	to = vector(ptr->x, ptr->y, ptr->z + 1000);	
+	c_ignore(GROUP_ENEMY, GROUP_PLAYER, 0);
+	c_trace(from, to, mode);
+	if (HIT_TARGET)
+	{
+		vmax = hit->z;
+	}
+	else
+	{
+		vmax = to->z;
+	}
+	//30: max z-sway
+	vmax = vmax - ptr->max_z - 30;
 	ptr.min_x -= 8;
 	ptr.min_y -= 8;
 	ptr.max_x += 8;
 	ptr.max_y += 8;
-	if (HIT_TARGET)
+
+	var zOffs = 140;
+	if (ptr->SKL_BASEZ > player->z + zOffs)
+	{
+		ptr->SKL_BASEZ = clamp(ptr->SKL_BASEZ - 15*time_step, player->z + zOffs, vmax);
+	}
+	else
+	{
+		ptr->SKL_BASEZ = clamp(ptr->SKL_BASEZ + 15*time_step, vmin, player->z + zOffs);
+	}
+	ptr->z = ptr->SKL_BASEZ + ptr->SKL_ZOFFSET;
+	
+	/*if (HIT_TARGET)
 	{
 		var newZ = hit.z + 150 + ptr->SKL_ZOFFSET;
 		ptr->z = ptr->z*0.5 + newZ*0.5;
 		if (absv(newZ - ptr->z) < 2)
 			ptr->z = newZ;
-	}
+	}*/
 }
 
 void SKULL__inactive(ENTITY* ptr)
@@ -291,27 +338,11 @@ void SKULL__attack(ENTITY* ptr)
 		{
 			ptr->SKL_STATE = SKL_STATE_RETREAT;	
 		}
-	}
-	
-	/*
-	ptr->roll = minv(ptr->roll + 60*time_step, 360);
-
-	// transitions
-	if (ptr->roll >= 360)
-	{
-		ptr->roll = 0;
-		me = ptr;
-		var dist = c_trace(&ptr->x, &player->x, IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
-
-		ptr->SKL_STATE = SKL_STATE_RETREAT;	
-	}
-	*/
-	
+	}	
 }
 
 void SKULL__die(ENTITY* ptr)
 {
-	set(ptr, PASSABLE);
 	ptr->SKL_COUNTER = minv(ptr->SKL_COUNTER + 4*time_step, 100);
 	var animState = (100 - ptr->SKL_COUNTER ) / 100;	
 	vec_set(&ptr->scale_x, vector(animState, animState, animState));
@@ -344,6 +375,7 @@ void SKULL__hit(ENTITY* ptr)
         achievement_kill_beast(BEAST_SKULL);
 		reset(ptr, TRANSLUCENT);
 		snd_play(skull_snd_death, 100, 0);
+		set(ptr, PASSABLE);
 		ptr->SKL_STATE = SKL_STATE_DIE;
 	}
 	else if (ptr->SKL_COUNTER >= 40)
