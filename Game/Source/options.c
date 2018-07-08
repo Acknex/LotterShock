@@ -18,6 +18,7 @@ BMAP * options_bmp_inputslot = "option_inputslot.png";
 BMAP * options_bmp_xbox = "options_xbox.png";
 BMAP * options_bmp_assignwindow = "options_assignwait.png";
 BMAP * options_bmp_axis = "options_axis.png";
+BMAP * options_bmp_mouse = "options_mouse.png";
 
 BMAP * options_bmp_less = "options_less.png";
 BMAP * options_bmp_more = "options_more.png";
@@ -30,6 +31,7 @@ BMAP * options_bmp_checkbox = "option_inputslot_checked.png";
 FONT * options_panel_font = "Arial#26b";
 
 FONT * options_inputslot_font = "Impact#24b";
+FONT * options_inputslot_font_small = "Arial#14b";
 
 PANEL * options_pan_pane =
 {
@@ -54,9 +56,9 @@ TEXT * options_txt_brush =
     string ( "hi" );
     font = options_inputslot_font;
     flags = LIGHT | CENTER_X | CENTER_Y;
-    red = 0;
-    green = 0;
-    blue = 0;
+    red = 200;
+    green = 200;
+    blue = 200;
 }
 
 TEXT * options_txt_fps_limit =
@@ -207,7 +209,7 @@ void options_selector_init(selector_t * selector, int * _target, TEXT * options,
     selector->value = txt_create(1, 504);
     selector->value->flags = CENTER_X | LIGHT;
     selector->value->font = options_inputslot_font;
-    vec_set(&selector->value->blue, vector(0,0,0));
+    vec_set(&selector->value->blue, vector(200,200,200));
     str_cpy((selector->value->pstring)[0], "~~");
 }
 
@@ -288,7 +290,7 @@ void options_slider_init(slider_t * slider, var * _target, var min, var max, var
     slider->value = txt_create(1, 504);
     slider->value->flags = CENTER_X | LIGHT;
     slider->value->font = options_inputslot_font;
-    vec_set(&slider->value->blue, vector(0,0,0));
+    vec_set(&slider->value->blue, vector(200,200,200));
     str_printf((slider->value->pstring)[0], "%.1f", (double)*_target);
 }
 
@@ -745,8 +747,6 @@ void options_update()
 
     uisystem_update(options_ui);
 
-    var dy = 0;
-
     options_selector_update(&optionbutton.resolution);
     options_selector_update(&optionbutton.fpslimit);
     options_selector_update(&optionbutton.anisotropy);
@@ -766,10 +766,11 @@ void options_update()
     options_settings_copy.resolution_y = options_resolutions_value[2 * options_selected_resolution + 1];
 
     int i, j;
+
     for(i = 0; i < INPUT_MAX; i++)
     {
         optionbutton.inputs[i].description->pos_x = optionbutton.inputs[i].slot[0]->pan->pos_x - 3;
-        optionbutton.inputs[i].description->pos_y = optionbutton.inputs[i].slot[0]->pan->pos_y + dy;
+        optionbutton.inputs[i].description->pos_y = optionbutton.inputs[i].slot[0]->pan->pos_y + (43 - optionbutton.inputs[i].description->font->dy) / 2;
 
         for(j = 0; j < 4; j++)
         {
@@ -792,18 +793,40 @@ void options_update()
                 break;
 
             case INPUT_TYPE_KEYBOARD:
-                if(cfg->index > 0 && cfg->index < 256)
+                if(cfg->index >= 280 && cfg->index <= 282)
                 {
-                    str_for_key((options_txt_brush->pstring)[0], cfg->index);
-                    str_upr((options_txt_brush->pstring)[0]);
+                    draw_quad(
+                        options_bmp_mouse,
+                        vector(0, 0, 0),
+                        vector(37 * (cfg->index - 280), 0, 0),
+                        vector(37, 37, 0),
+                        NULL,
+                        NULL,
+                        100,
+                        0);
+
                 }
                 else
                 {
-                    str_for_num((options_txt_brush->pstring)[0], cfg->index);
+                    if(cfg->index > 0 && cfg->index < 256)
+                    {
+                        str_for_key((options_txt_brush->pstring)[0], cfg->index);
+                        str_upr((options_txt_brush->pstring)[0]);
+                    }
+                    else
+                    {
+                        str_for_num((options_txt_brush->pstring)[0], cfg->index);
+                    }
+
+                    if(str_len((options_txt_brush->pstring)[0]) > 3)
+                        options_txt_brush->font = options_inputslot_font_small;
+                    else
+                        options_txt_brush->font = options_inputslot_font;
+
+                    options_txt_brush->pos_x = 37 / 2.0;
+                    options_txt_brush->pos_y = 37 / 2.0;
+                    draw_obj(options_txt_brush);
                 }
-                options_txt_brush->pos_x = 37 / 2.0;
-                options_txt_brush->pos_y = 37 / 2.0;
-                draw_obj(options_txt_brush);
                 break;
 
             case INPUT_TYPE_GAMEPAD:
@@ -819,14 +842,10 @@ void options_update()
                 break;
 
             case INPUT_TYPE_AXIS:
-                if(cfg->inverted)
-                    draw_quad(NULL, vector(0,0,0),NULL,vector(37,37,0),NULL, vector(192,192,255), 100, 0);
-                else
-                    draw_quad(NULL, vector(0,0,0),NULL,vector(37,37,0),NULL, vector(255,192,192), 100, 0);
                 draw_quad(
                     options_bmp_axis,
                     vector(0, 0, 0),
-                    vector(37 * cfg->index, 0, 0),
+                    vector(37 * cfg->index, 37 * (!cfg->inverted), 0),
                     vector(37, 37, 0),
                     NULL,
                     NULL,
