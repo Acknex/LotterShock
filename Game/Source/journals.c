@@ -9,6 +9,7 @@
 #define JOURNAL_MINTIME_PER_CHAR (0.06 * 16) // measure for average text length designed by text[2]
 
 FONT * journal_fnt = "Arial#16b";
+FONT * journal_name_fnt = "Arial#24b";
 
 PANEL *journal_pan =
 {
@@ -22,6 +23,18 @@ TEXT *journal_txt =
 {
     flags = WWRAP | TRANSLUCENT;
     font = journal_fnt;
+    strings = 1;
+    layer = 2;
+    red = 200;
+    green = 200;
+    blue = 200;
+    alpha = 0;
+}
+
+TEXT *journal_txt_name =
+{
+    flags = TRANSLUCENT | CENTER_Y | CENTER_X;
+    font = journal_name_fnt;
     strings = 1;
     layer = 2;
     red = 200;
@@ -144,15 +157,20 @@ void show_journal()
 	
     journal_txt.size_x = bmap_width(journal_pan.bmap) - 20;
     journal_txt->size_y = bmap_height(journal_pan.bmap) - 20;
+
+    journal_txt_name->pos_x = journal_pan->pos_x + 141;
+    journal_txt_name->pos_y = journal_pan->pos_y + 194;
 	
 	set(journal_pan, SHOW);
 	set(journal_txt, SHOW);
+    set(journal_txt_name, SHOW);
 }
 
 void hide_journal()
 {
 	reset(journal_pan, SHOW);
 	reset(journal_txt, SHOW);
+    reset(journal_txt_name, SHOW);
 }
 
 action journal()
@@ -185,10 +203,11 @@ void journals_update()
                 return;
             if (ptr.JOURNAL_ID != journals_current)
             {
-                journals_current = ptr.JOURNAL_ID;
+                journals_current = 9; // ptr.JOURNAL_ID;
                 journals_mindelay = JOURNAL_MINTIME_PER_CHAR * str_len(journals[journals_current].text);
 
                 str_cpy((journal_txt.pstring)[0], journals[journals_current].text);
+                str_cpy((journal_txt_name.pstring)[0], journals[journals_current].name);
 
                 if(journals_mediahandle != 0)
                     media_stop(journals_mediahandle);
@@ -228,12 +247,13 @@ void journals_update()
     {
         if(journals_mediahandle != 0)
         {
-                media_stop(journals_mediahandle);
-                journals_mediahandle = 0;
+            media_stop(journals_mediahandle);
+            journals_mediahandle = 0;
         }
         journal_pan->alpha = clamp(journal_pan->alpha - 5 * time_step, 0, 100);
         if(journal_pan->alpha == 0)
             hide_journal();
     }
     journal_txt->alpha = journal_pan->alpha;
+    journal_txt_name->alpha = journal_pan->alpha;
 }
