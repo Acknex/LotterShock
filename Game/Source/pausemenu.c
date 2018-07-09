@@ -84,6 +84,7 @@ void pausemenu_open()
     pausemenu_reset_response();
     pausemenu_selection = 0;
     pausemenu_shows_options = false;
+    freeze_mode = 1; // stop all particle effects
 }
 
 void pausemenu_update()
@@ -164,4 +165,5 @@ void pausemenu_close()
     {
         reset(pausemenu_panels[i], SHOW);
     }
+    freeze_mode = 0;
 }

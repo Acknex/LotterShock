@@ -22,6 +22,9 @@ void game_close();
 
 bool game_is_done();
 
+// returns true if the game was won since the last call to game_open()
+bool game_is_won();
+
 // Starts the final cutscene
 void game_set_complete();
 

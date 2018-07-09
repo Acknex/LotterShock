@@ -422,6 +422,10 @@ void movement_update()
 		return;
 	}
 #ifdef DEBUG
+    // disable movement when 0-mode camera is enabled
+    if(def_camera)
+        return;
+
     if(key_t || movement_cheat_clipmode)
 #else
     if(movement_cheat_clipmode)

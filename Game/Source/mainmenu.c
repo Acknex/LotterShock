@@ -131,6 +131,8 @@ void mainmenu_open()
     camera.fog_end = 20000.0;
     level_load("menue.wmb");
     mainmenu_cameradist = vec_dist(nullvector, camera.x);
+
+    music_start("Media/intro.mp3", 1.0, false);
 }
 
 void mainmenu_update()
