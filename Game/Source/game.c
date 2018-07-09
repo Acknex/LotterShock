@@ -69,6 +69,11 @@ void game_open()
     game_ispaused = 0;
 }
 
+void game_set_complete()
+{
+    error("game_set_complete: not implemented yet!");
+}
+
 void game_update()
 {
     if(game_ispaused)

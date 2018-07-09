@@ -13,4 +13,7 @@ void game_close();
 
 bool game_is_done();
 
+// Starts the final cutscene
+void game_set_complete();
+
 #endif // GAME_H

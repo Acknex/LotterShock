@@ -141,6 +141,20 @@ action environ_server()
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
 
+action EnvironMatrixTerm()
+{
+    framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_SERVER_TERMINAL;
+    error("server reporting for duty.");
+}
+
+action EnvironBed()
+{
+    framework_setup(my, SUBSYSTEM_ENVIRONMENT);
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_JACKBED;
+    error("bed reporting for duty.");
+}
+
 void environmentals_close()
 {
     if(environ_ribanna_music != 0)
