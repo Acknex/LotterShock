@@ -421,6 +421,9 @@ void journals_update()
         */
 #endif
 
+        // Probably a bad hack, but is a nice bug mitigation:
+        // media_playing returned 1 when not beeing stopped and then restarted,
+        // even after completing the sound
         media_pause(journals_mediahandle);
         media_start(journals_mediahandle);
 

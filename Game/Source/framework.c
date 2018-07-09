@@ -292,8 +292,11 @@ void framework_update()
         break;
     case FRAMEWORK_STATE_UNLOAD:
         level_load(NULL);
-		music_start("Media/intro.mp3", 1.0, false);
-        framework_transfer(FRAMEWORK_STATE_MAINMENU);
+
+        if(game_is_won()) // when game was won, roll the credits!
+            framework_transfer(FRAMEWORK_STATE_CREDITS);
+        else
+            framework_transfer(FRAMEWORK_STATE_MAINMENU);
         break;
 
     case FRAMEWORK_STATE_UNLOAD:
