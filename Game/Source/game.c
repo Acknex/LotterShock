@@ -18,9 +18,9 @@
 #include "environmentals.h"
 #include "flesh.h"
 
+#include <acknex.h>
+
 bool game_done;
-var story_enginesEnabled = 0;
-var story_powercoreEnabled = 0;
 
 var game_ispaused;
 
@@ -60,6 +60,7 @@ void game_open()
     // reset story stuff
     story_enginesEnabled = 0;
     story_powercoreEnabled = 0;
+    story_serverRoomState = 0;
     playerHasHazmat = 0;
     playerHasDoubleJump = 0;
 
@@ -121,7 +122,6 @@ void game_update()
         collectibles_update();
         keypad_update();
         doors_update();
-        journals_update();
 
         environmentals_update();
 
@@ -133,6 +133,18 @@ void game_update()
         GIB_Update();
         ENEMY_UpdateProjectile();
         FLESH_Update();
+
+        if(player && (story_serverRoomState == 0))
+        {
+            if(region_check(REGION_SERVERROOM, &player->x, &player->x))
+            {
+                story_serverRoomState = 1;
+                journals_play(37);
+            }
+        }
+
+
+        journals_update();
 
         if(game_hashud)
             hud_update();

@@ -8,6 +8,8 @@ typedef int bool;
 
 #define LEVEL_FILE "gamelevel.wmb"
 
+#define REGION_SERVERROOM "Serverroom"
+
 //! Markiert die Entity als "TOT" und sorgt dafür, dass sie zu Ende des Frames gelöscht wird.
 #define SK_ENTITY_DEAD skill89
 

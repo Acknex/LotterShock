@@ -1,4 +1,7 @@
 #include "environmentals.h"
+#include "journals.h"
+#include "game.h"
+#include "input.h"
 #include <acknex.h>
 
 SOUND* snd_terminal = "keys_engine_room.wav";
@@ -144,15 +147,15 @@ action environ_server()
 action EnvironMatrixTerm()
 {
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
-    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_SERVER_TERMINAL;
-    error("server reporting for duty.");
+    my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_MATRIX_TERMINAL;
+    my->INTERACTIBLE = 1;
 }
 
 action EnvironBed()
 {
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_JACKBED;
-    error("bed reporting for duty.");
+    my->INTERACTIBLE = 1;
 }
 
 void environmentals_close()
@@ -234,6 +237,39 @@ void environmentals_update()
     {
         switch(ptr.ENVIRONMENTALS_TYPE) 
         {
+            case ENVIRONMENTAL_JACKBED:
+                if(mouse_ent != ptr || !input_hit(INPUT_USE))
+                    break;
+                if(story_serverRoomState == 3)
+                {
+                    game_set_complete();
+                    framework_freeze(ptr);
+                }
+                else
+                {
+                    journals_play(46);
+                }
+                break;
+
+            case ENVIRONMENTAL_MATRIX_TERMINAL:
+
+                if(mouse_ent != ptr || !input_hit(INPUT_USE))
+                    break;
+
+                if(story_serverRoomState == 2 && story_powercoreEnabled)
+                {
+                    journals_play(42);
+                    framework_freeze(ptr);
+                    story_serverRoomState = 3;
+                }
+                else if(story_serverRoomState == 1)
+                {
+                    story_serverRoomState = 2;
+                    journals_play(38);
+                }
+
+                break;
+
             case ENVIRONMENTAL_SERVER:
                 ptr->ENVIRONMENTALS_TEMP += time_step;
                 if(ptr->ENVIRONMENTALS_TEMP >= ptr->ENVIRONMENTALS_TIMER)

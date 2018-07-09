@@ -1,6 +1,15 @@
 #ifndef GAME_H
 #define GAME_H
 
+var story_enginesEnabled = 0;
+var story_powercoreEnabled = 0;
+
+// 0 = init
+// 1 = server room was entered
+// 2 = matrix terminal first time activated
+// 3 = matrix terminal second time activated, matrix is now enabled
+var story_serverRoomState = 0;
+
 bool game_hidehud;
 
 void game_init();
