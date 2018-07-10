@@ -86,6 +86,8 @@ void framework_init()
     collision_mode = 2;
     preload_mode = 3; // preload a lot
 
+    vec_set(sky_color, vector(1,1,1));
+
     mouse_map = framework_mouse_cursor;
     
 #ifndef FRAMEWORK_NO_POSTPROCESS
