@@ -28,6 +28,7 @@ typedef struct beast_t
 {
     char const * name;
     char const * flavour;
+    char const * mediaFile;
 } beast_t;
 
 BMAP * bestiary_bmp_next = "best_next.png";
@@ -71,6 +72,9 @@ PANEL * bestiary_pan_info =
 
 STRING * bestiary_beast_name = "#1024";
 STRING * bestiary_beast_desc = "#1024";
+STRING * bestiary_beast_media = "#1024";
+
+var media_handle_beastiary;
 
 FONT * bestiary_fnt_name = "Arial#32b";
 FONT * bestiary_fnt_desc = "Arial#24";
@@ -119,24 +123,31 @@ void bestiary_init()
 {
     bestiary.beasts[0].name    = "J.C. 'Star Lotti' Lotter";
     bestiary.beasts[0].flavour = "Lone ranger, protector of the Earth.\nLast line of defense against the Unity Union.";
+    bestiary.beasts[0].mediaFile = "Media/beastiary_lotti.mp3";
 
     bestiary.beasts[1].name    = "Acktana";
     bestiary.beasts[1].flavour = "A powerful and unique AI, created in the year 2018.\nBased on a Horstmann-Pohl personality construct.\nMay be corrupted and/or eccentric.";
+    bestiary.beasts[1].mediaFile = "Media/beastiary_acktana.mp3";
 
     bestiary.beasts[2].name    = "Donkey-Lark";
     bestiary.beasts[2].flavour = "Orinally a peaceful herbivore, this gentile creature\nwas transformed by excessive DNA modification.\nNitroglycerine makes up over 80 percent of its biomass.\nExplodes violently when agitated.";
+    bestiary.beasts[2].mediaFile = "Media/beastiary_donkeylark.mp3";
 
     bestiary.beasts[3].name    = "Sputnik";
     bestiary.beasts[3].flavour = "Originally a haul-droid, now a dangerous military-grade combat machine.\nEquipped with sword-arms by Dr. Horstmann for \"additional coolness\"";
+    bestiary.beasts[3].mediaFile = "Media/beastiary_sputnik.mp3";
 
     bestiary.beasts[4].name    = "Whiskas Skull";
     bestiary.beasts[4].flavour = "Originally intended to clean the ship by eating waste. With laser eyes. Because, why not.";
+    bestiary.beasts[4].mediaFile = "Media/beastiary_whiskas.mp3";
 
     bestiary.beasts[5].name    = "Eye of the Acknex";
     bestiary.beasts[5].flavour = "Remains of the Giant Titans.\nEquipped with brains they can be very dangerous.";
+    bestiary.beasts[5].mediaFile = "Media/beastiary_eye.mp3";
 
     bestiary.beasts[6].name    = "Turret";
     bestiary.beasts[6].flavour = "Your very personal bullet hell in a box in a wall in a spaceship.";
+    bestiary.beasts[6].mediaFile = "Media/beastiary_turret.mp3";
 }
 
 void bestiary_open()
@@ -153,6 +164,9 @@ void bestiary_open()
     bestiary.position = 0;
 
     music_start("Media/beastiary.mp3", 0.5, true);
+
+    str_cpy(bestiary_beast_media, bestiary.beasts[0].mediaFile);
+    media_handle_beastiary = media_play(bestiary_beast_media, NULL, 100);
 
     set(bestiary_pan_back, SHOW);
     set(bestiary_pan_prev, SHOW);
@@ -246,8 +260,16 @@ void bestiary_update()
         snd_play(ui_swap_snd, 100, 0);
     if(bestiary.done)
         snd_play(ui_accept_snd, 100, 0);
+
+    str_cpy(bestiary_beast_media, bestiary.beasts[bestiary.position].mediaFile);
     if(inital != bestiary.position)
+    {
+        if(media_playing(media_handle_beastiary))
+            media_stop(media_handle_beastiary);
+        media_handle_beastiary = media_play(bestiary_beast_media, NULL, 100);
+
         snd_play(ui_accept_snd, 100, 0);
+    }
 
     bestiary.lastPan = mouse_panel;
 
@@ -349,6 +371,10 @@ void bestiary_close()
     }
     level_load(NULL);
     music_start("Media/intro.mp3", 1, 0);
+    
+    if(media_playing(media_handle_beastiary))
+        media_stop(media_handle_beastiary);
+
     camera->arc = 60;
     reset(bestiary_pan_back, SHOW);
     reset(bestiary_pan_prev, SHOW);
