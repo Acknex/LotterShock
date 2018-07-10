@@ -8,6 +8,7 @@ BMAP *bmapPPOriginal = NULL;
 
 BMAP * materials_matrix_tex = "matrix_font.png";
 BMAP * materials_noise_tex = "matrix_noise.png";
+BMAP * materials_guard_tex = "matrix_guard.png";
 
 var materials_matrix_str = 0.0;
 

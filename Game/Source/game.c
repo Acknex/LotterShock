@@ -84,6 +84,9 @@ void game_open()
     // activates cheats ingame
     input_cheats_enabled = 1;
 
+    // disable the matrix effect:
+    materials_matrix_str = 0;
+
     game_ispaused = 0;
 
     game_iswon = 0;
@@ -203,14 +206,31 @@ void game_update()
                 break;
 
             case 3: // enter the matrix
+                materials_matrix_str += 0.01 * time_step;
+                if(materials_matrix_str >= 2.3)
+                {
+                    game_final_cutscene.stage = 5;
+                    beep(); // TODO: Play laughing here!
+                }
+                break;
+
+            case 4: // in the matrix, after laughing
+
+                materials_matrix_str += 0.01 * time_step;
+
+                if(materials_matrix_str >= 3.5)
+                {
+                    game_final_cutscene.stage = 5;
+                }
+                break;
+
+            case 5: // lights-off-effect
+
+
 
                 break;
 
-            case 4: // lights-off-effect
-
-                break;
-
-            case 5: // game done, roll credits
+            case 6: // game done, roll credits
                 game_iswon = true;
                 game_is_done = true;
                 break;
@@ -287,6 +307,7 @@ void game_close()
     environmentals_close();
 
     mouse_pointer = 1;
+    materials_matrix_str = 0;
     input_cheats_enabled = 0;
 }
 
