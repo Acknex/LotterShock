@@ -5,11 +5,11 @@ h2;An AckCon 2018 Production
 s;8;
 h3;AckCon Staff
 s;4;
-l;Simon "simonschreibt" Trümpler
+l;Simon "simonschreibt" TrÃ¼mpler
 r;Art Direction
 r;Level
 s;2
-l;Felix "MasterQ32" Queißner
+l;Felix "MasterQ32" QueiÃŸner
 r;Framework
 r;Bestiary
 r;Menus
@@ -22,7 +22,7 @@ r;Sound Design
 r;Music
 r;Effects
 s;2
-l;Robert "firoball" Jäger
+l;Robert "firoball" JÃ¤ger
 r;Enemy AI
 r;Effects
 s;2
@@ -63,21 +63,29 @@ r;Items
 s;4
 h3;Voices
 s;2;
-x;Lisa Müller;Ship's AI
+x;Lisa MÃ¼ller;Ship's AI
 s;2;
-x;Lasse Bönke;Ltd. Cmdr. Queißner
+x;Kathrin Verena Krause;Acktana
+s;2;
+x;Jack Ruler;Lt. Woll
+s;2;
+x;Lasse BÃ¶nke;Lt. Cmdr. QueiÃŸner
 s;2;
 x;Marius Kappes;Cpt. Kappes
 s;2;
-x;Ani (?);Dr. Horstmann
+x;Nadine Most;Dr. Horstmann
 s;2;
-x;Philip Bösand;Dr. Pohl
+x;Philip BÃ¶sand;Dr. Pohl
+s;2;
+x;Matthias Heyl;Cmdr. Daumann
+s;2;
+x;Simon TrÃ¼mpler;Lt. Cmdr. TrÃ¼mpler
 s;8
 h3;Special Thanks To
 s;4;
 x;Kanal 21;Providing the location
 s;1;
-l;Achim "Pappenheimer" Lübbeke
+l;Achim "Pappenheimer" LÃ¼bbeke
 r;Pre-AckCon negotiations with Kanal 21
 s;1;
 x;real,-;Providing food staples and energy drinks
