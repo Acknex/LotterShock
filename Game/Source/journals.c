@@ -50,11 +50,6 @@ var journals_timeout = 0;
 #define MAX_JOURNALS 50
 journal_t journals[MAX_JOURNALS];
 
-void journals_game_end()
-{
-    error("journals_game_end: not implemented yet!");
-}
-
 void journals_init()
 {
 	// Lt. Woll
@@ -232,17 +227,20 @@ void journals_init()
 
     // Server room enter first time
 
-    journals[37].text = "There's the terminal there at the end. Get me there and I'll take look.";
+    journals[37].text = "There's the terminal there at the end. Get me there and I'll take a look.";
+    journals[37].media = "Media/acktana_part3_1.mp3";
     journals[37].name = acktana_name;
 
     // Server use first time
 
-    journals[38].text = "Connecting... [modem sounds] It seems that the Patchnotes was working on digitization prior to the incident, and when it arrived they uploaded the crew into the computer to escape the Unity Union boarding party. Power requirements for the system increased exponentially with this many people. The system is running on a low power mode. Until we can get it back up, I can't get you any more information.";
+    journals[38].text = "Connecting...\n[modem sounds]\nIt seems that the Patchnotes was working on digitization prior to the incident, and when it arrived they uploaded the crew into the computer to escape the Unity Union boarding party. Power requirements for the system increased exponentially with this many people. The system is running on a low power mode. Until we can get it back up, I can't get you any more information.";
     journals[38].name = acktana_name;
+    journals[38].media = "Media/acktana_part3_2.mp3";
     journals[38].followup = 39;
 
     journals[39].text = "Start the generator and talk to the computer people, got it.";
     journals[39].name = lotter_name;
+    journals[39].media = "Media/lotter_part3_3.mp3";
 
     ///////////////////////////////////////////////////////////////////////
     // PART 4
@@ -252,28 +250,50 @@ void journals_init()
 
     journals[40].text = "Power core output stable at 1.21 Gigawatts. Servers are resuming operation now. Take me back.";
     journals[40].name = acktana_name;
+    journals[40].media = "Media/acktana_part4_1.mp3";
     journals[40].followup = 41;
 
     journals[41].text = " You got it babe.";
     journals[41].name = lotter_name;
+    journals[41].media = "Media/lotter_part4_2.mp3";
 
     // Server terminal
 
     journals[42].text = "[Modem sounds] .... This is terrible. Apparently immediately after uploading themselves, they got attacked by a computer virus by the Unity union. They deployed countermeasures.... something called the... Guardian System? It defeated the Unity Union Virus, but it also trapped them in nullpointer space.";
     journals[42].name = acktana_name;
+    journals[42].media = "Media/acktana_part4_3.mp3";
     journals[42].followup = 43;
 
     journals[43].text = "Anything we can do?";
     journals[43].name = lotter_name;
+    journals[43].media = "Media/lotter_part4_4.mp3";
     journals[43].followup = 44;
 
     journals[44].text = "Jack in, turn off the Guardian and jack out?";
     journals[44].name = acktana_name;
+    journals[44].media = "Media/acktana_part4_5.mp3";
     journals[44].followup = 45;
 
     journals[45].text = " Alright! Let's jack in, kill that jack-off and jack out!";
     journals[45].name = lotter_name;
-    journals[45].event = journals_game_end;
+    journals[45].media = "Media/lotter_part4_6.mp3";
+
+    // interacting with matrix bed
+
+    journals[46].text = "That's a weird place for a bed.";
+    journals[46].name = lotter_name;
+    journals[46].media = "Media/lotter_part4_7.mp3";
+    journals[46].followup = 47;
+
+    journals[47].text = "It seems to be some kind of human-computer-interface, but it's powered off right now.";
+    journals[47].name = acktana_name;
+    journals[47].media = "Media/acktana_part4_8.mp3";
+    journals[47].followup = 48;
+
+    journals[48].text = "Alright!";
+    journals[48].media = "Media/lotter_part4_9.mp3";
+    journals[48].name = lotter_name;
+
 
     journals_mediahandle = 0;
     journals_current = -1;
@@ -391,14 +411,19 @@ void journals_update()
         journal_pan->alpha = clamp(journal_pan->alpha + 5 * time_step, 0, 100);
 
 #ifdef DEBUG
+        /*
         DEBUG_VAR(journals_mediahandle, 0);
         DEBUG_VAR(media_playing(journals_mediahandle), 16);
         DEBUG_VAR(journals_timeout, 32);
         DEBUG_VAR(journals[journals_current].followup, 48);
         DEBUG_VAR(journals_current, 64);
         DEBUG_VAR(total_ticks, 72);
+        */
 #endif
 
+        // Probably a bad hack, but is a nice bug mitigation:
+        // media_playing returned 1 when not beeing stopped and then restarted,
+        // even after completing the sound
         media_pause(journals_mediahandle);
         media_start(journals_mediahandle);
 

@@ -86,6 +86,8 @@ void framework_init()
     collision_mode = 2;
     preload_mode = 3; // preload a lot
 
+    vec_set(sky_color, vector(1,1,1));
+
     mouse_map = framework_mouse_cursor;
     
 #ifndef FRAMEWORK_NO_POSTPROCESS
@@ -292,8 +294,11 @@ void framework_update()
         break;
     case FRAMEWORK_STATE_UNLOAD:
         level_load(NULL);
-		music_start("Media/intro.mp3", 1.0, false);
-        framework_transfer(FRAMEWORK_STATE_MAINMENU);
+
+        if(game_is_won()) // when game was won, roll the credits!
+            framework_transfer(FRAMEWORK_STATE_CREDITS);
+        else
+            framework_transfer(FRAMEWORK_STATE_MAINMENU);
         break;
 
     case FRAMEWORK_STATE_UNLOAD:

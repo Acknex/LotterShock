@@ -563,7 +563,7 @@ void options_init()
             {
                 D3DDISPLAYMODE mode;
                 d3d9->EnumAdapterModes(params.AdapterOrdinal, D3DFMT_X8R8G8B8, j, &mode);
-                if(mode.RefreshRate == 60)
+                if(mode.RefreshRate == 60 && mode.Width >= 1280 && mode.Height >= 720)
                 {
                     bool use = true;
                     for(k = 0; k < total; k++)
