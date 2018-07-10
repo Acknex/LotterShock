@@ -5,11 +5,11 @@ h2;An AckCon 2018 Production
 s;8;
 h3;AckCon Staff
 s;4;
-l;Simon "simonschreibt" TrÃ¼mpler
+l;Simon "simonschreibt" Trümpler
 r;Art Direction
 r;Level
 s;2
-l;Felix "MasterQ32" QueiÃŸner
+l;Felix "MasterQ32" Queißner
 r;Framework
 r;Bestiary
 r;Menus
@@ -22,9 +22,10 @@ r;Sound Design
 r;Music
 r;Effects
 s;2
-l;Robert "firoball" JÃ¤ger
+l;Robert "firoball" Jäger
 r;Enemy AI
 r;Effects
+r;Build Script
 s;2
 l;Nils "slin" Daumann
 r;Shader Master
@@ -63,38 +64,36 @@ r;Items
 s;4
 h3;Voices
 s;2;
-x;Lisa MÃ¼ller;Ship's AI
+x;Lisa Müller;Ship's AI
 s;2;
 x;Kathrin Verena Krause;Acktana
 s;2;
 x;Jack Ruler;Lt. Woll
 s;2;
-x;Lasse BÃ¶nke;Lt. Cmdr. QueiÃŸner
+x;Lasse Bönke;Lt. Cmdr. Queißner
 s;2;
 x;Marius Kappes;Cpt. Kappes
 s;2;
 x;Nadine Most;Dr. Horstmann
 s;2;
-x;Philip BÃ¶sand;Dr. Pohl
+x;Philip Bösand;Dr. Pohl
 s;2;
 x;Matthias Heyl;Cmdr. Daumann
 s;2;
-x;Simon TrÃ¼mpler;Lt. Cmdr. TrÃ¼mpler
+x;Simon Trümpler;Lt. Cmdr. Trümpler
 s;8
 h3;Special Thanks To
 s;4;
 x;Kanal 21;Providing the location
 s;1;
-l;Achim "Pappenheimer" LÃ¼bbeke
+l;Achim "Pappenheimer" Lübbeke
 r;Pre-AckCon negotiations with Kanal 21
-s;1;
-x;real,-;Providing food staples and energy drinks
 s;8
-h3;Much Thanks To
+h3;Many Thanks To
 s;4;
-x;oP Group;Providing a monetary boost
+x;oP Group Germany;Providing a monetary boost
 s;8
-c;No Donkey-larks were harmed during the production of this game.
+c;No donkey-larks were harmed during the production of this game.
 c;(they exploded of their own volition)
 c;(A LOT)
 s;8
