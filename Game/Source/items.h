@@ -23,6 +23,7 @@ void medipack_init();
 void keycard();
 void doublejump();
 void hazmat();
+void battery();
 
 void ammo_shotgun();
 void ammo_cellgun();

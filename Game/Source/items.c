@@ -133,6 +133,14 @@ action hazmat() {
 }
 
 /**********
+POWER CORE BATTERY
+	condition: none
+**********/
+action battery() {
+	// TODO: please fill with code
+}
+
+/**********
 AMMO
 	condition: ammo not full
 **********/

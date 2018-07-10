@@ -24,6 +24,11 @@ MATERIAL *matObject =
 	effect = "object_basic.fx";
 }
 
+MATERIAL *matObjectGlow =
+{
+	effect = "object_glow.fx";
+}
+
 MATERIAL *matSprite =
 {
 	effect = "object_sprite.fx";
