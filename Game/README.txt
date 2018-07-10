@@ -11,7 +11,7 @@
 
 
 +--------------------------------------------------------------------------------------------+
-¦ Story                                                                                      ¦
+Â¦ Story                                                                                      Â¦
 +--------------------------------------------------------------------------------------------+
     
     You, Star Lotti, find the USS Patchnotes floating in space sending a
@@ -19,33 +19,33 @@
 	ship.
 
 +--------------------------------------------------------------------------------------------+
-¦ Controls                                                                                   ¦
+Â¦ Controls                                                                                   Â¦
 +--------------------------------------------------------------------------------------------+
 	
 	+===========================================================+
-	¦ Input              | Keyboard+Mouse | Controller          ¦
+	Â¦ Input              | Keyboard+Mouse | Controller          Â¦
 	+====================+================+=====================+
-	¦ Walk               ¦ W,A,S,D        | Left Stick          ¦
-	¦--------------------+--------------------------------------¦
-	¦ Jump               ¦ Space          | A                   ¦
-	¦--------------------+--------------------------------------¦
-	¦ Use                ¦ E              | X                   ¦
-	¦--------------------+--------------------------------------¦
-	¦ Attack             ¦ Left Mouse     | Right Trigger       ¦
-	¦--------------------+--------------------------------------¦
-	¦ Switch Weapons     ¦ Mouse Wheel    | Left/Right Button   ¦
-	¦--------------------+--------------------------------------¦
-	¦ Navigate Back      ¦ Escape         | Start               ¦
-	¦--------------------+--------------------------------------¦
-	¦ Crouch             ¦ Left Control   | Left Stick (Press)  ¦
-	¦--------------------+--------------------------------------¦
-	¦ Toggle Morphball   ¦ Left Shift     | Right Stick (Press) ¦
-	¦--------------------+--------------------------------------¦
-	¦ Toggle Map         ¦ Tab            | Select              ¦
+	Â¦ Walk               Â¦ W,A,S,D        | Left Stick          Â¦
+	Â¦--------------------+--------------------------------------Â¦
+	Â¦ Jump               Â¦ Space          | A                   Â¦
+	Â¦--------------------+--------------------------------------Â¦
+	Â¦ Use                Â¦ E              | X                   Â¦
+	Â¦--------------------+--------------------------------------Â¦
+	Â¦ Attack             Â¦ Left Mouse     | Right Trigger       Â¦
+	Â¦--------------------+--------------------------------------Â¦
+	Â¦ Switch Weapons     Â¦ Mouse Wheel    | Left/Right Button   Â¦
+	Â¦--------------------+--------------------------------------Â¦
+	Â¦ Navigate Back      Â¦ Escape         | Start               Â¦
+	Â¦--------------------+--------------------------------------Â¦
+	Â¦ Crouch             Â¦ Left Control   | Left Stick (Press)  Â¦
+	Â¦--------------------+--------------------------------------Â¦
+	Â¦ Toggle Morphball   Â¦ Left Shift     | Right Stick (Press) Â¦
+	Â¦--------------------+--------------------------------------Â¦
+	Â¦ Toggle Map         Â¦ Tab            | Select              Â¦
 	+-----------------------------------------------------------+
 
 +--------------------------------------------------------------------------------------------+
-¦ Info                                                                                       ¦
+Â¦ Info                                                                                       Â¦
 +--------------------------------------------------------------------------------------------+
 
 	This game was created at the AckCon 2018 in Bielefeld, all its assets and source can
@@ -58,14 +58,14 @@
 	https://vksbm.de/ackcon/
 
 +--------------------------------------------------------------------------------------------+
-¦ Team                                                                                       ¦
+Â¦ Team                                                                                       Â¦
 +--------------------------------------------------------------------------------------------+
 
 	People that were at the AckCon:
-	- Simon "simonschreibt" Trümpler
-	- Felix "MasterQ32" Queißner
+	- Simon "simonschreibt" TrÃ¼mpler
+	- Felix "MasterQ32" QueiÃŸner
 	- Marius "mk1" Kappes
-	- Robert "firoball" Jäger
+	- Robert "firoball" JÃ¤ger
 	- Nils "slin" Daumann
 	- Jonas "padmalcom" Freiknecht
 	- Felix "superku" Pohl
@@ -76,7 +76,11 @@
 	- Steffen "D.E.M" Pohl
 
 	Additional Voice Actors:
-	- Lisa Müller
-	- Lasse Bönke
-	- Ani
-	- Philip Bösand
+	- Lisa MÃ¼ller
+	- Kathrin Verena Krause
+	- Lasse BÃ¶nke
+	- Nadine Most
+	- Philip BÃ¶sand
+	- Matthias Heyl
+	- Jack Ruler
+	

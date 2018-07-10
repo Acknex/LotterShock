@@ -84,6 +84,10 @@ void game_open()
     // activates cheats ingame
     input_cheats_enabled = 1;
 
+    // disable the matrix and crt effect:
+    materials_matrix_str = 0;
+    materials_crt_str = 0;
+
     game_ispaused = 0;
 
     game_iswon = 0;
@@ -196,6 +200,15 @@ void game_update()
 
                 if(game_final_cutscene.progress == 100)
                 {
+                    game_final_cutscene.stage = 20;
+                    game_final_cutscene.progress = 0;
+                    game_final_cutscene.speed = 4;
+                }
+                break;
+
+            case 20: // delay some bit after laydown (let the modem dial up)
+                if(game_final_cutscene.progress == 100)
+                {
                     game_final_cutscene.stage = 3;
                     game_final_cutscene.progress = 0;
                     game_final_cutscene.speed = 1;
@@ -203,16 +216,40 @@ void game_update()
                 break;
 
             case 3: // enter the matrix
+                materials_matrix_str += 0.01 * time_step;
+                if(materials_matrix_str >= 2.3)
+                {
+                    game_final_cutscene.stage = 4;
+                    beep(); // TODO: Play laughing here!
+                }
+                break;
+
+            case 4: // in the matrix, after laughing
+
+                materials_matrix_str += 0.01 * time_step;
+
+                if(materials_matrix_str >= 2.8)
+                {
+                    game_final_cutscene.stage = 5;
+                    game_final_cutscene.progress = 0;
+                    game_final_cutscene.speed = 2;
+                }
+                break;
+
+            case 5: // lights-off-effect
+
+                materials_crt_str = clamp(materials_crt_str + time_step, 0, 15);
+
+                if(game_final_cutscene.progress == 100)
+                {
+                    game_final_cutscene.stage = 6;
+                }
 
                 break;
 
-            case 4: // lights-off-effect
-
-                break;
-
-            case 5: // game done, roll credits
+            case 6: // game done, roll credits
                 game_iswon = true;
-                game_is_done = true;
+                game_done = true;
                 break;
             }
 
@@ -286,7 +323,11 @@ void game_close()
     pausemenu_close();
     environmentals_close();
 
+    level_load(NULL); // unload the level so we can't see shit
+
     mouse_pointer = 1;
+    materials_matrix_str = 0;
+    materials_crt_str = 0;
     input_cheats_enabled = 0;
 }
 

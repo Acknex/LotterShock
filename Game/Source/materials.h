@@ -6,6 +6,14 @@
 
 BMAP *bmapPPOriginal = NULL;
 
+BMAP * materials_matrix_tex = "matrix_font.png";
+BMAP * materials_noise_tex = "matrix_noise.png";
+BMAP * materials_guard_tex = "matrix_guard.png";
+
+var materials_matrix_str = 0.0;
+
+var materials_crt_str = 0.0;
+
 MATERIAL *matLevel =
 {
 	effect = "walls_unlit.fx";
@@ -110,6 +118,18 @@ MATERIAL *matPPDesync =
 	effect = "desync.fx";
 }
 
+MATERIAL *matPPMatrix =
+{
+    effect = "pp_matrix.fx";
+    flags = AUTORELOAD;
+}
+
+MATERIAL *matPPCrt =
+{
+    effect = "pp_crt.fx";
+    flags = AUTORELOAD;
+}
+
 void pp_desync(var strength, var contrast)
 {
 	matPPDesync.skill1 = floatv(strength);
@@ -159,6 +179,8 @@ void SetupPostprocessing()
 	pp_add(matPPBlurHorizontal);
 	pp_add(matPPCombine);
 	pp_add(matPPDesync);
+    pp_add(matPPMatrix);
+    pp_add(matPPCrt);
 }
 
 void SetupDefaultMaterials()
