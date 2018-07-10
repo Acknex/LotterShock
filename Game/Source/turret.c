@@ -96,9 +96,11 @@ void TURRET_Init()
 {
 	//DEBUG
 	//ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,0), turret_rotccw);
-	//ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,450), turret_aim);
+	//ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,450), turret_rotccw);//turret_aim);
+	//ptr->pan = 90;
 	//ptr->tilt=180;
-	 //ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,2), turret_aim);
+	//ENTITY* ptr = ent_create("tile-floor-turret.mdl", vector(1288,0,2), turret_rotccw);//turret_aim);
+	//ptr->pan = 90;
 }
 
 void TURRET_Update()
@@ -118,7 +120,7 @@ void TURRET_Update()
 			{
 				ptr->HEALTH = maxv(0, ptr->HEALTH - ptr->DAMAGE_HIT);
 				ptr->DAMAGE_HIT = 0;
-				SPLATTER_splat(&ptr->x, vector(1.0, 1.0, 0.0));
+				SPLATTER_splat(&ptr->x, vector(0.2, 0.0, 0.0));
 				ptr->TURRET_HITLOCKCNT = 3;
 				ptr->event = NULL;
 				
@@ -189,7 +191,7 @@ void TURRET__turnOn(ENTITY* ptr)
 	{
 		ptr->TURRET_STATE = TURRETACTIVE;
 		ent_bonereset(ptr, "Bone1");
-		ptr->SHOOT_ANGLE = 0;
+		ptr->SHOOT_ANGLE = ptr->pan;
 	}
 	ptr->ANIM_COUNTER = minv(100, ptr->ANIM_COUNTER);
 	ent_animate(ptr, "open", ptr->ANIM_COUNTER, 0);
@@ -287,12 +289,12 @@ void TURRET__active(ENTITY* ptr)
 			if (ptr->tilt > 90)
 			{
 				ptr->SHOOT_ANGLE = angTemp.pan;
-				ent_bonerotate(ptr, "Bone1", vector(360-ptr->SHOOT_ANGLE, 0, 0));
+				ent_bonerotate(ptr, "Bone1", vector(360-ptr->SHOOT_ANGLE+ptr->pan, 0, 0));
 			}
 			else
 			{
 				ptr->SHOOT_ANGLE = 180 + angTemp.pan;
-				ent_bonerotate(ptr, "Bone1", vector(ptr->SHOOT_ANGLE, 0, 0));
+				ent_bonerotate(ptr, "Bone1", vector(ptr->SHOOT_ANGLE-ptr->pan, 0, 0));
 			}
 		}
 		else

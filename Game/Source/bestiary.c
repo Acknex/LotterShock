@@ -130,7 +130,7 @@ void bestiary_init()
     bestiary.beasts[1].mediaFile = "Media/beastiary_acktana.mp3";
 
     bestiary.beasts[2].name    = "Donkey-Lark";
-    bestiary.beasts[2].flavour = "Orinally a peaceful herbivore, this gentile creature\nwas transformed by excessive DNA modification.\nNitroglycerine makes up over 80 percent of its biomass.\nExplodes violently when agitated.";
+    bestiary.beasts[2].flavour = "Originally a peaceful herbivore, this gentile creature\nwas transformed by excessive DNA modification.\nNitroglycerine makes up over 80 percent of its biomass.\nExplodes violently when agitated.";
     bestiary.beasts[2].mediaFile = "Media/beastiary_donkeylark.mp3";
 
     bestiary.beasts[3].name    = "Sputnik";
