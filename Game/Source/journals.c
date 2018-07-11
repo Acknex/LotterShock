@@ -201,52 +201,64 @@ void journals_init()
     // Insert battery into engine
 
     journals[25].text = "I've got the power! Acktana, how's it lookin'?";
+    journals[25].type = JOURNAL_TYPE_SUBTITLE;
     journals[25].name = lotter_name;
     journals[25].followup = 26;
 
     journals[26].text = "That seems to have done it. Main power is coming back online... Connecting to ship information system, stand by.... Power is go. Engines are go. Lavatories are go. Life support is go. Gravity generators are online. Server systems are offline.";
+    journals[26].type = JOURNAL_TYPE_SUBTITLE;
     journals[26].name = acktana_name;
     journals[26].followup = 27;
 
     journals[27].text = "That's strange, why are the servers offline?";
+    journals[27].type = JOURNAL_TYPE_SUBTITLE;
     journals[27].name = lotter_name;
     journals[27].followup = 28;
 
     journals[28].text = "System information shows that the servers are powered independently. There seems to be a higher power draw than usual. It would be impossible to know why, until I get a good look at the servers.";
+    journals[28].type = JOURNAL_TYPE_SUBTITLE;
     journals[28].name = acktana_name;
     journals[28].followup = 29;
 
     journals[29].text = "Let's get you there then!";
+    journals[29].type = JOURNAL_TYPE_SUBTITLE;
     journals[29].name = lotter_name;
     journals[29].followup = 30;
 
     journals[30].text = "Powering up the generators seems to have opened up some additional doors. That should help. . . . . You're welcome.";
+    journals[30].type = JOURNAL_TYPE_SUBTITLE;
     journals[30].name = acktana_name;
 
     // Finding the Flamethrower
 
     journals[31].text = "This should help with the frozen door.";
+    journals[31].type = JOURNAL_TYPE_SUBTITLE;
     journals[31].name = lotter_name;
 
     // Finding Jetpackl/Jumpboots
 
     journals[32].text = "This is a prototype Silverman-Stolipin Gravity Assist module!";
+    journals[32].type = JOURNAL_TYPE_SUBTITLE;
     journals[32].name = acktana_name;
     journals[32].followup = 33;
 
     journals[33].text = "What's it do?";
+    journals[33].type = JOURNAL_TYPE_SUBTITLE;
     journals[33].name = lotter_name;
     journals[33].followup = 34;
 
     journals[34].text = "Perform a mid-air jump";
+    journals[34].type = JOURNAL_TYPE_SUBTITLE;
     journals[34].name = acktana_name;
     journals[34].followup = 35;
 
     journals[35].text = "So... double jumping?";
+    journals[35].type = JOURNAL_TYPE_SUBTITLE;
     journals[35].name = lotter_name;
     journals[35].followup = 36;
 
     journals[36].text = "Yes, \"double jumping\".";
+    journals[36].type = JOURNAL_TYPE_SUBTITLE;
     journals[36].name = acktana_name;
 
     ///////////////////////////////////////////////////////////////////////
@@ -257,16 +269,19 @@ void journals_init()
 
     journals[37].text = "There's the terminal there at the end. Get me there and I'll take a look.";
     journals[37].media = "Media/acktana_part3_1.mp3";
+    journals[37].type = JOURNAL_TYPE_SUBTITLE;
     journals[37].name = acktana_name;
 
     // Server use first time
 
     journals[38].text = "Connecting...\n[modem sounds]\nIt seems that the Patchnotes was working on digitization prior to the incident, and when it arrived they uploaded the crew into the computer to escape the Unity Union boarding party. Power requirements for the system increased exponentially with this many people. The system is running on a low power mode. Until we can get it back up, I can't get you any more information.";
+    journals[38].type = JOURNAL_TYPE_SUBTITLE;
     journals[38].name = acktana_name;
     journals[38].media = "Media/acktana_part3_2.mp3";
     journals[38].followup = 39;
 
     journals[39].text = "Start the generator and talk to the computer people, got it.";
+    journals[39].type = JOURNAL_TYPE_SUBTITLE;
     journals[39].name = lotter_name;
     journals[39].media = "Media/lotter_part3_3.mp3";
 
@@ -277,49 +292,58 @@ void journals_init()
     // Power core boot
 
     journals[40].text = "Power core output stable at 1.21 Gigawatts. Servers are resuming operation now. Take me back.";
+    journals[40].type = JOURNAL_TYPE_SUBTITLE;
     journals[40].name = acktana_name;
     journals[40].media = "Media/acktana_part4_1.mp3";
     journals[40].followup = 41;
 
     journals[41].text = " You got it babe.";
+    journals[41].type = JOURNAL_TYPE_SUBTITLE;
     journals[41].name = lotter_name;
     journals[41].media = "Media/lotter_part4_2.mp3";
 
     // Server terminal
 
     journals[42].text = "[Modem sounds] .... This is terrible. Apparently immediately after uploading themselves, they got attacked by a computer virus by the Unity union. They deployed countermeasures.... something called the... Guardian System? It defeated the Unity Union Virus, but it also trapped them in nullpointer space.";
+    journals[42].type = JOURNAL_TYPE_SUBTITLE;
     journals[42].name = acktana_name;
     journals[42].media = "Media/acktana_part4_3.mp3";
     journals[42].followup = 43;
 
     journals[43].text = "Anything we can do?";
+    journals[43].type = JOURNAL_TYPE_SUBTITLE;
     journals[43].name = lotter_name;
     journals[43].media = "Media/lotter_part4_4.mp3";
     journals[43].followup = 44;
 
     journals[44].text = "Jack in, turn off the Guardian and jack out?";
+    journals[44].type = JOURNAL_TYPE_SUBTITLE;
     journals[44].name = acktana_name;
     journals[44].media = "Media/acktana_part4_5.mp3";
     journals[44].followup = 45;
 
     journals[45].text = " Alright! Let's jack in, kill that jack-off and jack out!";
+    journals[45].type = JOURNAL_TYPE_SUBTITLE;
     journals[45].name = lotter_name;
     journals[45].media = "Media/lotter_part4_6.mp3";
 
     // interacting with matrix bed
 
     journals[46].text = "That's a weird place for a bed.";
+    journals[46].type = JOURNAL_TYPE_SUBTITLE;
     journals[46].name = lotter_name;
     journals[46].media = "Media/lotter_part4_7.mp3";
     journals[46].followup = 47;
 
     journals[47].text = "It seems to be some kind of human-computer-interface, but it's powered off right now.";
+    journals[47].type = JOURNAL_TYPE_SUBTITLE;
     journals[47].name = acktana_name;
     journals[47].media = "Media/acktana_part4_8.mp3";
     journals[47].followup = 48;
 
     journals[48].text = "Alright!";
     journals[48].media = "Media/lotter_part4_9.mp3";
+    journals[48].type = JOURNAL_TYPE_SUBTITLE;
     journals[48].name = lotter_name;
 
     // 49 IS DECLARED ABOVE!!!

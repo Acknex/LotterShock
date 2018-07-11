@@ -52,6 +52,9 @@ void itemCollectible_effect(ENTITY *item)
 			// unlock
 			weapons_add(item->SUBSYSTEM_skill_a);
 			snd_play(snd_catch, 100, 0);
+
+            if(item->SUBSYSTEM_skill_a == WEAPON_FLAMETHROWER)
+                journals_play(31, JOURNAL_LEVEL_STORY);
 			break;
 			
 		case ITEM_DOUBLEJUMP:
