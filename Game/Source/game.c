@@ -115,6 +115,7 @@ void game_set_complete()
     game_final_cutscene.speed = 5;
 
     game_hidehud = true;
+    // music_start("Media/going_in.mp3", NULL, 100); // TODO @MasterQ32, wenn nicht hier wo dann?
 
     vec_set(game_final_cutscene.pos_start, camera->x);
     vec_set(game_final_cutscene.ang_start, camera->pan);
