@@ -84,9 +84,9 @@ void game_open()
     story_enginesEnabled = 0;
     story_powercoreEnabled = 0;
     story_serverRoomState = 0;
+    story_hasBattery = 0;
     playerHasHazmat = 0;
     playerHasDoubleJump = 0;
-    story_hasBattery = 0;
 
     game_final_cutscene.enabled = false;
 

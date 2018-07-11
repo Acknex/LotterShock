@@ -61,6 +61,7 @@ void itemCollectible_effect(ENTITY *item)
 			// unlock
 			playerHasDoubleJump += 1;
 			snd_play(snd_catch, 100, 0);
+            journals_play(32, JOURNAL_LEVEL_STORY);
 			break;
 			
 		case ITEM_HAZMAT:
