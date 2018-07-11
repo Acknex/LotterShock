@@ -405,6 +405,12 @@ void show_journal()
     }
 }
 
+void journals_stop()
+{
+    journals_current = -1;
+    hide_journal();
+}
+
 action journal()
 {
 	framework_setup(my, SUBSYSTEM_JOURNAL);

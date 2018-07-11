@@ -1,6 +1,8 @@
 #include "music_player.h"
 #include "settings.h"
 
+#include <windows.h>
+
 typedef struct
 {
     var handle_current;
@@ -11,6 +13,8 @@ typedef struct
     var maxVol;
     var musicCurrentPosition;
     STRING* currentMusic;
+
+    long songStart;
 } music_t;
 
 music_t music;
@@ -68,6 +72,7 @@ void music_start(STRING* file, var crossFadeTime, var loop)
 #else
         music.handle_current = 0;
 #endif
+        music.songStart = GetTickCount();
         music.musicCurrentPosition = 0;
 	}
 	else {
@@ -104,6 +109,14 @@ var music_is_playing()
     if(music.handle_last != 0 && media_playing(music.handle_last) != 0)
         return 1;
 	return 0;
+}
+
+var music_get_time()
+{
+    if(music_is_playing())
+        return GetTickCount() - music.songStart;
+    else
+        return -1;
 }
 
 void music_set_master_volume(var vol)

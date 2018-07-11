@@ -18,6 +18,7 @@
 #include "environmentals.h"
 #include "flesh.h"
 #include "math.h"
+#include "music_player.h"
 
 #include <acknex.h>
 
@@ -102,6 +103,7 @@ void game_open()
     game_iswon = 0;
 
     game_hashud = true;
+    game_hidehud = false;
 }
 
 void game_set_complete()
@@ -115,7 +117,9 @@ void game_set_complete()
     game_final_cutscene.speed = 5;
 
     game_hidehud = true;
-    // music_start("Media/going_in.mp3", NULL, 100); // TODO @MasterQ32, wenn nicht hier wo dann?
+    journals_stop();
+
+    music_start("Media/going_in.mp3", 0.1, false);
 
     vec_set(game_final_cutscene.pos_start, camera->x);
     vec_set(game_final_cutscene.ang_start, camera->pan);
@@ -176,6 +180,14 @@ void game_update()
 
         if(game_final_cutscene.enabled)
         {
+            // THIS IS A HARD TIME LIMIT AND MUST BE KEPT
+            if(music_get_time() >= 22000)
+            {
+                game_final_cutscene.stage = 5;
+                game_final_cutscene.progress = 0;
+                game_final_cutscene.speed = 2;
+            }
+
             switch(game_final_cutscene.stage)
             {
             case 0: // Current camera pos to sit position
@@ -230,27 +242,18 @@ void game_update()
                 if(materials_matrix_str >= 2.3)
                 {
                     game_final_cutscene.stage = 4;
-                    beep(); // TODO: Play laughing here!
                 }
                 break;
 
             case 4: // in the matrix, after laughing
-
                 materials_matrix_str += 0.01 * time_step;
-
-                if(materials_matrix_str >= 2.8)
-                {
-                    game_final_cutscene.stage = 5;
-                    game_final_cutscene.progress = 0;
-                    game_final_cutscene.speed = 2;
-                }
                 break;
 
             case 5: // lights-off-effect
 
                 materials_crt_str = clamp(materials_crt_str + time_step, 0, 15);
 
-                if(game_final_cutscene.progress == 100)
+                if(game_final_cutscene.progress == 100 && !music_is_playing())
                 {
                     game_final_cutscene.stage = 6;
                 }
@@ -298,21 +301,21 @@ void game_update()
                 }
             }
 
-
             journals_update();
 
             if(game_hashud)
                 hud_update();
 
             map_update();
-        }
 
-        if(input_hit(INPUT_NAVBACK) || (window_focus == 0))
-        {
-            game_ispaused = true;
-            journals_pause();
-            pausemenu_open();
-            framework_set_mousemode(MOUSEMODE_UI);
+            // pausing only works ingame, not in outro mode!
+            if(input_hit(INPUT_NAVBACK) || (window_focus == 0))
+            {
+                game_ispaused = true;
+                journals_pause();
+                pausemenu_open();
+                framework_set_mousemode(MOUSEMODE_UI);
+            }
         }
     }
 }

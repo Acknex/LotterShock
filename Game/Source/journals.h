@@ -18,6 +18,9 @@ void journals_quit();
 void journals_pause();
 void journals_resume();
 
+// stops playing any journals
+void journals_stop();
+
 // plays the journal with the given ID
 void journals_play(int id, int level);
 
