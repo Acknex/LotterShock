@@ -12,6 +12,7 @@
 #include "bestiary.h"
 #include "options.h"
 #include "cheats.h"
+#include "journals.h"
 
 #include <acknex.h>
 #include <windows.h>
@@ -48,6 +49,7 @@ PANEL * framework_load_screen =
     size_x = 1280;
     size_y = 720;
     flags = TRANSLUCENT;
+    layer = 900;
 }
 
 int framework_mousemode;
@@ -166,6 +168,13 @@ void framework_capture_mouse()
     SetCursorPos((rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2);
 }
 
+bool framework_intro_sequence_complete;
+
+void framework_complete_intro()
+{
+    framework_intro_sequence_complete = true;
+}
+
 //! Aktualisiert alles.
 void framework_update()
 {
@@ -274,8 +283,17 @@ void framework_update()
         {
             game_open();
         }
-        
+
+        if(framework.loaderState == 9)
+        {
+            journals_play(49, JOURNAL_LEVEL_STORY);
+        }
         if(framework.loaderState >= 9)
+        {
+            journals_update();
+        }
+        
+        if(framework_intro_sequence_complete)
         {
             framework_load_screen->alpha -= FRAMEWORK_ALPHA_BLENDSPEED * time_step;
             if(framework_load_screen->alpha <= 0)
