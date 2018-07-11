@@ -60,6 +60,14 @@ void game_init()
 
 void game_open()
 {
+#ifdef DEBUG_PEACEFUL
+    for(you = ent_next(NULL); you != NULL; you = ent_next(you))
+    {
+        if(you->SK_SUBSYSTEM >= 1000)
+            you->SK_ENTITY_DEAD = 1;
+    }
+#endif
+
     game_done = false;
     weapons_open();
     ESELSLERCHE_Init();
@@ -78,6 +86,7 @@ void game_open()
     story_serverRoomState = 0;
     playerHasHazmat = 0;
     playerHasDoubleJump = 0;
+    story_hasBattery = 0;
 
     game_final_cutscene.enabled = false;
 
@@ -284,7 +293,7 @@ void game_update()
                 if(region_check(REGION_SERVERROOM, &player->x, &player->x))
                 {
                     story_serverRoomState = 1;
-                    journals_play(37);
+                    journals_play(37, JOURNAL_LEVEL_STORY);
                 }
             }
 

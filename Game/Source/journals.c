@@ -10,6 +10,7 @@
 
 FONT * journal_fnt = "Arial#16b";
 FONT * journal_name_fnt = "Arial#24b";
+FONT * journal_subtitle_fnt = "Arial#32b";
 
 PANEL *journal_pan =
 {
@@ -43,7 +44,20 @@ TEXT *journal_txt_name =
     alpha = 0;
 }
 
+TEXT *journal_subtitle_txt =
+{
+    flags = WWRAP | TRANSLUCENT | OUTLINE;
+    font = journal_subtitle_fnt;
+    strings = 1;
+    layer = 999;
+    red = 255;
+    green = 255;
+    blue = 255;
+    alpha = 0;
+}
+
 int journals_current = 0;
+int journals_current_level = 0;
 var journals_mediahandle = 0;
 var journals_timeout = 0;
 
@@ -157,14 +171,17 @@ void journals_init()
     // Finding battery sequence
     journals[22].text = "Analysis of this battery reveals that it should have enough power to jumpstart the ion-containment field in order to restart the engine poston-field generator.";
     journals[22].name = acktana_name;
+    journals[22].type = JOURNAL_TYPE_SUBTITLE;
     journals[22].followup = 23;
 
     journals[23].text = " In other words: Stick it into the engine and press the big red button?";
     journals[23].name = lotter_name;
+    journals[23].type = JOURNAL_TYPE_SUBTITLE;
     journals[23].followup = 24;
 
     journals[24].text = "Yes, that would be another way to say it. You imbecile.";
     journals[24].name = acktana_name;
+    journals[24].type = JOURNAL_TYPE_SUBTITLE;
 
     ///////////////////////////////////////////////////////////////////////
     // PART 2
@@ -301,8 +318,8 @@ void journals_init()
 
 void journals_quit()
 {
-    reset(journal_pan, SHOW);
-    reset(journal_txt, SHOW);
+    hide_journal();
+
     if(journals_mediahandle != 0)
     {
         media_stop(journals_mediahandle);
@@ -311,8 +328,18 @@ void journals_quit()
     journals_current = -1;
 }
 
+void hide_journal()
+{
+    reset(journal_pan, SHOW);
+    reset(journal_txt, SHOW);
+    reset(journal_txt_name, SHOW);
+    reset(journal_subtitle_txt, SHOW);
+}
+
 void show_journal()
 {
+    if(journals_current < 0)
+        return; // nah
 	journal_pan.pos_x = 0;
 	journal_pan.pos_y = 0;
 	
@@ -324,17 +351,22 @@ void show_journal()
 
     journal_txt_name->pos_x = journal_pan->pos_x + 141;
     journal_txt_name->pos_y = journal_pan->pos_y + 194;
-	
-	set(journal_pan, SHOW);
-	set(journal_txt, SHOW);
-    set(journal_txt_name, SHOW);
-}
 
-void hide_journal()
-{
-	reset(journal_pan, SHOW);
-	reset(journal_txt, SHOW);
-    reset(journal_txt_name, SHOW);
+    journal_subtitle_txt->pos_x = 100;
+    journal_subtitle_txt->size_x = (screen_size.x - 200);
+    journal_subtitle_txt->pos_y = screen_size.y - 200; // TODO: Adjust this value
+
+    hide_journal();
+    if(journals[journals_current].type == JOURNAL_TYPE_SUBTITLE)
+    {
+        set(journal_subtitle_txt, SHOW);
+    }
+    else
+    {
+        set(journal_pan, SHOW);
+        set(journal_txt, SHOW);
+        set(journal_txt_name, SHOW);
+    }
 }
 
 action journal()
@@ -356,7 +388,7 @@ void journals_resume()
         media_start(journals_mediahandle);
 }
 
-void journals_play(int id)
+void journals_play(int id, int level)
 {
     if(id < 0 || id >= MAX_JOURNALS)
     {
@@ -364,11 +396,23 @@ void journals_play(int id)
         return;
     }
 
+    // we are already playing this journal
+    if (id == journals_current)
+        return;
+
+    // we aren't powerful enough to override the current journal
+    if(level < journals_current_level)
+        return;
+
     journals_current = id;
+    journals_current_level = level;
     journals_timeout = total_ticks + JOURNAL_MINTIME_PER_CHAR * str_len(journals[journals_current].text);
 
     str_cpy((journal_txt.pstring)[0], journals[journals_current].text);
     str_cpy((journal_txt_name.pstring)[0], journals[journals_current].name);
+    str_cpy((journal_subtitle_txt->pstring)[0], journals[journals_current].name);
+    str_cat((journal_subtitle_txt->pstring)[0], ": ");
+    str_cat((journal_subtitle_txt->pstring)[0], journals[journals_current].text);
 
     if(journals_mediahandle != 0)
         media_stop(journals_mediahandle);
@@ -397,11 +441,8 @@ void journals_update()
         {
             if(ptr.JOURNAL_ID >= MAX_JOURNALS)
                 return;
-            if (ptr.JOURNAL_ID != journals_current)
-            {
-                journals_play(ptr->JOURNAL_ID);
-                break; // can break out of the loop here
-            }
+            journals_play(ptr->JOURNAL_ID, JOURNAL_LEVEL_DEFAULT);
+            break; // can break out of the loop here
         }
 	}
 
@@ -436,7 +477,7 @@ void journals_update()
 
             if(journals[journals_current].followup > 0)
             {
-                journals_play(journals[journals_current].followup);
+                journals_play(journals[journals_current].followup, journals_current_level);
             }
             else
             {
@@ -446,6 +487,7 @@ void journals_update()
     }
     else
     {
+        journals_current_level = -9999;
         if(journals_mediahandle != 0)
         {
             media_stop(journals_mediahandle);
@@ -457,4 +499,5 @@ void journals_update()
     }
     journal_txt->alpha = journal_pan->alpha;
     journal_txt_name->alpha = journal_pan->alpha;
+    journal_subtitle_txt->alpha = journal_pan->alpha;
 }

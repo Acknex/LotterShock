@@ -3,6 +3,7 @@
 
 var story_enginesEnabled = 0;
 var story_powercoreEnabled = 0;
+var story_hasBattery = 0;
 
 // 0 = init
 // 1 = server room was entered
