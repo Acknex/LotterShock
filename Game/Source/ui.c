@@ -10,6 +10,7 @@ uisystem_t * uisystem_new(int layer)
     sys->first = NULL;
     sys->selected = NULL;
     sys->layer = layer;
+    sys->flags = UISYSTEM_LIGHT;
 
     sys->selector = pan_create("", layer + 1);
     sys->selector->flags = UNTOUCHABLE | LIGHT;
@@ -97,6 +98,17 @@ void uisystem_update(uisystem_t * system)
             system->selected = btn;
     }
 
+    if(system->flags & UISYSTEM_LIGHT)
+    {
+        for(btn = system->first; btn != NULL; btn = btn->next)
+        {
+            if(system->selected == btn)
+                set(btn->pan, LIGHT);
+            else
+                reset(btn->pan, LIGHT);
+        }
+    }
+
     if(input_hit(INPUT_UP))    uisystem_move_selection(system, UIDIR_UP);
     if(input_hit(INPUT_DOWN))  uisystem_move_selection(system, UIDIR_DOWN);
     if(input_hit(INPUT_LEFT))  uisystem_move_selection(system, UIDIR_LEFT);
@@ -114,12 +126,19 @@ void uisystem_update(uisystem_t * system)
 
     if(system->selected)
     {
-        set(system->selector, SHOW);
-        system->selector->pos_x = system->pos_x + system->selected->pos_x;
-        system->selector->pos_y = system->pos_y + system->selected->pos_y;
+        if(system->flags & UISYSTEM_SELECTOR)
+        {
+            set(system->selector, SHOW);
+            system->selector->pos_x = system->pos_x + system->selected->pos_x;
+            system->selector->pos_y = system->pos_y + system->selected->pos_y;
 
-        system->selector->scale_x = bmap_width(system->selected->bmap) / bmap_width(system->selector->bmap);
-        system->selector->scale_y = bmap_height(system->selected->bmap) / bmap_height(system->selector->bmap);
+            system->selector->scale_x = bmap_width(system->selected->bmap) / bmap_width(system->selector->bmap);
+            system->selector->scale_y = bmap_height(system->selected->bmap) / bmap_height(system->selector->bmap);
+        }
+        else
+        {
+            reset(system->selector, SHOW);
+        }
 
         var attack = input_hit(INPUT_ATTACK) && (!mouse_left || (mouse_left && (mouse_panel == system->selected->pan)));
         if(input_hit(INPUT_USE) || attack || input_hit(INPUT_JUMP))
