@@ -296,6 +296,10 @@ void environmentals_update()
                 break;
 
             case ENVIRONMENTAL_AIRLOCK:
+                if(ptr->skill1 > 0)
+                {
+                    ptr->ENVIRONMENTALS_TEMP = 100;
+                }
                 ent_animate(ptr, "close", ptr->ENVIRONMENTALS_TEMP, 0);
                 ptr->ENVIRONMENTALS_TEMP = clamp(ptr->ENVIRONMENTALS_TEMP + time_step, 0, 100);
                 if(ptr->ENVIRONMENTALS_TEMP >= 100)
