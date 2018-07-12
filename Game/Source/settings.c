@@ -204,3 +204,16 @@ void achievement_kill_beast(int beastid)
         achievements_save();
     }
 }
+
+void achievement_reset()
+{
+    int i;
+    for(i = 0; i < BEAST_COUNT; i++)
+    {
+        if(i < 2)
+            achievements.bestiary_unlocked[i] = 1;
+        else
+            achievements.bestiary_unlocked[i] = 0;
+    }
+    achievements_save();
+}

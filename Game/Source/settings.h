@@ -53,4 +53,6 @@ void achievements_save();
 
 void achievement_kill_beast(int beastid);
 
+void achievement_reset();
+
 #endif // SETTINGS_H

@@ -25,6 +25,7 @@ BMAP * options_bmp_more = "options_more.png";
 
 BMAP * options_bmp_inbetween_small = "options_inbetween_small.png";
 BMAP * options_bmp_inbetween_large = "options_inbetween_large.png";
+BMAP * options_bmp_reset = "options_reset.png";
 
 BMAP * options_bmp_checkbox = "option_inputslot_checked.png";
 
@@ -111,6 +112,12 @@ typedef struct checkbox_t
     TEXT * label;
 } checkbox_t;
 
+typedef struct clickbutton_t
+{
+    uibutton_t * button;
+    TEXT * label;
+} clickbutton_t;
+
 typedef struct selector_t
 {
     uibutton_t * decrease;
@@ -141,6 +148,7 @@ struct
     selector_t anisotropy;
 
     checkbox_t introskip;
+    clickbutton_t resetBestiary;
 
     // INPUT
     struct inputslot_t inputs[INPUT_MAX];
@@ -379,6 +387,38 @@ void options_checkbox_hide(checkbox_t * cb)
     reset(cb->label, SHOW);
 }
 
+
+void options_clickbutton_init(clickbutton_t * cb, EVENT event, var x, var y, BMAP * icon, STRING * label, int group)
+{
+    cb->button = uisystem_add_button(options_ui, x, y, icon, event);
+    cb->button->group = group;
+
+    cb->label = txt_create(1, 504);
+    cb->label->flags = ARIGHT | OUTLINE;
+    cb->label->font = options_panel_font;
+    str_cpy((cb->label->pstring)[0], label);
+}
+
+void options_clickbutton_update(clickbutton_t * cb)
+{
+    cb->label->pos_x = cb->button->pan->pos_x - 3;
+    cb->label->pos_y = cb->button->pan->pos_y + (43 - cb->label->font->dy) / 2;
+
+    if(is(cb->button->pan, SHOW))
+    {
+        set(cb->label, SHOW);
+    }
+    else
+    {
+        reset(cb->label, SHOW);
+    }
+}
+
+void options_clickbutton_hide(clickbutton_t * cb)
+{
+    reset(cb->label, SHOW);
+}
+
 bool options_wants_close()
 {
     return options_done;
@@ -420,8 +460,8 @@ void options_select_common()
     optionbutton.input_tab->neighbour[UIDIR_DOWN] = optionbutton.resolution.increase;
     optionbutton.common_tab->neighbour[UIDIR_DOWN] = optionbutton.resolution.decrease;
 
-    optionbutton.save->neighbour[UIDIR_UP] = optionbutton.introskip.button;
-    optionbutton.cancel->neighbour[UIDIR_UP] = optionbutton.introskip.button;
+    optionbutton.save->neighbour[UIDIR_UP] = optionbutton.resetBestiary.button;
+    optionbutton.cancel->neighbour[UIDIR_UP] = optionbutton.resetBestiary.button;
 }
 
 void options_select_input()
@@ -626,6 +666,8 @@ void options_init()
 
     options_checkbox_init(&optionbutton.introskip, &options_settings_copy.skipIntro, 190, 310, "Skip Intro", OPTIONGROUP_COMMON);
 
+    options_clickbutton_init(&optionbutton.resetBestiary, achievement_reset, 190, 360, options_bmp_reset, "Reset Bestiary", OPTIONGROUP_COMMON);
+
     optionbutton.resolution.decrease->neighbour[UIDIR_UP] = optionbutton.common_tab;
     optionbutton.resolution.decrease->neighbour[UIDIR_DOWN] = optionbutton.fullscreen.button;
 
@@ -651,7 +693,10 @@ void options_init()
     optionbutton.anisotropy.decrease->neighbour[UIDIR_DOWN] = optionbutton.introskip.button;
 
     optionbutton.introskip.button->neighbour[UIDIR_UP] = optionbutton.anisotropy.decrease;
-    optionbutton.introskip.button->neighbour[UIDIR_DOWN] = optionbutton.cancel;
+    optionbutton.introskip.button->neighbour[UIDIR_DOWN] = optionbutton.resetBestiary.button;
+
+    optionbutton.resetBestiary.button->neighbour[UIDIR_UP] = optionbutton.introskip.button;
+    optionbutton.resetBestiary.button->neighbour[UIDIR_DOWN] = optionbutton.cancel;
 
     { // initialize and interconnect all input slots
 
@@ -846,6 +891,8 @@ void options_update()
     options_checkbox_update(&optionbutton.vsync);
     options_checkbox_update(&optionbutton.introskip);
 
+    options_clickbutton_update(&optionbutton.resetBestiary);
+
     options_checkbox_update(&optionbutton.hinvert);
     options_checkbox_update(&optionbutton.vinvert);
 
@@ -977,6 +1024,8 @@ void options_close()
     options_checkbox_hide(&optionbutton.fullscreen);
     options_checkbox_hide(&optionbutton.vsync);
     options_checkbox_hide(&optionbutton.introskip);
+
+    options_clickbutton_hide(&optionbutton.resetBestiary);
 
     options_checkbox_hide(&optionbutton.hinvert);
     options_checkbox_hide(&optionbutton.vinvert);
