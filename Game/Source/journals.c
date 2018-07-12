@@ -1,6 +1,7 @@
 #include "journals.h"
 #include "global.h"
 #include "framework.h"
+#include "intro.h"
 
 #include <acknex.h>
 
@@ -348,6 +349,41 @@ void journals_init()
 
     // 49 IS DECLARED ABOVE!!!
 
+#define JOURNAL(_id,_name,_media,_text) do { journals[_id].name = _name; journals[_id].type = JOURNAL_TYPE_SUBTITLE; journals[_id].media = _media; journals[_id].text = _text; journals[_id].followup = ((_id)+1); } while(false)
+
+    JOURNAL(50, NULL, NULL, "22 Hours after the death pebble incident...");
+
+    JOURNAL(51, acktana_name, NULL, "Star-Lotti! We have received a wide-range emergency broadcast. It Identifies the ship as the long-lost USS Patchnotes.");
+    JOURNAL(52, lotter_name, NULL, "Patch it through.");
+    JOURNAL(53, acktana_name, NULL, "Patching through...");
+
+    JOURNAL(54, patchnotes_name, NULL, "MAYDAY, MAYDAY, MAYDAY");
+    JOURNAL(55, patchnotes_name, NULL, "THIS IS USS PATCHNOTES, USS PATCHNOTES, USS PATCHNOTES");
+    JOURNAL(56, patchnotes_name, NULL, "CALL SIGN ACKPATCH");
+    JOURNAL(57, patchnotes_name, NULL, "MAYDAY");
+    JOURNAL(58, patchnotes_name, NULL, "USS PATCHNOTES CALL SIGN ACKPATCH,\nPOSITION 42, 69, 1024 AT 0745 HOURS, 17TH OCTOBER 2015a");
+    JOURNAL(59, patchnotes_name, NULL, "WE HAVE BEEN ATTACKED BY A UNITY UNION BATTLECRUISER AND HAVE BEEN BOARDED");
+    JOURNAL(60, patchnotes_name, NULL, "IMMEDIATE ASSISTANCE REQUIRED");
+    JOURNAL(61, patchnotes_name, NULL, "WE HAVE 29 SOULS REMAINING ABOARD AS OF TIME OF THIS MESSAGE");
+    JOURNAL(62, patchnotes_name, NULL, "OVER");
+    JOURNAL(63, acktana_name, NULL, "Message repeats every 2 Minutes.");
+    JOURNAL(64, lotter_name, NULL, "That distress signal dates back 3 years! About the time the Patchnotes vanished...\nIdeas?");
+    JOURNAL(65, acktana_name, NULL, "Acknation Galactic Laws require us to answer any-");
+    JOURNAL(66, lotter_name, NULL, "...friendly distress call, yes, yes... Fine. Set a course.");
+    JOURNAL(67, acktana_name, NULL, "As you command.");
+    journals[67].event = intro_step_distress_end;
+    journals[67].followup = 0; // breakup the sequence here
+
+    JOURNAL(68, NULL, NULL, "3 Hours later...");
+    JOURNAL(69, lotter_name, NULL, "It really is her... the USS Patchnotes... What a sight...");
+    JOURNAL(70, acktana_name, NULL, "Sensors indicate heavy damage to internal systems and signs of boarding. Ship not responding to hails. No sign of the enemy.");
+    JOURNAL(71, lotter_name, NULL, "No reason for them to stick around after all this time... take us in. I want to take a look around inside.");
+    JOURNAL(72, acktana_name, NULL, "Commencing docking procedure.");
+    journals[72].event = intro_step_flyby_end;
+    journals[72].followup = 0; // END OF SEQUENCE!
+
+#undef JOURNAL
+
     journals_mediahandle = 0;
     journals_current = -1;
 }
@@ -448,13 +484,22 @@ void journals_play(int id, int level)
 
     journals_current = id;
     journals_current_level = level;
-    journals_timeout = total_ticks + JOURNAL_MINTIME_PER_CHAR * str_len(journals[journals_current].text);
+    journals_timeout = total_ticks + maxv(16, JOURNAL_MINTIME_PER_CHAR * str_len(journals[journals_current].text));
 
-    str_cpy((journal_txt.pstring)[0], journals[journals_current].text);
-    str_cpy((journal_txt_name.pstring)[0], journals[journals_current].name);
-    str_cpy((journal_subtitle_txt->pstring)[0], journals[journals_current].name);
-    str_cat((journal_subtitle_txt->pstring)[0], ": ");
-    str_cat((journal_subtitle_txt->pstring)[0], journals[journals_current].text);
+    if(journals[journals_current].name != NULL)
+    {
+        str_cpy((journal_txt.pstring)[0], journals[journals_current].text);
+        str_cpy((journal_txt_name.pstring)[0], journals[journals_current].name);
+        str_cpy((journal_subtitle_txt->pstring)[0], journals[journals_current].name);
+        str_cat((journal_subtitle_txt->pstring)[0], ": ");
+        str_cat((journal_subtitle_txt->pstring)[0], journals[journals_current].text);
+    }
+    else
+    {
+        str_cpy((journal_txt.pstring)[0], journals[journals_current].text);
+        str_cpy((journal_txt_name.pstring)[0], "");
+        str_cpy((journal_subtitle_txt->pstring)[0], journals[journals_current].text);
+    }
 
     if(journals_mediahandle != 0)
         media_stop(journals_mediahandle);

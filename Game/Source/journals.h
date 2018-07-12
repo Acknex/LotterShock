@@ -47,5 +47,6 @@ STRING* crew_name9 = "Lt. Freiknecht";
 
 STRING* lotter_name = "Star Lotti";
 STRING* acktana_name = "Acktana";
+STRING * patchnotes_name = "Unknown Voice";
 
 #endif

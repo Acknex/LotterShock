@@ -49,6 +49,7 @@ typedef int bool;
 #define SUBSYSTEM_ENEMY_GIB         16
 #define SUBSYSTEM_MAINMENU          17
 #define SUBSYSTEM_FLESH             18
+#define SUBSYSTEM_INTRO             19
 
 
 #define SUBSYSTEM_ENEMY_LERCHE  1000

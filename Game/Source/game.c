@@ -301,8 +301,6 @@ void game_update()
                 }
             }
 
-            journals_update();
-
             if(game_hashud)
                 hud_update();
 
