@@ -14,6 +14,7 @@ typedef struct settings_t
     int fps_limit;
     int anisotropy;
     bool vsync;
+    bool skipIntro;
 
     // Audio
     int game_volume;
@@ -51,5 +52,7 @@ void achievements_load();
 void achievements_save();
 
 void achievement_kill_beast(int beastid);
+
+void achievement_reset();
 
 #endif // SETTINGS_H

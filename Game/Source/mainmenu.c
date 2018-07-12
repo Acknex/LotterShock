@@ -105,6 +105,7 @@ void mainmenu_open()
     mainmenu_cameradist = vec_dist(nullvector, camera.x);
 
     music_start("Media/intro.mp3", 1.0, false);
+    camera->arc = 60;
 }
 
 void mainmenu_update()
