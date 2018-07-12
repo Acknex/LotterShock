@@ -91,12 +91,18 @@ action Eye()
 //fix me
 action Eye_shot()
 {
-	set (my, PASSABLE);
+	set (my, PASSABLE|LIGHT|TRANSLUCENT);
 	my->EYE_COUNTER = 0;
-	while(my->EYE_COUNTER < 2)
+	my->alpha = 100;
+	VECTOR to;
+	while(my->EYE_COUNTER < 6)
 	{
 		my->EYE_COUNTER += time_step;
-		vec_add(&my->scale_x, vector(time_step, time_step, time_step));
+		vec_add(&my->scale_x, vector(4*time_step, 4*time_step, 4*time_step));
+		vec_set (&to, &player->x);
+		vec_sub (&to, &my->x);
+		vec_to_angle(&my->pan, &to);
+		my->alpha = maxv(0, my->alpha -  5* time_step);
 		wait(1);
 	}
 		ptr_remove(me);
@@ -203,17 +209,6 @@ void EYE_Update()
 	}
 }
 
-/*action eye_shot()
-{
-	my->emask |= ENABLE_IMPACT | ENABLE_SHOOT | ENABLE_ENTITY;
-	vec_scale(my->scale_x, 32);
-	my->event = ENEMY__projectileEvent;
-	my->skill20 = 50;
-	my->skill21 = 16*10;
-	set(my, LIGHT);
-	framework_setup(my, SUBSYSTEM_PROJECTILE);
-}*/
-
 var EYE__toFloor(ENTITY* ptr)
 {
 	VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 10);
@@ -275,7 +270,6 @@ void EYE__patrol(ENTITY* ptr)
 	{
 		ptr->EYE_COUNTER = 0;
 		ptr->EYE_STATE = EYE_STATE_TURN;
-//		ptr->EYE_STATE = EYE_STATE_ATTACK;
 	}
 	else if (!SCAN_IsPlayerNear(ptr, ptr->EYE_ACTIVEDIST * 1.1))
 	{
@@ -313,20 +307,9 @@ void EYE__turn(ENTITY* ptr)
 			vec_rotate(dist, &dir);
 			vec_add (dist, &ptr->x);
 			ENTITY* ent = ent_create("eye_shot.mdl", &ptr->x/*dist*/, Eye_shot);
-			vec_set(&ent->scale_x, &ptr->scale_x);
+			//vec_set(&ent->scale_x, &ptr->scale_x);
+			vec_scale(&ent->scale_x, 16);
 		} 
-	/*	ptr->EYE_STATE = EYE_STATE_ATTACK;
-		ENTITY* ent = ent_create("eye_shot.mdl", ptr->x, enemy_projectile);
-		vec_scale(ent->scale_x, 32);
-		ent->bulletDamage = DAMAGE_EYE; //refine... this will be effect not projectile
-	ENEMY_setDamage(ent, DAMAGE_EYE);
-		VECTOR v;
-		vec_set(v, ptr->x);
-		vec_sub(v, player->x);
-		vec_normalize(v,1);
-		vec_set(ent->skill1, v);
-		vec_scale(v, -1);
-		vec_to_angle(ent->pan, v);*/
 	}
 	else
 	{
