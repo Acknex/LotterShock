@@ -4,6 +4,8 @@
 #define PRAGMA_BIND "default.fx"
 #include <mtlView.c>
 
+#include "settings.h"
+
 BMAP *bmapPPOriginal = NULL;
 
 BMAP * materials_matrix_tex = "matrix_font.png";
@@ -87,7 +89,6 @@ MATERIAL *matDecalBasic =
 	effect = "decal_basic.fx";
 }
 
-
 MATERIAL *matSplatBlood =
 {
 	effect = "splat_blood.fx";
@@ -118,6 +119,11 @@ MATERIAL *matPPCombine =
 	effect = "pp_combine.fx";
 }
 
+MATERIAL *matPPPassthrough =
+{
+    effect = "pp_nobloom.fx";
+}
+
 MATERIAL *matPPDesync =
 {
 	effect = "desync.fx";
@@ -133,6 +139,11 @@ MATERIAL *matPPCrt =
 {
     effect = "pp_crt.fx";
     flags = AUTORELOAD;
+}
+
+MATERIAL *matPPretrolize =
+{
+    effect = "pp_retrolize.fx";
 }
 
 void pp_desync(var strength, var contrast)
@@ -158,6 +169,7 @@ void UpdateRenderTargets()
 	
 	camera.target1 = bmapPPOriginal;
     matPPCombine.skin1 = bmapPPOriginal;
+    matPPPassthrough.skin1 = bmapPPOriginal;
 
     VIEW * it = camera;
     while(it != NULL)
@@ -168,24 +180,46 @@ void UpdateRenderTargets()
     }
 }
 
-void SetupPostprocessing()
+void materials_reinit()
 {
-	UpdateRenderTargets();
-	
-	matPPBlurHorizontal.skill1 = floatv(2.0);
-	matPPBlurHorizontal.skill2 = floatv(0.0);
-	
-	matPPBlurVertical.skill1 = floatv(0.0);
-	matPPBlurVertical.skill2 = floatv(2.0);
-	
-	matPPCombine.skill1 = floatv(1.0);
-	
-	pp_add(matPPBlurVertical);
-	pp_add(matPPBlurHorizontal);
-	pp_add(matPPCombine);
-	pp_add(matPPDesync);
+    while(pp_view != NULL && pp_view != camera)
+    {
+        pp_add(NULL);
+    }
+
+    UpdateRenderTargets();
+
+    matPPBlurHorizontal.skill1 = floatv(2.0);
+    matPPBlurHorizontal.skill2 = floatv(0.0);
+
+    matPPBlurVertical.skill1 = floatv(0.0);
+    matPPBlurVertical.skill2 = floatv(2.0);
+
+    matPPCombine.skill1 = floatv(1.0);
+
+    if(settings.bloom)
+    {
+        pp_add(matPPBlurVertical);
+        pp_add(matPPBlurHorizontal);
+        pp_add(matPPCombine);
+    }
+    else
+    {
+        pp_add(matPPPassthrough);
+    }
+    pp_add(matPPDesync);
+    if(settings.retroshader)
+    {
+        pp_add(matPPretrolize);
+    }
     pp_add(matPPMatrix);
     pp_add(matPPCrt);
+}
+
+void SetupPostprocessing()
+{
+    materials_reinit();
+    settings_register_signal(materials_reinit);
 }
 
 void SetupDefaultMaterials()

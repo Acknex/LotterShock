@@ -17,6 +17,9 @@ typedef struct settings_t
     bool skipIntro;
     var gamma;
 
+    bool bloom;
+    bool retroshader;
+
     // Audio
     int game_volume;
 
@@ -30,6 +33,7 @@ typedef struct settings_t
 typedef struct achievements_t
 {
     bool bestiary_unlocked[BEAST_COUNT];
+    bool retro_unlocked;
 } achievements_t;
 
 settings_t settings;

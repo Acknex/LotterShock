@@ -150,6 +150,9 @@ struct
     checkbox_t introskip;
     clickbutton_t resetBestiary;
 
+    checkbox_t bloomeffect;
+    checkbox_t retroeffect;
+
     // INPUT
     struct inputslot_t inputs[INPUT_MAX];
 
@@ -462,8 +465,8 @@ void options_select_common()
     optionbutton.input_tab->neighbour[UIDIR_DOWN] = optionbutton.resolution.increase;
     optionbutton.common_tab->neighbour[UIDIR_DOWN] = optionbutton.resolution.decrease;
 
-    optionbutton.save->neighbour[UIDIR_UP] = optionbutton.resetBestiary.button;
-    optionbutton.cancel->neighbour[UIDIR_UP] = optionbutton.resetBestiary.button;
+    optionbutton.save->neighbour[UIDIR_UP] = optionbutton.retroeffect.button;
+    optionbutton.cancel->neighbour[UIDIR_UP] = optionbutton.retroeffect.button;
 }
 
 void options_select_input()
@@ -672,13 +675,18 @@ void options_init()
 
     options_clickbutton_init(&optionbutton.resetBestiary, achievement_reset, 190, 360, options_bmp_reset, "Reset Bestiary", OPTIONGROUP_COMMON);
 
+    options_checkbox_init(&optionbutton.bloomeffect, &options_settings_copy.bloom,       600, 10, "Enable Bloom", OPTIONGROUP_COMMON);
+    options_checkbox_init(&optionbutton.retroeffect, &options_settings_copy.retroshader, 600, 60, "Enable Retro", OPTIONGROUP_COMMON);
+
     optionbutton.resolution.decrease->neighbour[UIDIR_UP] = optionbutton.common_tab;
     optionbutton.resolution.decrease->neighbour[UIDIR_DOWN] = optionbutton.fullscreen.button;
 
     optionbutton.resolution.increase->neighbour[UIDIR_UP] = optionbutton.common_tab;
     optionbutton.resolution.increase->neighbour[UIDIR_DOWN] = optionbutton.fullscreen.button;
+    optionbutton.resolution.increase->neighbour[UIDIR_RIGHT] = optionbutton.bloomeffect.button;
 
     optionbutton.fullscreen.button->neighbour[UIDIR_UP] = optionbutton.resolution.decrease;
+    optionbutton.fullscreen.button->neighbour[UIDIR_RIGHT] = optionbutton.retroeffect.button;
     optionbutton.fullscreen.button->neighbour[UIDIR_DOWN] = optionbutton.vsync.button;
 
     optionbutton.vsync.button->neighbour[UIDIR_UP] = optionbutton.fullscreen.button;
@@ -706,6 +714,15 @@ void options_init()
 
     optionbutton.resetBestiary.button->neighbour[UIDIR_UP] = optionbutton.introskip.button;
     optionbutton.resetBestiary.button->neighbour[UIDIR_DOWN] = optionbutton.cancel;
+
+
+    optionbutton.bloomeffect.button->neighbour[UIDIR_UP] = optionbutton.input_tab;
+    optionbutton.bloomeffect.button->neighbour[UIDIR_LEFT] = optionbutton.resolution.increase;
+    optionbutton.bloomeffect.button->neighbour[UIDIR_DOWN] = optionbutton.retroeffect.button;
+
+    optionbutton.retroeffect.button->neighbour[UIDIR_UP] = optionbutton.bloomeffect.button;
+    optionbutton.retroeffect.button->neighbour[UIDIR_LEFT] = optionbutton.fullscreen.button;
+    optionbutton.retroeffect.button->neighbour[UIDIR_DOWN] = optionbutton.cancel;
 
     { // initialize and interconnect all input slots
 
@@ -887,6 +904,10 @@ void options_update()
         }
     }
 
+    // prevent retrobutton from appearing
+    if(!achievements.retro_unlocked)
+        reset(optionbutton.retroeffect.button->pan, SHOW);
+
     uisystem_update(options_ui);
 
     options_selector_update(&optionbutton.resolution);
@@ -905,6 +926,9 @@ void options_update()
 
     options_checkbox_update(&optionbutton.hinvert);
     options_checkbox_update(&optionbutton.vinvert);
+
+    options_checkbox_update(&optionbutton.bloomeffect);
+    options_checkbox_update(&optionbutton.retroeffect);
 
     // force-update values
     options_settings_copy.fps_limit = options_fpslimits_value[options_selected_fpslimit];
@@ -1035,6 +1059,9 @@ void options_close()
     options_checkbox_hide(&optionbutton.fullscreen);
     options_checkbox_hide(&optionbutton.vsync);
     options_checkbox_hide(&optionbutton.introskip);
+
+    options_checkbox_hide(&optionbutton.bloomeffect);
+    options_checkbox_hide(&optionbutton.retroeffect);
 
     options_clickbutton_hide(&optionbutton.resetBestiary);
 

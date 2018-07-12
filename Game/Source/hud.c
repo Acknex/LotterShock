@@ -297,11 +297,14 @@ void hud_update()
     {
         highlightCrosshair = mouse_ent.INTERACTIBLE;
 #ifdef DEBUG
+        VECTOR * color = COLOR_GREEN;
+        if((mouse_ent->emask & DYNAMIC) == 0)
+            color = COLOR_RED;
         draw_text(
             str_printf(NULL, "[%s]", mouse_ent.type),
             screen_size.x / 2 + 10,
             screen_size.y / 2 + 10,
-            COLOR_GREEN);
+            color);
 #endif
     }
 
