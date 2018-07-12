@@ -37,6 +37,7 @@
 #include "splatter.h"
 #include "settings.h"
 #include "scan.h"
+#include "enemy.h"
 
 void TURRET__init();
 void TURRET__shoot(ENTITY* ptr);
@@ -373,7 +374,8 @@ void TURRET__shoot(ENTITY* ptr)
 
 	ENTITY* ent = ent_create(SPHERE_MDL, vecDist, enemy_projectile);	
 	ent->pan = panOffs+ptr->SHOOT_ANGLE;	
-	ent->tilt = ptr->SHOOT_ELEVATION;	
+	ent->tilt = ptr->SHOOT_ELEVATION;
+	ENEMY_setDamage(ent, DAMAGE_TURRET);
 }
 
 // effects
@@ -388,7 +390,8 @@ void p_spark_fade(PARTICLE* p)
 	p.z += 0.8 * p.vel_z*time_step;
 }
 
-void p_spark(PARTICLE* p) {
+void p_spark(PARTICLE* p) 
+{
 	p.skill_a = random(360);
 	p.skill_b = 17 + random(12);
 	p.vel_x = sinv(p.skill_a) * p.skill_b;

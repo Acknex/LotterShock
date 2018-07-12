@@ -27,23 +27,21 @@ void PARTICLE__explode_init(PARTICLE* p)
 	p->event = PARTICLE__explode_fade;
 }
 
-void PARTICLE_laser(VECTOR* pos, ENTITY* ent)
+void PARTICLE_laser(VECTOR* pos, VECTOR* vecDist)
 {
-	var h = handle(ent);
-	effect(PARTICLE__laser_init, 1, pos, vector(h,0,0));	
+//	var h = handle(ent);
+//	effect(PARTICLE__laser_init, 1, pos, vector(h,0,0));	
+	effect(PARTICLE__laser_init, 1, pos, vecDist);	
 }
 
 void PARTICLE__laser_init(PARTICLE* p)
 {
-	p->skill_a = p->vel_x;
-	ENTITY* ent = ptr_for_handle(p->skill_a);
-	vec_set(&p->vel_x,&ent->EYE_LASERDIST);
-	vec_set(&p->blue,vector(0,0,255));
-	set(p, STREAK);
-	p->lifespan = 200;
+	vec_set(&p->blue,vector(0,255,0));
+	set(p, BEAM);
+	p->lifespan = 0.1;
 	p->alpha = 100;
 	p->size = 10;
-	p->event = PARTICLE__laser_fade;
+	p->event = NULL;
 }
 
 void PARTICLE__laser_fade(PARTICLE* p)

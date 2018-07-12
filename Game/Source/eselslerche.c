@@ -272,7 +272,7 @@ void ESELSLERCHE__run(ENTITY* ptr)
 		var dist = c_trace(&ptr->x, &player->x, IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | USE_POLYGON | SCAN_TEXTURE | ACTIVATE_SHOOT);
 		if (HIT_TARGET && you == player)
 		{
-			playerAddHealth(-30-random(15));
+			playerAddHealth(-DAMAGE_LERCHE);
 		}
 		ent_playsound2(ptr, eselslerche_snd_explo, 10000, 10000);
 		set(ptr, PASSABLE);
