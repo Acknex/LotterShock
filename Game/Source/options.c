@@ -7,8 +7,6 @@
 #include <acknex.h>
 #include <d3d9.h>
 
-
-
 BMAP * options_bmp_pane = "options_pane.png";
 BMAP * options_bmp_tab_common = "options_tab_common.png";
 BMAP * options_bmp_tab_input = "options_tab_input.png";
@@ -146,6 +144,8 @@ struct
 
     selector_t fpslimit;
     selector_t anisotropy;
+
+    slider_t gamma;
 
     checkbox_t introskip;
     clickbutton_t resetBestiary;
@@ -426,11 +426,13 @@ bool options_wants_close()
 
 void options_cancel()
 {
+    video_gamma = settings.gamma; // revert
     options_done = 1;
 }
 
 void options_save()
 {
+    options_settings_copy.gamma = video_gamma;
     memcpy(input, options_input_copy, sizeof(INPUT) * INPUT_MAX);
     memcpy(settings, options_settings_copy, sizeof(settings_t));
 
@@ -664,6 +666,8 @@ void options_init()
 
     options_selector_init(&optionbutton.anisotropy, &options_settings_copy.anisotropy, options_anisotropy_text, 190, 210, options_bmp_inbetween_large, "Anisotropic Filter", OPTIONGROUP_COMMON);
 
+    options_slider_init(&optionbutton.gamma, &video_gamma, 10.0, 200.0, 10.0, 190, 260, options_bmp_inbetween_large, "Brightness", OPTIONGROUP_COMMON);
+
     options_checkbox_init(&optionbutton.introskip, &options_settings_copy.skipIntro, 190, 310, "Skip Intro", OPTIONGROUP_COMMON);
 
     options_clickbutton_init(&optionbutton.resetBestiary, achievement_reset, 190, 360, options_bmp_reset, "Reset Bestiary", OPTIONGROUP_COMMON);
@@ -689,10 +693,15 @@ void options_init()
     optionbutton.anisotropy.increase->neighbour[UIDIR_UP] = optionbutton.fpslimit.increase;
     optionbutton.anisotropy.decrease->neighbour[UIDIR_UP] = optionbutton.fpslimit.decrease;
 
-    optionbutton.anisotropy.increase->neighbour[UIDIR_DOWN] = optionbutton.introskip.button;
-    optionbutton.anisotropy.decrease->neighbour[UIDIR_DOWN] = optionbutton.introskip.button;
+    optionbutton.anisotropy.increase->neighbour[UIDIR_DOWN] = optionbutton.gamma.increase;
+    optionbutton.anisotropy.decrease->neighbour[UIDIR_DOWN] = optionbutton.gamma.decrease;
 
-    optionbutton.introskip.button->neighbour[UIDIR_UP] = optionbutton.anisotropy.decrease;
+    optionbutton.gamma.increase->neighbour[UIDIR_UP] = optionbutton.anisotropy.increase;
+    optionbutton.gamma.decrease->neighbour[UIDIR_UP] = optionbutton.anisotropy.decrease;
+    optionbutton.gamma.increase->neighbour[UIDIR_DOWN] = optionbutton.introskip.button;
+    optionbutton.gamma.decrease->neighbour[UIDIR_DOWN] = optionbutton.introskip.button;
+
+    optionbutton.introskip.button->neighbour[UIDIR_UP] = optionbutton.gamma.decrease;
     optionbutton.introskip.button->neighbour[UIDIR_DOWN] = optionbutton.resetBestiary.button;
 
     optionbutton.resetBestiary.button->neighbour[UIDIR_UP] = optionbutton.introskip.button;
@@ -886,6 +895,7 @@ void options_update()
 
     options_slider_update(&optionbutton.hsensitivity);
     options_slider_update(&optionbutton.vsensitivity);
+    options_slider_update(&optionbutton.gamma);
 
     options_checkbox_update(&optionbutton.fullscreen);
     options_checkbox_update(&optionbutton.vsync);
@@ -1020,6 +1030,7 @@ void options_close()
 
     options_slider_hide(&optionbutton.hsensitivity);
     options_slider_hide(&optionbutton.vsensitivity);
+    options_slider_hide(&optionbutton.gamma);
 
     options_checkbox_hide(&optionbutton.fullscreen);
     options_checkbox_hide(&optionbutton.vsync);

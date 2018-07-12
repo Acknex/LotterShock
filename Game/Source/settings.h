@@ -15,6 +15,7 @@ typedef struct settings_t
     int anisotropy;
     bool vsync;
     bool skipIntro;
+    var gamma;
 
     // Audio
     int game_volume;

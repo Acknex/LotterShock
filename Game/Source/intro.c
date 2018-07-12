@@ -2,6 +2,7 @@
 #include "global.h"
 #include "framework.h"
 #include "journals.h"
+#include "input.h"
 
 #include <acknex.h>
 
@@ -154,6 +155,12 @@ void intro_update()
         draw_quad(NULL, vector(0,0,0), NULL, &screen_size, NULL, COLOR_BLACK, clamp(intro.timer, 0, 100), 0);
         break;
 
+    }
+
+    if(input_hit(INPUT_JUMP) || input_hit(INPUT_ATTACK) || input_hit(INPUT_NAVBACK) || input_hit(INPUT_USE))
+    {
+        intro.done = true;
+        intro.state = 6;
     }
 }
 

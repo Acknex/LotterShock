@@ -61,6 +61,7 @@ void framework_update_settings()
     fps_max = settings.fps_limit;
     d3d_anisotropy = settings.anisotropy;
     d3d_triplebuffer = settings.vsync;
+    video_gamma = settings.gamma;
 
     video_set(
         settings.resolution_x,

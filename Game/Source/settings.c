@@ -48,6 +48,7 @@ void settings_init()
     settings.fps_limit = 60;
     settings.anisotropy = 5;
     settings.vsync = true;
+    settings.gamma = 100;
     settings.skipIntro = false;
 
     settings.game_volume = 100;
@@ -82,6 +83,7 @@ void settings_load_from(STRING * fileName)
     settings.anisotropy   = ini_read_int(fileName, "Game", "anisotropy", settings.anisotropy);
     settings.vsync        = ini_read_int(fileName, "Game", "vsync", settings.vsync);
     settings.skipIntro    = ini_read_int(fileName, "Game", "skip_intro", settings.skipIntro);
+    settings.gamma        = ini_read_var(fileName, "Game", "gamma", settings.gamma);
 
     settings.resolution_x = ini_read_int(fileName, "Resolution", "width", settings.resolution_x);
     settings.resolution_y = ini_read_int(fileName, "Resolution", "height", settings.resolution_y);
@@ -134,6 +136,7 @@ void settings_save()
     ini_write_int(settings_file, "Game", "anisotropy", settings.anisotropy);
     ini_write_int(settings_file, "Game", "vsync", settings.vsync);
     ini_write_int(settings_file, "Game", "skip_intro", settings.skipIntro);
+    ini_write_var(settings_file, "Game", "gamma", settings.gamma);
 
     ini_write_int(settings_file, "Resolution", "width", settings.resolution_x);
     ini_write_int(settings_file, "Resolution", "height", settings.resolution_y);
