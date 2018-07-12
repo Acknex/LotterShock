@@ -14,6 +14,7 @@ typedef struct settings_t
     int fps_limit;
     int anisotropy;
     bool vsync;
+    bool skipIntro;
 
     // Audio
     int game_volume;
