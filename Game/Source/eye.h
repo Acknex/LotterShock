@@ -8,6 +8,7 @@ void EYE_Update();
 //local
 void EYE__inactive(ENTITY* ptr);
 void EYE__patrol(ENTITY* ptr);
+void EYE__turn(ENTITY* ptr);
 void EYE__attack(ENTITY* ptr);
 void EYE__die(ENTITY* ptr);
 void EYE__dead(ENTITY* ptr);
