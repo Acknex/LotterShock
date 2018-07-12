@@ -74,8 +74,6 @@ STRING * bestiary_beast_name = "#1024";
 STRING * bestiary_beast_desc = "#1024";
 STRING * bestiary_beast_media = "#1024";
 
-var media_handle_beastiary;
-
 FONT * bestiary_fnt_name = "Arial#32b";
 FONT * bestiary_fnt_desc = "Arial#24";
 FONT * bestiary_fnt_help = "Arial#16ib";
@@ -117,6 +115,8 @@ struct
     bool done;
     PANEL * lastPan;
     beast_t beasts[BEAST_COUNT];
+    var mediaHandle;
+    var mediaTimer;
 } bestiary;
 
 void bestiary_init()
@@ -163,10 +163,10 @@ void bestiary_open()
     bestiary.done = false;
     bestiary.position = 0;
 
-    music_start("Media/beastiary.mp3", 0.5, true);
+    bestiary.mediaHandle = 0;
+    bestiary.mediaTimer = 0;
 
-    str_cpy(bestiary_beast_media, bestiary.beasts[0].mediaFile);
-    media_handle_beastiary = media_play(bestiary_beast_media, NULL, 100);
+    music_start("Media/beastiary.mp3", 0.5, true);
 
     set(bestiary_pan_back, SHOW);
     set(bestiary_pan_prev, SHOW);
@@ -261,12 +261,12 @@ void bestiary_update()
     if(bestiary.done)
         snd_play(ui_accept_snd, 100, 0);
 
-    str_cpy(bestiary_beast_media, bestiary.beasts[bestiary.position].mediaFile);
     if(inital != bestiary.position)
     {
-        if(media_playing(media_handle_beastiary))
-            media_stop(media_handle_beastiary);
-        media_handle_beastiary = media_play(bestiary_beast_media, NULL, 100);
+        if(media_playing(bestiary.mediaHandle))
+            media_stop(bestiary.mediaHandle);
+        bestiary.mediaHandle = 0;
+        bestiary.mediaTimer = 0;
 
         snd_play(ui_accept_snd, 100, 0);
     }
@@ -285,10 +285,22 @@ void bestiary_update()
 
     if(achievements.bestiary_unlocked[bestiary.position])
     {
+        bestiary.mediaTimer += time_step;
+        if(bestiary.mediaHandle == 0 && bestiary.mediaTimer > 32) // 2 sekunden
+        {
+            bestiary.mediaHandle = media_play(bestiary.beasts[bestiary.position].mediaFile, NULL, 100);
+        }
+
         reset(bestiary_txt_help, SHOW);
     }
     else
     {
+        if(bestiary.mediaHandle != 0)
+        {
+            media_stop(bestiary.mediaHandle);
+            bestiary.mediaHandle = 0;
+        }
+
         set(bestiary_txt_help, SHOW);
 
         int i;
@@ -370,12 +382,13 @@ void bestiary_close()
             free(you->string2);
     }
     level_load(NULL);
-    music_start("Media/intro.mp3", 1, 0);
-    
-    if(media_playing(media_handle_beastiary))
-        media_stop(media_handle_beastiary);
 
-    camera->arc = 60;
+    if(bestiary.mediaHandle != 0)
+    {
+        media_stop(bestiary.mediaHandle);
+        bestiary.mediaHandle = 0;
+    }
+
     reset(bestiary_pan_back, SHOW);
     reset(bestiary_pan_prev, SHOW);
     reset(bestiary_pan_next, SHOW);
