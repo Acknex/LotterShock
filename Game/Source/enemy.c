@@ -3,9 +3,12 @@
 
 #define bulletSpeed skill20
 #define bulletLifeTime skill21
+#define bulletDamage skill22
 
 #define ENEMY_BULLETLIFETIME 96
 #define ENEMY_BULLETSPEED 25
+
+void ENEMY__projectileEvent();
 
 action enemy_projectile()
 {
@@ -15,7 +18,13 @@ action enemy_projectile()
 	my->bulletLifeTime = ENEMY_BULLETLIFETIME;
 	vec_set(my->blue, vector(0,0,255));
 	set(my, LIGHT);
+	my->bulletDamage = DAMAGE_DEFAULT;
    framework_setup(my, SUBSYSTEM_ENEMY_PROJECTILE);
+}
+
+void ENEMY_setDamage(ENTITY* ent, var damage)
+{
+	ent->bulletDamage = damage;
 }
 
 void ENEMY__projectileEvent()
@@ -31,7 +40,6 @@ void ENEMY_UpdateProjectile()
 	ENTITY * ptr;
 	SUBSYSTEM_LOOP(ptr, SUBSYSTEM_ENEMY_PROJECTILE)
 	{
-//TODO: make damage!
 		var vFlags = IGNORE_ME | IGNORE_PASSABLE | ACTIVATE_SHOOT;
 		ptr->bulletLifeTime -= time_step;
 		VECTOR* to = vector(-ptr->bulletSpeed,0,0);
@@ -54,7 +62,7 @@ void ENEMY_UpdateProjectile()
 		}
 		if(SCAN_IsPlayerNear(ptr, 150))
 		{
-			playerAddHealth(-10-random(5));
+			playerAddHealth(-ptr->bulletDamage);
 			ptr->SK_ENTITY_DEAD = 1;
 		}
 	}

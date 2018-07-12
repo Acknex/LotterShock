@@ -49,6 +49,9 @@
 BMAP* EYE_BmapDecal = "bulletHoleCool.tga";
 BMAP* EYE_bmapSplatter[5];
 
+SOUND* EYE_sndExplo = "eselslerche_explo.wav";
+
+
 void EYE__attack(ENTITY* ptr);
 
 // uses: EYE_PATROLSPEED, EYE_TURNSPEED, EYE_ATTACKDIST, EYE_ACTIVEDIST, EYE_PATHID, EYE_PATHPROGRESS
@@ -62,7 +65,7 @@ action Eye()
 	if(my->EYE_ATTACKDIST == 0) my->EYE_ATTACKDIST = 2000;
 	if(my->EYE_ANIMSPEED == 0) my->EYE_ANIMSPEED = 3;
 	my->HEALTH = HEALTH_EYE;
-	vec_scale(&my->scale_x, 10);
+	vec_set(&my->scale_x, vector(10,10,10));
 	vec_set(&my->EYE_BASESCALE, &my->scale_x);
 	my->material = matObject;
 	ENTITY* ent = ent_create(NULL, nullvector, NULL);
@@ -70,9 +73,11 @@ action Eye()
 	{
 		path_set(ent, str_for_num(NULL, 0));
 	}
-	my->EYE_PATROLLEN = path_length(me);
-	my->EYE_PATHPROGRESS = clamp(my->EYE_PATROLSPEED,0,100) / 100;
-	path_spline (ent,&ent->x,my->EYE_PATROLLEN * my->EYE_PATHPROGRESS);
+	my->EYE_PATROLLEN = path_length(ent);
+	my->EYE_PATHPROGRESS = clamp(my->EYE_PATHPROGRESS,0,100) / 100;
+	my->EYE_PATROLDIST = my->EYE_PATROLLEN * my->EYE_PATHPROGRESS;
+	//error(str_for_num(NULL, my->EYE_PATROLLEN * my->EYE_PATHPROGRESS));
+	path_spline (ent,&ent->x, my->EYE_PATROLDIST);
 	vec_set(&my->x, ent->x);
 	vec_set(&my->EYE_LASTPOS, &my->x);
 	//set(my, PASSABLE);
@@ -103,7 +108,8 @@ void EYE_Init()
 		//ENTITY* ptr = ent_create("enemy_eye.mdl", vector(400,1600,200), Eye);
 //		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(5900,-6050,250), Eye);		
 //		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(1200,6500,250), Eye);		
-		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(100000,100000,250), Eye);		
+//		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(100000,100000,250), Eye);		
+//		ENTITY* ptr = ent_create("enemy_eye.mdl", vector(1288,0,250), Eye);		
 }
 
 void EYE_Update()
@@ -160,6 +166,12 @@ void EYE_Update()
 					break;
 				}
 
+				case EYE_STATE_DEAD:
+				{
+					EYE__dead(ptr);
+					break;
+				}
+				
 				default:
 				{
 					break;
@@ -171,7 +183,7 @@ void EYE_Update()
 	}
 }
 
-action eye_shot()
+/*action eye_shot()
 {
 	my->emask |= ENABLE_IMPACT | ENABLE_SHOOT | ENABLE_ENTITY;
 	vec_scale(my->scale_x, 32);
@@ -180,7 +192,7 @@ action eye_shot()
 	my->skill21 = 16*10;
 	set(my, LIGHT);
 	framework_setup(my, SUBSYSTEM_PROJECTILE);
-}
+}*/
 
 var EYE__toFloor(ENTITY* ptr)
 {
@@ -238,25 +250,21 @@ void EYE__patrol(ENTITY* ptr)
 	vec_set(ptr->EYE_LASTPOS,&ptr->x);
 	ANG_turnToAngle(ptr, vecAngle.pan, ptr->EYE_TURNSPEED, 1);
 
-	if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ATTACKDIST, 30))
+	/*if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ATTACKDIST, 30))
 	{
-		
-		ptr->EYE_SHOTCOUNTER += time_step;
-		if(ptr->EYE_SHOTCOUNTER > 16)
-		{
-			ptr->EYE_SHOTCOUNTER -= 16;
-			//fix me.
-			/*ENTITY* ent = ent_create("eye_shot.mdl", ptr->x, eye_shot);
-			VECTOR v;
-			vec_set(v, ptr->x);
-			vec_sub(v, player->x);
-			vec_normalize(v,1);
-			vec_set(ent->skill1, v);
-			vec_scale(v, -1);
-			vec_to_angle(ent->pan, v);*/
-		}
-		
-	}
+		ptr->EYE_STATE = EYE_STATE_ATTACK;
+		ENTITY* ent = ent_create("eye_shot.mdl", ptr->x, enemy_projectile);
+		vec_scale(ent->scale_x, 32);
+		ent->bulletDamage = DAMAGE_EYE; //refine... this will be effect not projectile
+	ENEMY_setDamage(ent, DAMAGE_EYE);
+		VECTOR v;
+		vec_set(v, ptr->x);
+		vec_sub(v, player->x);
+		vec_normalize(v,1);
+		vec_set(ent->skill1, v);
+		vec_scale(v, -1);
+		vec_to_angle(ent->pan, v);
+	}*/
 
 	/* transitions */
 	/*if (SCAN_IsPlayerInSight(ptr, ptr->EYE_ATTACKDIST, 75))
@@ -373,7 +381,20 @@ void EYE__die(ENTITY* ptr)
 		}
 		SPLATTER_explode(50, ptr, 400, EYE_bmapSplatter, 5);
 		ptr->EYE_STATE = EYE_STATE_DEAD;
-		ptr->SK_ENTITY_DEAD = 1;
+		//ptr->SK_ENTITY_DEAD = 1; //keep entity alive a while longer for sound playback
+		var hndl = ent_playsound2(ptr, EYE_sndExplo, 10000, 10000);
+		snd_tune(hndl,0,40,0); //temp until eye has own splashy sound
+		set(ptr, INVISIBLE); //pretend I'm gone
+		ptr->EYE_COUNTER = 0;
 	}
 
+}
+
+void EYE__dead(ENTITY* ptr)
+{
+	ptr->EYE_COUNTER += time_step;
+	if (ptr->EYE_COUNTER > 32)
+	{
+		ptr->SK_ENTITY_DEAD = 1;		
+	}
 }

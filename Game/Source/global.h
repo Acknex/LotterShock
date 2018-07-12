@@ -30,7 +30,6 @@ typedef int bool;
 #define SUBSYSTEM_skill_b skill58
 #define SUBSYSTEM_skill_c skill59
 
-
 #define SUBSYSTEM_FRAMEWORK         1
 #define SUBSYSTEM_USABLES           2
 #define SUBSYSTEM_CREDITS           3
@@ -63,12 +62,22 @@ typedef int bool;
 #define SUBSYSTEM_LOOP(ptr,system) for(ptr = ent_next(NULL); ptr != NULL; ptr = ent_next(ptr)) if(ptr->SK_SUBSYSTEM == (system))
 
 
+/* global enemy settings */
 #define HEALTH_SKULL		125
 #define HEALTH_LERCHE	50
 #define HEALTH_SPUTNIK	80
 #define HEALTH_EYE		150
 #define HEALTH_TURRET	100
 
+#define DAMAGE_SKULL		(10-random(5))
+#define DAMAGE_LERCHE	(30-random(15))
+#define DAMAGE_SPUTNIK	(10-random(10))
+#define DAMAGE_EYE		(30-random(15))
+#define DAMAGE_TURRET	(10-random(5))
+#define DAMAGE_DEFAULT  (10-random(5))
+
+/* do not modify unless you really know what you do! */
 #define GROUP_PLAYER 3
 #define GROUP_ENEMY 10
+
 #endif // GLOBAL_H

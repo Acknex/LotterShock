@@ -285,7 +285,7 @@ void SPUTNIK__follow(ENTITY* ptr)
 	ptr.max_y -= 2;
 	
 	// Player is near enough to attack
-	if (SCAN_IsPlayerInSight(ptr, ptr->SPUTNIK_ATTACKRANGE, 360))
+	if (SCAN_IsPlayerInSight(ptr, ptr->SPUTNIK_ATTACKRANGE, 90))
 	{
 		if ((ptr->SPUTNIK_ANIMSTATEATK == 0) || (ptr->SPUTNIK_ANIMSTATEATK >= 100))
 		{
@@ -307,7 +307,7 @@ void SPUTNIK__follow(ENTITY* ptr)
 		{
 			if (ptr->SPUTNIK_DIDATTACK == 0)
 			{
-				playerAddHealth(-10-random(10));
+				playerAddHealth(-DAMAGE_SPUTNIK);
 			}
 			ptr->SPUTNIK_DIDATTACK = 1;
 		}

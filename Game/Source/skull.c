@@ -43,7 +43,6 @@ SOUND* skull_snd_death = "skull_death.wav";
 action Skull()
 {
    framework_setup(my, SUBSYSTEM_ENEMY_SKULL);
-	//TODO: useful default values
 	if(my->SKL_RUNSPEED == 0) my->SKL_RUNSPEED = 25;
 	if(my->SKL_TURNSPEED == 0) my->SKL_TURNSPEED = 20;
 	if(my->SKL_ANIMSPEED == 0) my->SKL_ANIMSPEED = 8;
@@ -53,7 +52,6 @@ action Skull()
 	ENEMY_HIT_init(my);
 	vec_scale(&my->scale_x, 1.5);
 	set(my, SHADOW);
-	//SKULL__toFloor(me);
 	c_setminmax(me);
 	my->material = matSkull;
 	my->group = GROUP_ENEMY;
@@ -301,7 +299,7 @@ void SKULL__run(ENTITY* ptr)
 		ptr->SKL_COUNTER = 0;
 		ptr->SKL_COUNTER2 = 0;
 		ptr->SKL_STATE = SKL_STATE_ATTACK;
-		playerAddHealth(-10-random(5));
+		playerAddHealth(-DAMAGE_SKULL);
 		snd_play(skull_snd_shoot, 100, 0);
 	}
 	else if (/*!SCAN_IsPlayerInSight(ptr, ptr->SKL_ATTACKDIST, 75) && */SCAN_IsPlayerBehind(ptr, 1200))
