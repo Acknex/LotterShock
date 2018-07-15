@@ -26,6 +26,7 @@ bool intro_is_done()
     return intro.done;
 }
 
+ENTITY* introsky;
 void intro_open()
 {
     level_load("intro.wmb");
@@ -34,8 +35,8 @@ void intro_open()
     // uss patchnotes hinter depthplane verstecken :P
     camera->clip_far = 20000;
 
-    ENTITY *sky = ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
-    bmap_to_cubemap(ent_getskin(sky, 0));
+    introsky = ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
+    bmap_to_cubemap(ent_getskin(introsky, 0));
 
     intro.state = 0; // use 3 to start in second cutscene
     intro.timer = 0;
@@ -49,6 +50,7 @@ void intro_open()
 
 void intro_close()
 {
+	ptr_remove(introsky);
     level_load(NULL);
 }
 
