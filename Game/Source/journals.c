@@ -189,15 +189,18 @@ void journals_init()
     journals[22].text = "Analysis of this battery reveals that it should have enough power to jumpstart the ion-containment field in order to restart the engine poston-field generator.";
     journals[22].name = acktana_name;
     journals[22].type = JOURNAL_TYPE_SUBTITLE;
+    journals[22].media = "Media/story_part1_6.mp3";
     journals[22].followup = 23;
 
     journals[23].text = " In other words: Stick it into the engine and press the big red button?";
     journals[23].type = JOURNAL_TYPE_SUBTITLE;
     journals[23].name = lotter_name;
+    journals[23].media = "Media/story_part1_7.mp3";
     journals[23].followup = 24;
 
     journals[24].text = "Yes, that would be another way to say it. You imbecile.";
     journals[24].type = JOURNAL_TYPE_SUBTITLE;
+    journals[24].media = "Media/story_part1_8.mp3";
     journals[24].name = acktana_name;
 
     ///////////////////////////////////////////////////////////////////////
@@ -209,36 +212,43 @@ void journals_init()
     journals[25].text = "I've got the power! Acktana, how's it lookin'?";
     journals[25].type = JOURNAL_TYPE_SUBTITLE;
     journals[25].name = lotter_name;
+    journals[25].media = "Media/story_part2_1.mp3";
     journals[25].followup = 26;
 
     journals[26].text = "That seems to have done it. Main power is coming back online... Connecting to ship information system, stand by.... Power is go. Engines are go. Lavatories are go. Life support is go. Gravity generators are online. Server systems are offline.";
     journals[26].type = JOURNAL_TYPE_SUBTITLE;
     journals[26].name = acktana_name;
+    journals[26].media = "Media/story_part2_2.mp3";
     journals[26].followup = 27;
 
     journals[27].text = "That's strange, why are the servers offline?";
     journals[27].type = JOURNAL_TYPE_SUBTITLE;
     journals[27].name = lotter_name;
+    journals[27].media = "Media/story_part2_3.mp3";
     journals[27].followup = 28;
 
     journals[28].text = "System information shows that the servers are powered independently. There seems to be a higher power draw than usual. It would be impossible to know why, until I get a good look at the servers.";
     journals[28].type = JOURNAL_TYPE_SUBTITLE;
     journals[28].name = acktana_name;
+    journals[28].media = "Media/story_part2_4.mp3";
     journals[28].followup = 29;
 
     journals[29].text = "Let's get you there then!";
     journals[29].type = JOURNAL_TYPE_SUBTITLE;
     journals[29].name = lotter_name;
+    journals[29].media = "Media/story_part2_5.mp3";
     journals[29].followup = 30;
 
     journals[30].text = "Powering up the generators seems to have opened up some additional doors. That should help. . . . . You're welcome.";
     journals[30].type = JOURNAL_TYPE_SUBTITLE;
+    journals[30].media = "Media/story_part2_6.mp3";
     journals[30].name = acktana_name;
 
     // Finding the Flamethrower
 
     journals[31].text = "This should help with the frozen door.";
     journals[31].type = JOURNAL_TYPE_SUBTITLE;
+    journals[31].media = "Media/story_part2_7.mp3";
     journals[31].name = lotter_name;
 
     // Finding Jetpackl/Jumpboots
@@ -246,25 +256,30 @@ void journals_init()
     journals[32].text = "This is a prototype Silverman-Stolipin Gravity Assist module!";
     journals[32].type = JOURNAL_TYPE_SUBTITLE;
     journals[32].name = acktana_name;
+    journals[32].media = "Media/story_part2_8.mp3";
     journals[32].followup = 33;
 
-    journals[33].text = "What's it do?";
+    journals[33].text = "In English please, Acktana";
     journals[33].type = JOURNAL_TYPE_SUBTITLE;
     journals[33].name = lotter_name;
+    journals[33].media = "Media/story_part2_9.mp3";
     journals[33].followup = 34;
 
     journals[34].text = "Perform a mid-air jump";
     journals[34].type = JOURNAL_TYPE_SUBTITLE;
     journals[34].name = acktana_name;
+    journals[34].media = "Media/story_part2_10.mp3";
     journals[34].followup = 35;
 
     journals[35].text = "So... double jumping?";
     journals[35].type = JOURNAL_TYPE_SUBTITLE;
     journals[35].name = lotter_name;
+    journals[35].media = "Media/story_part2_11.mp3";
     journals[35].followup = 36;
 
     journals[36].text = "Yes, \"double jumping\".";
     journals[36].type = JOURNAL_TYPE_SUBTITLE;
+    journals[36].media = "Media/story_part2_12.mp3";
     journals[36].name = acktana_name;
 
     ///////////////////////////////////////////////////////////////////////
