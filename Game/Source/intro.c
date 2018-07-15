@@ -31,6 +31,8 @@ void intro_open()
 {
     level_load("intro.wmb");
 
+    music_start(NULL, 1, false);
+    
     // tricky trick:
     // uss patchnotes hinter depthplane verstecken :P
     camera->clip_far = 20000;

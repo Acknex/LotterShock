@@ -353,32 +353,32 @@ void journals_init()
 
     JOURNAL(50, NULL, NULL, "22 Hours after the death pebble incident...");
 
-    JOURNAL(51, acktana_name, NULL, "Star-Lotti! We have received a wide-range emergency broadcast. It Identifies the ship as the long-lost USS Patchnotes.");
-    JOURNAL(52, lotter_name, NULL, "Patch it through.");
-    JOURNAL(53, acktana_name, NULL, "Patching through...");
+    JOURNAL(51, acktana_name, "Media/intro_chunk_51.mp3", "Star-Lotti! We have received a wide-range emergency broadcast. It Identifies the ship as the long-lost USS Patchnotes.");
+    JOURNAL(52, lotter_name, "Media/intro_chunk_52.mp3", " Patch it through.");
+    JOURNAL(53, acktana_name, "Media/intro_chunk_53.mp3", "Patching through...");
 
-    JOURNAL(54, patchnotes_name, NULL, "MAYDAY, MAYDAY, MAYDAY");
-    JOURNAL(55, patchnotes_name, NULL, "THIS IS USS PATCHNOTES, USS PATCHNOTES, USS PATCHNOTES");
-    JOURNAL(56, patchnotes_name, NULL, "CALL SIGN ACKPATCH");
-    JOURNAL(57, patchnotes_name, NULL, "MAYDAY");
-    JOURNAL(58, patchnotes_name, NULL, "USS PATCHNOTES CALL SIGN ACKPATCH,\nPOSITION 42, 69, 1024 AT 0745 HOURS, 17TH OCTOBER 2015a");
-    JOURNAL(59, patchnotes_name, NULL, "WE HAVE BEEN ATTACKED BY A UNITY UNION BATTLECRUISER AND HAVE BEEN BOARDED");
-    JOURNAL(60, patchnotes_name, NULL, "IMMEDIATE ASSISTANCE REQUIRED");
-    JOURNAL(61, patchnotes_name, NULL, "WE HAVE 29 SOULS REMAINING ABOARD AS OF TIME OF THIS MESSAGE");
-    JOURNAL(62, patchnotes_name, NULL, "OVER");
-    JOURNAL(63, acktana_name, NULL, "Message repeats every 2 Minutes.");
-    JOURNAL(64, lotter_name, NULL, "That distress signal dates back 3 years! About the time the Patchnotes vanished...\nIdeas?");
-    JOURNAL(65, acktana_name, NULL, "Acknation Galactic Laws require us to answer any-");
-    JOURNAL(66, lotter_name, NULL, "...friendly distress call, yes, yes... Fine. Set a course.");
-    JOURNAL(67, acktana_name, NULL, "As you command.");
+    JOURNAL(54, patchnotes_name, "Media/intro_chunk_54.mp3", "MAYDAY, MAYDAY, MAYDAY");
+    JOURNAL(55, patchnotes_name, "Media/intro_chunk_55.mp3", "THIS IS USS PATCHNOTES, USS PATCHNOTES, USS PATCHNOTES");
+    JOURNAL(56, patchnotes_name, "Media/intro_chunk_56.mp3", "CALL SIGN ACKPATCH");
+    JOURNAL(57, patchnotes_name, "Media/intro_chunk_57.mp3", "MAYDAY");
+    JOURNAL(58, patchnotes_name, "Media/intro_chunk_58.mp3", "USS PATCHNOTES CALL SIGN ACKPATCH,\nPOSITION 42, 69, 1024 AT 0745 HOURS, OCTOBER 17TH 2015a");
+    JOURNAL(59, patchnotes_name, "Media/intro_chunk_59.mp3", "WE HAVE BEEN ATTACKED BY A UNITY UNION BATTLECRUISER AND HAVE BEEN BOARDED");
+    JOURNAL(60, patchnotes_name, "Media/intro_chunk_60.mp3", "IMMEDIATE ASSISTANCE REQUIRED");
+    JOURNAL(61, patchnotes_name, "Media/intro_chunk_61.mp3", "WE HAVE 29 SOULS REMAINING ABOARD AS OF TIME OF THIS MESSAGE");
+    JOURNAL(62, patchnotes_name, "Media/intro_chunk_62.mp3", "OVER");
+    JOURNAL(63, acktana_name, "Media/intro_chunk_63.mp3", "Message repeats every two minutes.");
+    JOURNAL(64, lotter_name, "Media/intro_chunk_64.mp3", "That distress signal dates back 3 years! About the time the Patchnotes vanished...\nIdeas?");
+    JOURNAL(65, acktana_name, "Media/intro_chunk_65.mp3", "Acknation Galactic Laws require us to answer any-");
+    JOURNAL(66, lotter_name, "Media/intro_chunk_66.mp3", "...friendly distress call, yes, yes... Fine. Set a course.");
+    JOURNAL(67, acktana_name, "Media/intro_chunk_67.mp3", "As you command.");
     journals[67].event = intro_step_distress_end;
     journals[67].followup = 0; // breakup the sequence here
 
     JOURNAL(68, NULL, NULL, "3 Hours later...");
-    JOURNAL(69, lotter_name, NULL, "It really is her... the USS Patchnotes... What a sight...");
-    JOURNAL(70, acktana_name, NULL, "Sensors indicate heavy damage to internal systems and signs of boarding. Ship not responding to hails. No sign of the enemy.");
-    JOURNAL(71, lotter_name, NULL, "No reason for them to stick around after all this time... take us in. I want to take a look around inside.");
-    JOURNAL(72, acktana_name, NULL, "Commencing docking procedure.");
+    JOURNAL(69, lotter_name, "Media/intro_chunk_69.mp3", "It really is her... the USS Patchnotes... What a sight...");
+    JOURNAL(70, acktana_name, "Media/intro_chunk_70.mp3", "Sensors indicate heavy damage to internal systems and signs of boarding. Ship not responding to hails. No sign of the enemy.");
+    JOURNAL(71, lotter_name, "Media/intro_chunk_71.mp3", "No reason for them to stick around after all this time... take us in. I want to take a look around inside.");
+    JOURNAL(72, acktana_name, "Media/intro_chunk_72.mp3", "Commencing docking procedure.");
     journals[72].event = intro_step_flyby_end;
     journals[72].followup = 0; // END OF SEQUENCE!
 
