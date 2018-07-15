@@ -7,6 +7,7 @@
 #define ITEM_WEAPON 3
 #define ITEM_DOUBLEJUMP 4
 #define ITEM_HAZMAT 5
+#define ITEM_BATTERY 6
 
 #define ITEM_NOROTATE skill1
 #define AMMO_AMOUNT skill2
@@ -23,6 +24,7 @@ void medipack_init();
 void keycard();
 void doublejump();
 void hazmat();
+void battery();
 
 void ammo_shotgun();
 void ammo_cellgun();

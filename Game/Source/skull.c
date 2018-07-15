@@ -43,7 +43,6 @@ SOUND* skull_snd_death = "skull_death.wav";
 action Skull()
 {
    framework_setup(my, SUBSYSTEM_ENEMY_SKULL);
-	//TODO: useful default values
 	if(my->SKL_RUNSPEED == 0) my->SKL_RUNSPEED = 25;
 	if(my->SKL_TURNSPEED == 0) my->SKL_TURNSPEED = 20;
 	if(my->SKL_ANIMSPEED == 0) my->SKL_ANIMSPEED = 8;
@@ -53,7 +52,6 @@ action Skull()
 	ENEMY_HIT_init(my);
 	vec_scale(&my->scale_x, 1.5);
 	set(my, SHADOW);
-	//SKULL__toFloor(me);
 	c_setminmax(me);
 	my->material = matSkull;
 	my->group = GROUP_ENEMY;
@@ -284,24 +282,32 @@ void SKULL__run(ENTITY* ptr)
 {
 	ent_animate(ptr, SKL_RUNANIM, ptr->SKL_ANIMSTATE, ANM_CYCLE);
 	ptr->SKL_RUNSPEEDCUR = minv(ptr->SKL_RUNSPEEDCUR + 6*time_step, ptr->SKL_RUNSPEED);
-	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | /*IGNORE_PUSH |*/ GLIDE | USE_POLYGON;
-	ptr.min_x -= 2;
-	ptr.min_y -= 2;
-	ptr.max_x += 2;
-	ptr.max_y += 2;
-	c_move(ptr, vector(ptr->SKL_RUNSPEEDCUR, 0, 0), nullvector, mode);
-	ptr.min_x += 2;
-	ptr.min_y += 2;
-	ptr.max_x -= 2;
-	ptr.max_y -= 2;
-
+	VECTOR* to = vector(ptr->SKL_RUNSPEEDCUR + 2, 0, 0);
+	vec_rotate(to, vector(ptr->pan,0,0));
+	vec_add (to, &ptr->x);
+	var tracemode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_CONTENT;
+	c_ignore (GROUP_ENEMY, GROUP_PLAYER, 0);
+	if (c_trace(&ptr->x, to, tracemode) <= 0)
+	{
+		var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | /*IGNORE_PUSH |*/ GLIDE | USE_POLYGON;
+		ptr.min_x -= 2;
+		ptr.min_y -= 2;
+		ptr.max_x += 2;
+		ptr.max_y += 2;
+		c_move(ptr, vector(ptr->SKL_RUNSPEEDCUR, 0, 0), nullvector, mode);
+		ptr.min_x += 2;
+		ptr.min_y += 2;
+		ptr.max_x -= 2;
+		ptr.max_y -= 2;
+	}
+	
 	/* transitions */
 	if (SCAN_IsPlayerInSight(ptr, ptr->SKL_ATTACKDIST, 75))
 	{
 		ptr->SKL_COUNTER = 0;
 		ptr->SKL_COUNTER2 = 0;
 		ptr->SKL_STATE = SKL_STATE_ATTACK;
-		playerAddHealth(-10-random(5));
+		playerAddHealth(-DAMAGE_SKULL);
 		snd_play(skull_snd_shoot, 100, 0);
 	}
 	else if (/*!SCAN_IsPlayerInSight(ptr, ptr->SKL_ATTACKDIST, 75) && */SCAN_IsPlayerBehind(ptr, 1200))

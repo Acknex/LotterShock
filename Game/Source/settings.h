@@ -14,6 +14,11 @@ typedef struct settings_t
     int fps_limit;
     int anisotropy;
     bool vsync;
+    bool skipIntro;
+    var gamma;
+
+    bool bloom;
+    bool retroshader;
 
     // Audio
     int game_volume;
@@ -28,6 +33,7 @@ typedef struct settings_t
 typedef struct achievements_t
 {
     bool bestiary_unlocked[BEAST_COUNT];
+    bool retro_unlocked;
 } achievements_t;
 
 settings_t settings;
@@ -51,5 +57,7 @@ void achievements_load();
 void achievements_save();
 
 void achievement_kill_beast(int beastid);
+
+void achievement_reset();
 
 #endif // SETTINGS_H

@@ -87,11 +87,13 @@ void SPLATTER_splat(VECTOR* pos, VECTOR* color)
 	vec_set(c, color);
 	
 	var i = 0;
+		//do not exaggerate here - causes heavy frame drop on slower machines
 	for(i = 0; i < 3; ++i)
 	{	
 		
 		var j = 0;
-		for(j = 0; j < 10; ++j)
+		//do not exaggerate here either
+		for(j = 0; j < 5; ++j)
 		{
 			ENTITY* p;
 			switch(integer(random(3)))

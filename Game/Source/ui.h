@@ -13,6 +13,9 @@ BMAP * ui_bmp_selection = "ui_selector.png";
 #define UIDIR_DOWN 2
 #define UIDIR_RIGHT 3
 
+#define UISYSTEM_SELECTOR (1<<0)
+#define UISYSTEM_LIGHT    (1<<1)
+
 typedef struct uibutton_t
 {
     // optical
@@ -39,6 +42,7 @@ typedef struct uisystem_t
     // global offset for all buttons
     var pos_x, pos_y;
     int layer;
+    int flags;
 
     // private section;
     PANEL * selector;

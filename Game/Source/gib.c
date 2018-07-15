@@ -80,8 +80,9 @@ void GIB__fall(ENTITY* ptr)
 	me = ptr;
 	you = player;
 	var mode = IGNORE_ME | IGNORE_YOU | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_POLYGON;
+	c_ignore(GROUP_ENEMY, GROUP_PLAYER, 0);
 	c_trace(&ptr->GIB_STARPOS, &to, mode);
-	ptr->z -= 20* time_step;
+	ptr->z -= 40* time_step;
 	if(HIT_TARGET)
 	{
 		if (ptr->z <= hit.z - ptr->min_z)

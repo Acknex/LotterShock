@@ -186,8 +186,26 @@ void environmentals_terminal(ENTITY* ptr, void *starting_effect, var *flag)
                 ptr.skin = 2;
                 if(input_hit(INPUT_USE)) 
                 {
-                    snd_play(snd_terminal, 100, 0);
-                    ptr.ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_STARTING;
+                    if((ptr->ENVIRONMENTALS_TYPE != ENVIRONMENTAL_ENGINE_TERMINAL) || story_hasBattery)
+                    {
+                        snd_play(snd_terminal, 100, 0);
+                        ptr.ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_STARTING;
+
+                        switch(ptr->ENVIRONMENTALS_TYPE)
+                        {
+                        case ENVIRONMENTAL_ENGINE_TERMINAL:
+                            journals_play(25, JOURNAL_LEVEL_STORY);
+                            break;
+                        case ENVIRONMENTAL_POWERCORE_TERMINAL:
+                            journals_play(40, JOURNAL_LEVEL_STORY);
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // TODO: replace with actual sound
+                        beep();
+                    }
                 }
             }
             else
@@ -247,7 +265,7 @@ void environmentals_update()
                 }
                 else
                 {
-                    journals_play(46);
+                    journals_play(46, JOURNAL_LEVEL_STORY);
                 }
                 break;
 
@@ -258,14 +276,14 @@ void environmentals_update()
 
                 if(story_serverRoomState == 2 && story_powercoreEnabled)
                 {
-                    journals_play(42);
+                    journals_play(42, JOURNAL_LEVEL_STORY);
                     framework_freeze(ptr);
                     story_serverRoomState = 3;
                 }
                 else if(story_serverRoomState == 1)
                 {
                     story_serverRoomState = 2;
-                    journals_play(38);
+                    journals_play(38, JOURNAL_LEVEL_STORY);
                 }
 
                 break;
@@ -296,6 +314,10 @@ void environmentals_update()
                 break;
 
             case ENVIRONMENTAL_AIRLOCK:
+                if(ptr->skill1 > 0)
+                {
+                    ptr->ENVIRONMENTALS_TEMP = 100;
+                }
                 ent_animate(ptr, "close", ptr->ENVIRONMENTALS_TEMP, 0);
                 ptr->ENVIRONMENTALS_TEMP = clamp(ptr->ENVIRONMENTALS_TEMP + time_step, 0, 100);
                 if(ptr->ENVIRONMENTALS_TEMP >= 100)

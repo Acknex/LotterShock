@@ -7,7 +7,7 @@
 
 #include <acknex.h>
 
-#define PAUSEMENU_PAN_COUNT 3
+#define PAUSEMENU_BUTTONS 3
 
 BMAP * pausemenu_bmp_continue   = "pause_continue.png";
 BMAP * pausemenu_bmp_options    = "pause_options.png";
@@ -19,37 +19,11 @@ PANEL * pausemenu_pan_background =
     layer = 100;
 }
 
-PANEL * pausemenu_pan_continue =
-{
-    bmap = pausemenu_bmp_continue;
-    layer = 101;
-    red = 208;
-    green = 61;
-    blue = 34;
-}
 
-PANEL * pausemenu_pan_options =
-{
-    bmap = pausemenu_bmp_options;
-    layer = 101;
-    red = 208;
-    green = 61;
-    blue = 34;
-}
-
-PANEL * pausemenu_pan_quit =
-{
-    bmap = pausemenu_bmp_quit;
-    layer = 101;
-    red = 208;
-    green = 61;
-    blue = 34;
-}
+uisystem_t * pausemenu_ui;
+uibutton_t * pausemenu_buttons[PAUSEMENU_BUTTONS];
 
 int pausemenu_response;
-
-int pausemenu_selection;
-
 bool pausemenu_shows_options;
 
 int pausemenu_get_response()
@@ -62,27 +36,51 @@ void pausemenu_reset_response()
     pausemenu_response = PAUSEMENU_RESPONSE_NONE;
 }
 
-PANEL * pausemenu_panels[PAUSEMENU_PAN_COUNT];
+void pausemenu_rsp_continue()
+{
+    pausemenu_response = PAUSEMENU_RESPONSE_CONTINUE;
+}
+
+void pausemenu_rsp_options()
+{
+    pausemenu_shows_options = true;
+    options_open();
+}
+
+void pausemenu_rsp_quit()
+{
+    pausemenu_response = PAUSEMENU_RESPONSE_QUIT;
+}
 
 void pausemenu_init()
 {
-    pausemenu_panels[0] = pausemenu_pan_continue;
-    pausemenu_panels[1] = pausemenu_pan_options;
-    pausemenu_panels[2] = pausemenu_pan_quit;
+    pausemenu_ui = uisystem_new(101);
+    pausemenu_buttons[0] = uisystem_add_button(pausemenu_ui, 0, 0, pausemenu_bmp_continue, pausemenu_rsp_continue);
+    pausemenu_buttons[1] = uisystem_add_button(pausemenu_ui, 0, 0, pausemenu_bmp_options, pausemenu_rsp_options);
+    pausemenu_buttons[2] = uisystem_add_button(pausemenu_ui, 0, 0, pausemenu_bmp_quit, pausemenu_rsp_quit);
+
+    int i;
+    for(i = 0; i < PAUSEMENU_BUTTONS; i++)
+    {
+        if(i > 0)
+            pausemenu_buttons[i]->neighbour[UIDIR_UP] = pausemenu_buttons[i - 1];
+        if(i < (PAUSEMENU_BUTTONS-1))
+            pausemenu_buttons[i]->neighbour[UIDIR_DOWN] = pausemenu_buttons[i + 1];
+    }
+
 }
 
 void pausemenu_open()
 {
     int i;
     set(pausemenu_pan_background, SHOW);
-    for(i = 0; i < PAUSEMENU_PAN_COUNT; i++)
+    uisystem_show_all(pausemenu_ui);
+    for(i = 0; i < PAUSEMENU_BUTTONS; i++)
     {
-        set(pausemenu_panels[i], SHOW);
-        pausemenu_panels[i]->pos_x = -bmap_width(pausemenu_panels[i]->bmap);
-        pausemenu_panels[i]->pos_y = 16 + 50 * i;
+        pausemenu_buttons[i]->pos_x = -bmap_width(pausemenu_buttons[i]->bmap);
+        pausemenu_buttons[i]->pos_y = 16 + 50 * i;
     }
     pausemenu_reset_response();
-    pausemenu_selection = 0;
     pausemenu_shows_options = false;
     freeze_mode = 1; // stop all particle effects
 }
@@ -90,8 +88,6 @@ void pausemenu_open()
 void pausemenu_update()
 {
     int i;
-    int prevsel = pausemenu_selection;
-
     pausemenu_pan_background->scale_x = screen_size.x / bmap_width(pausemenu_pan_background->bmap);
     pausemenu_pan_background->scale_y = screen_size.y / bmap_height(pausemenu_pan_background->bmap);
 
@@ -113,57 +109,18 @@ void pausemenu_update()
         return;
     }
 
-    if(input_hit(INPUT_DOWN) && pausemenu_selection < (PAUSEMENU_PAN_COUNT-1))
+    for(i = 0; i < PAUSEMENU_BUTTONS; i++)
     {
-        pausemenu_selection += 1;
-    }
-    if(input_hit(INPUT_UP) && pausemenu_selection > 0)
-    {
-        pausemenu_selection -= 1;
+        pausemenu_buttons[i]->pos_x = minv(pausemenu_buttons[i]->pos_x + 50 * time_step, 0);
     }
 
-    for(i = 0; i < PAUSEMENU_PAN_COUNT; i++)
-    {
-        pausemenu_panels[i]->pos_x = minv(pausemenu_panels[i]->pos_x + 50 * time_step, 0);
-
-        if(pausemenu_panels[i] == mouse_panel && mouse_moving)
-            pausemenu_selection = i;
-
-        if(i == pausemenu_selection)
-            set(pausemenu_panels[i], LIGHT);
-        else
-            reset(pausemenu_panels[i], LIGHT);
-    }
-
-    if(pausemenu_selection != prevsel)
-    {
-        snd_play(ui_swap_snd, 100, 0);
-    }
-
-    var attack = input_hit(INPUT_ATTACK) && (!mouse_left || (mouse_left && (mouse_panel != NULL)));
-    if(input_hit(INPUT_USE) || attack || input_hit(INPUT_JUMP))
-    {
-        snd_play(ui_accept_snd, 100, 0);
-        switch(pausemenu_selection)
-        {
-        case 0: pausemenu_response = PAUSEMENU_RESPONSE_CONTINUE; break;
-        case 1:
-            pausemenu_shows_options = true;
-            options_open();
-            return;
-        case 2: pausemenu_response = PAUSEMENU_RESPONSE_QUIT; break;
-        error("pausemenu_update: invalid menu selection!");
-        }
-    }
+    uisystem_update(pausemenu_ui);
 }
 
 void pausemenu_close()
 {
     int i;
     reset(pausemenu_pan_background, SHOW);
-    for(i = 0; i < PAUSEMENU_PAN_COUNT; i++)
-    {
-        reset(pausemenu_panels[i], SHOW);
-    }
+    uisystem_hide_all(pausemenu_ui);
     freeze_mode = 0;
 }

@@ -21,6 +21,9 @@ var music_is_playing();
 // gets current play position
 var music_get_position();
 
+// gets the time offset to the start of the current song
+var music_get_time();
+
 // updates volumes. run in main loop
 void music_update();
 

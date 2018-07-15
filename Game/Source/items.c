@@ -1,7 +1,10 @@
+#include "items.h"
 //keycards
 #include "doors.h"
 //ammo
 #include "weapons.h"
+#include "journals.h"
+#include "game.h"
 
 SOUND* snd_catch = "catch.wav";
 
@@ -49,12 +52,16 @@ void itemCollectible_effect(ENTITY *item)
 			// unlock
 			weapons_add(item->SUBSYSTEM_skill_a);
 			snd_play(snd_catch, 100, 0);
+
+            if(item->SUBSYSTEM_skill_a == WEAPON_FLAMETHROWER)
+                journals_play(31, JOURNAL_LEVEL_STORY);
 			break;
 			
 		case ITEM_DOUBLEJUMP:
 			// unlock
 			playerHasDoubleJump += 1;
 			snd_play(snd_catch, 100, 0);
+            journals_play(32, JOURNAL_LEVEL_STORY);
 			break;
 			
 		case ITEM_HAZMAT:
@@ -62,6 +69,12 @@ void itemCollectible_effect(ENTITY *item)
 			playerHasHazmat = 1;
 			snd_play(snd_catch, 100, 0);
 			break;
+
+        case ITEM_BATTERY:
+            // progress story
+            story_hasBattery = true;
+            journals_play(22, JOURNAL_LEVEL_STORY);
+            break;
 	}
 	// remove me
 	item->SK_ENTITY_DEAD = 1;
@@ -130,6 +143,16 @@ action hazmat() {
 	framework_setup(my, SUBSYSTEM_COLLECTIBLES);
 	my->SUBSYSTEM_PARAMETER = ITEM_HAZMAT;
 	set(my, PASSABLE);
+}
+
+/**********
+POWER CORE BATTERY
+	condition: none
+**********/
+action battery() {
+    framework_setup(my, SUBSYSTEM_COLLECTIBLES);
+    my->SUBSYSTEM_PARAMETER = ITEM_BATTERY;
+    set(my, PASSABLE);
 }
 
 /**********

@@ -12,6 +12,8 @@
 #include "bestiary.h"
 #include "options.h"
 #include "cheats.h"
+#include "journals.h"
+#include "intro.h"
 
 #include <acknex.h>
 #include <windows.h>
@@ -27,7 +29,9 @@
 #define FRAMEWORK_STATE_SPLASHSCREEN 5
 #define FRAMEWORK_STATE_UNLOAD       6
 #define FRAMEWORK_STATE_BESTIARY     7
+#define FRAMEWORK_STATE_INTRO        8
 
+ENTITY* levelsky;
 typedef struct
 {
     int state;
@@ -48,6 +52,7 @@ PANEL * framework_load_screen =
     size_x = 1280;
     size_y = 720;
     flags = TRANSLUCENT;
+    layer = 900;
 }
 
 int framework_mousemode;
@@ -57,6 +62,7 @@ void framework_update_settings()
     fps_max = settings.fps_limit;
     d3d_anisotropy = settings.anisotropy;
     d3d_triplebuffer = settings.vsync;
+    video_gamma = settings.gamma;
 
     video_set(
         settings.resolution_x,
@@ -166,6 +172,13 @@ void framework_capture_mouse()
     SetCursorPos((rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2);
 }
 
+bool framework_intro_sequence_complete;
+
+void framework_complete_intro()
+{
+    framework_intro_sequence_complete = true;
+}
+
 //! Aktualisiert alles.
 void framework_update()
 {
@@ -207,7 +220,10 @@ void framework_update()
             music_start("Media/intro.mp3", 0.2, false);
 
 #ifdef DEBUG_FRAMEWORK_FASTSTART
-            framework_transfer(FRAMEWORK_STATE_LOAD);
+            if(settings.skipIntro)
+                framework_transfer(FRAMEWORK_STATE_LOAD);
+            else
+                framework_transfer(FRAMEWORK_STATE_INTRO);
 #else
             framework_transfer(FRAMEWORK_STATE_SPLASHSCREEN);
 #endif
@@ -229,7 +245,10 @@ void framework_update()
             switch(response)
             {
             case MAINMENU_RESPONSE_START:
-                framework_transfer(FRAMEWORK_STATE_LOAD);
+                if(settings.skipIntro)
+                    framework_transfer(FRAMEWORK_STATE_LOAD);
+                else
+                    framework_transfer(FRAMEWORK_STATE_INTRO);
                 break;
             case MAINMENU_RESPONSE_CREDITS:
                 framework_transfer(FRAMEWORK_STATE_CREDITS);
@@ -262,11 +281,11 @@ void framework_update()
             level_load(LEVEL_FILE);
 #endif
 			fog_color = 1;
-			camera.fog_end = 6000.0;
-			wait_for(level_load);
+            camera.fog_end = 6000.0;
+
 			meshFunDo();
-			ENTITY *sky = ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
-			bmap_to_cubemap(ent_getskin(sky, 0));
+			levelsky = ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
+			bmap_to_cubemap(ent_getskin(levelsky, 0));
 			
         }
 
@@ -274,8 +293,13 @@ void framework_update()
         {
             game_open();
         }
+
+        if(framework.loaderState == 9)
+        {
+            journals_play(49, JOURNAL_LEVEL_STORY);
+        }
         
-        if(framework.loaderState >= 9)
+        if(framework_intro_sequence_complete)
         {
             framework_load_screen->alpha -= FRAMEWORK_ALPHA_BLENDSPEED * time_step;
             if(framework_load_screen->alpha <= 0)
@@ -293,6 +317,7 @@ void framework_update()
             framework_transfer(FRAMEWORK_STATE_UNLOAD);
         break;
     case FRAMEWORK_STATE_UNLOAD:
+    	ptr_remove(levelsky);
         level_load(NULL);
 
         if(game_is_won()) // when game was won, roll the credits!
@@ -308,6 +333,12 @@ void framework_update()
         bestiary_update();
         if(bestiary_is_done())
             framework_transfer(FRAMEWORK_STATE_MAINMENU);
+        break;
+
+    case FRAMEWORK_STATE_INTRO:
+        intro_update();
+        if(intro_is_done())
+            framework_transfer(FRAMEWORK_STATE_LOAD);
         break;
 
     default:
@@ -353,6 +384,10 @@ void framework_update()
 
         case FRAMEWORK_STATE_BESTIARY:
             bestiary_close();
+            break;
+
+        case FRAMEWORK_STATE_INTRO:
+            intro_close();
             break;
 
         default:
@@ -406,10 +441,17 @@ void framework_update()
             bestiary_open();
             break;
 
+        case FRAMEWORK_STATE_INTRO:
+            intro_open();
+            break;
+
         default:
             error(str_printf(NULL, "framework: unsupported state %d!", framework.state));
         }
     }
+
+    // Update journals globally
+    journals_update();
 
     // Update music after updating the whole game state
     music_update();

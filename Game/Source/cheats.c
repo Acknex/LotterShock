@@ -1,7 +1,9 @@
 #include "cheats.h"
 #include "game.h"
+#include "settings.h"
+#include "materials.h"
 
-#define INPUT_CHEAT_COUNT 8
+#define INPUT_CHEAT_COUNT 9
 
 SOUND * input_snd_cheat_unlocked = "snd_jingle.ogg";
 SOUND * input_snd_cheat_tap = "snd_button_tap.wav";
@@ -143,9 +145,16 @@ void cheat_killhud()
     game_hidehud = !game_hidehud;
 }
 
+void cheat_retromode()
+{
+    achievements.retro_unlocked = true;
+    settings.retroshader = true;
+    materials_reinit(); // reload shaders to enable retro mode
+    achievements_save();
+}
+
 void cheats_init()
 {
-
     memset(cheatcodes, 0, sizeof(cheatcode_t) * INPUT_CHEAT_COUNT);
 
     if(on_message != input_proc_message)
@@ -177,4 +186,7 @@ void cheats_init()
 
     cheatcodes[7].text = "idnohud";
     cheatcodes[7].trigger = cheat_killhud;
+
+    cheatcodes[8].text = "idretro";
+    cheatcodes[8].trigger = cheat_retromode;
 }

@@ -5,8 +5,18 @@
 #include <fog>
 #include <normal>
 
+float4 vecAmbient;
+float4 vecFogColor;
+
 Texture entSkin1;
 sampler sTexture = sampler_state { Texture = <entSkin1>; MipFilter = Linear; MagFilter = Linear; MinFilter = Linear; };
+
+float4x4 matTexture;
+
+float2 DoTexture(float2 Tex)
+{
+   return mul(float3(Tex.x,Tex.y,1),matTexture).xy;
+}
 
 struct out_ps // Output to the pixelshader fragment
 {
@@ -17,29 +27,34 @@ struct out_ps // Output to the pixelshader fragment
 	float3 normal : TEXCOORD3;
 };
 
+struct out_frag // fragment color output
+{
+	float4 glow : COLOR0;
+	float4 color : COLOR1;
+};
+
 out_ps vs(
 	float4 inPos : POSITION,
-	float3 inNormal : NORMAL
+	float3 inNormal : NORMAL,
 	float2 inTexCoord0 : TEXCOORD0)
 {
 	out_ps Out;
 	
 	Out.Pos = DoTransform(inPos);
 	Out.fog = (Out.Pos.z - vecFog.x) * vecFog.z;
-	Out.uv0 = inTexCoord0;
+        Out.uv0 = DoTexture(inTexCoord0);
 	Out.worldPos = mul(inPos, matWorld);
 	Out.normal = mul(inNormal, matWorld);
 	
 	return Out;
 }
 
-float4 ps(out_ps In): COLOR
+out_frag ps(out_ps In)
 {
 	In.normal = normalize(In.normal);
-	float viewDistance = distance(vecViewPos.xyz - In.worldPos);
 	
 	float4 color;
-	color.rgba = tex2D(sTexture, In.uv0);
+	color = tex2D(sTexture, In.uv0);
 	float glow = color.a;
 	color.a = 1.0;
 	
@@ -57,12 +72,14 @@ float4 ps(out_ps In): COLOR
 		}
 	}
 	
-	color.rgb *= lerp(light, float3(1.0), glow);
-	
+	color.rgb *= light;
 	color = lerp(color, vecFogColor, saturate(In.fog));
 	
+	out_frag Out;
+	Out.color = color;
+	Out.glow = glow;
 	
-	return color;
+	return Out;
 }
 
 

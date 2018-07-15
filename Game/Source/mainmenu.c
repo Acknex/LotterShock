@@ -20,49 +20,8 @@ BMAP * mainmenu_bestiary_bmap = "mainmenu_bestiary.png";
 BMAP * mainmenu_options_bmap = "mainmenu_options.png";
 BMAP * mainmenu_exit_bmap = "mainmenu_exit.png";
 
-PANEL * mainmenu_start_pan =
-{
-    bmap = mainmenu_start_bmap;
-    flags = TRANSLUCENT;
-    layer = 2;
-}
-
-PANEL * mainmenu_credits_pan =
-{
-    bmap = mainmenu_credits_bmap;
-    flags = TRANSLUCENT;
-        layer = 2;
-}
-
-PANEL * mainmenu_bestiary_pan =
-{
-    bmap = mainmenu_bestiary_bmap;
-    flags = TRANSLUCENT;
-    layer = 2;
-}
-
-PANEL * mainmenu_options_pan =
-{
-    bmap = mainmenu_options_bmap;
-    flags = TRANSLUCENT;
-    layer = 2;
-}
-
-PANEL * mainmenu_exit_pan =
-{
-    bmap = mainmenu_exit_bmap;
-    flags = TRANSLUCENT;
-    layer = 2;
-}
-
-PANEL * mainmenu_selection_pan =
-{
-    bmap = mainmenu_selection_bmap;
-    flags = TRANSLUCENT;
-    layer = 3;
-}
-
-PANEL * mainmenu_items[MAINMENU_ITEM_COUNT];
+uisystem_t * mainmenu_ui;
+uibutton_t * mainmenu_items[MAINMENU_ITEM_COUNT];
 
 
 PANEL* mainmenue_title =
@@ -98,13 +57,36 @@ void mainmenu_resize()
     mainmenue_title->pos_y = 40;
 }
 
+
+void mainmenu_start_game() { mainmenu_response = MAINMENU_RESPONSE_START; }
+void mainmenu_start_credits() { mainmenu_response = MAINMENU_RESPONSE_CREDITS; }
+void mainmenu_start_bestiary() { mainmenu_response = MAINMENU_RESPONSE_BESTIARY; }
+void mainmenu_show_options() {
+    mainmenu_shows_optionsmenu = true;
+    options_open();
+}
+void mainmenu_quit_game() { mainmenu_response = MAINMENU_RESPONSE_EXIT; }
+
 void mainmenu_init()
 {
-    mainmenu_items[0] = mainmenu_start_pan;
-    mainmenu_items[1] = mainmenu_credits_pan;
-    mainmenu_items[2] = mainmenu_bestiary_pan;
-    mainmenu_items[3] = mainmenu_options_pan;
-    mainmenu_items[4] = mainmenu_exit_pan;
+    mainmenu_ui = uisystem_new(2);
+    set(mainmenu_ui, UISYSTEM_SELECTOR);
+    mainmenu_ui->selector->bmap = mainmenu_selection_bmap;
+
+    mainmenu_items[0] = uisystem_add_button(mainmenu_ui, 0, 0, mainmenu_start_bmap, mainmenu_start_game);
+    mainmenu_items[1] = uisystem_add_button(mainmenu_ui, 0, 0, mainmenu_credits_bmap, mainmenu_start_credits);
+    mainmenu_items[2] = uisystem_add_button(mainmenu_ui, 0, 0, mainmenu_bestiary_bmap, mainmenu_start_bestiary);
+    mainmenu_items[3] = uisystem_add_button(mainmenu_ui, 0, 0, mainmenu_options_bmap, mainmenu_show_options);
+    mainmenu_items[4] = uisystem_add_button(mainmenu_ui, 0, 0, mainmenu_exit_bmap, mainmenu_quit_game);
+
+    int i;
+    for(i = 0; i < MAINMENU_ITEM_COUNT; i++)
+    {
+        if(i > 0)
+            mainmenu_items[i]->neighbour[UIDIR_UP] = mainmenu_items[i - 1];
+        if(i < (MAINMENU_ITEM_COUNT-1))
+            mainmenu_items[i]->neighbour[UIDIR_DOWN] = mainmenu_items[i + 1];
+    }
 
     settings_register_signal(mainmenu_resize);
 }
@@ -112,20 +94,10 @@ void mainmenu_init()
 void mainmenu_open()
 {
     mainmenu_resize();
-    set(mainmenu_selection_pan, SHOW);
-    mainmenu_selection_pan->alpha = 0;
-    mainmenu_selection = 0;
     mainmenu_response = MAINMENU_RESPONSE_STILLACTIVE;
 
     set(mainmenue_title, SHOW);
-
-
-    int i;
-    for(i = 0; i < MAINMENU_ITEM_COUNT; i++)
-    {
-        set(mainmenu_items[i], SHOW);
-        mainmenu_items[i]->alpha = 0;
-    }
+    uisystem_show_all(mainmenu_ui);
 
     fog_color = 2;
     camera.fog_end = 20000.0;
@@ -133,6 +105,7 @@ void mainmenu_open()
     mainmenu_cameradist = vec_dist(nullvector, camera.x);
 
     music_start("Media/intro.mp3", 1.0, false);
+    camera->arc = 60;
 }
 
 void mainmenu_update()
@@ -161,29 +134,7 @@ void mainmenu_update()
         snd_play(ui_swap_snd, 100, 0);
     }
 
-    for(i = 0; i < MAINMENU_ITEM_COUNT; i++)
-    {
-        mainmenu_items[i]->alpha = clamp(
-            mainmenu_items[i]->alpha + MAINMENU_FADE_SPEED * time_step,
-            0,
-            100);
-
-        if(mainmenu_items[i]->alpha < 70)
-            break;
-
-        if(mouse_panel == mainmenu_items[i])
-        {
-            if(mainmenu_selection != i)
-                snd_play(ui_swap_snd, 100, 0);
-            mainmenu_selection = i;
-        }
-    }
-    if(i == 3)
-    {
-        mainmenu_selection_pan->alpha = clamp(mainmenu_selection_pan->alpha + MAINMENU_FADE_SPEED * time_step, 0, 100);
-    }
-    mainmenu_selection_pan->pos_x = mainmenu_items[mainmenu_selection]->pos_x;
-    mainmenu_selection_pan->pos_y = mainmenu_items[mainmenu_selection]->pos_y;
+    uisystem_update(mainmenu_ui);
 
     var attack = input_hit(INPUT_ATTACK) && (!mouse_left || (mouse_left && (mouse_panel != NULL)));
     if(input_hit(INPUT_USE) || attack || input_hit(INPUT_JUMP))
@@ -191,21 +142,6 @@ void mainmenu_update()
         if((mouse_panel == mainmenue_title) && (mouse_left))
         {
             snd_play(mainmenu_stupid, 100, 0);
-        }
-        else
-        {
-            snd_play(ui_accept_snd, 100, 0);
-            switch(mainmenu_selection)
-            {
-            case 0: mainmenu_response = MAINMENU_RESPONSE_START; break;
-            case 1: mainmenu_response = MAINMENU_RESPONSE_CREDITS; break;
-            case 2: mainmenu_response = MAINMENU_RESPONSE_BESTIARY; break;
-            case 3:
-                mainmenu_shows_optionsmenu = true;
-                options_open();
-                return;
-            case 4: mainmenu_response = MAINMENU_RESPONSE_EXIT; break;
-            }
         }
     }
 
@@ -227,11 +163,7 @@ void mainmenu_update()
 void mainmenu_close()
 {
     int i;
-    for(i = 0; i < MAINMENU_ITEM_COUNT; i++)
-    {
-        reset(mainmenu_items[i], SHOW);
-    }
-    reset(mainmenu_selection_pan, SHOW);
+    uisystem_hide_all(mainmenu_ui);
     reset(mainmenue_title, SHOW);
 }
 

@@ -5,6 +5,7 @@
 #define PRAGMA_LEVEL "menue.wmp"
 #define PRAGMA_LEVEL "bestiary.wmp"
 #define PRAGMA_LEVEL "gamelevel.wmp"
+#define PRAGMA_LEVEL "intro.wmp"
 
 #define PRAGMA_PATH "Source"
 #define PRAGMA_PATH "Shaders"
@@ -66,6 +67,7 @@
 #include "cheats.c"
 #include "secretroom.c"
 #include "flesh.c"
+#include "intro.c"
 
 void main()
 {

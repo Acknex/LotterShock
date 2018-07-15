@@ -48,6 +48,10 @@ void settings_init()
     settings.fps_limit = 60;
     settings.anisotropy = 5;
     settings.vsync = true;
+    settings.gamma = 100;
+    settings.skipIntro = false;
+    settings.retroshader = false;
+    settings.bloom = true;
 
     settings.game_volume = 100;
 
@@ -80,6 +84,11 @@ void settings_load_from(STRING * fileName)
     settings.fps_limit    = ini_read_int(fileName, "Game", "fps_limit", settings.fps_limit);
     settings.anisotropy   = ini_read_int(fileName, "Game", "anisotropy", settings.anisotropy);
     settings.vsync        = ini_read_int(fileName, "Game", "vsync", settings.vsync);
+    settings.skipIntro    = ini_read_int(fileName, "Game", "skip_intro", settings.skipIntro);
+    settings.gamma        = ini_read_var(fileName, "Game", "gamma", settings.gamma);
+
+    settings.retroshader  = ini_read_int(fileName, "Game", "retro", settings.retroshader);
+    settings.bloom        = ini_read_int(fileName, "Game", "bloom", settings.bloom);
 
     settings.resolution_x = ini_read_int(fileName, "Resolution", "width", settings.resolution_x);
     settings.resolution_y = ini_read_int(fileName, "Resolution", "height", settings.resolution_y);
@@ -131,6 +140,11 @@ void settings_save()
     ini_write_int(settings_file, "Game", "fps_limit", settings.fps_limit);
     ini_write_int(settings_file, "Game", "anisotropy", settings.anisotropy);
     ini_write_int(settings_file, "Game", "vsync", settings.vsync);
+    ini_write_int(settings_file, "Game", "skip_intro", settings.skipIntro);
+    ini_write_var(settings_file, "Game", "gamma", settings.gamma);
+    if(achievements.retro_unlocked) // don't spoil them!
+        ini_write_var(settings_file, "Game", "retro", settings.retroshader);
+    ini_write_var(settings_file, "Game", "bloom", settings.bloom);
 
     ini_write_int(settings_file, "Resolution", "width", settings.resolution_x);
     ini_write_int(settings_file, "Resolution", "height", settings.resolution_y);
@@ -178,6 +192,7 @@ void achievements_load()
         sprintf(buffer, "beast_%d", i);
         achievements.bestiary_unlocked[i] = ini_read_var(settings_file, "Achievements", buffer, achievements.bestiary_unlocked[i]);
     }
+    achievements.retro_unlocked = ini_read_int(settings_file, "Achievements", "retromode", achievements.retro_unlocked);
 }
 
 void achievements_save()
@@ -190,6 +205,8 @@ void achievements_save()
         sprintf(buffer, "beast_%d", i);
         ini_write_var(settings_file, "Achievements", _str(buffer), achievements.bestiary_unlocked[i]);
     }
+    if(achievements.retro_unlocked)
+        ini_write_int(settings_file, "Achievements", "retromode", achievements.retro_unlocked);
 }
 
 
@@ -200,4 +217,17 @@ void achievement_kill_beast(int beastid)
         achievements.bestiary_unlocked[beastid] = 1;
         achievements_save();
     }
+}
+
+void achievement_reset()
+{
+    int i;
+    for(i = 0; i < BEAST_COUNT; i++)
+    {
+        if(i < 2)
+            achievements.bestiary_unlocked[i] = 1;
+        else
+            achievements.bestiary_unlocked[i] = 0;
+    }
+    achievements_save();
 }

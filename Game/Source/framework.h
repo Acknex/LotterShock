@@ -19,4 +19,7 @@ void framework_update();
 //! Setzt den Mausmodus auf UI oder GAME
 void framework_set_mousemode(int mode);
 
+//! Ends the loading sequence and starts the fade in
+void framework_complete_intro();
+
 #endif // FRAMEWORK_H

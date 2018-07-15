@@ -2,7 +2,7 @@
 #define PARTICLE_H
 
 void PARTICLE_explode(var count, VECTOR* pos);
-void PARTICLE_laser(VECTOR* pos, ENTITY* ent);
+void PARTICLE_laser(VECTOR* pos, VECTOR* vecDist);
 void PARTICLE_smoke(PARTICLE* p);
 
 /* local */

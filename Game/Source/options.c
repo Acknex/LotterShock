@@ -7,8 +7,6 @@
 #include <acknex.h>
 #include <d3d9.h>
 
-
-
 BMAP * options_bmp_pane = "options_pane.png";
 BMAP * options_bmp_tab_common = "options_tab_common.png";
 BMAP * options_bmp_tab_input = "options_tab_input.png";
@@ -25,6 +23,7 @@ BMAP * options_bmp_more = "options_more.png";
 
 BMAP * options_bmp_inbetween_small = "options_inbetween_small.png";
 BMAP * options_bmp_inbetween_large = "options_inbetween_large.png";
+BMAP * options_bmp_reset = "options_reset.png";
 
 BMAP * options_bmp_checkbox = "option_inputslot_checked.png";
 
@@ -111,6 +110,12 @@ typedef struct checkbox_t
     TEXT * label;
 } checkbox_t;
 
+typedef struct clickbutton_t
+{
+    uibutton_t * button;
+    TEXT * label;
+} clickbutton_t;
+
 typedef struct selector_t
 {
     uibutton_t * decrease;
@@ -139,6 +144,14 @@ struct
 
     selector_t fpslimit;
     selector_t anisotropy;
+
+    slider_t gamma;
+
+    checkbox_t introskip;
+    clickbutton_t resetBestiary;
+
+    checkbox_t bloomeffect;
+    checkbox_t retroeffect;
 
     // INPUT
     struct inputslot_t inputs[INPUT_MAX];
@@ -377,6 +390,38 @@ void options_checkbox_hide(checkbox_t * cb)
     reset(cb->label, SHOW);
 }
 
+
+void options_clickbutton_init(clickbutton_t * cb, EVENT event, var x, var y, BMAP * icon, STRING * label, int group)
+{
+    cb->button = uisystem_add_button(options_ui, x, y, icon, event);
+    cb->button->group = group;
+
+    cb->label = txt_create(1, 504);
+    cb->label->flags = ARIGHT | OUTLINE;
+    cb->label->font = options_panel_font;
+    str_cpy((cb->label->pstring)[0], label);
+}
+
+void options_clickbutton_update(clickbutton_t * cb)
+{
+    cb->label->pos_x = cb->button->pan->pos_x - 3;
+    cb->label->pos_y = cb->button->pan->pos_y + (43 - cb->label->font->dy) / 2;
+
+    if(is(cb->button->pan, SHOW))
+    {
+        set(cb->label, SHOW);
+    }
+    else
+    {
+        reset(cb->label, SHOW);
+    }
+}
+
+void options_clickbutton_hide(clickbutton_t * cb)
+{
+    reset(cb->label, SHOW);
+}
+
 bool options_wants_close()
 {
     return options_done;
@@ -384,11 +429,13 @@ bool options_wants_close()
 
 void options_cancel()
 {
+    video_gamma = settings.gamma; // revert
     options_done = 1;
 }
 
 void options_save()
 {
+    options_settings_copy.gamma = video_gamma;
     memcpy(input, options_input_copy, sizeof(INPUT) * INPUT_MAX);
     memcpy(settings, options_settings_copy, sizeof(settings_t));
 
@@ -418,8 +465,8 @@ void options_select_common()
     optionbutton.input_tab->neighbour[UIDIR_DOWN] = optionbutton.resolution.increase;
     optionbutton.common_tab->neighbour[UIDIR_DOWN] = optionbutton.resolution.decrease;
 
-    optionbutton.save->neighbour[UIDIR_UP] = optionbutton.anisotropy.increase;
-    optionbutton.cancel->neighbour[UIDIR_UP] = optionbutton.anisotropy.increase;
+    optionbutton.save->neighbour[UIDIR_UP] = optionbutton.retroeffect.button;
+    optionbutton.cancel->neighbour[UIDIR_UP] = optionbutton.retroeffect.button;
 }
 
 void options_select_input()
@@ -442,8 +489,8 @@ void options_select_input()
     optionbutton.input_tab->neighbour[UIDIR_DOWN] = optionbutton.inputs[0].slot[0];
     optionbutton.common_tab->neighbour[UIDIR_DOWN] = optionbutton.inputs[0].slot[0];
 
-    optionbutton.save->neighbour[UIDIR_UP] = optionbutton.vsensitivity.increase;
-    optionbutton.cancel->neighbour[UIDIR_UP] = optionbutton.vsensitivity.increase;
+    optionbutton.save->neighbour[UIDIR_UP] = optionbutton.vinvert.button;
+    optionbutton.cancel->neighbour[UIDIR_UP] = optionbutton.vinvert.button;
 }
 
 void options_setup_input(uibutton_t * btn)
@@ -622,13 +669,24 @@ void options_init()
 
     options_selector_init(&optionbutton.anisotropy, &options_settings_copy.anisotropy, options_anisotropy_text, 190, 210, options_bmp_inbetween_large, "Anisotropic Filter", OPTIONGROUP_COMMON);
 
+    options_slider_init(&optionbutton.gamma, &video_gamma, 10.0, 200.0, 10.0, 190, 260, options_bmp_inbetween_large, "Brightness", OPTIONGROUP_COMMON);
+
+    options_checkbox_init(&optionbutton.introskip, &options_settings_copy.skipIntro, 190, 310, "Skip Intro", OPTIONGROUP_COMMON);
+
+    options_clickbutton_init(&optionbutton.resetBestiary, achievement_reset, 190, 360, options_bmp_reset, "Reset Bestiary", OPTIONGROUP_COMMON);
+
+    options_checkbox_init(&optionbutton.bloomeffect, &options_settings_copy.bloom,       600, 10, "Enable Bloom", OPTIONGROUP_COMMON);
+    options_checkbox_init(&optionbutton.retroeffect, &options_settings_copy.retroshader, 600, 60, "Enable Retro", OPTIONGROUP_COMMON);
+
     optionbutton.resolution.decrease->neighbour[UIDIR_UP] = optionbutton.common_tab;
     optionbutton.resolution.decrease->neighbour[UIDIR_DOWN] = optionbutton.fullscreen.button;
 
     optionbutton.resolution.increase->neighbour[UIDIR_UP] = optionbutton.common_tab;
     optionbutton.resolution.increase->neighbour[UIDIR_DOWN] = optionbutton.fullscreen.button;
+    optionbutton.resolution.increase->neighbour[UIDIR_RIGHT] = optionbutton.bloomeffect.button;
 
     optionbutton.fullscreen.button->neighbour[UIDIR_UP] = optionbutton.resolution.decrease;
+    optionbutton.fullscreen.button->neighbour[UIDIR_RIGHT] = optionbutton.retroeffect.button;
     optionbutton.fullscreen.button->neighbour[UIDIR_DOWN] = optionbutton.vsync.button;
 
     optionbutton.vsync.button->neighbour[UIDIR_UP] = optionbutton.fullscreen.button;
@@ -643,8 +701,28 @@ void options_init()
     optionbutton.anisotropy.increase->neighbour[UIDIR_UP] = optionbutton.fpslimit.increase;
     optionbutton.anisotropy.decrease->neighbour[UIDIR_UP] = optionbutton.fpslimit.decrease;
 
-    optionbutton.anisotropy.increase->neighbour[UIDIR_DOWN] = optionbutton.cancel;
-    optionbutton.anisotropy.decrease->neighbour[UIDIR_DOWN] = optionbutton.cancel;
+    optionbutton.anisotropy.increase->neighbour[UIDIR_DOWN] = optionbutton.gamma.increase;
+    optionbutton.anisotropy.decrease->neighbour[UIDIR_DOWN] = optionbutton.gamma.decrease;
+
+    optionbutton.gamma.increase->neighbour[UIDIR_UP] = optionbutton.anisotropy.increase;
+    optionbutton.gamma.decrease->neighbour[UIDIR_UP] = optionbutton.anisotropy.decrease;
+    optionbutton.gamma.increase->neighbour[UIDIR_DOWN] = optionbutton.introskip.button;
+    optionbutton.gamma.decrease->neighbour[UIDIR_DOWN] = optionbutton.introskip.button;
+
+    optionbutton.introskip.button->neighbour[UIDIR_UP] = optionbutton.gamma.decrease;
+    optionbutton.introskip.button->neighbour[UIDIR_DOWN] = optionbutton.resetBestiary.button;
+
+    optionbutton.resetBestiary.button->neighbour[UIDIR_UP] = optionbutton.introskip.button;
+    optionbutton.resetBestiary.button->neighbour[UIDIR_DOWN] = optionbutton.cancel;
+
+
+    optionbutton.bloomeffect.button->neighbour[UIDIR_UP] = optionbutton.input_tab;
+    optionbutton.bloomeffect.button->neighbour[UIDIR_LEFT] = optionbutton.resolution.increase;
+    optionbutton.bloomeffect.button->neighbour[UIDIR_DOWN] = optionbutton.retroeffect.button;
+
+    optionbutton.retroeffect.button->neighbour[UIDIR_UP] = optionbutton.bloomeffect.button;
+    optionbutton.retroeffect.button->neighbour[UIDIR_LEFT] = optionbutton.fullscreen.button;
+    optionbutton.retroeffect.button->neighbour[UIDIR_DOWN] = optionbutton.cancel;
 
     { // initialize and interconnect all input slots
 
@@ -679,7 +757,7 @@ void options_init()
             optionbutton.inputs[0].slot[i]->neighbour[UIDIR_UP] = optionbutton.input_tab;
             optionbutton.inputs[middle].slot[i]->neighbour[UIDIR_UP] = optionbutton.input_tab;
 
-            optionbutton.inputs[INPUT_MAX - 1].slot[i]->neighbour[UIDIR_DOWN] = optionbutton.save;
+            optionbutton.inputs[INPUT_MAX - 1].slot[i]->neighbour[UIDIR_DOWN] = optionbutton.hinvert.button;
         }
 
         optionbutton.inputs[middle - 1].slot[0]->neighbour[UIDIR_DOWN] = optionbutton.hsensitivity.decrease;
@@ -697,6 +775,17 @@ void options_init()
         optionbutton.vsensitivity.increase->neighbour[UIDIR_UP] = optionbutton.hsensitivity.increase;
         optionbutton.vsensitivity.decrease->neighbour[UIDIR_DOWN] = optionbutton.cancel;
         optionbutton.vsensitivity.increase->neighbour[UIDIR_DOWN] = optionbutton.cancel;
+
+        optionbutton.hsensitivity.increase->neighbour[UIDIR_RIGHT] = optionbutton.hinvert.button;
+        optionbutton.vsensitivity.increase->neighbour[UIDIR_RIGHT] = optionbutton.vinvert.button;
+
+        optionbutton.hinvert.button->neighbour[UIDIR_UP] = optionbutton.inputs[INPUT_MAX - 1].slot[0];
+        optionbutton.hinvert.button->neighbour[UIDIR_DOWN] = optionbutton.vinvert.button;
+        optionbutton.hinvert.button->neighbour[UIDIR_LEFT] = optionbutton.hsensitivity.increase;
+
+        optionbutton.vinvert.button->neighbour[UIDIR_UP] = optionbutton.hinvert.button;
+        optionbutton.vinvert.button->neighbour[UIDIR_DOWN] = optionbutton.save;
+        optionbutton.vinvert.button->neighbour[UIDIR_LEFT] = optionbutton.vsensitivity.increase;
     }
 }
 
@@ -815,6 +904,10 @@ void options_update()
         }
     }
 
+    // prevent retrobutton from appearing
+    if(!achievements.retro_unlocked)
+        reset(optionbutton.retroeffect.button->pan, SHOW);
+
     uisystem_update(options_ui);
 
     options_selector_update(&optionbutton.resolution);
@@ -823,12 +916,19 @@ void options_update()
 
     options_slider_update(&optionbutton.hsensitivity);
     options_slider_update(&optionbutton.vsensitivity);
+    options_slider_update(&optionbutton.gamma);
 
     options_checkbox_update(&optionbutton.fullscreen);
     options_checkbox_update(&optionbutton.vsync);
+    options_checkbox_update(&optionbutton.introskip);
+
+    options_clickbutton_update(&optionbutton.resetBestiary);
 
     options_checkbox_update(&optionbutton.hinvert);
     options_checkbox_update(&optionbutton.vinvert);
+
+    options_checkbox_update(&optionbutton.bloomeffect);
+    options_checkbox_update(&optionbutton.retroeffect);
 
     // force-update values
     options_settings_copy.fps_limit = options_fpslimits_value[options_selected_fpslimit];
@@ -954,9 +1054,16 @@ void options_close()
 
     options_slider_hide(&optionbutton.hsensitivity);
     options_slider_hide(&optionbutton.vsensitivity);
+    options_slider_hide(&optionbutton.gamma);
 
     options_checkbox_hide(&optionbutton.fullscreen);
     options_checkbox_hide(&optionbutton.vsync);
+    options_checkbox_hide(&optionbutton.introskip);
+
+    options_checkbox_hide(&optionbutton.bloomeffect);
+    options_checkbox_hide(&optionbutton.retroeffect);
+
+    options_clickbutton_hide(&optionbutton.resetBestiary);
 
     options_checkbox_hide(&optionbutton.hinvert);
     options_checkbox_hide(&optionbutton.vinvert);
