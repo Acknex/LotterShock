@@ -155,7 +155,6 @@ void cheat_retromode()
 
 void cheats_init()
 {
-
     memset(cheatcodes, 0, sizeof(cheatcode_t) * INPUT_CHEAT_COUNT);
 
     if(on_message != input_proc_message)
