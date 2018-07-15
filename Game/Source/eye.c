@@ -76,6 +76,7 @@ action Eye()
 	vec_set(&my->x, ent->x);
 	vec_set(&my->EYE_LASTPOS, &my->x);
 	//set(my, PASSABLE);
+	set(my, SHADOW);
 	ENEMY_HIT_init(me);		
 	my->EYE_PATHENT = handle(ent);
 	my->group = GROUP_ENEMY;
@@ -246,14 +247,14 @@ void EYE__patrol(ENTITY* ptr)
 		{
 			ptr->EYE_SHOTCOUNTER -= 16;
 			//fix me.
-			/*ENTITY* ent = ent_create("eye_shot.mdl", ptr->x, eye_shot);
+			ENTITY* ent = ent_create("eye_shot.mdl", ptr->x, eye_shot);
 			VECTOR v;
 			vec_set(v, ptr->x);
 			vec_sub(v, player->x);
 			vec_normalize(v,1);
 			vec_set(ent->skill1, v);
 			vec_scale(v, -1);
-			vec_to_angle(ent->pan, v);*/
+			vec_to_angle(ent->pan, v);
 		}
 		
 	}
@@ -371,7 +372,8 @@ void EYE__die(ENTITY* ptr)
 		{
 			GIB_Spawn(&ptr->x);
 		}
-		SPLATTER_explode(50, ptr, 400, EYE_bmapSplatter, 5);
+		SPLATTER_explode(50, ptr, 500, EYE_bmapSplatter, 5);
+		reset(ptr, SHADOW);
 		ptr->EYE_STATE = EYE_STATE_DEAD;
 		ptr->SK_ENTITY_DEAD = 1;
 	}

@@ -227,14 +227,14 @@ var SKULL__toFloor(ENTITY* ptr)
 	ptr.max_x += 8;
 	ptr.max_y += 8;
 
-	var zOffs = 140;
+	var zOffs = 130;
 	if (ptr->SKL_BASEZ > player->z + zOffs)
 	{
-		ptr->SKL_BASEZ = clamp(ptr->SKL_BASEZ - 15*time_step, player->z + zOffs, vmax);
+		ptr->SKL_BASEZ = clamp(ptr->SKL_BASEZ - 5*time_step, player->z + zOffs, vmax);
 	}
 	else
 	{
-		ptr->SKL_BASEZ = clamp(ptr->SKL_BASEZ + 15*time_step, vmin, player->z + zOffs);
+		ptr->SKL_BASEZ = clamp(ptr->SKL_BASEZ + 5*time_step, vmin, player->z + zOffs);
 	}
 	ptr->z = ptr->SKL_BASEZ + ptr->SKL_ZOFFSET;
 	
@@ -353,6 +353,7 @@ void SKULL__die(ENTITY* ptr)
 	/* transitions */
 	if(animState <= 0)
 	{
+		reset(ptr, SHADOW);
 		ptr->SKL_COUNTER = 0;
 		ptr->SKL_STATE = SKL_STATE_DEAD;
 	}
