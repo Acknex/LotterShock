@@ -105,7 +105,7 @@ void journals_init()
 
 	// Cmdr. Daumann
 	journals[8].text = "The guys from the engine room asked if they could store their spare batteries somewhere. \"Why not store them in the engine room?\" I asked. \"Because there is no storage room in the engine room!\" they say. Just chuck it in the corner! Why can't they just keep their engine stuff with the engines?! Anyway, the chefs said they can keep it in their storage closet. Because THAT makes sense.... Not!";
-	journals[8].media = "";
+	journals[8].media = "Media/pda_cmdr_daumann1.mp3";
 	journals[8].name = crew_name4;
 
 	// 1st Officer Trümpler
@@ -141,7 +141,7 @@ void journals_init()
 
 	// Ensign Jäger
 	journals[16].text = "I fixed some of the coolant lines with duct tape. It's amazing. Even in space duct tape is still the best way to fix stuff. I even used it on some of the hull breaches. Works perfectly!";
-	journals[16].media = "";
+	journals[14].media = "Media/pda_ensign_jaeger1.mp3";
 	journals[16].name = crew_name8;
 
 	// Lt. Officer Freiknecht
