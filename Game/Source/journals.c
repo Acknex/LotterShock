@@ -61,6 +61,7 @@ int journals_current = 0;
 int journals_current_level = 0;
 var journals_mediahandle = 0;
 var journals_timeout = 0;
+long journals_hard_timeout = 0;
 
 #define MAX_JOURNALS 100
 journal_t journals[MAX_JOURNALS];
@@ -505,6 +506,7 @@ void journals_play(int id, int level)
     journals_current = id;
     journals_current_level = level;
     journals_timeout = total_ticks + maxv(16, JOURNAL_MINTIME_PER_CHAR * str_len(journals[journals_current].text));
+    journals_hard_timeout = GetTickCount() + 60000; // 1 minute
 
     if(journals[journals_current].name != NULL)
     {
@@ -575,7 +577,7 @@ void journals_update()
         media_pause(journals_mediahandle);
         media_start(journals_mediahandle);
 
-        if(!media_playing(journals_mediahandle) && (total_ticks >= journals_timeout))
+        if((!media_playing(journals_mediahandle) && (total_ticks >= journals_timeout)) || (journals_hard_timeout < GetTickCount()))
         {
             function callback();
             callback = journals[journals_current].event;
