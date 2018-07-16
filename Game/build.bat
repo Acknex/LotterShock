@@ -18,7 +18,7 @@ for %%i in ("%main%") do (
 Set "path=%path%;%AckPath%;%AckPath2%"
 
 rem standard wrs build (do not change)
-rd %buildfolder% /S /Q
+if exist %buildfolder% ( rd %buildfolder% /S /Q )
 ren media media_renamed_by_buildscript
 ren config.h config.h.orig
 echo // kommentar > config.h
@@ -30,10 +30,10 @@ rem specific files to be copied (adjust to project)
 xcopy media %buildfolder%\media\ /Y >>build.log
 xcopy readme.txt %buildfolder% /Y >>build.log
 xcopy credits.dat %buildfolder% /Y >>build.log
-xcopy acknex.wdf %buildfolder% /Y >>build.log
+rem xcopy acknex.wdf %buildfolder% /Y >>build.log
 xcopy ackxinput.dll %buildfolder% /Y >>build.log
-
-pause
+rem xcopy fails this Oo
+copy disabled.wdf %buildfolder%\acknex.wdf /Y >>build.log
 
 rem cleanup
 for %%i in ("%main%") do (
