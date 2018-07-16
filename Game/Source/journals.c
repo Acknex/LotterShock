@@ -141,7 +141,7 @@ void journals_init()
 
 	// Ensign Jäger
 	journals[16].text = "I fixed some of the coolant lines with duct tape. It's amazing. Even in space duct tape is still the best way to fix stuff. I even used it on some of the hull breaches. Works perfectly!";
-	journals[14].media = "Media/pda_ensign_jaeger1.mp3";
+    journals[16].media = "Media/pda_ensign_jaeger1.mp3";
 	journals[16].name = crew_name8;
 
 	// Lt. Officer Freiknecht
