@@ -61,6 +61,7 @@ int journals_current = 0;
 int journals_current_level = 0;
 var journals_mediahandle = 0;
 var journals_timeout = 0;
+long journals_hard_timeout = 0;
 
 #define MAX_JOURNALS 100
 journal_t journals[MAX_JOURNALS];
@@ -141,7 +142,7 @@ void journals_init()
 
 	// Ensign Jäger
 	journals[16].text = "I fixed some of the coolant lines with duct tape. It's amazing. Even in space duct tape is still the best way to fix stuff. I even used it on some of the hull breaches. Works perfectly!";
-	journals[14].media = "Media/pda_ensign_jaeger1.mp3";
+    journals[16].media = "Media/pda_ensign_jaeger1.mp3";
 	journals[16].name = crew_name8;
 
 	// Lt. Officer Freiknecht
@@ -289,7 +290,7 @@ void journals_init()
     // Server room enter first time
 
     journals[37].text = "There's the terminal there at the end. Get me there and I'll take a look.";
-    journals[37].media = "Media/acktana_part3_1.mp3";
+    journals[37].media = "Media/story_part3_1.mp3";
     journals[37].type = JOURNAL_TYPE_SUBTITLE;
     journals[37].name = acktana_name;
 
@@ -298,13 +299,13 @@ void journals_init()
     journals[38].text = "Connecting...\n[modem sounds]\nIt seems that the Patchnotes was working on digitization prior to the incident, and when it arrived they uploaded the crew into the computer to escape the Unity Union boarding party. Power requirements for the system increased exponentially with this many people. The system is running on a low power mode. Until we can get it back up, I can't get you any more information.";
     journals[38].type = JOURNAL_TYPE_SUBTITLE;
     journals[38].name = acktana_name;
-    journals[38].media = "Media/acktana_part3_2.mp3";
+    journals[38].media = "Media/story_part3_2.mp3";
     journals[38].followup = 39;
 
     journals[39].text = "Start the generator and talk to the computer people, got it.";
     journals[39].type = JOURNAL_TYPE_SUBTITLE;
     journals[39].name = lotter_name;
-    journals[39].media = "Media/lotter_part3_3.mp3";
+    journals[39].media = "Media/story_part3_3.mp3";
 
     ///////////////////////////////////////////////////////////////////////
     // PART 4
@@ -315,38 +316,38 @@ void journals_init()
     journals[40].text = "Power core output stable at 1.21 Gigawatts. Servers are resuming operation now. Take me back.";
     journals[40].type = JOURNAL_TYPE_SUBTITLE;
     journals[40].name = acktana_name;
-    journals[40].media = "Media/acktana_part4_1.mp3";
+    journals[40].media = "Media/story_part4_1.mp3";
     journals[40].followup = 41;
 
     journals[41].text = " You got it babe.";
     journals[41].type = JOURNAL_TYPE_SUBTITLE;
     journals[41].name = lotter_name;
-    journals[41].media = "Media/lotter_part4_2.mp3";
+    journals[41].media = "Media/story_part4_2.mp3";
 
     // Server terminal
 
     journals[42].text = "[Modem sounds] .... This is terrible. Apparently immediately after uploading themselves, they got attacked by a computer virus by the Unity union. They deployed countermeasures.... something called the... Guardian System? It defeated the Unity Union Virus, but it also trapped them in nullpointer space.";
     journals[42].type = JOURNAL_TYPE_SUBTITLE;
     journals[42].name = acktana_name;
-    journals[42].media = "Media/acktana_part4_3.mp3";
+    journals[42].media = "Media/story_part4_3.mp3";
     journals[42].followup = 43;
 
     journals[43].text = "Anything we can do?";
     journals[43].type = JOURNAL_TYPE_SUBTITLE;
     journals[43].name = lotter_name;
-    journals[43].media = "Media/lotter_part4_4.mp3";
+    journals[43].media = "Media/story_part4_4.mp3";
     journals[43].followup = 44;
 
     journals[44].text = "Jack in, turn off the Guardian and jack out?";
     journals[44].type = JOURNAL_TYPE_SUBTITLE;
     journals[44].name = acktana_name;
-    journals[44].media = "Media/acktana_part4_5.mp3";
+    journals[44].media = "Media/story_part4_5.mp3";
     journals[44].followup = 45;
 
     journals[45].text = " Alright! Let's jack in, kill that jack-off and jack out!";
     journals[45].type = JOURNAL_TYPE_SUBTITLE;
     journals[45].name = lotter_name;
-    journals[45].media = "Media/lotter_part4_6.mp3";
+    journals[45].media = "Media/story_part4_6.mp3";
 
     // interacting with matrix bed
 
@@ -381,13 +382,13 @@ void journals_init()
     JOURNAL(55, patchnotes_name, "Media/intro_chunk_55.mp3", "THIS IS USS PATCHNOTES, USS PATCHNOTES, USS PATCHNOTES");
     JOURNAL(56, patchnotes_name, "Media/intro_chunk_56.mp3", "CALL SIGN ACKPATCH");
     JOURNAL(57, patchnotes_name, "Media/intro_chunk_57.mp3", "MAYDAY");
-    JOURNAL(58, patchnotes_name, "Media/intro_chunk_58.mp3", "USS PATCHNOTES CALL SIGN ACKPATCH,\nPOSITION 42, 69, 1024 AT 0745 HOURS, OCTOBER 17TH 2015a");
+    JOURNAL(58, patchnotes_name, "Media/intro_chunk_58.mp3", "USS PATCHNOTES CALL SIGN ACKPATCH,\nPOSITION 42, 69, 1024 AT 0745 HOURS, OCTOBER 17TH 2015");
     JOURNAL(59, patchnotes_name, "Media/intro_chunk_59.mp3", "WE HAVE BEEN ATTACKED BY A UNITY UNION BATTLECRUISER AND HAVE BEEN BOARDED");
     JOURNAL(60, patchnotes_name, "Media/intro_chunk_60.mp3", "IMMEDIATE ASSISTANCE REQUIRED");
     JOURNAL(61, patchnotes_name, "Media/intro_chunk_61.mp3", "WE HAVE 29 SOULS REMAINING ABOARD AS OF TIME OF THIS MESSAGE");
     JOURNAL(62, patchnotes_name, "Media/intro_chunk_62.mp3", "OVER");
     JOURNAL(63, acktana_name, "Media/intro_chunk_63.mp3", "Message repeats every two minutes.");
-    JOURNAL(64, lotter_name, "Media/intro_chunk_64.mp3", "That distress signal dates back 3 years! About the time the Patchnotes vanished...\nIdeas?");
+    JOURNAL(64, lotter_name, "Media/intro_chunk_64.mp3", "That distress signal dates back 3 years! About the time the Patchnotes vanished...\nideas?");
     JOURNAL(65, acktana_name, "Media/intro_chunk_65.mp3", "Acknation Galactic Laws require us to answer any-");
     JOURNAL(66, lotter_name, "Media/intro_chunk_66.mp3", "...friendly distress call, yes, yes... Fine. Set a course.");
     JOURNAL(67, acktana_name, "Media/intro_chunk_67.mp3", "As you command.");
@@ -505,6 +506,7 @@ void journals_play(int id, int level)
     journals_current = id;
     journals_current_level = level;
     journals_timeout = total_ticks + maxv(16, JOURNAL_MINTIME_PER_CHAR * str_len(journals[journals_current].text));
+    journals_hard_timeout = GetTickCount() + 60000; // 1 minute
 
     if(journals[journals_current].name != NULL)
     {
@@ -575,7 +577,7 @@ void journals_update()
         media_pause(journals_mediahandle);
         media_start(journals_mediahandle);
 
-        if(!media_playing(journals_mediahandle) && (total_ticks >= journals_timeout))
+        if((!media_playing(journals_mediahandle) && (total_ticks >= journals_timeout)) || (journals_hard_timeout < GetTickCount()))
         {
             function callback();
             callback = journals[journals_current].event;
