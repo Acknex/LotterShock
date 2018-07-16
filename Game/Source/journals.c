@@ -381,13 +381,13 @@ void journals_init()
     JOURNAL(55, patchnotes_name, "Media/intro_chunk_55.mp3", "THIS IS USS PATCHNOTES, USS PATCHNOTES, USS PATCHNOTES");
     JOURNAL(56, patchnotes_name, "Media/intro_chunk_56.mp3", "CALL SIGN ACKPATCH");
     JOURNAL(57, patchnotes_name, "Media/intro_chunk_57.mp3", "MAYDAY");
-    JOURNAL(58, patchnotes_name, "Media/intro_chunk_58.mp3", "USS PATCHNOTES CALL SIGN ACKPATCH,\nPOSITION 42, 69, 1024 AT 0745 HOURS, OCTOBER 17TH 2015a");
+    JOURNAL(58, patchnotes_name, "Media/intro_chunk_58.mp3", "USS PATCHNOTES CALL SIGN ACKPATCH,\nPOSITION 42, 69, 1024 AT 0745 HOURS, OCTOBER 17TH 2015");
     JOURNAL(59, patchnotes_name, "Media/intro_chunk_59.mp3", "WE HAVE BEEN ATTACKED BY A UNITY UNION BATTLECRUISER AND HAVE BEEN BOARDED");
     JOURNAL(60, patchnotes_name, "Media/intro_chunk_60.mp3", "IMMEDIATE ASSISTANCE REQUIRED");
     JOURNAL(61, patchnotes_name, "Media/intro_chunk_61.mp3", "WE HAVE 29 SOULS REMAINING ABOARD AS OF TIME OF THIS MESSAGE");
     JOURNAL(62, patchnotes_name, "Media/intro_chunk_62.mp3", "OVER");
     JOURNAL(63, acktana_name, "Media/intro_chunk_63.mp3", "Message repeats every two minutes.");
-    JOURNAL(64, lotter_name, "Media/intro_chunk_64.mp3", "That distress signal dates back 3 years! About the time the Patchnotes vanished...\nIdeas?");
+    JOURNAL(64, lotter_name, "Media/intro_chunk_64.mp3", "That distress signal dates back 3 years! About the time the Patchnotes vanished...\nideas?");
     JOURNAL(65, acktana_name, "Media/intro_chunk_65.mp3", "Acknation Galactic Laws require us to answer any-");
     JOURNAL(66, lotter_name, "Media/intro_chunk_66.mp3", "...friendly distress call, yes, yes... Fine. Set a course.");
     JOURNAL(67, acktana_name, "Media/intro_chunk_67.mp3", "As you command.");
