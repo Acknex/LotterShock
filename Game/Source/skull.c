@@ -225,14 +225,14 @@ var SKULL__toFloor(ENTITY* ptr)
 	ptr.max_x += 8;
 	ptr.max_y += 8;
 
-	var zOffs = 140;
+	var zOffs = 130;
 	if (ptr->SKL_BASEZ > player->z + zOffs)
 	{
-		ptr->SKL_BASEZ = clamp(ptr->SKL_BASEZ - 15*time_step, player->z + zOffs, vmax);
+		ptr->SKL_BASEZ = clamp(ptr->SKL_BASEZ - 5*time_step, player->z + zOffs, vmax);
 	}
 	else
 	{
-		ptr->SKL_BASEZ = clamp(ptr->SKL_BASEZ + 15*time_step, vmin, player->z + zOffs);
+		ptr->SKL_BASEZ = clamp(ptr->SKL_BASEZ + 5*time_step, vmin, player->z + zOffs);
 	}
 	ptr->z = ptr->SKL_BASEZ + ptr->SKL_ZOFFSET;
 	
@@ -282,17 +282,25 @@ void SKULL__run(ENTITY* ptr)
 {
 	ent_animate(ptr, SKL_RUNANIM, ptr->SKL_ANIMSTATE, ANM_CYCLE);
 	ptr->SKL_RUNSPEEDCUR = minv(ptr->SKL_RUNSPEEDCUR + 6*time_step, ptr->SKL_RUNSPEED);
-	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | /*IGNORE_PUSH |*/ GLIDE | USE_POLYGON;
-	ptr.min_x -= 2;
-	ptr.min_y -= 2;
-	ptr.max_x += 2;
-	ptr.max_y += 2;
-	c_move(ptr, vector(ptr->SKL_RUNSPEEDCUR, 0, 0), nullvector, mode);
-	ptr.min_x += 2;
-	ptr.min_y += 2;
-	ptr.max_x -= 2;
-	ptr.max_y -= 2;
-
+	VECTOR* to = vector(ptr->SKL_RUNSPEEDCUR + 2, 0, 0);
+	vec_rotate(to, vector(ptr->pan,0,0));
+	vec_add (to, &ptr->x);
+	var tracemode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_CONTENT;
+	c_ignore (GROUP_ENEMY, GROUP_PLAYER, 0);
+	if (c_trace(&ptr->x, to, tracemode) <= 0)
+	{
+		var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | /*IGNORE_PUSH |*/ GLIDE | USE_POLYGON;
+		ptr.min_x -= 2;
+		ptr.min_y -= 2;
+		ptr.max_x += 2;
+		ptr.max_y += 2;
+		c_move(ptr, vector(ptr->SKL_RUNSPEEDCUR, 0, 0), nullvector, mode);
+		ptr.min_x += 2;
+		ptr.min_y += 2;
+		ptr.max_x -= 2;
+		ptr.max_y -= 2;
+	}
+	
 	/* transitions */
 	if (SCAN_IsPlayerInSight(ptr, ptr->SKL_ATTACKDIST, 75))
 	{
@@ -351,6 +359,7 @@ void SKULL__die(ENTITY* ptr)
 	/* transitions */
 	if(animState <= 0)
 	{
+		reset(ptr, SHADOW);
 		ptr->SKL_COUNTER = 0;
 		ptr->SKL_STATE = SKL_STATE_DEAD;
 	}

@@ -86,6 +86,7 @@ action Eye()
 	my->EYE_PATHENT = handle(ent);
 	my->group = GROUP_ENEMY;
 	c_setminmax(me);
+	set(my, SHADOW);
 }	
 
 //fix me

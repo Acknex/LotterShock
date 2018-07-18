@@ -31,6 +31,7 @@
 #define FRAMEWORK_STATE_BESTIARY     7
 #define FRAMEWORK_STATE_INTRO        8
 
+ENTITY* levelsky;
 typedef struct
 {
     int state;
@@ -283,8 +284,8 @@ void framework_update()
             camera.fog_end = 6000.0;
 
 			meshFunDo();
-			ENTITY *sky = ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
-			bmap_to_cubemap(ent_getskin(sky, 0));
+			levelsky = ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
+			bmap_to_cubemap(ent_getskin(levelsky, 0));
 			
         }
 
@@ -316,6 +317,7 @@ void framework_update()
             framework_transfer(FRAMEWORK_STATE_UNLOAD);
         break;
     case FRAMEWORK_STATE_UNLOAD:
+    	ptr_remove(levelsky);
         level_load(NULL);
 
         if(game_is_won()) // when game was won, roll the credits!
