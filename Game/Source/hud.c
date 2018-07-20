@@ -73,11 +73,11 @@ TEXT* HUD_Ammo_infotext =
 {
 	layer = 5;
 	font = "Console#20b";
-	blue = 0;
-	green = 0;
-	red = 0;
+    blue = 255;
+    green = 255;
+    red = 255;
 	string ("asd");
-	flags = CENTER_X | CENTER_Y ;
+    flags = CENTER_X | CENTER_Y | LIGHT;
 } 
 
 PANEL* HUD_HP_text =

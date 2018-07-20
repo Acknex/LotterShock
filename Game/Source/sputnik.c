@@ -273,17 +273,25 @@ void SPUTNIK__follow(ENTITY* ptr)
 {
 	ptr->SPUTNIK_RUNSPEEDCUR = ptr->SPUTNIK_RUNSPEED; //minv(ptr->SPUTNIK_RUNSPEEDCUR + ptr->SPUTNIK_RUNSPEED*0.25*time_step, ptr->SPUTNIK_RUNSPEED);
 	ANG_turnToPlayer(ptr, ptr->SPUTNIK_TURNSPEED, 5);
-	var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES /*| IGNORE_PUSH*/ | GLIDE;
-	ptr.min_x -= 2;
-	ptr.min_y -= 2;
-	ptr.max_x += 2;
-	ptr.max_y += 2;
-	c_move(ptr, vector(ptr->SPUTNIK_RUNSPEEDCUR, 0, 0), nullvector, mode);
-	ptr.min_x += 2;
-	ptr.min_y += 2;
-	ptr.max_x -= 2;
-	ptr.max_y -= 2;
-	
+	VECTOR* to = vector(ptr->SPUTNIK_RUNSPEEDCUR + 2, 0, 0);
+	vec_rotate(to, vector(ptr->pan,0,0));
+	vec_add (to, &ptr->x);
+	var tracemode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_CONTENT;
+	c_ignore (GROUP_ENEMY, GROUP_PLAYER, 0);
+	if (c_trace(&ptr->x, to, tracemode) <= 0)
+	{
+		var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES /*| IGNORE_PUSH*/ | GLIDE;
+		ptr.min_x -= 2;
+		ptr.min_y -= 2;
+		ptr.max_x += 2;
+		ptr.max_y += 2;
+		c_move(ptr, vector(ptr->SPUTNIK_RUNSPEEDCUR, 0, 0), nullvector, mode);
+		ptr.min_x += 2;
+		ptr.min_y += 2;
+		ptr.max_x -= 2;
+		ptr.max_y -= 2;
+	}
+		
 	// Player is near enough to attack
 	if (SCAN_IsPlayerInSight(ptr, ptr->SPUTNIK_ATTACKRANGE, 90))
 	{
