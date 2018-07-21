@@ -20,8 +20,15 @@ Set "path=%path%;%AckPath%;%AckPath2%"
 rem standard wrs build (do not change)
 if exist %buildfolder% ( rd %buildfolder% /S /Q )
 ren media media_renamed_by_buildscript
+
+rem config patch
 ren config.h config.h.orig
 echo // kommentar > config.h
+
+rem atlas map patch
+del level\room_atlas_01.pcx
+copy level\BUILD_room_atlas_01_big.pcx level\room_atlas_01.pcx
+
 timeout /t 1 /nobreak > NUL
 wed -r %main% > build.log
 ren media_renamed_by_buildscript media
@@ -40,8 +47,13 @@ for %%i in ("%main%") do (
 	del %%~ni.exe
 )
 
+rem revert config patch
 del config.h
 ren config.h.orig config.h
+
+rem revert atlas map patch
+del level\room_atlas_01.pcx
+copy level\BUILD_room_atlas_01_small.pcx level\room_atlas_01.pcx
 
 echo Build finished. See build.log for any errors.
 echo.
