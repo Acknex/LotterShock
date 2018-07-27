@@ -354,17 +354,17 @@ void journals_init()
     journals[46].text = "That's a weird place for a bed.";
     journals[46].type = JOURNAL_TYPE_SUBTITLE;
     journals[46].name = lotter_name;
-    journals[46].media = "Media/lotter_part4_7.mp3";
+    journals[46].media = "Media/story_part4_7.mp3";
     journals[46].followup = 47;
 
     journals[47].text = "It seems to be some kind of human-computer-interface, but it's powered off right now.";
     journals[47].type = JOURNAL_TYPE_SUBTITLE;
     journals[47].name = acktana_name;
-    journals[47].media = "Media/acktana_part4_8.mp3";
+    journals[47].media = "Media/story_part4_8.mp3";
     journals[47].followup = 48;
 
     journals[48].text = "Alright!";
-    journals[48].media = "Media/lotter_part4_9.mp3";
+    journals[48].media = "Media/story_part4_9.mp3";
     journals[48].type = JOURNAL_TYPE_SUBTITLE;
     journals[48].name = lotter_name;
 
