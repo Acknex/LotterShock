@@ -37,6 +37,8 @@
 #define SKL_STATE_RETREAT 7
 
 SOUND* skull_snd_shoot = "skull_shoot.wav";
+SOUND* skull_snd_hit1 = "skull_hit1.wav";
+SOUND* skull_snd_hit2 = "skull_hit2.wav";
 SOUND* skull_snd_death = "skull_death.wav";
 
 // uses: SKL_RUNSPEED, SKL_TURNSPEED, SKL_ATTACKDIST, SKL_ACTIVEDIST
@@ -93,6 +95,11 @@ void SKULL_Update()
 				ptr->DAMAGE_HIT = 0;
 				ptr->event = NULL;
 				ptr->SKL_STATE = SKL_STATE_HIT;
+				switch(integer(random(2)))
+				{
+					case 0: snd_play(skull_snd_hit1, 100, 0); break;
+					default: snd_play(skull_snd_hit2, 100, 0); break;
+				}
 				SPLATTER_splat(&ptr->x, vector(0.8,0.0,0.2));
 				set(ptr, TRANSLUCENT);
 			}

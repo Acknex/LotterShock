@@ -51,6 +51,8 @@ BMAP* EYE_BmapDecal = "bulletHoleCool.tga";
 BMAP* EYE_bmapSplatter[5];
 
 SOUND* EYE_sndExplo = "eselslerche_explo.wav";
+SOUND* eye_snd_hit1 = "skull_hit1.wav";
+SOUND* eye_snd_hit2 = "skull_hit2.wav";
 
 
 void EYE__attack(ENTITY* ptr);
@@ -149,6 +151,11 @@ void EYE_Update()
 				ptr->DAMAGE_HIT = 0;
 				ptr->event = NULL;
 				ptr->EYE_STATE = EYE_STATE_HIT;
+				switch(integer(random(2)))
+				{
+					case 0: snd_play(eye_snd_hit1, 100, 0); break;
+					default: snd_play(eye_snd_hit2, 100, 0); break;
+				}
 				SPLATTER_splat(&ptr->x, vector(1.0,0.0,0.0));
 				ptr->EYE_COUNTER = 0;
 				ptr->EYE_LASTPAN = ptr->pan;
