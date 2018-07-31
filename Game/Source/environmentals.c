@@ -5,7 +5,7 @@
 #include <acknex.h>
 
 SOUND* snd_terminal = "keys_engine_room.wav";
-
+SOUND* snd_terminalbat = "nobattery.wav";
 var environ_ribanna_music;
 
 // skill1: SPEED
@@ -100,6 +100,7 @@ action environ_powerterm()
     my->ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_INACTIVE;
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_POWERCORE_TERMINAL;
     my->INTERACTIBLE = 1;
+    my->material = matObject; //todo: right material
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
 
@@ -203,8 +204,8 @@ void environmentals_terminal(ENTITY* ptr, void *starting_effect, var *flag)
                     }
                     else
                     {
-                        // TODO: replace with actual sound
-                        beep();
+                        ptr.ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_POWERDOWN;
+                        snd_play(snd_terminalbat, 100, 0);
                     }
                 }
             }
@@ -229,6 +230,16 @@ void environmentals_terminal(ENTITY* ptr, void *starting_effect, var *flag)
 			break;
 		case ENVIRONMENTAL_TERMINAL_ACTIVE:
         	ptr.skin = 4;
+			break;
+		case ENVIRONMENTAL_TERMINAL_POWERDOWN:
+    		ptr.skin = 5;
+		   ptr.ENVIRONMENTALS_TIMER += 1 * time_step;
+		
+		   if(ptr.ENVIRONMENTALS_TIMER >= 30)
+		   {
+		   	ptr.ENVIRONMENTALS_TIMER = 0;
+    			ptr.ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_INACTIVE;
+    		}
 			break;
 	}
 }
