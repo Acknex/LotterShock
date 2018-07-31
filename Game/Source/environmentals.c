@@ -278,9 +278,14 @@ void environmentals_update()
                     game_set_complete();
                     framework_freeze(ptr);
                 }
+                else if (story_bedState == 0)
+                {
+                    story_bedState = 1;
+                    journals_play(46, JOURNAL_LEVEL_STORY);
+                }
                 else
                 {
-                    journals_play(46, JOURNAL_LEVEL_STORY);
+                    snd_play(snd_terminallocked, 100, 0);
                 }
                 break;
 

@@ -86,6 +86,7 @@ void game_open()
     story_powercoreEnabled = 0;
     story_serverRoomState = 0;
     story_hasBattery = 0;
+    story_bedState = 0;
     playerHasHazmat = 0;
     playerHasDoubleJump = 0;
 
