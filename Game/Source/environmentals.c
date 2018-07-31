@@ -5,7 +5,8 @@
 #include <acknex.h>
 
 SOUND* snd_terminal = "keys_engine_room.wav";
-SOUND* snd_terminalbat = "nobattery.wav";
+SOUND* snd_terminallocked = "nobattery.wav";
+SOUND* snd_terminalunlocked = "battery_insert.wav";
 var environ_ribanna_music;
 
 // skill1: SPEED
@@ -149,6 +150,7 @@ action EnvironMatrixTerm()
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_MATRIX_TERMINAL;
     my->INTERACTIBLE = 1;
+    my->skin = 2;  
 }
 
 action EnvironBed()
@@ -156,6 +158,7 @@ action EnvironBed()
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_JACKBED;
     my->INTERACTIBLE = 1;
+    my->skin=4;
 }
 
 void environmentals_close()
@@ -204,7 +207,7 @@ void environmentals_terminal(ENTITY* ptr, void *starting_effect, var *flag)
                     else
                     {
                         ptr.ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_POWERDOWN;
-                        snd_play(snd_terminalbat, 100, 0);
+                        snd_play(snd_terminallocked, 100, 0);
                     }
                 }
             }
@@ -266,6 +269,8 @@ void environmentals_update()
         switch(ptr.ENVIRONMENTALS_TYPE) 
         {
             case ENVIRONMENTAL_JACKBED:
+                if(story_serverRoomState == 3)
+                   ptr.skin = 1;
                 if(mouse_ent != ptr || !input_hit(INPUT_USE))
                     break;
                 if(story_serverRoomState == 3)
@@ -281,11 +286,17 @@ void environmentals_update()
 
             case ENVIRONMENTAL_MATRIX_TERMINAL:
 
+                if (story_powercoreEnabled)
+                   ptr.skin = 1;
+                   
                 if(mouse_ent != ptr || !input_hit(INPUT_USE))
                     break;
 
                 if(story_serverRoomState == 2 && story_powercoreEnabled)
                 {
+                    //sound was intended for different purpose but another sound is already played there. 
+                    //use it here so there is at least some sound.
+                    snd_play(snd_terminalunlocked, 100, 0);
                     journals_play(42, JOURNAL_LEVEL_STORY);
                     framework_freeze(ptr);
                     story_serverRoomState = 3;
@@ -294,6 +305,10 @@ void environmentals_update()
                 {
                     story_serverRoomState = 2;
                     journals_play(38, JOURNAL_LEVEL_STORY);
+                }
+                else
+                {
+                    snd_play(snd_terminallocked, 100, 0);
                 }
 
                 break;
