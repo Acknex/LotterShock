@@ -100,7 +100,6 @@ action environ_powerterm()
     my->ENVIRONMENTALS_TEMP = ENVIRONMENTAL_TERMINAL_INACTIVE;
     my->ENVIRONMENTALS_TYPE = ENVIRONMENTAL_POWERCORE_TERMINAL;
     my->INTERACTIBLE = 1;
-    my->material = matObject; //todo: right material
     framework_setup(my, SUBSYSTEM_ENVIRONMENT);
 }
 
