@@ -73,7 +73,7 @@ void journals_init()
 	journals[0].media = "";
 	journals[0].name = crew_name0;
 
-	// Lt. Cmdr. Quei√üner
+	// Lt. Cmdr. Queiﬂner
 	journals[1].text = "Ok. So... you know that upper section in the mess hall? Yeah that one you can't actually get to. - WHO designs a starship like that? Why have it up there? It makes no sense!! -- Anyway, I threw my keycard up there, just for fun, I thought I could just climb up there and get it back. I couldn't. I think it might be easier if I just request a new one. I'm gonna need to get a new one anyway since my promotion.";
 	journals[1].media = "Media/pda_lt_cmd_queissner1.mp3";
 	journals[1].name = crew_name1;
@@ -95,7 +95,7 @@ void journals_init()
 	journals[5].media = "Media/pda_dr_horstmann3.mp3";
 	journals[5].name = crew_name2;
 
-	journals[6].text = "My colleagues from university will be sooo jealous! I just spent the last 2 weeks re-coding the entire √ñhler-Poston Engine Control System so that it can run on a Commodore 64. Yes, you heard right. Commodore. 64. Amazing, huh? Sometimes I even amaze myself! Additional plus: More computers for the digitization project! Dr. Pohl asked me where I got those computers from. I said \"It's a secret\". Between you and me? They used to run the Engine Control System. Ripped 'em right out. Put the Commodore 64 in there. Works just as well. And to think that they say I'm crazy!";
+	journals[6].text = "My colleagues from university will be sooo jealous! I just spent the last 2 weeks re-coding the entire ÷hler-Poston Engine Control System so that it can run on a Commodore 64. Yes, you heard right. Commodore. 64. Amazing, huh? Sometimes I even amaze myself! Additional plus: More computers for the digitization project! Dr. Pohl asked me where I got those computers from. I said \"It's a secret\". Between you and me? They used to run the Engine Control System. Ripped 'em right out. Put the Commodore 64 in there. Works just as well. And to think that they say I'm crazy!";
 	journals[6].media = "Media/pda_dr_horstmann4.mp3";
 	journals[6].name = crew_name2;
 
@@ -109,7 +109,7 @@ void journals_init()
 	journals[8].media = "Media/pda_cmdr_daumann1.mp3";
 	journals[8].name = crew_name4;
 
-	// 1st Officer Tr√ºmpler
+	// 1st Officer Tr¸mpler
 	journals[9].text = "Everyone is so preoccupied with doing crazy science, they don't even notice the ship falling apart around them! This was supposed to be a state of the art vessel and now we've got exploding demon abominations running around and creepy flying eyeballs and coolant leaks all over the place! The guys in engineering promised to make me a flamethrower so we can get back into the cryo room but they had to give it to the Frankenstein scientists first to deal with their explosive monster problem. Now we have 3 dead interns and we still can't get into the meat storage. Idiots.";
 	journals[9].media = "Media/pda_1st_off_truempler.mp3";
 	journals[9].name = crew_name5;
@@ -140,7 +140,7 @@ void journals_init()
 	journals[15].media = "Media/pda_ensign_schwarz5.mp3";
 	journals[15].name = crew_name7;
 
-	// Ensign J√§ger
+	// Ensign J‰ger
 	journals[16].text = "I fixed some of the coolant lines with duct tape. It's amazing. Even in space duct tape is still the best way to fix stuff. I even used it on some of the hull breaches. Works perfectly!";
     journals[16].media = "Media/pda_ensign_jaeger1.mp3";
 	journals[16].name = crew_name8;

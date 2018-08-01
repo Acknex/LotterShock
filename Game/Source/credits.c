@@ -6,6 +6,7 @@
 
 
 #define PRAGMA_BIND "logo.png"
+#define PRAGMA_BIND "credits_group.tga"
 #define PRAGMA_BIND "screen_1.jpg"
 #define PRAGMA_BIND "screen_2.jpg"
 #define PRAGMA_BIND "screen_3.jpg"

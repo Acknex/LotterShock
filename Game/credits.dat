@@ -1,4 +1,4 @@
-h1;This was:
+h1;This was
 i;logo.png
 s;8
 h2;An AckCon 2018 Production
@@ -62,6 +62,8 @@ r;HUD & Layout
 r;Effects
 r;Items
 s;4
+i;credits_group.tga
+s;4;
 h3;Voices
 s;2;
 x;Lisa Müller;Ship's AI
