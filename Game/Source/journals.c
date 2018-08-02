@@ -128,7 +128,7 @@ void journals_init()
 	journals[12].media = "Media/pda_ensign_schwarz2.mp3";
 	journals[12].name = crew_name7;
 
-	journals[13].text = "I JUST HEARD IT AGAIN. They aren't even in the room! I fucking knew it! They put some hidden speaker somewhere to play the music at night! Frickin' hazing of the new guy! I'm gonna rip this room apart and find it!";
+	journals[13].text = "I JUST HEARD IT AGAIN. They aren't even in the fucking room! I fucking knew it! They put some hidden speaker somewhere to play that fucking music at night! Frickin' hazing of the new guy! I'm gonna rip this room apart and find it!";
 	journals[13].media = "Media/pda_ensign_schwarz3.mp3";
 	journals[13].name = crew_name7;
 
