@@ -24,6 +24,8 @@ BMAP * hud_ammobar_bmap = "ammobar.png";
 
 FONT *HUD_font = "HUD_font.png";
 BMAP *HUD_font_bmap = "HUD_font.png";
+BMAP *HUD_fadenkreuz_def_bmap = "fadenkreuz.png";
+BMAP *HUD_fadenkreuz_act_bmap = "fadenkreuz_green.png";
 
 #define PRAGMA_BIND "label_sword.png"
 #define PRAGMA_BIND "label_shotgun.png"
@@ -293,9 +295,13 @@ void hud_hide_ammobar()
 void hud_update()
 {
     bool highlightCrosshair = false;
+    bool crosshairTargetsMob = false;
     if(mouse_ent != NULL)
     {
         highlightCrosshair = mouse_ent.INTERACTIBLE;
+        if (mouse_ent.SK_SUBSYSTEM >= 1000)
+           crosshairTargetsMob = true;
+           
 #ifdef DEBUG
         VECTOR * color = COLOR_GREEN;
         if((mouse_ent->emask & DYNAMIC) == 0)
@@ -309,9 +315,17 @@ void hud_update()
     }
 
     if(highlightCrosshair)
-        set(HUD_crosshair, LIGHT);
+    {
+        HUD_crosshair.bmap = HUD_fadenkreuz_act_bmap;
+        HUD_crosshair->alpha = 40;
+        //set(HUD_crosshair, LIGHT);
+    }    
     else
-        reset(HUD_crosshair, LIGHT);
+    {
+        //reset(HUD_crosshair, LIGHT);
+        HUD_crosshair.bmap = HUD_fadenkreuz_def_bmap;
+        HUD_crosshair->alpha = 10;
+    }    
    
    
    //KEY 0 is unused -> start with 1
