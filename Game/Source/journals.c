@@ -2,6 +2,7 @@
 #include "global.h"
 #include "framework.h"
 #include "intro.h"
+#include "game.h"
 
 #include <acknex.h>
 
@@ -296,7 +297,7 @@ void journals_init()
 
     // Server use first time
 
-    journals[38].text = "Connecting...\n[modem sounds]\nIt seems that the Patchnotes was working on digitization prior to the incident, and when it arrived they uploaded the crew into the computer to escape the Unity Union boarding party. Power requirements for the system increased exponentially with this many people. The system is running on a low power mode. Until we can get it back up, I can't get you any more information.";
+    journals[38].text = "Connecting...\nIt seems that the Patchnotes was working on digitization prior to the incident, and when it arrived they uploaded the crew into the computer to escape the Unity Union boarding party. Power requirements for the system increased exponentially with this many people. The system is running on a low power mode. Until we can get it back up, I can't get you any more information.";
     journals[38].type = JOURNAL_TYPE_SUBTITLE;
     journals[38].name = acktana_name;
     journals[38].media = "Media/story_part3_2.mp3";
@@ -450,15 +451,18 @@ void show_journal()
     journal_subtitle_txt->pos_y = screen_size.y - 200; // TODO: Adjust this value
 
     hide_journal();
-    if(journals[journals_current].type == JOURNAL_TYPE_SUBTITLE)
+    if(!game_hidehud)
     {
-        set(journal_subtitle_txt, SHOW);
-    }
-    else
-    {
-        set(journal_pan, SHOW);
-        set(journal_txt, SHOW);
-        set(journal_txt_name, SHOW);
+        if(journals[journals_current].type == JOURNAL_TYPE_SUBTITLE)
+        {
+            set(journal_subtitle_txt, SHOW);
+        }
+        else
+        {
+            set(journal_pan, SHOW);
+            set(journal_txt, SHOW);
+            set(journal_txt_name, SHOW);
+        }
     }
 }
 

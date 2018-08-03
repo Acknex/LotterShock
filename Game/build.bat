@@ -5,7 +5,7 @@ echo This can happen if the game crashed unexpectedly. Restart PC and rerun buil
 echo.
 
 rem adjust path to engine
-Set "AckPath=c:\Program Files (x86)\gstudio" 
+Set "AckPath=c:\Program Files (x86)\gstudio8"
 Set "AckPath2=d:\apps\acknex8" 
 
 rem names adjust to project

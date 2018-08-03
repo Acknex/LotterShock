@@ -16,6 +16,12 @@
 #define PRAGMA_BIND "screen_7.jpg"
 #define PRAGMA_BIND "screen_8.jpg"
 #define PRAGMA_BIND "screen_9.jpg"
+#define PRAGMA_BIND "screen_10.jpg"
+#define PRAGMA_BIND "screen_11.jpg"
+#define PRAGMA_BIND "screen_12.jpg"
+#define PRAGMA_BIND "screen_13.jpg"
+#define PRAGMA_BIND "screen_14.jpg"
+#define PRAGMA_BIND "screen_15.jpg"
 
 STRING * credits_source = "credits.dat";
 var credits_scrollSpeed = 2.8; // 1 Pixel per quant
@@ -267,6 +273,7 @@ void credits_init()
         credits_backgrounds[credits_background_count] = bmap_create(fname);
         if(credits_backgrounds[credits_background_count] == NULL)
             break;
+        bmap_preload(credits_backgrounds[credits_background_count]);
     }
 }
 

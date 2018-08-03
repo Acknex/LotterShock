@@ -2,8 +2,9 @@
 #include "game.h"
 #include "settings.h"
 #include "materials.h"
+#include "scan.h"
 
-#define INPUT_CHEAT_COUNT 9
+#define INPUT_CHEAT_COUNT 10
 
 SOUND * input_snd_cheat_unlocked = "snd_jingle.ogg";
 SOUND * input_snd_cheat_tap = "snd_button_tap.wav";
@@ -38,30 +39,39 @@ void input_put_cheat_char(char c)
     bool any = false;
     for(i = 0; i < INPUT_CHEAT_COUNT; i++)
     {
-        if((cheatcodes[i].text)[cheatcodes[i].position] == c && cheatcodes[i].position < strlen(cheatcodes[i].text))
+        cheatcode_t * cheat = &cheatcodes[i];
+        if(cheat->position < strlen(cheat->text))
         {
-            cheatcodes[i].position += 1;
-            if((cheatcodes[i].text)[cheatcodes[i].position] == '\0')
+            if((cheat->text)[cheat->position] == c)
             {
-                void (*trigger)();
-                trigger = cheatcodes[i].trigger;
-                if(trigger == NULL)
-                    error("input(cheats): cheat code does not have a trigger!");
-                trigger();
+                cheat->position += 1;
+                if((cheat->text)[cheat->position] == '\0')
+                {
+                    void (*trigger)();
+                    trigger = cheat->trigger;
+                    if(trigger == NULL)
+                        error("input(cheats): cheat code does not have a trigger!");
+                    else
+                        trigger();
 
-                // cheat war erfolgreich: alle cheateingaben zurücksetzen
-                input_reset_cheats();
-                snd_play(input_snd_cheat_unlocked, 100, 0);
-                break;
+                    // cheat war erfolgreich: alle cheateingaben zurücksetzen
+                    input_reset_cheats();
+                    snd_play(input_snd_cheat_unlocked, 100, 0);
+                    return;
+                }
+                else
+                {
+                    any = true;
+                }
             }
             else
             {
-                any = true;
+                cheat->position = 0;
             }
         }
         else
         {
-            cheatcodes[i].position = 0;
+            cheat->position = 0;
         }
     }
     if(any)
@@ -153,6 +163,11 @@ void cheat_retromode()
     achievements_save();
 }
 
+void cheat_invisibility()
+{
+    SCAN_invisibility = !SCAN_invisibility;
+}
+
 void cheats_init()
 {
     memset(cheatcodes, 0, sizeof(cheatcode_t) * INPUT_CHEAT_COUNT);
@@ -189,4 +204,7 @@ void cheats_init()
 
     cheatcodes[8].text = "idretro";
     cheatcodes[8].trigger = cheat_retromode;
+
+    cheatcodes[9].text = "idinvis";
+    cheatcodes[9].trigger = cheat_invisibility;
 }
