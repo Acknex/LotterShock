@@ -40,7 +40,11 @@ void intro_open()
     introsky = ent_createlayer("sky_1+6.png", SHOW|CUBE|SKY, 100);
     bmap_to_cubemap(ent_getskin(introsky, 0));
 
+#ifdef DEBUG
+    intro.state = 3; // use 3 to start in second cutscene
+#else
     intro.state = 0; // use 3 to start in second cutscene
+#endif
     intro.timer = 0;
     intro.distressDone = false;
     intro.flybyDone = false;

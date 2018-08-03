@@ -21,6 +21,11 @@ MATERIAL *matLevel =
 	effect = "walls_unlit.fx";
 }
 
+MATERIAL *matLightmapped =
+{
+    effect = "walls_basic.fx";
+}
+
 MATERIAL *matObject =
 {
 	effect = "object_basic.fx";
