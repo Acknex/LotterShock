@@ -81,6 +81,14 @@ action turret_aim()
 
 void TURRET__init()
 {
+	//FUCK YOU, WED. WHY CAN'T YOU KEEP THE ORIGINAL ANGLES!?
+	if (my->roll != 0)
+	{
+		my->tilt = 180 - my->tilt;
+		my->roll = 0;
+		my->pan += 180;
+	}
+
    framework_setup(my, SUBSYSTEM_ENEMY_TURRET);
 	ENEMY_HIT_init(my);
 	my->HEALTH = HEALTH_TURRET;
@@ -91,6 +99,7 @@ void TURRET__init()
 	ent_animate(my, "closed", 0, 0);
 	my->material = matTurret;
 	my->group = GROUP_ENEMY;
+	
 }
 
 void TURRET_Init()

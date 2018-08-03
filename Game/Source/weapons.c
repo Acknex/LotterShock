@@ -907,7 +907,7 @@ weapons_wp_cellgun.skill41 = floatd(weapons.spearpower,100);
 				if(weapons.spearpower < 100)
 				{
 					ent_animate(weapons_wp_cellgun, "PowerUp", weapons.spearpower, 0);
-					weapons.spearpower += WEAPONS_CURRENT.attackspeed * time_step;
+					weapons.spearpower += WEAPONS_CURRENT.attackspeed * time_step * 4;
 					weapons.speartimer = weapons.spearpower % 100;
 					weapons.attackstate = 0;
 				}
@@ -941,7 +941,7 @@ weapons_wp_cellgun.skill41 = floatd(weapons.spearpower,100);
 			else
 			{
 				ent_animate(weapons_wp_cellgun, "PowerDown", 100 - weapons.spearpower, 0);
-				weapons.spearpower -= WEAPONS_CURRENT.attackspeed * time_step;
+				weapons.spearpower -= WEAPONS_CURRENT.attackspeed * time_step * 3;
 				if(weapons.spearpower < 0)
 				weapons.spearpower = 0;
 			}
