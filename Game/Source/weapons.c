@@ -216,7 +216,7 @@ void weapons_init()
 	weapons.weapon[WEAPON_SHOTGUN].attackspeed = 10;
 	weapons.weapon[WEAPON_FLAMETHROWER].streaming = true;
 	weapons.weapon[WEAPON_CELLGUN].streaming = true;
-	weapons.weapon[WEAPON_CELLGUN].attackspeed = 6.0;
+    weapons.weapon[WEAPON_CELLGUN].attackspeed = 12.0;
 
 	weapons.weapon[WEAPON_SWORD].max_ammo        = 0;
 	weapons.weapon[WEAPON_SHOTGUN].max_ammo      = 36;
@@ -613,12 +613,14 @@ void weapons_shoot_sword(VECTOR * _pos, VECTOR * _ang)
 	*/
 }
 
+var cellgun_factor = 0.1;
+
 void weapons_shoot_cellgun()
 {
 	VECTOR pos;
 	vec_for_vertex (pos, weapons_wp_cellgun, 393);
 	vec_add(pos, weapons_wp_cellgun.x);
-	vec_scale(pos, 1);
+    vec_scale(pos, cellgun_factor);
 
 	vec_rotate(pos, camera.pan);
 	vec_add(pos, camera.x);
