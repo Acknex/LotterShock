@@ -31,8 +31,8 @@ action secretroom_water()
 	var bnim;
 	var foamtreshold = 0;
 	
-	var posx = 16985;
-	var posy = -800;
+	var posx = -234;//16985;
+	var posy = 5600;//-800;
 	var posz = 64;
 	
 	var scale = 3.4;
@@ -67,9 +67,10 @@ action secretroom_water()
 
 		var l = my->max_x - my->min_x;
 		var d = my->max_y - my->min_y;
-
-		var foam_x = my->x + my->min_x + random(l);
-		var foam_y = my->y + my->min_y + random(d);
+ 		
+ 		//I don't know what's wrong here, manual offsets applied
+		var foam_x = my->x + my->min_x + random(l) -2300;
+		var foam_y = my->y + my->min_y + random(d) + 50;
 		var foam_z = my->z + my->min_z + random(20);
 		
 		foamtreshold += time_step / 2;
@@ -77,6 +78,9 @@ action secretroom_water()
 		var spawnfoam = integer(foamtreshold);
 		foamtreshold -= spawnfoam;
 		
+		/*DEBUG_VAR(foam_x, 300);
+		DEBUG_VAR(foam_y, 320);
+		DEBUG_VAR(foam_z, 340);*/
 		if (spawnfoam > 0)
 		{
 			effect(p_foam, spawnfoam, _vec(foam_x, foam_y, foam_z), nullvector);

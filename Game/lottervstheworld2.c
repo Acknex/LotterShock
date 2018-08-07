@@ -68,6 +68,7 @@
 #include "secretroom.c"
 #include "flesh.c"
 #include "intro.c"
+#include "geist.c"
 
 void main()
 {
