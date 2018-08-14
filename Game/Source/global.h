@@ -73,7 +73,7 @@ typedef int bool;
 #define DAMAGE_SKULL		(10-random(5))
 #define DAMAGE_LERCHE	(30-random(15))
 #define DAMAGE_SPUTNIK	(10-random(10))
-#define DAMAGE_EYE		(2-random(1))
+#define DAMAGE_EYE		(6-random(3))
 #define DAMAGE_TURRET	(10-random(5))
 #define DAMAGE_DEFAULT  (10-random(5))
 

@@ -232,7 +232,7 @@ var SKULL__toFloor(ENTITY* ptr)
 	ptr.max_x += 8;
 	ptr.max_y += 8;
 
-	var zOffs = 130;
+	var zOffs = 145;//130;
 	if (ptr->SKL_BASEZ > player->z + zOffs)
 	{
 		ptr->SKL_BASEZ = clamp(ptr->SKL_BASEZ - 5*time_step, player->z + zOffs, vmax);
@@ -241,7 +241,9 @@ var SKULL__toFloor(ENTITY* ptr)
 	{
 		ptr->SKL_BASEZ = clamp(ptr->SKL_BASEZ + 5*time_step, vmin, player->z + zOffs);
 	}
-	ptr->z = ptr->SKL_BASEZ + ptr->SKL_ZOFFSET;
+	//ptr->z = ptr->SKL_BASEZ + ptr->SKL_ZOFFSET;
+	var zmode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES;// | USE_POLYGON;
+	c_move(ptr, vector(0,0,0), vector(0,0,ptr->SKL_BASEZ + ptr->SKL_ZOFFSET - ptr->z), zmode); 
 	
 	/*if (HIT_TARGET)
 	{
@@ -296,7 +298,7 @@ void SKULL__run(ENTITY* ptr)
 	c_ignore (GROUP_ENEMY, GROUP_PLAYER, 0);
 	if (c_trace(&ptr->x, to, tracemode) <= 0)
 	{
-		var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | /*IGNORE_PUSH |*/ GLIDE | USE_POLYGON;
+		var mode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | /*IGNORE_PUSH |*/ GLIDE;// | USE_POLYGON;
 		ptr.min_x -= 2;
 		ptr.min_y -= 2;
 		ptr.max_x += 2;

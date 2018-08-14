@@ -187,11 +187,14 @@ void ESELSLERCHE_Update()
 			ptr.max_y += 18;
 			if (HIT_TARGET)
 			{
+				var zmode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES;
 				var newZ = hit.z - ptr->min_z + 30;
 				if (ptr->z < newZ)
 					ptr->z = minv(ptr->z + 17* time_step, newZ);
+					//c_move(ptr, vector(0,0,0), vector(0,0,minv(ptr->z + 17* time_step, newZ) - ptr->z), zmode); 
 				else
 					ptr->z = maxv(ptr->z - 17* time_step, newZ);
+					//c_move(ptr, vector(0,0,0), vector(0,0,minv(ptr->z - 17* time_step, newZ) - ptr->z), zmode); 
 				
 			}
 		}
@@ -243,9 +246,13 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	ANG_turnToPlayer(ptr, ptr->EL_TURNSPEED, 5);
 
 	//this is a test to avoid glitching through walls
-	VECTOR* to = vector(ptr->EL_RUNSPEEDCUR + 2, 0, 0);
+	VECTOR* to = vector(ptr->EL_RUNSPEEDCUR + 20, 0, 0);
 	vec_rotate(to, vector(ptr->pan,0,0));
 	vec_add (to, &ptr->x);
+
+	 draw_line3d(&ptr->x,NULL,100); // move to first corner   
+	 draw_line3d(to,vector(0,0,255),100);
+
 	var tracemode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_CONTENT;
 	c_ignore (GROUP_ENEMY, GROUP_PLAYER, 0);
 	if (c_trace(&ptr->x, to, tracemode) <= 0)

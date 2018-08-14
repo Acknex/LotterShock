@@ -8,6 +8,7 @@
 #define FL_ORIGINALROT skill24
 
 BMAP* FLESH_bmapSplatter[5];
+SOUND* FLESH_sndSplatter[3];
 
 action Flesh()
 {
@@ -22,6 +23,9 @@ void FLESH_GlobalInit()
 	FLESH_bmapSplatter[2] = bmap_create("splatter_red_03.png");
 	FLESH_bmapSplatter[3] = bmap_create("splatter_red_04.png");
 	FLESH_bmapSplatter[4] = bmap_create("splatter_red_05.png");
+	FLESH_sndSplatter[0] = snd_create("splat1.ogg");
+	FLESH_sndSplatter[1] = snd_create("splat2.ogg");
+	FLESH_sndSplatter[2] = snd_create("splat3.ogg");
 	int i;
 	for (i= 0; i < 5; i++)
 	{
@@ -40,8 +44,10 @@ void FLESH_Update()
 		if (ptr->DAMAGE_HIT && ptr->FL_SPLATTERCNT <= 0)
 		{
 			ptr->DAMAGE_HIT = 0;
-			ptr->FL_SPLATTERCNT = 16;
+			ptr->FL_SPLATTERCNT = 8;
 			SPLATTER_explode(20, ptr, 800, FLESH_bmapSplatter, 5);
+			var i = integer(random(3));
+			ent_playsound2(ptr, FLESH_sndSplatter[i], 10000, 10000);
 		}
 		
 	}

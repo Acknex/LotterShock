@@ -273,7 +273,7 @@ void SPUTNIK__follow(ENTITY* ptr)
 {
 	ptr->SPUTNIK_RUNSPEEDCUR = ptr->SPUTNIK_RUNSPEED; //minv(ptr->SPUTNIK_RUNSPEEDCUR + ptr->SPUTNIK_RUNSPEED*0.25*time_step, ptr->SPUTNIK_RUNSPEED);
 	ANG_turnToPlayer(ptr, ptr->SPUTNIK_TURNSPEED, 5);
-	VECTOR* to = vector(ptr->SPUTNIK_RUNSPEEDCUR + 2, 0, 0);
+	VECTOR* to = vector(ptr->SPUTNIK_RUNSPEEDCUR + 20, 0, 0);
 	vec_rotate(to, vector(ptr->pan,0,0));
 	vec_add (to, &ptr->x);
 	var tracemode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_CONTENT;
