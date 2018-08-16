@@ -240,6 +240,7 @@ void framework_update()
 
     case FRAMEWORK_STATE_MAINMENU:
     {
+        hud_hide(); //evil hack
         mainmenu_update();
         int response = mainmenu_get_response();
         if(response != MAINMENU_RESPONSE_STILLACTIVE)
