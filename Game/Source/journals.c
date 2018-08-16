@@ -406,6 +406,12 @@ void journals_init()
 
 #undef JOURNAL
 
+    journals[73].text = "Secret area found.";
+    journals[73].type = JOURNAL_TYPE_SUBTITLE;
+
+    journals[74].text = "Super secret area found.";
+    journals[74].type = JOURNAL_TYPE_SUBTITLE;
+
     journals_mediahandle = 0;
     journals_current = -1;
 }
@@ -509,7 +515,10 @@ void journals_play(int id, int level)
 
     journals_current = id;
     journals_current_level = level;
-    journals_timeout = total_ticks + maxv(16, JOURNAL_MINTIME_PER_CHAR * str_len(journals[journals_current].text));
+    var text_len = str_len(journals[journals_current].text);
+    if (text_len < 30) text_len = 30; //increase display time for very short texts
+    
+    journals_timeout = total_ticks + maxv(16, JOURNAL_MINTIME_PER_CHAR * text_len);
     journals_hard_timeout = GetTickCount() + 60000; // 1 minute
 
     if(journals[journals_current].name != NULL)

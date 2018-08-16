@@ -11,6 +11,8 @@ var story_bedState = 0;
 // 2 = matrix terminal first time activated
 // 3 = matrix terminal second time activated, matrix is now enabled
 var story_serverRoomState = 0;
+var story_secretRoomState = 0;
+var story_supersecretRoomState = 0;
 
 bool game_hidehud;
 

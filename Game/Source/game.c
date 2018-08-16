@@ -85,6 +85,8 @@ void game_open()
     story_enginesEnabled = 0;
     story_powercoreEnabled = 0;
     story_serverRoomState = 0;
+    story_secretRoomState = 0;
+    story_supersecretRoomState = 0;
     story_hasBattery = 0;
     story_bedState = 0;
     playerHasHazmat = 0;
@@ -299,6 +301,24 @@ void game_update()
                 {
                     story_serverRoomState = 1;
                     journals_play(37, JOURNAL_LEVEL_STORY);
+                }
+            }
+
+            if(player && (story_secretRoomState == 0))
+            {
+                if(region_check(REGION_SECRETROOM, &player->x, &player->x))
+                {
+                    story_secretRoomState = 1;
+                    journals_play(73, JOURNAL_LEVEL_STORY);
+                }
+            }
+
+            if(player && (story_supersecretRoomState == 0))
+            {
+                if(region_check(REGION_SUPERSECRETROOM, &player->x, &player->x))
+                {
+                    story_supersecretRoomState = 1;
+                    journals_play(74, JOURNAL_LEVEL_STORY);
                 }
             }
 

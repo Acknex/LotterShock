@@ -31,6 +31,12 @@ BMAP *HUD_fadenkreuz_act_bmap = "fadenkreuz_green.png";
 #define PRAGMA_BIND "label_shotgun.png"
 #define PRAGMA_BIND "label_cellgun.png"
 #define PRAGMA_BIND "label_flamethrower.png"
+#define PRAGMA_BIND "icon_keycard4.png"
+#define PRAGMA_BIND "icon_keycard2.png"
+#define PRAGMA_BIND "icon_keycard.png"
+#define PRAGMA_BIND "icon_keycard3.png"
+#define PRAGMA_BIND "icon_keycard1.png"
+
 
 PANEL *HUD_background =
 {
