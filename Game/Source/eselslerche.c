@@ -250,8 +250,8 @@ void ESELSLERCHE__run(ENTITY* ptr)
 	vec_rotate(to, vector(ptr->pan,0,0));
 	vec_add (to, &ptr->x);
 
-	 draw_line3d(&ptr->x,NULL,100); // move to first corner   
-	 draw_line3d(to,vector(0,0,255),100);
+	//draw_line3d(&ptr->x,NULL,100); // move to first corner   
+	//draw_line3d(to,vector(0,0,255),100);
 
 	var tracemode = IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_SPRITES | IGNORE_CONTENT;
 	c_ignore (GROUP_ENEMY, GROUP_PLAYER, 0);
