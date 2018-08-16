@@ -46,6 +46,18 @@ void map_open()
     map_visible = false;
 }
 
+void map_lock()
+{
+	if (map_images[0])
+	{
+		bmap_to_format(map_images[0], 8888);
+	}	
+	if (map_images[1])
+	{
+		bmap_to_format(map_images[1], 8888);
+	}	
+}
+
 MATERIAL * map_mtl_render =
 {
     effect = "map_render.fx";

@@ -8,6 +8,8 @@ void map_init();
 
 void map_open();
 
+void map_lock();
+
 void map_update();
 
 void map_close();

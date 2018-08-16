@@ -14,6 +14,7 @@
 #include "cheats.h"
 #include "journals.h"
 #include "intro.h"
+#include "map.h"
 
 #include <acknex.h>
 #include <windows.h>
@@ -59,6 +60,7 @@ int framework_mousemode;
 
 void framework_update_settings()
 {
+	map_lock();
     fps_max = settings.fps_limit;
     d3d_anisotropy = settings.anisotropy;
     d3d_triplebuffer = settings.vsync;
