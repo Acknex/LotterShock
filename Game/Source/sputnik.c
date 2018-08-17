@@ -189,7 +189,7 @@ void SPUTNIK_Update()
 		//DEBUG_VAR(2, 280);
 		if (ptr->SPUTNIK_STATE != SPUTNIK_STATE_DIE && ptr->SPUTNIK_STATE != SPUTNIK_STATE_DEAD)
 		{
-			VECTOR* from = vector(ptr->x, ptr->y, ptr->z + 100);
+			VECTOR* from = vector(ptr->x, ptr->y, ptr->z);// + 100);
 			VECTOR* to = vector(ptr->x, ptr->y, ptr->z - 1000);
 			me = ptr;
 			var mode = IGNORE_ME | IGNORE_PASSABLE | IGNORE_PASSENTS | IGNORE_PUSH | IGNORE_SPRITES | IGNORE_CONTENT | USE_BOX;

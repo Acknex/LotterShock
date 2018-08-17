@@ -161,6 +161,20 @@ action EnvironBed()
     my->skin=4;
 }
 
+// string1: ANIMFRAME
+// skill4: VMASK
+// skill5: ANIMPERCENT
+action toy()
+{
+	set(my, PASSABLE);
+	my->vmask |= my->skill4;
+	my->material = matObject;
+	if (my->string1 != NULL)
+	{
+		ent_animate(me, my->string1, my->skill5, 0);
+	}	
+}
+
 void environmentals_close()
 {
     if(environ_ribanna_music != 0)
